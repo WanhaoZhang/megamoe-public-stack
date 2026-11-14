@@ -1,0 +1,4 @@
+#define megaflux_full_bf16 megaflux_early_bf16
+#define megaflux_full_bf16_kernel_do megaflux_early_bf16_kernel_do
+#define megaflux_full_bf16_timer_enabled megaflux_early_bf16_timer_enabled
+#include "megaflux_full_bf16.cpp"

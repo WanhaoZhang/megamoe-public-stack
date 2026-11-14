@@ -1,0 +1,41 @@
+---
+title: Routed 专家 Parameter 的状态变化
+---
+stateDiagram-v2
+    direction TB
+    accTitle: 一层 routed 专家 Parameter 从分片到更新
+    accDescr: 跟踪同一层的 W1 和 W2。Expert-FSDP 管理 Parameter，MegaMoE 执行池接收权重副本，autograd tape 保存反向上下文。
+
+    state "Expert-FSDP 权重分片" as Sharded
+    state "完整 home 权重可供前向" as ForwardReady
+    state "前向已返回，tape 就绪" as ForwardReturned
+    state "完整 home 权重可供反向" as BackwardReady
+    state "home dW 已收齐 EP 贡献" as HomeGrad
+    state "梯度与参数按分片对齐" as ShardGrad
+    state "本步完成，梯度已清理" as StepDone
+
+    [*] --> Sharded : I08 I15 先沿 EP 切专家，再装配 Expert-FSDP
+    Sharded --> ForwardReady : F17 F18 层入口 all-gather / unshard
+    ForwardReady --> ForwardReturned : F08 F13 F15 刷新 SHMEM home，保存 tape
+    ForwardReturned --> BackwardReady : U02 U10 反向 hook 按需恢复参数
+    BackwardReady --> HomeGrad : B13 B16 EP 内归主，返回 home dW
+    HomeGrad --> ShardGrad : U04 Expert-FSDP reduce-scatter
+    ShardGrad --> StepDone : U06 U07 U08 裁剪、条件更新、清梯度
+    StepDone --> Sharded : 下一 step 使用当前权重
+    StepDone --> [*] : 训练循环结束
+
+    note right of ForwardReturned
+        F19 按配置 reshard。
+        U01 checkpoint 可按需重算。
+    end note
+    note right of BackwardReady
+        B03 B04 从当前权重刷新 home。
+        B07 用原 placement 和新 epoch。
+    end note
+
+    classDef framework fill:#eaf2ff,stroke:#5378a1,color:#15283f
+    classDef fsdp fill:#eaf7f0,stroke:#438269,color:#15283f
+    classDef native fill:#fff3e6,stroke:#a16a37,color:#15283f
+    class Sharded,ForwardReady,BackwardReady,ShardGrad fsdp
+    class ForwardReturned,HomeGrad native
+    class StepDone framework

@@ -1,0 +1,27 @@
+{
+  "scope": "P4 deterministic10 first-step gradient divergence and final model differences; C0 self-repeat and C0R exact. Cause unproven; no performance/production acceptance.",
+  "candidate_numerical_acceptance": false,
+  "performance_allowed": false,
+  "C0_repeat_exact": true,
+  "C0R_exact": true,
+  "P4_macro_default": 0,
+  "first_rank_with_local_loss_difference": 6,
+  "first_step_grad_norm_C0": 19.234207153320312,
+  "first_step_grad_norm_P4": 19.233402252197266,
+  "max_reduced_lm_relative_error_vs_C0": 6.808470584544066e-05,
+  "metric_difference_count": 452,
+  "final_parameter_difference_count_per_rank": [
+    255,
+    255,
+    254,
+    254,
+    248,
+    247,
+    247,
+    247
+  ],
+  "execution_exit": 0,
+  "immediate_eight_card_post_gate": true,
+  "device_export_exit": 0,
+  "production_unchanged": true
+}

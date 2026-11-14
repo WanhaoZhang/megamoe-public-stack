@@ -1,0 +1,19 @@
+sequenceDiagram
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant O as mega_moe_bf16.h
+  participant P as mega_moe_replica_pipeline.h
+  participant G as mega_moe_bf16_catlass_impl.h
+  participant S as block_epilogue_swiglu_bf16.h
+ end
+ O->>O: K01 ProcessWithSaveMode：交换物理计数、算偏移、保存路由元数据
+ par AIV派发 / 搬运
+ O->>O: K02 DispatchTokens：按物理实例收集 X / p
+ O->>P: K03 副本 W1 / W2 stripe 搬运、写 ready
+ and AIC/AIV计算
+ O->>G: K04 GMM1 消费就绪 X / W1，形成 gate/up tile
+ G->>S: K05 激活与 early-topk：H → Hp=p×H，保存 gate/up
+ O->>G: K06 GMM2 消费 Hp / W2，计算输出 tile
+ G->>G: K07 tile combine 把贡献发送给 token 来源 rank
+ end
+ O->>O: K08 等待写入退休和必要同步，按原 token unpermute
+ Note over O: Y回模型；counts / state / dispatch 回 bridge，留给同一层反向

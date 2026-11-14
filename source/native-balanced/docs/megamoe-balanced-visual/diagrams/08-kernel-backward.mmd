@@ -1,0 +1,35 @@
+sequenceDiagram
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant O as mega_moe_bf16_backward.h
+  participant R as mega_moe_backward_restore.h
+  participant W as mega_moe_restore_operand.h
+  participant C as mega_moe_bf16_backward_catlass_impl.h
+  participant S as block_epilogue_swiglu_backward_bf16.h
+  participant G as mega_moe_gradient_pipe.h
+  participant A as mega_moe_owner_schedule.h
+ end
+ par P0 AIV：dY 与权重准备
+ O->>O: G01 gather上游 dY，恢复计数，AIV0 dispatch
+ O->>R: G02 AIV1 CopyExpertsPanel：副本 W1/W2 分 panel 发布
+ and P1 AIC/AIV：dHp / SwiGLU backward
+ O->>C: G03 GMM2GradPhase 按 dY 就绪粒度开始 P1
+ C->>W: G04 W2 operand 首次读前按 epoch acquire，单次调用可缓存
+ W->>R: G05 WaitPanel：确认对应写入已退休
+ C->>S: G06 dHp → Hp / dp partial / dZ，dH=p×dHp
+ end
+ par AIC：梯度生产
+ O->>O: G07 等该专家 dZ/Hp 写退休 → dW2 → 所有 AIC dO 读取退休
+ opt 当前逻辑专家有活动副本
+ O->>C: G08 GMM1DWExpert：提前生产本地或副本 dW1 tile
+ end
+ C->>G: G09 dW2/dW1 写退休后发布 tile ready
+ O->>C: G10 dX 消费 W1 panel，AIV0 combine 回来源 rank
+ O->>C: G11 尾部 GMM1DWPhase 按 cursor 补余下 dW1
+ and AIV：梯度归主
+ O->>G: G12 AIV1 先开始，AIV0 结束 dX/清零后加入
+ G->>A: G13 Task：ratio2 分配早晚 worker 的 tile
+ G->>G: G14 先 dW2 后 dW1，按 epoch 取贡献并归并到 owner
+ end
+ O->>O: G15 dX 写完成与同步 → 按 token unpermute
+ O->>O: G16 dp partial 归约、写回原路由，最终同步
+ Note over O,G: dX/dp 回 token 来源；dW 回专家 owner，再交 Expert-FSDP

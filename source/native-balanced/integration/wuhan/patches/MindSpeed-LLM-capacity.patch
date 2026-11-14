@@ -1,0 +1,38 @@
+From e43d65203f70c0432dc46dde54622537901a681b Mon Sep 17 00:00:00 2001
+From: zhangwanhao <zhangwanhao1@huaiwei.com>
+Date: Tue, 27 Oct 2026 01:46:53 +0800
+Subject: [PATCH] feat(wuhan): expose balanced receive capacity override
+
+---
+ mindspeed_llm/fsdp2/models/model_factory.py | 1 +
+ mindspeed_llm/fsdp2/utils/arguments.py      | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/mindspeed_llm/fsdp2/models/model_factory.py b/mindspeed_llm/fsdp2/models/model_factory.py
+index c5d620dc..97bf409c 100644
+--- a/mindspeed_llm/fsdp2/models/model_factory.py
++++ b/mindspeed_llm/fsdp2/models/model_factory.py
+@@ -258,6 +258,7 @@ class ModelFactory:
+                 planner=args.megamoe_balanced_planner,
+                 replica_slots=args.megamoe_balanced_replica_slots,
+                 backward_restore=args.megamoe_balanced_backward_restore,
++                recv_capacity=args.megamoe_balanced_recv_capacity,
+             )
+         ep_plan = EPPlanConfig(
+             apply_modules=parallel_args.ep_modules,
+diff --git a/mindspeed_llm/fsdp2/utils/arguments.py b/mindspeed_llm/fsdp2/utils/arguments.py
+index 85df7a5d..9a0308bc 100644
+--- a/mindspeed_llm/fsdp2/utils/arguments.py
++++ b/mindspeed_llm/fsdp2/utils/arguments.py
+@@ -874,6 +874,8 @@ class OptimizationArguments:
+         default=None, metadata={"help": "Replica slots per rank; default E/EP. MoonEP requires E/EP."})
+     megamoe_balanced_backward_restore: Literal["staged", "expert", "panel"] = field(
+         default="staged", metadata={"help": "Backward replica restoration mode for megamoe_balanced."})
++    megamoe_balanced_recv_capacity: Optional[int] = field(
++        default=None, metadata={"help": "Explicit bounded-workload receive rows, a positive multiple of 128; plan overflow fails collectively."})
+     router_imbalance: float = field(
+         default=0.0,
+         metadata={
+-- 
+2.56.0.windows.1
+

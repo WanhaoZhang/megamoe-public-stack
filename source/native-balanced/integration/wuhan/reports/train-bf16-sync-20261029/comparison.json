@@ -1,0 +1,601 @@
+{
+  "pass_": true,
+  "precision": [
+    {
+      "rank": 0,
+      "outputs": {
+        "y": {
+          "pass_": true,
+          "bitwise": true,
+          "max_abs": 0.0,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0
+        },
+        "dx": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.000244140625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.004151338131599176
+        },
+        "dp": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.001953125,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.003744357000002387
+        },
+        "dw1": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.00390625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.004161644388476368
+        },
+        "dw2": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.00390625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.004160359151466514
+        }
+      }
+    },
+    {
+      "rank": 1,
+      "outputs": {
+        "y": {
+          "pass_": true,
+          "bitwise": true,
+          "max_abs": 0.0,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0
+        },
+        "dx": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.000244140625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.004150625423501546
+        },
+        "dp": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.001953125,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0037984206706993123
+        },
+        "dw1": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0035653009840438308
+        },
+        "dw2": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.003560879994066739
+        }
+      }
+    },
+    {
+      "rank": 2,
+      "outputs": {
+        "y": {
+          "pass_": true,
+          "bitwise": true,
+          "max_abs": 0.0,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0
+        },
+        "dx": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0001220703125,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.004152803099750389
+        },
+        "dp": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0037968974455038483
+        },
+        "dw1": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0035645987153846807
+        },
+        "dw2": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0035610276449983044
+        }
+      }
+    },
+    {
+      "rank": 3,
+      "outputs": {
+        "y": {
+          "pass_": true,
+          "bitwise": true,
+          "max_abs": 0.0,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0
+        },
+        "dx": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.000244140625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0041518319107156565
+        },
+        "dp": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0037796155830278474
+        },
+        "dw1": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0035615892125864966
+        },
+        "dw2": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.003564778557420438
+        }
+      }
+    },
+    {
+      "rank": 4,
+      "outputs": {
+        "y": {
+          "pass_": true,
+          "bitwise": true,
+          "max_abs": 0.0,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0
+        },
+        "dx": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0001220703125,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0041522129391360785
+        },
+        "dp": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0037281300645787387
+        },
+        "dw1": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.00390625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0041614145373578175
+        },
+        "dw2": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.00390625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.004162600418424253
+        }
+      }
+    },
+    {
+      "rank": 5,
+      "outputs": {
+        "y": {
+          "pass_": true,
+          "bitwise": true,
+          "max_abs": 0.0,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0
+        },
+        "dx": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0001220703125,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.00415257840234674
+        },
+        "dp": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.001953125,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0037562484473115656
+        },
+        "dw1": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0035652179954693483
+        },
+        "dw2": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0035632487704359487
+        }
+      }
+    },
+    {
+      "rank": 6,
+      "outputs": {
+        "y": {
+          "pass_": true,
+          "bitwise": true,
+          "max_abs": 0.0,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0
+        },
+        "dx": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.000244140625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.004150612085911711
+        },
+        "dp": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0037430682411002873
+        },
+        "dw1": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0035621011767336284
+        },
+        "dw2": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0035628950005505626
+        }
+      }
+    },
+    {
+      "rank": 7,
+      "outputs": {
+        "y": {
+          "pass_": true,
+          "bitwise": true,
+          "max_abs": 0.0,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0
+        },
+        "dx": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0001220703125,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.004151825914543728
+        },
+        "dp": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0036848517083857496
+        },
+        "dw1": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.0035628986194859154
+        },
+        "dw2": {
+          "pass_": true,
+          "bitwise": false,
+          "max_abs": 0.0009765625,
+          "bad_fraction": 0.0,
+          "relative_l2": 0.003563412386228299
+        }
+      }
+    }
+  ],
+  "performance": [
+    {
+      "directory": "/project/optimization/train-sync-20261029-baseline/sync-evidence/performance-a1",
+      "version": "baseline",
+      "phases": {
+        "full_ms": {
+          "p50": 35.819345,
+          "p95": 36.373557,
+          "min": 35.58259,
+          "max": 36.80752,
+          "samples": [
+            35.8532,
+            35.77437,
+            35.81806,
+            35.78088,
+            35.92537,
+            35.73702,
+            35.91711,
+            36.68133,
+            35.95632,
+            35.81684,
+            35.7844,
+            35.99739,
+            35.837,
+            35.94726,
+            35.97219,
+            36.80752,
+            35.76474,
+            35.58259,
+            35.8741,
+            35.85449,
+            35.80342,
+            35.82063,
+            35.81487,
+            35.74471,
+            35.92332,
+            35.80816,
+            35.73627,
+            35.85446,
+            35.79522,
+            35.72899
+          ]
+        },
+        "forward_ms": {
+          "p50": 10.829519999999999,
+          "p95": 10.9513535,
+          "min": 10.67064,
+          "max": 11.94107,
+          "samples": [
+            10.92365,
+            10.73283,
+            10.8211,
+            10.87583,
+            10.90754,
+            10.84462,
+            10.85501,
+            10.86884,
+            10.87048,
+            10.82422,
+            10.82613,
+            10.97402,
+            10.80527,
+            10.8791,
+            10.88492,
+            11.94107,
+            10.70169,
+            10.68279,
+            10.85426,
+            10.90735,
+            10.7489,
+            10.83291,
+            10.81447,
+            10.83472,
+            10.75496,
+            10.76355,
+            10.67064,
+            10.8118,
+            10.77242,
+            10.7726
+          ]
+        },
+        "backward_ms": {
+          "p50": 25.090715,
+          "p95": 25.233245,
+          "min": 24.95492,
+          "max": 26.14597,
+          "samples": [
+            25.01468,
+            25.07072,
+            25.0445,
+            24.95492,
+            25.09858,
+            24.96428,
+            25.18209,
+            26.14597,
+            25.16818,
+            25.03083,
+            25.12352,
+            25.15496,
+            25.09686,
+            25.07549,
+            25.20712,
+            25.05202,
+            25.11002,
+            25.08457,
+            25.0749,
+            24.97492,
+            25.07389,
+            25.03464,
+            25.11716,
+            25.00408,
+            25.25462,
+            25.18169,
+            25.11818,
+            25.10701,
+            25.16552,
+            25.01495
+          ]
+        }
+      }
+    },
+    {
+      "directory": "/project/optimization/train-sync-20261029-candidate-a1/sync-evidence/performance-a1",
+      "version": "candidate",
+      "phases": {
+        "full_ms": {
+          "p50": 35.179885,
+          "p95": 35.5200585,
+          "min": 34.95846,
+          "max": 35.56386,
+          "samples": [
+            35.1441,
+            35.52477,
+            35.21907,
+            35.4684,
+            35.47141,
+            35.14991,
+            35.15042,
+            35.38149,
+            35.15905,
+            34.95846,
+            35.0474,
+            35.16982,
+            35.19466,
+            35.12755,
+            35.18563,
+            35.14653,
+            35.22823,
+            35.09005,
+            35.10584,
+            35.28301,
+            35.5143,
+            35.50314,
+            35.32727,
+            35.17414,
+            35.56386,
+            35.09481,
+            35.09771,
+            35.13549,
+            35.39496,
+            35.23748
+          ]
+        },
+        "forward_ms": {
+          "p50": 10.43166,
+          "p95": 10.5463925,
+          "min": 10.33264,
+          "max": 10.68704,
+          "samples": [
+            10.3636,
+            10.68704,
+            10.47101,
+            10.46174,
+            10.52123,
+            10.44892,
+            10.47624,
+            10.44305,
+            10.46506,
+            10.36235,
+            10.37816,
+            10.4095,
+            10.4748,
+            10.43813,
+            10.35802,
+            10.33264,
+            10.37695,
+            10.40624,
+            10.35804,
+            10.42519,
+            10.37382,
+            10.56698,
+            10.46333,
+            10.40712,
+            10.45984,
+            10.4502,
+            10.4193,
+            10.3654,
+            10.41988,
+            10.4527
+          ]
+        },
+        "backward_ms": {
+          "p50": 24.876784999999998,
+          "p95": 25.250104999999998,
+          "min": 24.65287,
+          "max": 25.38207,
+          "samples": [
+            24.93883,
+            24.91203,
+            24.83891,
+            25.11389,
+            25.21914,
+            24.87134,
+            24.73986,
+            24.97187,
+            24.71538,
+            24.65287,
+            24.68765,
+            24.77806,
+            25.03719,
+            24.76815,
+            24.87521,
+            24.85551,
+            24.85757,
+            24.78799,
+            24.89486,
+            24.87836,
+            25.27544,
+            24.94665,
+            24.91947,
+            24.98536,
+            25.38207,
+            24.85178,
+            24.8489,
+            24.85711,
+            24.9798,
+            24.89516
+          ]
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "rank": 0,
+    "ep_rank": 0,
+    "world_size": 8,
+    "ep": 4,
+    "tokens": 8192,
+    "hidden": 7168,
+    "ffn": 3072,
+    "home": 2,
+    "slots": 2,
+    "topk": 2,
+    "capacity": 20480,
+    "limit": 10.0,
+    "window_bytes": 589299712
+  },
+  "paired_inputs_and_plans": true,
+  "hosts": {
+    "baseline": "177.8.24.1",
+    "candidate": "177.2.25.1"
+  },
+  "same_host": false,
+  "baseline_output_replay": "/project/optimization/train-sync-20261029-baseline/sync-evidence/reference-a2/control",
+  "libraries": {
+    "baseline": {
+      "libascend_deepep_megaflux_early_bf16.so": "c221da6fb8fac87abcecea37aa412f60fec49c8a96b9c3ba429a73e35c188009",
+      "libascend_deepep_moonep_planner.so": "29385d47b9ada6005cb50cfaafd7f36040626ea6528e1b965d5b5e5b74f0045a"
+    },
+    "candidate": {
+      "libascend_deepep_megaflux_early_bf16.so": "fe3857ccee63a780739d8a325ad042a6da38bbdb1576e92420854bf13b8a6283",
+      "libascend_deepep_moonep_planner.so": "29385d47b9ada6005cb50cfaafd7f36040626ea6528e1b965d5b5e5b74f0045a"
+    }
+  },
+  "scope": "online MoonEP+S9 full operator forward/backward; no optimizer/actual FSDP reduction",
+  "tolerance_source": "compare_results.metric (unchanged)"
+}

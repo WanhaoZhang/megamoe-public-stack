@@ -1,0 +1,10 @@
+{
+  "status": "pass",
+  "rejected": [
+    "duplicate_replay",
+    "retired_ticket",
+    "body_mutation"
+  ],
+  "body_survived_scratch_poison": true,
+  "epochs_independent": true
+}

@@ -1,0 +1,34 @@
+---
+config:
+  htmlLabels: false
+  layout: dagre
+---
+flowchart TB
+    accTitle: 反向 tape 保存与回放
+    accDescr: Planner placement 和设备前向保存张量汇入当前层 tape。反向恢复当前权重，使用保存的 placement 与新 epoch。
+
+    plan["已校验的 plan<br/>logical_ids / physical_ids / copies / logical_counts"]
+    forward["F11 Native 前向<br/>prob 转 BF16 → kernel"]
+    snapshot["F13 同 stream clone<br/>placement 和 int32[8] header"]
+    tape[("F15 本层 autograd tape<br/>prob、执行 counts、state、dispatch<br/>placement、header")]
+    released["F14 释放 pending lease<br/>下一调用可复用 planner scratch"]
+    checkpoint["U01 checkpoint 按需重跑层前向<br/>重新走 F08/F09，补足 saved tensors"]
+    read["B02 backward 读取 ctx.saved_tensors"]
+    weights["B03/B04 取当前层 home 参数<br/>重新发布到执行池"]
+    replay["B07 校验原 placement<br/>clone header，写新 epoch"]
+    bwd["B09 原始 dY + tape + 当前 home W<br/>提交 panel 模式的 routed B"]
+
+    plan --> forward
+    forward --> snapshot --> released
+    forward -->|"counts / BF16 state / dispatch"| tape
+    released -->|"已冻结的 placement / header"| tape
+    tape --> read
+    checkpoint -.->|"需要时供给 saved tensors"| read
+    read --> replay
+    read --> weights
+    weights --> replay --> bwd
+
+    classDef native fill:#fff6ec,stroke:#90521d,color:#14283f
+    classDef state fill:#eaf7f0,stroke:#22634d,color:#14283f
+    class plan,forward,snapshot,released,replay,bwd native
+    class tape,checkpoint,read,weights state

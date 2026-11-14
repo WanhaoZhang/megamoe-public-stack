@@ -1,0 +1,12 @@
+{
+  "frozen_before_supplement": true,
+  "time_utc": "2026-11-14T05:46:28.636636+00:00",
+  "reason": "link diagnostic lacked per-process actual mapped-library fingerprints",
+  "action": "repeat identical complete link/clock matrix with explicit loaded_libraries audit; retain both successful datasets",
+  "change_to_measurement_algorithm": false,
+  "change_to_timing_sizes_or_repeats": false,
+  "older_valid_dataset": "calibration-links-v1-revision-f630df367b93",
+  "fit_rule": "use the provenance-complete repeat; compare with first valid data and retain both",
+  "old_reduced_data_sha256": "70ec440b286a3f0f22630d88dffb7b3fb3ac4cd90b1d80b18a78b136040a46a8",
+  "formal_training_runs_affected": 0
+}

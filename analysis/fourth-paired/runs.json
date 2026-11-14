@@ -1,0 +1,2390 @@
+[
+  {
+    "tag": "fourth-paired-vio0.2-step_time-r4",
+    "planner": "step_time",
+    "maxvio": 0.2,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1094.7834745,
+    "p50_ms": 1094.741215,
+    "p90_ms": 1096.14171,
+    "min_ms": 1092.75981,
+    "max_ms": 1098.06726,
+    "std_ms": 1.2846097846980018,
+    "peak_hbm_gib": 88.259765625,
+    "measured_world_max_ms": [
+      1093.94394,
+      1094.84393,
+      1095.78892,
+      1093.70901,
+      1097.145,
+      1094.2646,
+      1095.39979,
+      1094.91669,
+      1093.80012,
+      1098.06726,
+      1094.87274,
+      1096.14171,
+      1094.71289,
+      1093.97503,
+      1095.30516,
+      1094.76954,
+      1092.75981,
+      1094.26634,
+      1093.41565,
+      1093.57136
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "c377187969d75d39f4d78bb81945194642c5ab6f21f614a55c1acf988b090188",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "6b26c25eecedcad770658c0e685935eba1f1745635ac4f44e833e44e00c5514a",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "b46c88098bdde93f2792273addff7253ec7115154a01b809d64b3dabe7636b88",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "15740f84260d84f21d070dfe03d1c25466bff2158d0790e8ad7a041b3a60dd24",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "13b4f239586adc8d32a8cb065bd5a016e5e37475ddcfa7c197427834be6ed63b",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "f7f6e80d533f3f45dceeeba8fbbbc48711c652a1ae96beb37277c7cc63cb4ebf",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "01e30b3c6ff01b51dcf9f464293b9a2c2e998ec1a95d51638a36ff6ef48b2c79",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "f595bac457d16a1d5dd8050fe3b4ef88b27b2a1eca6be34259e47c00469097ca",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio0.2-ultra_ep-r4",
+    "planner": "ultra_ep",
+    "maxvio": 0.2,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1108.038662,
+    "p50_ms": 1102.9621149999998,
+    "p90_ms": 1119.47549,
+    "min_ms": 1085.67682,
+    "max_ms": 1124.14182,
+    "std_ms": 10.4260835936322,
+    "peak_hbm_gib": 88.255859375,
+    "measured_world_max_ms": [
+      1119.47549,
+      1098.46829,
+      1116.39069,
+      1097.98132,
+      1103.65907,
+      1102.08344,
+      1119.52781,
+      1101.04118,
+      1085.67682,
+      1101.62264,
+      1100.37814,
+      1116.51592,
+      1118.97606,
+      1115.00441,
+      1124.14182,
+      1101.38284,
+      1118.10119,
+      1117.8816,
+      1100.19935,
+      1102.26516
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "c377187969d75d39f4d78bb81945194642c5ab6f21f614a55c1acf988b090188",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "6b26c25eecedcad770658c0e685935eba1f1745635ac4f44e833e44e00c5514a",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "b46c88098bdde93f2792273addff7253ec7115154a01b809d64b3dabe7636b88",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "15740f84260d84f21d070dfe03d1c25466bff2158d0790e8ad7a041b3a60dd24",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "13b4f239586adc8d32a8cb065bd5a016e5e37475ddcfa7c197427834be6ed63b",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "f7f6e80d533f3f45dceeeba8fbbbc48711c652a1ae96beb37277c7cc63cb4ebf",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "01e30b3c6ff01b51dcf9f464293b9a2c2e998ec1a95d51638a36ff6ef48b2c79",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "f595bac457d16a1d5dd8050fe3b4ef88b27b2a1eca6be34259e47c00469097ca",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio1-ultra_ep-r4",
+    "planner": "ultra_ep",
+    "maxvio": 1,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1135.0911485,
+    "p50_ms": 1134.545695,
+    "p90_ms": 1144.35866,
+    "min_ms": 1122.85485,
+    "max_ms": 1148.02,
+    "std_ms": 7.474820216130044,
+    "peak_hbm_gib": 88.2568359375,
+    "measured_world_max_ms": [
+      1136.78797,
+      1128.63605,
+      1122.85485,
+      1124.58785,
+      1139.92164,
+      1135.31997,
+      1143.56061,
+      1133.67689,
+      1126.60649,
+      1143.41256,
+      1131.16514,
+      1133.77142,
+      1124.22526,
+      1133.33031,
+      1139.23918,
+      1148.02,
+      1136.2973,
+      1131.2655,
+      1144.78532,
+      1144.35866
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "dd7e4ee05a7a47f8556a18790323447f61fac93d04cb9847d73b782cf82fc633",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "81689bfaac626f178e7ac46b019a0a4fc03006f7661586c319fca06bd33531b1",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "13dc6d1b81f53e3df8f9cfa53a0e713e091582cef3a389439666b1d7a835218a",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "2f19e25983f327eaaa3888bee22b324a768974651b95071a1e64038286fd866a",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "0d5de7c578563a4593c5f6a3a4187debc0b89220a700c38cdd9045e6ccf20eb7",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "fa8acbe010e117c18dc0b601065b029aeae7595ecdf003ec9267e5c78224f3b1",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "664425524c08407aa9fef14664f0929b1f7fde688d19029ee1cd96202e6082ea",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "b873a0a75edc6aa3740de27867e638bb8a499862ff07be1fab496d51a7156acb",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio1-step_time-r4",
+    "planner": "step_time",
+    "maxvio": 1,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1129.4769025,
+    "p50_ms": 1127.37833,
+    "p90_ms": 1149.51775,
+    "min_ms": 1099.39846,
+    "max_ms": 1154.19028,
+    "std_ms": 17.470599444682964,
+    "peak_hbm_gib": 88.26171875,
+    "measured_world_max_ms": [
+      1147.77496,
+      1118.19353,
+      1129.14828,
+      1128.37196,
+      1149.15653,
+      1099.60639,
+      1142.83387,
+      1102.12911,
+      1099.39846,
+      1117.30849,
+      1119.11221,
+      1149.51775,
+      1124.36727,
+      1124.96573,
+      1154.19028,
+      1151.7286,
+      1145.31468,
+      1138.81342,
+      1121.22183,
+      1126.3847
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "dd7e4ee05a7a47f8556a18790323447f61fac93d04cb9847d73b782cf82fc633",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "81689bfaac626f178e7ac46b019a0a4fc03006f7661586c319fca06bd33531b1",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "13dc6d1b81f53e3df8f9cfa53a0e713e091582cef3a389439666b1d7a835218a",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "2f19e25983f327eaaa3888bee22b324a768974651b95071a1e64038286fd866a",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "0d5de7c578563a4593c5f6a3a4187debc0b89220a700c38cdd9045e6ccf20eb7",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "fa8acbe010e117c18dc0b601065b029aeae7595ecdf003ec9267e5c78224f3b1",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "664425524c08407aa9fef14664f0929b1f7fde688d19029ee1cd96202e6082ea",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "b873a0a75edc6aa3740de27867e638bb8a499862ff07be1fab496d51a7156acb",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio5-step_time-r4",
+    "planner": "step_time",
+    "maxvio": 5,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1168.0798255,
+    "p50_ms": 1168.5761400000001,
+    "p90_ms": 1183.29462,
+    "min_ms": 1145.56971,
+    "max_ms": 1185.49564,
+    "std_ms": 12.212916049118494,
+    "peak_hbm_gib": 88.26171875,
+    "measured_world_max_ms": [
+      1185.49564,
+      1159.24885,
+      1175.36605,
+      1145.56971,
+      1179.79834,
+      1150.23219,
+      1169.40365,
+      1156.81746,
+      1155.39505,
+      1162.76321,
+      1157.44669,
+      1167.74863,
+      1183.66669,
+      1171.60042,
+      1178.83741,
+      1183.29462,
+      1167.33263,
+      1175.5581,
+      1181.18269,
+      1154.83848
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "139f2bf107e99cc384d5ab9162ca2b8f4ee1d1d4101463dd29999fd3cbb55ce7",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "a351cac8e4a5637cc587041e3a9702de3f0afe1ed7c4849e66ccb9e095a81730",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "7c4a27b8524444a0060821c6917ac63a1c4957030b526a21dac9f7ec99456ccd",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "909a7521be8b205ad7174449e4ed94623ff488b234394887b0be060d8f23ca1b",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "743473414f0ca75b830b64924f13ab7f8bfc2b63b7c164281a35dccb30cd357a",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "273635923dc5e724dd9f76086eb394fd9d6904776f4bf33467055728fc9f37ba",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "1a229db2a2ff5addaab00809df53bdaab52ab8cee0e9fa99ef3720f5bf464b16",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "33b1575fbe5e853a829ad6c91456aefafdd9475f91a48aa32650da9b98168122",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio5-ultra_ep-r4",
+    "planner": "ultra_ep",
+    "maxvio": 5,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1161.2198675,
+    "p50_ms": 1160.663245,
+    "p90_ms": 1173.94498,
+    "min_ms": 1141.97537,
+    "max_ms": 1191.3694,
+    "std_ms": 12.503680428175338,
+    "peak_hbm_gib": 88.255859375,
+    "measured_world_max_ms": [
+      1164.66303,
+      1159.72388,
+      1167.60999,
+      1141.97537,
+      1167.62072,
+      1145.52383,
+      1172.09795,
+      1148.88777,
+      1155.51773,
+      1160.50508,
+      1152.1264,
+      1156.06132,
+      1163.85015,
+      1162.09448,
+      1155.55621,
+      1191.3694,
+      1143.08896,
+      1181.35869,
+      1173.94498,
+      1160.82141
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "139f2bf107e99cc384d5ab9162ca2b8f4ee1d1d4101463dd29999fd3cbb55ce7",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "a351cac8e4a5637cc587041e3a9702de3f0afe1ed7c4849e66ccb9e095a81730",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "7c4a27b8524444a0060821c6917ac63a1c4957030b526a21dac9f7ec99456ccd",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "909a7521be8b205ad7174449e4ed94623ff488b234394887b0be060d8f23ca1b",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "743473414f0ca75b830b64924f13ab7f8bfc2b63b7c164281a35dccb30cd357a",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "273635923dc5e724dd9f76086eb394fd9d6904776f4bf33467055728fc9f37ba",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "1a229db2a2ff5addaab00809df53bdaab52ab8cee0e9fa99ef3720f5bf464b16",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "33b1575fbe5e853a829ad6c91456aefafdd9475f91a48aa32650da9b98168122",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio10-ultra_ep-r4",
+    "planner": "ultra_ep",
+    "maxvio": 10,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1174.768855,
+    "p50_ms": 1175.4486299999999,
+    "p90_ms": 1184.67806,
+    "min_ms": 1152.27492,
+    "max_ms": 1202.17257,
+    "std_ms": 10.473933381603512,
+    "peak_hbm_gib": 88.2568359375,
+    "measured_world_max_ms": [
+      1173.69318,
+      1163.60799,
+      1173.71321,
+      1165.96195,
+      1181.11858,
+      1152.27492,
+      1172.14183,
+      1177.65037,
+      1164.53537,
+      1177.84249,
+      1163.4388,
+      1178.00308,
+      1169.43514,
+      1185.89884,
+      1181.54089,
+      1202.17257,
+      1177.18405,
+      1177.67579,
+      1184.67806,
+      1172.80999
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "df29cc9c1bc89cb8aa456115a0cc9a03d8dcbb16ea02b5c21d7fb7e4f0d0036b",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "830484868eb9b56988860de0eeeed9f947d0699260656ae356ae3ad0e7dacf9a",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "3633386cce1cd489744d2cdf8f5be258ecee5e6276aca09cf984f10a37eb653e",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "88a58b8119601c8cd3fea0bef187db666ebf1d23d1b8c910ac458bf35be788c4",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "e3ae4f72225e91054d6753b0760d755a7036bc72f1df6857c4b2eeeb75e4612d",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "3ad72405d50033fba2e3835e978d08d5568907ccb59d552b7741b3376bc0db44",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "d2505995d64739a46fc3900da52bc484a7afae3161c9f37a2371c90fe8767064",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "17549cbfb4592992458aef6354d015ac5e11bb582dd7de11782184b4bc10e494",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio10-step_time-r4",
+    "planner": "step_time",
+    "maxvio": 10,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1190.153987,
+    "p50_ms": 1192.81562,
+    "p90_ms": 1205.0244,
+    "min_ms": 1157.16682,
+    "max_ms": 1209.02855,
+    "std_ms": 13.818611088294583,
+    "peak_hbm_gib": 88.2548828125,
+    "measured_world_max_ms": [
+      1205.0244,
+      1180.0117,
+      1198.26835,
+      1181.12289,
+      1197.65975,
+      1157.16682,
+      1196.3132,
+      1177.72537,
+      1172.94888,
+      1182.33148,
+      1187.2754,
+      1179.76366,
+      1201.23686,
+      1203.17664,
+      1209.02855,
+      1208.95414,
+      1201.18671,
+      1189.31804,
+      1197.41668,
+      1177.15022
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "df29cc9c1bc89cb8aa456115a0cc9a03d8dcbb16ea02b5c21d7fb7e4f0d0036b",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "830484868eb9b56988860de0eeeed9f947d0699260656ae356ae3ad0e7dacf9a",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "3633386cce1cd489744d2cdf8f5be258ecee5e6276aca09cf984f10a37eb653e",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "88a58b8119601c8cd3fea0bef187db666ebf1d23d1b8c910ac458bf35be788c4",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "e3ae4f72225e91054d6753b0760d755a7036bc72f1df6857c4b2eeeb75e4612d",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "3ad72405d50033fba2e3835e978d08d5568907ccb59d552b7741b3376bc0db44",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "d2505995d64739a46fc3900da52bc484a7afae3161c9f37a2371c90fe8767064",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "17549cbfb4592992458aef6354d015ac5e11bb582dd7de11782184b4bc10e494",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio15-step_time-r4",
+    "planner": "step_time",
+    "maxvio": 15,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1202.7764215,
+    "p50_ms": 1202.26264,
+    "p90_ms": 1214.60157,
+    "min_ms": 1183.57823,
+    "max_ms": 1216.15611,
+    "std_ms": 9.28151120788908,
+    "peak_hbm_gib": 88.255859375,
+    "measured_world_max_ms": [
+      1214.28028,
+      1190.86174,
+      1216.15611,
+      1193.79496,
+      1198.68316,
+      1183.57823,
+      1202.27546,
+      1202.07542,
+      1187.94358,
+      1202.24982,
+      1200.04617,
+      1207.05323,
+      1196.45321,
+      1210.0238,
+      1209.82781,
+      1214.60157,
+      1206.69923,
+      1200.16299,
+      1215.67286,
+      1203.0888
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "193b05ca581d13208e7cce4ae66b6c02d00c64208ec3b51933e1c5cdc43d55de",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "8294310198359e58a1014f30904e2a7fd1a605a12bfd5ad4245aba3251128efa",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "371b6a5f18c14702f31a5d709f14619ef9276d8c50a0eafd7fe88f909c234684",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "d3333128f900d9a88ae48b025d08c023ae346b47efb2806dfcd0371fe6c785e7",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "c491bc7c5e08c600c5b1f3b05bb967cc9e98225da78bc9058369dee6e3373148",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "26a0a8318d382f5ab226d890cc027ff94d3624a85c7709ffc68d97a820987448",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "699f8b81237e01acbe8fa6a6ee644a4d596adfe51f0c084eb4700fa4e435da16",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "9ef1475a2cbe2bdc70d490d230793ef26f00cb6fa55dc79341880c74299c6a2b",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio15-ultra_ep-r4",
+    "planner": "ultra_ep",
+    "maxvio": 15,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1185.7614275,
+    "p50_ms": 1184.5448099999999,
+    "p90_ms": 1199.59182,
+    "min_ms": 1164.75245,
+    "max_ms": 1214.0224,
+    "std_ms": 12.04021254983871,
+    "peak_hbm_gib": 88.2578125,
+    "measured_world_max_ms": [
+      1181.36275,
+      1182.15182,
+      1188.88445,
+      1172.05762,
+      1193.0552,
+      1164.75245,
+      1185.17677,
+      1188.02977,
+      1177.83184,
+      1180.34592,
+      1172.1454,
+      1199.59182,
+      1191.04872,
+      1197.91865,
+      1183.91285,
+      1199.80379,
+      1192.19848,
+      1183.44228,
+      1214.0224,
+      1167.49557
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "193b05ca581d13208e7cce4ae66b6c02d00c64208ec3b51933e1c5cdc43d55de",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "8294310198359e58a1014f30904e2a7fd1a605a12bfd5ad4245aba3251128efa",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "371b6a5f18c14702f31a5d709f14619ef9276d8c50a0eafd7fe88f909c234684",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "d3333128f900d9a88ae48b025d08c023ae346b47efb2806dfcd0371fe6c785e7",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "c491bc7c5e08c600c5b1f3b05bb967cc9e98225da78bc9058369dee6e3373148",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "26a0a8318d382f5ab226d890cc027ff94d3624a85c7709ffc68d97a820987448",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "699f8b81237e01acbe8fa6a6ee644a4d596adfe51f0c084eb4700fa4e435da16",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "9ef1475a2cbe2bdc70d490d230793ef26f00cb6fa55dc79341880c74299c6a2b",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio20-ultra_ep-r4",
+    "planner": "ultra_ep",
+    "maxvio": 20,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1196.4607425,
+    "p50_ms": 1196.860265,
+    "p90_ms": 1205.00569,
+    "min_ms": 1175.63355,
+    "max_ms": 1211.87026,
+    "std_ms": 8.234382950198162,
+    "peak_hbm_gib": 88.2568359375,
+    "measured_world_max_ms": [
+      1197.1174,
+      1199.34601,
+      1192.08929,
+      1185.49059,
+      1205.00569,
+      1175.63355,
+      1193.56501,
+      1188.16872,
+      1191.85809,
+      1202.1562,
+      1188.9926,
+      1200.31749,
+      1196.60313,
+      1195.33034,
+      1207.23993,
+      1200.52203,
+      1194.88638,
+      1199.64578,
+      1211.87026,
+      1203.37636
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "b50fe69fa37e472458a5cf6c4f9c93a00b4ddf503f807a96c07d431b1f6ce729",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "99c5959d5e71bef2c6c0180afc3cbaf9d5486bb1b2b64a1e4742dc9899f66084",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "c81bd7dd0a886cfc4d4c2a5329b99235743265c33addcfe938c212ac24d7d7a5",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "f50621b1ed22a983a0fa4293631d6ddafc7b0377a7d331b52906da2708fc6e80",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "b87fbd4481e6738500e6b46a9a3dc2ae194da138d24efd0578f64e7c14433d18",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "2cd7ca5dba36d3de5fe74622e1028493f60c9800cca0a38c787999cac8df2f91",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "0d4d26971cef604b557757332c58e124db664ad8dd4c196a86166f2659873097",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "3997f43c8d9c31c0d992eedb1ca52ece2ee6acb48a527183ca975d91341c8746",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  },
+  {
+    "tag": "fourth-paired-vio20-step_time-r4",
+    "planner": "step_time",
+    "maxvio": 20,
+    "repeat": 4,
+    "state": "pass",
+    "mean_ms": 1217.41528,
+    "p50_ms": 1219.575385,
+    "p90_ms": 1226.34308,
+    "min_ms": 1189.2988,
+    "max_ms": 1236.82576,
+    "std_ms": 11.589102321378425,
+    "peak_hbm_gib": 88.255859375,
+    "measured_world_max_ms": [
+      1226.34308,
+      1223.39032,
+      1220.74801,
+      1202.59012,
+      1221.40981,
+      1189.2988,
+      1210.63464,
+      1215.09141,
+      1197.90709,
+      1213.13188,
+      1220.60119,
+      1225.70814,
+      1218.54958,
+      1214.87803,
+      1236.82576,
+      1221.05274,
+      1214.3698,
+      1225.80218,
+      1236.77308,
+      1213.19994
+    ],
+    "identities": [
+      {
+        "rank": 0,
+        "parameters": "d18fa6a5d57116a59aa0e5ba706eef77ee1c14b86db39974ff71277d5f3c274c",
+        "inputs": "cda43832b076014a86e2d87478d2ef2ff7819a35fe6857d71dc55cca190e6ca4",
+        "routes": "b50fe69fa37e472458a5cf6c4f9c93a00b4ddf503f807a96c07d431b1f6ce729",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 1,
+        "parameters": "f664e0e342c7926c31ceead539bd5332b64204e0fc1d6d60fc8df4911c602ca2",
+        "inputs": "dd0d80436a8a187b62a6ea07442ff861cadcc734537c32c22815f24d39681fb5",
+        "routes": "99c5959d5e71bef2c6c0180afc3cbaf9d5486bb1b2b64a1e4742dc9899f66084",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 2,
+        "parameters": "4eebfe9320b03ac7c93c22f20f968afa33f5b5035ac41dbf8a35ac45c4c070ad",
+        "inputs": "c0a8007ff32767b3ad06d31832b8825c92d6a4135b37e896ce5171bc62cb612e",
+        "routes": "c81bd7dd0a886cfc4d4c2a5329b99235743265c33addcfe938c212ac24d7d7a5",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 3,
+        "parameters": "5bec5fa440ebafd95b05847eac573256f095f63a3fec1004fbdad00f68ab0f1b",
+        "inputs": "0770561ffa61d927e109e2c8383e31b9a09857cec25408437f73e0b2a7bab7b8",
+        "routes": "f50621b1ed22a983a0fa4293631d6ddafc7b0377a7d331b52906da2708fc6e80",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 4,
+        "parameters": "e67171fd64ea4442179baed2f4bf6d0c7a6b96830f3cb9e063d3890bea16d2d9",
+        "inputs": "7c352a681efd8c1627927b683f4da841e667178458cfa79580afa210cc5c6f6c",
+        "routes": "b87fbd4481e6738500e6b46a9a3dc2ae194da138d24efd0578f64e7c14433d18",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 5,
+        "parameters": "ec948bb0e9f66a2a4441d37fc10222ab6278e904989a64c865a6d716bb7cead9",
+        "inputs": "1788093a048e63ac4f533ee0c42589b8d3b4f1b9136f1c28d6631095b8e2ca2d",
+        "routes": "2cd7ca5dba36d3de5fe74622e1028493f60c9800cca0a38c787999cac8df2f91",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 6,
+        "parameters": "7550c494af434df538c04818dca723a88449cb17e0eed40f7041676b9b5a5e06",
+        "inputs": "8c81c4cdc7f0b2bc0332893c7962ddff6a4508a2963c445e07725004acc9deb6",
+        "routes": "0d4d26971cef604b557757332c58e124db664ad8dd4c196a86166f2659873097",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      },
+      {
+        "rank": 7,
+        "parameters": "6d9636e8bafef413d71b4711524437d6cfba04c3a82c6055f503fb4bf767db31",
+        "inputs": "6fbf12d2054ea0395577594ef8ed5dc2ce95dc4147be4a1756443181426bb6a0",
+        "routes": "3997f43c8d9c31c0d992eedb1ca52ece2ee6acb48a527183ca975d91341c8746",
+        "binaries": [
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so",
+            "38b8cc08e7007947e088cc6047ec988f2acea9956c78f31d8c7608be2b78160e"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/ascend_deepep/lib/libascend_deepep_unified_planner.so",
+            "5573af6d6e6fd82f42d6082eaaf726a621676ebf8c23da6f130894027dbf8a90"
+          ],
+          [
+            "/home/z00956592/megaflux/planner-executor-ep8-lab/source/native-balanced/worker-variants/ep8-cap64-aligned/libascend_deepep_megaflux_early_bf16.so",
+            "46772ebc9fe69442e786dd4e9bd6892bb79bfe6e3944069df05bfafaf684712e"
+          ]
+        ]
+      }
+    ],
+    "receive_capacity": 163840
+  }
+]

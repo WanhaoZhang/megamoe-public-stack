@@ -1,0 +1,30 @@
+sequenceDiagram
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant P as megaflux_full.py
+  participant T as torch_classes.cpp
+  participant H as csrc/ops/mega_moe_bf16.cpp
+  participant L as launcher.cpp
+  participant W as megaflux_worker_bf16.cpp
+  participant K as megaflux_full_bf16.cpp
+  participant O as include/mega_moe_bf16.h
+ end
+ P->>T: N01 torch.classes.AscendDeepEP.MegaMoeBF16.compute_train_replica(...)
+ T->>H: N02 ops::MegaMoeBF16Forward(context, x, physical_ids, prob, homeW, ..., replica)
+ H->>H: N03 dtype / shape 校验；tiling；分配 y / counts / saved state / dispatch / scratch
+ H->>L: N04 LaunchMegaMoeBF16Kernel(..., tiling, stream, replica)
+ L->>L: N05 解包 descriptor；selector=1；dlopen early SO / dlsym early kernel_do
+ L->>W: N06 entry(block_dim, stream, tensor指针, tiling, homeTiling, pipeline)
+ Note over W,K: N07 编译关系（非运行调用）：worker.cpp 宏改名 full→early 并 include full.cpp；K列是展开后的源码位置
+ K->>K: N08 kernel_do → megaflux_early_bf16（三尖括号提交到当前 NPU stream）
+ par Host launch 提交后返回
+ K-->>L: launch 提交返回（不是计算完成通知）
+ L-->>H: 返回host
+ H-->>T: N11 y / counts / trainingSavedState / dispatchOutput / transientWorkspace
+ T-->>P: 返回 Torch tensors；bridge 排队保存快照并释放 lease
+ and 设备按 stream 依赖执行
+ K->>K: N09 kernel 检查 plan header / epoch / capacity；Init + EnableReplica/Pipeline/Stream
+ K->>O: N10 op.Process() → ProcessSelected → ProcessWithSaveMode
+ Note over O: AIV：routing / dispatch / 权重副本传输 / combine；AIC：GMM1 / GMM2
+ O->>O: 路由计数 → 按 ready 执行 GMM1 / SwiGLU / GMM2 → combine，详见前向 kernel
+ Note over O: 跨rank同步与ready约束分布在核内；不是几个host算子串行调用
+ end

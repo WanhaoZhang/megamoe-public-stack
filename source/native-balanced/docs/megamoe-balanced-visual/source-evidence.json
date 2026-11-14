@@ -1,0 +1,1624 @@
+{
+  "date": "2026-11-03",
+  "scope": "源码按四仓 megamoe-balanced 分支核对。主路径使用八卡方法 C、EP4 × Expert-FSDP2、E8 / Top2 和 custom FSDP。11 月 2 日采集使用独立启动包装、冻结 Python 路由、panel2 和 BF16 saved。初始化以仓库脚本说明装配，整网前向标出实验路由覆盖，反向章节的补充阅读列出可选保存格式。",
+  "heads": {
+    "ascend_deepep_hkq": "be9ec2c5fa8fdbc14e8ee071d7defd03c8f21372",
+    "FSDPTurbo": "b276c041cb8cd658ee9e7d99dd143ab666026a3c",
+    "MindSpeed-LLM": "2b73c46d9c3b7cb5e4ef8398effddd6886ea4139",
+    "wuhan": "e28f9f1753984421d57b4d070ecee74bc83ceb5b"
+  },
+  "files": {
+    "runner": {
+      "path": "ascend_deepep_hkq/integration/wuhan/run_training_case.sh",
+      "sha256": "e853bd0a350400c27f0cbd748168c9cdb1a7bb912623bd8b2431c560241cdd7d",
+      "lines": 172,
+      "href": "../../integration/wuhan/run_training_case.sh"
+    },
+    "bootstrap": {
+      "path": "ascend_deepep_hkq/integration/wuhan/runtime_bootstrap.py",
+      "sha256": "e6bd0c60eb9a558cf124e2dab586f9da2bda8d58058f4d419f1ccfc4a0c1042a",
+      "lines": 59,
+      "href": "../../integration/wuhan/runtime_bootstrap.py"
+    },
+    "train": {
+      "path": "MindSpeed-LLM/train_fsdp2.py",
+      "sha256": "cc5493cc9ad9811034542cfa52228752e6cb8cd2993c17de4d56ea5fede4b6bf",
+      "lines": 313,
+      "href": "reference-src/MindSpeed-LLM/train_fsdp2.py"
+    },
+    "factory": {
+      "path": "MindSpeed-LLM/mindspeed_llm/fsdp2/models/model_factory.py",
+      "sha256": "67e31dff20aa915fb90b9f5c07126a245d862284391e26b782e385c501b3ae40",
+      "lines": 351,
+      "href": "reference-src/MindSpeed-LLM/mindspeed_llm/fsdp2/models/model_factory.py"
+    },
+    "engine": {
+      "path": "MindSpeed-LLM/mindspeed_llm/fsdp2/distributed/mindspeed_parallel_engine.py",
+      "sha256": "7cba1869225f992b119ca87558b836769a5a3b519b73b15eead0f2839545ae5d",
+      "lines": 267,
+      "href": "reference-src/MindSpeed-LLM/mindspeed_llm/fsdp2/distributed/mindspeed_parallel_engine.py"
+    },
+    "ep": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/expert_parallel.py",
+      "sha256": "546ddfb75094e886ff795be7db7792c53a6b5a66f4db2c54fbaf5d1206246d6d",
+      "lines": 336,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/expert_parallel/expert_parallel.py"
+    },
+    "efsdp": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/expert_fully_shard_parallel.py",
+      "sha256": "895cace05aee7d9c1156bf500e40acfafca37bd9a63ca338a3ddd8d27c19b389",
+      "lines": 112,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/expert_parallel/expert_fully_shard_parallel.py"
+    },
+    "model": {
+      "path": "MindSpeed-LLM/mindspeed_llm/fsdp2/models/deepseek_v4/modeling_deepseek_v4.py",
+      "sha256": "c14e6306310a196c9228c0db17a55ef20027c7aabb4c0458c622cf6766fe943b",
+      "lines": 2517,
+      "href": "reference-src/MindSpeed-LLM/mindspeed_llm/fsdp2/models/deepseek_v4/modeling_deepseek_v4.py"
+    },
+    "trainer": {
+      "path": "MindSpeed-LLM/mindspeed_llm/fsdp2/train/trainer.py",
+      "sha256": "c806860f0e8858485ee392dd77fe12a08d5eb1d7ebe10ba59db0aaf2a3090fe9",
+      "lines": 1328,
+      "href": "reference-src/MindSpeed-LLM/mindspeed_llm/fsdp2/train/trainer.py"
+    },
+    "dispatcher": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/dispatcher_megamoe_balanced.py",
+      "sha256": "fcc3538a81b4cf09752eb3cb82968ddeb715f74d78f9b4fc98c586bdb5fa6361",
+      "lines": 122,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/expert_parallel/dispatcher_megamoe_balanced.py"
+    },
+    "runtimeDispatcher": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/dispatcher_mega_moe.py",
+      "sha256": "1c1f67a72b9e7ed7997888aa10bc720c5c2edca0e48439a9e6a454fc644bc7ee",
+      "lines": 500,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/expert_parallel/dispatcher_mega_moe.py"
+    },
+    "utils": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/utils.py",
+      "sha256": "e8fa826932566474193e7355358bf9c86d2269336a5be60d6a3e10f2bf04a263",
+      "lines": 688,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/expert_parallel/utils.py"
+    },
+    "bridge": {
+      "path": "ascend_deepep_hkq/ascend_deepep/fsdp2_bridge.py",
+      "sha256": "38b965e5e7f4200309f7676062e3c9da1f6effcd98d302af1c3ab75be483d6f6",
+      "lines": 282,
+      "href": "../../ascend_deepep/fsdp2_bridge.py"
+    },
+    "device": {
+      "path": "ascend_deepep_hkq/ascend_deepep/megaflux_device.py",
+      "sha256": "d92235104c04682d02a6039ff5119e2c8d66b1a875adacea98c857e2f37bc02d",
+      "lines": 232,
+      "href": "../../ascend_deepep/megaflux_device.py"
+    },
+    "worker": {
+      "path": "ascend_deepep_hkq/ascend_deepep/megaflux_worker_pipeline.py",
+      "sha256": "644059c29055cb91824fe3f573502902c75c36bfa79e6993577844fe9f2014be",
+      "lines": 63,
+      "href": "../../ascend_deepep/megaflux_worker_pipeline.py"
+    },
+    "full": {
+      "path": "ascend_deepep_hkq/ascend_deepep/megaflux_full.py",
+      "sha256": "291201a61f711b9a8963ae5c2d0c26e3cc8f373fcc6468a946af0fad35531252",
+      "lines": 31,
+      "href": "../../ascend_deepep/megaflux_full.py"
+    },
+    "early": {
+      "path": "ascend_deepep_hkq/ascend_deepep/megaflux_early.py",
+      "sha256": "d4c20dd5fca4f29da7666af8f17381a46f8275219f9226732b1d494b814120c3",
+      "lines": 14,
+      "href": "../../ascend_deepep/megaflux_early.py"
+    },
+    "mixed": {
+      "path": "ascend_deepep_hkq/ascend_deepep/megaflux_mixed.py",
+      "sha256": "211b7639f454f3a601fef01feef9397e01f41ae59508a2c06de9ca8bde38eaae",
+      "lines": 74,
+      "href": "../../ascend_deepep/megaflux_mixed.py"
+    },
+    "planner": {
+      "path": "ascend_deepep_hkq/ascend_deepep/moonep_planner.py",
+      "sha256": "050dc12b5ac0b7ca31c9629898fc01eb1cf44ddf235cc268d37001678cc663d1",
+      "lines": 78,
+      "href": "../../ascend_deepep/moonep_planner.py"
+    },
+    "validator": {
+      "path": "ascend_deepep_hkq/ascend_deepep/execution_plan_device.py",
+      "sha256": "d25c837ee092fba9d0c36a3cf7373c4af3e2020fc74b15008a854db5d3f0319e",
+      "lines": 75,
+      "href": "../../ascend_deepep/execution_plan_device.py"
+    },
+    "workspace": {
+      "path": "ascend_deepep_hkq/csrc/ops/mega_moe_bf16_replica.cpp",
+      "sha256": "512cc7e90d9c19cc0f499f59aefa3d7ca24448fa16371be1919d60ce5a48edd1",
+      "lines": 399,
+      "href": "../../csrc/ops/mega_moe_bf16_replica.cpp"
+    },
+    "planKernel": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/mega_moe_moonep_planner.cpp",
+      "sha256": "af6401ec854675960ae7d3728137303d2001bf838d91815d3651d2d657ed83f2",
+      "lines": 19,
+      "href": "../../kernels/mega_moe_bf16/mega_moe_moonep_planner.cpp"
+    },
+    "torch": {
+      "path": "ascend_deepep_hkq/csrc/torch_classes.cpp",
+      "sha256": "38f0d24e2a4304c63645efcd012ab04868be1a786591518815f65f2951dee630",
+      "lines": 946,
+      "href": "../../csrc/torch_classes.cpp"
+    },
+    "host": {
+      "path": "ascend_deepep_hkq/csrc/ops/mega_moe_bf16.cpp",
+      "sha256": "66e035c65983f96afa2bb9fa6cc24468df75cd441f30bd43251378a2e901ceb3",
+      "lines": 792,
+      "href": "../../csrc/ops/mega_moe_bf16.cpp"
+    },
+    "launch": {
+      "path": "ascend_deepep_hkq/csrc/launcher.cpp",
+      "sha256": "5ca181723e6bbde3b453ec62f920752858aba92696c5d33c625011f361325c34",
+      "lines": 1289,
+      "href": "../../csrc/launcher.cpp"
+    },
+    "kworker": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp",
+      "sha256": "78b86e8eb7cfea98836f877c7f533bb70e689453c6103d15bf25873ae5468c2f",
+      "lines": 48,
+      "href": "../../kernels/mega_moe_bf16/megaflux_worker_bf16.cpp"
+    },
+    "kfull": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/megaflux_full_bf16.cpp",
+      "sha256": "96d4311b6b8ebfa207784342a023a9296f07da5a1eb59686d9e1c8bb1e82ea89",
+      "lines": 147,
+      "href": "../../kernels/mega_moe_bf16/megaflux_full_bf16.cpp"
+    },
+    "kh": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/mega_moe_bf16.h",
+      "sha256": "7422a85add5b92ce23fc288fe53ebd3ec0d5f857e717c3759dae76ad7d4bf49f",
+      "lines": 1815,
+      "href": "../../kernels/mega_moe_bf16/include/mega_moe_bf16.h"
+    },
+    "kbworker": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/megaflux_worker_bf16_backward.cpp",
+      "sha256": "7bac95fecb1ad5b6229d554cf21696c946b34c40f3124cb25f2402923138d5d2",
+      "lines": 10,
+      "href": "../../kernels/mega_moe_bf16/megaflux_worker_bf16_backward.cpp"
+    },
+    "kbfull": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/megaflux_full_bf16_backward.cpp",
+      "sha256": "682f36d30526cf7c068948ac5b5451e5dd3b291ce56ede651270929dc3b73340",
+      "lines": 143,
+      "href": "../../kernels/mega_moe_bf16/megaflux_full_bf16_backward.cpp"
+    },
+    "kbh": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h",
+      "sha256": "9598397c52c59ceb59ffab3c15c434d63a481604c7845436f1db84fe2cd53f48",
+      "lines": 2246,
+      "href": "../../kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h"
+    },
+    "grad": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/mega_moe_gradient_pipe.h",
+      "sha256": "09e181cbfdb55d9720d5f610b0e7e5dd1b7f64314339ace7cfcebf85892fc389",
+      "lines": 397,
+      "href": "../../kernels/mega_moe_bf16/include/mega_moe_gradient_pipe.h"
+    },
+    "build": {
+      "path": "ascend_deepep_hkq/scripts/build_megaflux_worker_pipeline.sh",
+      "sha256": "58bcbfa906c0d321dac70a7a7654cbf65454bca82cfc867ed514e15611eaa0b6",
+      "lines": 90,
+      "href": "../../scripts/build_megaflux_worker_pipeline.sh"
+    },
+    "cmake": {
+      "path": "ascend_deepep_hkq/CMakeLists.txt",
+      "sha256": "f91ccc902057070537ff6ac94ad50538b0e36f938ca6a13d5d227bc042d05a2b",
+      "lines": 936,
+      "href": "../../CMakeLists.txt"
+    },
+    "stage": {
+      "path": "experiment/tools/whole-stage-a1.sh",
+      "sha256": "869f139f0fce0db2f586f7d0568d6ed9188a475dec4f9e3ff99e2b0bb8bea868",
+      "lines": 12,
+      "href": "reference-src/experiment/tools/whole-stage-a1.sh"
+    },
+    "run": {
+      "path": "experiment/tools/run-whole-a1.sh",
+      "sha256": "191408b6a43fef65cde48be82ec630042183ae39cd9ecd7a46699be8e75c62a8",
+      "lines": 178,
+      "href": "reference-src/experiment/tools/run-whole-a1.sh"
+    },
+    "entry": {
+      "path": "experiment/tools/whole_entry.py",
+      "sha256": "ad5a23f540f648c555d7abedd792e37a9435fc5804682edd5164ccc220907a36",
+      "lines": 260,
+      "href": "reference-src/experiment/tools/whole_entry.py"
+    },
+    "fixed": {
+      "path": "experiment/tools/fixed_python_route.py",
+      "sha256": "b9261da1c7a4628a45f8edb90936d034d1c30e01f42098a3d6b424757ebe0e2b",
+      "lines": 42,
+      "href": "reference-src/experiment/tools/fixed_python_route.py"
+    },
+    "mesh": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/parallel_state.py",
+      "sha256": "148411dc07af689951ae2a395ba2b09ae909f027d426bd6eccb49f48283ad92d",
+      "lines": 294,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/parallel_state.py"
+    },
+    "data": {
+      "path": "MindSpeed-LLM/mindspeed_llm/fsdp2/data/data_factory.py",
+      "sha256": "3d9389e07895d570f39380c772d6d46668bd32d50efb2162ad2dd13cb05b4003",
+      "lines": 279,
+      "href": "reference-src/MindSpeed-LLM/mindspeed_llm/fsdp2/data/data_factory.py"
+    },
+    "opt": {
+      "path": "MindSpeed-LLM/mindspeed_llm/fsdp2/optim/optimizer.py",
+      "sha256": "79a630bf1bca4ab49388a3245aaa9e825bd409d505cb67e8ac206b288510be1c",
+      "lines": 743,
+      "href": "reference-src/MindSpeed-LLM/mindspeed_llm/fsdp2/optim/optimizer.py"
+    },
+    "prof": {
+      "path": "MindSpeed-LLM/mindspeed_llm/fsdp2/utils/profiler.py",
+      "sha256": "9cb72ad36bb0c672a3ded4eae188684c1b453817e5ffebe2eaa22f7d8d562077",
+      "lines": 143,
+      "href": "reference-src/MindSpeed-LLM/mindspeed_llm/fsdp2/utils/profiler.py"
+    },
+    "mtp": {
+      "path": "MindSpeed-LLM/mindspeed_llm/fsdp2/models/common/mtp.py",
+      "sha256": "edf27741de16cdf894c3cac225bac1be6119c9e0c1554beb7017ba3ce39202dd",
+      "lines": 353,
+      "href": "reference-src/MindSpeed-LLM/mindspeed_llm/fsdp2/models/common/mtp.py"
+    },
+    "recompute": {
+      "path": "FSDPTurbo/fsdp_turbo/memory/recompute/recompute.py",
+      "sha256": "1ceaab00868b6d685ba034de3509c3fd35177c9be96ea564b4273d4f230789c3",
+      "lines": 48,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/memory/recompute/recompute.py"
+    },
+    "fsdp": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/fully_shard_parallel/fully_shard_parallel.py",
+      "sha256": "e868dbd8e850e072e6b600b733e45f61c81d596b7c7d07a806b6dd12a16c82d2",
+      "lines": 165,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/fully_shard_parallel/fully_shard_parallel.py"
+    },
+    "planControl": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/mega_moe_replica_planner_control.cpp",
+      "sha256": "622ec71efdf8fdfe9a06f486814d96631984fa546a0ca74dabdc23eddb0d63e3",
+      "lines": 367,
+      "href": "../../kernels/mega_moe_bf16/mega_moe_replica_planner_control.cpp"
+    },
+    "planAlgo": {
+      "path": "ascend_deepep_hkq/include/mega_moe_moonep_algorithm.h",
+      "sha256": "d5e1f0571867aa59f8e277d1a79cdb14222075840595bf80b163a067fa5ff731",
+      "lines": 57,
+      "href": "../../include/mega_moe_moonep_algorithm.h"
+    },
+    "planValidate": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/mega_moe_plan_validator.cpp",
+      "sha256": "96430faf6b89243abbd67ce72477b60c298c7e293f9ed00e3ae5c92859acd897",
+      "lines": 139,
+      "href": "../../kernels/mega_moe_bf16/mega_moe_plan_validator.cpp"
+    },
+    "fwCat": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/mega_moe_bf16_catlass_impl.h",
+      "sha256": "ccc6b7568c642f394e3305a1447a34a3f95b10c3ba69e653f452292b4bfab516",
+      "lines": 1331,
+      "href": "../../kernels/mega_moe_bf16/include/mega_moe_bf16_catlass_impl.h"
+    },
+    "fwCopy": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/mega_moe_replica_pipeline.h",
+      "sha256": "69437656b5488171e623ef75b3c5d2f367dc87f991c6c1ae8b7eebb2ccc3c208",
+      "lines": 263,
+      "href": "../../kernels/mega_moe_bf16/include/mega_moe_replica_pipeline.h"
+    },
+    "fwSwi": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/block_epilogue_swiglu_bf16.h",
+      "sha256": "a9d7041163789791f414a8edcec085d8bdf2dfe85a446e6b2f305af11b5315c9",
+      "lines": 414,
+      "href": "../../kernels/mega_moe_bf16/include/block_epilogue_swiglu_bf16.h"
+    },
+    "bwCat": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/mega_moe_bf16_backward_catlass_impl.h",
+      "sha256": "e311b1a9c0afb383fced681009b2878518b697d1800f7310a1e4e5875f71ad67",
+      "lines": 1068,
+      "href": "../../kernels/mega_moe_bf16/include/mega_moe_bf16_backward_catlass_impl.h"
+    },
+    "bwSwi": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/block_epilogue_swiglu_backward_bf16.h",
+      "sha256": "9f75cb90ff4676bdf120580792f09e49abcc9d2e89ffc80987b71871bdffae74",
+      "lines": 1267,
+      "href": "../../kernels/mega_moe_bf16/include/block_epilogue_swiglu_backward_bf16.h"
+    },
+    "bwRestore": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/mega_moe_backward_restore.h",
+      "sha256": "cf1e81081a37b3a6d1aa3a3a9fb80ab52e3d79fdbcaefe766b03d3a1c20e2cab",
+      "lines": 161,
+      "href": "../../kernels/mega_moe_bf16/include/mega_moe_backward_restore.h"
+    },
+    "bwOperand": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/mega_moe_restore_operand.h",
+      "sha256": "bc3e788a3c3bbcf5df6e140dbc0126cb73c2846e7b33b673f7ddb87e87b34c13",
+      "lines": 103,
+      "href": "../../kernels/mega_moe_bf16/include/mega_moe_restore_operand.h"
+    },
+    "bwOwner": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/mega_moe_owner_schedule.h",
+      "sha256": "dfd94dce6495c3ceb3349f106c7769f275231d59e556f34d55b40dc482d85010",
+      "lines": 15,
+      "href": "../../kernels/mega_moe_bf16/include/mega_moe_owner_schedule.h"
+    },
+    "bwWorkspace": {
+      "path": "ascend_deepep_hkq/kernels/mega_moe_bf16/include/mega_moe_workspace_info.h",
+      "sha256": "bc9cb3c52ef79d16c8acd47c25eb515083a1b41c0401064405521137e3bc60fc",
+      "lines": 325,
+      "href": "../../kernels/mega_moe_bf16/include/mega_moe_workspace_info.h"
+    },
+    "saved": {
+      "path": "ascend_deepep_hkq/ascend_deepep/saved_gate_up_mode.py",
+      "sha256": "75da0e51289e176a0a2e3e9a8fd31bff83c1470eb0c7118e7d5911b249a5809a",
+      "lines": 46,
+      "href": "../../ascend_deepep/saved_gate_up_mode.py"
+    },
+    "modelLoader": {
+      "path": "MindSpeed-LLM/mindspeed_llm/fsdp2/models/model_loader.py",
+      "sha256": "7d2d27dbc02cf5833b275ef0ad7de8723e5e63495b7ab4e90ef3a00414b90e48",
+      "lines": 499,
+      "href": "reference-src/MindSpeed-LLM/mindspeed_llm/fsdp2/models/model_loader.py"
+    },
+    "fsdpWrap": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/fine_grained_fully_shard/fully_shard.py",
+      "sha256": "b6537eb9166901ee761b81d8b61a92378ef1f71bae99dcfb0e8947bcfd54f193",
+      "lines": 145,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/fine_grained_fully_shard/fully_shard.py"
+    },
+    "fsdpState": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/fine_grained_fully_shard/state.py",
+      "sha256": "40297a36bea019a57a0a6a8a4d332965abd7c25a507e0f01147fed9b38c32944",
+      "lines": 225,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/fine_grained_fully_shard/state.py"
+    },
+    "fsdpParam": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/fine_grained_fully_shard/param_group.py",
+      "sha256": "aa6d6d1dd0cf8b51241d1708922483a83aedbfa64e831a8ad6b8bd1054e92e9b",
+      "lines": 282,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/fine_grained_fully_shard/param_group.py"
+    },
+    "fsdpStrategy": {
+      "path": "FSDPTurbo/fsdp_turbo/distributed/fine_grained_fully_shard/strategy.py",
+      "sha256": "ec230b47bca08859aa647817e332f3e7d3d8a4464c8f183a5be80bc464ef4407",
+      "lines": 102,
+      "href": "reference-src/FSDPTurbo/fsdp_turbo/distributed/fine_grained_fully_shard/strategy.py"
+    }
+  },
+  "rows": [
+    {
+      "id": "I01",
+      "from": "runner",
+      "fromLine": 96,
+      "to": "runner",
+      "toLine": 100,
+      "detail": "方法C选择megamoe_balanced、MoonEP planner与2副本槽。"
+    },
+    {
+      "id": "I02",
+      "from": "runner",
+      "fromLine": 119,
+      "to": "bootstrap",
+      "toLine": 16,
+      "detail": "仓库启动入口创建各rank进程，把训练入口、YAML和CLI参数交给runtime wrapper。"
+    },
+    {
+      "id": "I03",
+      "from": "bootstrap",
+      "fromLine": 54,
+      "to": "train",
+      "toLine": 303,
+      "detail": "通用脚本直接传train_fsdp2.py。固定Python实验在两者之间插入whole_entry.py。"
+    },
+    {
+      "id": "I04",
+      "from": "train",
+      "fromLine": 210,
+      "to": "factory",
+      "toLine": 63,
+      "detail": "模型创建调用；初始化分布式、数据、optimizer与Trainer的上层入口是MindSpeedAutoTrainer。"
+    },
+    {
+      "id": "I05",
+      "from": "factory",
+      "fromLine": 257,
+      "to": "factory",
+      "toLine": 266,
+      "detail": "planner/slots/restore/capacity/validation连同fixed_router写入EP plan。"
+    },
+    {
+      "id": "I06",
+      "from": "factory",
+      "fromLine": 182,
+      "to": "engine",
+      "toLine": 65,
+      "detail": "engine依次应用并行转换；返回包装后的模型。"
+    },
+    {
+      "id": "I07",
+      "from": "engine",
+      "fromLine": 140,
+      "to": "ep",
+      "toLine": 40,
+      "detail": "balanced分支走普通专家EP与Expert-FSDP路径，非作者MoonEP mirror附着路径。"
+    },
+    {
+      "id": "I08",
+      "from": "ep",
+      "fromLine": 93,
+      "to": "ep",
+      "toLine": 280,
+      "detail": "先按专家维Shard(0)切分；home=E/EP。图中表达的是EP切分，不是副本搬运。"
+    },
+    {
+      "id": "I09",
+      "from": "ep",
+      "fromLine": 310,
+      "to": "dispatcher",
+      "toLine": 24,
+      "detail": "get_dispatcher_fn显式选择balanced闭包；传入ep_group、fixed_router和config。"
+    },
+    {
+      "id": "I10",
+      "from": "ep",
+      "fromLine": 99,
+      "to": "dispatcher",
+      "toLine": 28,
+      "detail": "方法绑定使模型内self.experts(...)进入balanced_forward；原模型上层调用保持。"
+    },
+    {
+      "id": "I11",
+      "from": "engine",
+      "fromLine": 151,
+      "to": "efsdp",
+      "toLine": 43,
+      "detail": "EFSDP包装管理Parameter生命周期；该文件配置BF16参数、FP32 reduce及gradient divide factor。"
+    },
+    {
+      "id": "F01",
+      "from": "trainer",
+      "fromLine": 1158,
+      "to": "model",
+      "toLine": 1999,
+      "detail": "模型递归调用到MoE block；不是Trainer直接调用某层MoE。"
+    },
+    {
+      "id": "F02",
+      "from": "model",
+      "fromLine": 2015,
+      "to": "model",
+      "toLine": 1936,
+      "detail": "普通TopK与hash层各有gate分支；本例fix_router随后覆盖传给experts的路由。"
+    },
+    {
+      "id": "F03",
+      "from": "model",
+      "fromLine": 2016,
+      "to": "dispatcher",
+      "toLine": 28,
+      "detail": "flat输入、逻辑专家索引、概率；经nn.Module与FSDP hooks间接进入已绑定forward。"
+    },
+    {
+      "id": "F04",
+      "from": "dispatcher",
+      "fromLine": 41,
+      "to": "utils",
+      "toLine": 615,
+      "detail": "先normalize_expert_args；若fixed_router=True则覆盖gate输出，人工负载不等同自然路由语义。"
+    },
+    {
+      "id": "F05",
+      "from": "dispatcher",
+      "fromLine": 101,
+      "to": "bridge",
+      "toLine": 123,
+      "detail": "首次静态shape建立进程共享pool；每层bridge保存权重获取闭包；不是每层复制一整套执行池。"
+    },
+    {
+      "id": "F06",
+      "from": "dispatcher",
+      "fromLine": 119,
+      "to": "bridge",
+      "toLine": 116,
+      "detail": "x[M,H] / ids[int32,M,K] / prob；bridge再次动态取得当前层unshard后的w1/w2。"
+    },
+    {
+      "id": "F07",
+      "from": "bridge",
+      "fromLine": 119,
+      "to": "bridge",
+      "toLine": 66,
+      "detail": "训练autograd入口是本文件的_ExternalExperts；不经过megaflux_device._DeviceReplica.apply。"
+    },
+    {
+      "id": "F08",
+      "from": "bridge",
+      "fromLine": 220,
+      "to": "bridge",
+      "toLine": 206,
+      "detail": "当前stream将live Parameter detach-copy到SHMEM home。"
+    },
+    {
+      "id": "F09",
+      "from": "bridge",
+      "fromLine": 222,
+      "to": "device",
+      "toLine": 138,
+      "detail": "申请调用epoch/lease，固定stream；planner必须返回已校验计划。"
+    },
+    {
+      "id": "F10",
+      "from": "device",
+      "fromLine": 159,
+      "to": "planner",
+      "toLine": 52,
+      "detail": "动态分派到MoonEPPlanner.plan；Native是另一个policy adapter。"
+    },
+    {
+      "id": "F11",
+      "from": "bridge",
+      "fromLine": 224,
+      "to": "full",
+      "toLine": 23,
+      "detail": "Python MRO：Worker→Early→Full；当前真正前向实现为Full._forward_device。"
+    },
+    {
+      "id": "F12",
+      "from": "full",
+      "fromLine": 27,
+      "to": "torch",
+      "toLine": 318,
+      "detail": "返回五个native张量；Python重排成y、逻辑counts视图、执行counts、state、dispatch。"
+    },
+    {
+      "id": "F13",
+      "from": "bridge",
+      "fromLine": 227,
+      "to": "bridge",
+      "toLine": 15,
+      "detail": "冻结logical_ids、physical_ids、copies、logical_counts；避免后续层复用scratch破坏反向。"
+    },
+    {
+      "id": "F14",
+      "from": "bridge",
+      "fromLine": 229,
+      "to": "device",
+      "toLine": 197,
+      "detail": "校验当前stream和lease，释放pending。下一次调用在同一stream按序复用scratch。"
+    },
+    {
+      "id": "F15",
+      "from": "bridge",
+      "fromLine": 85,
+      "to": "bridge",
+      "toLine": 90,
+      "detail": "prob/counts/state/dispatch/placement/header经save_for_backward进入本层autograd tape。"
+    },
+    {
+      "id": "F16",
+      "from": "model",
+      "fromLine": 2017,
+      "to": "model",
+      "toLine": 1999,
+      "detail": "routed结果恢复batch/seq维度后，与原共享专家分支相加。"
+    },
+    {
+      "id": "P01",
+      "from": "device",
+      "fromLine": 153,
+      "to": "device",
+      "toLine": 154,
+      "detail": "epoch单调递增；保存原stream，禁止foreign/expired/mutated lease。"
+    },
+    {
+      "id": "P02",
+      "from": "device",
+      "fromLine": 159,
+      "to": "planner",
+      "toLine": 52,
+      "detail": "调用policy adapter；context携带executor、逻辑ids、容量、epoch。"
+    },
+    {
+      "id": "P03",
+      "from": "planner",
+      "fromLine": 67,
+      "to": "workspace",
+      "toLine": 203,
+      "detail": "C++ Workspace接收预分配输出buffers；online_plan_impl用algorithm=-2选择MoonEP策略。"
+    },
+    {
+      "id": "P04",
+      "from": "workspace",
+      "fromLine": 249,
+      "to": "planKernel",
+      "toLine": 11,
+      "detail": "EP<=8且未强制GM时，加载libascend_deepep_moonep_planner.so并调用导出符号；kernel由宏改名复用control实现。"
+    },
+    {
+      "id": "P05",
+      "from": "planner",
+      "fromLine": 72,
+      "to": "validator",
+      "toLine": 51,
+      "detail": "MoonEP策略输出必须经全EP计划验证；策略本身不初始化作者MoonEP权重搬运runtime。"
+    },
+    {
+      "id": "P06",
+      "from": "validator",
+      "fromLine": 65,
+      "to": "validator",
+      "toLine": 71,
+      "detail": "返回计划持有逻辑/物理路由和copies快照；header/counts中间空间按lease复用，bridge另冻结反向placement。"
+    },
+    {
+      "id": "P07",
+      "from": "validator",
+      "fromLine": 66,
+      "to": "workspace",
+      "toLine": 273,
+      "detail": "本地device验证与摘要打包；epoch/capacity仍随调用传入。"
+    },
+    {
+      "id": "P08",
+      "from": "validator",
+      "fromLine": 68,
+      "to": "validator",
+      "toLine": 68,
+      "detail": "全EP收集packed摘要；不是完整专家权重传输。"
+    },
+    {
+      "id": "P09",
+      "from": "validator",
+      "fromLine": 69,
+      "to": "workspace",
+      "toLine": 295,
+      "detail": "检查全局路由/容量/一致性并生成header，后续计算kernel消费。"
+    },
+    {
+      "id": "P10",
+      "from": "validator",
+      "fromLine": 71,
+      "to": "device",
+      "toLine": 114,
+      "detail": "certified plan包含logical_ids、physical_ids、copies、logical_counts、header、epoch、owner、max_recv。"
+    },
+    {
+      "id": "P11",
+      "from": "device",
+      "fromLine": 165,
+      "to": "device",
+      "toLine": 171,
+      "detail": "记录tensor身份、版本、指针和capacity，防止运行期修改；同一pool串行使用。"
+    },
+    {
+      "id": "N01",
+      "from": "full",
+      "fromLine": 27,
+      "to": "torch",
+      "toLine": 318,
+      "detail": "Torch自定义类调用，非torch.ops同名算子；类实例在Mixed.__init__构建。"
+    },
+    {
+      "id": "N02",
+      "from": "torch",
+      "fromLine": 329,
+      "to": "host",
+      "toLine": 414,
+      "detail": "C++转发context、tensor、rank/world、SHMEM buffer及replica descriptor。"
+    },
+    {
+      "id": "N03",
+      "from": "host",
+      "fromLine": 522,
+      "to": "host",
+      "toLine": 478,
+      "detail": "校验BF16/int32布局，计算tiling并分配输出和持久/瞬时workspace；pool.home权重与replica槽通过descriptor描述。"
+    },
+    {
+      "id": "N04",
+      "from": "host",
+      "fromLine": 536,
+      "to": "launch",
+      "toLine": 585,
+      "detail": "带replica的训练前向进入launcher；launch选择基于descriptor，不是dispatcher字符串。"
+    },
+    {
+      "id": "N05",
+      "from": "launch",
+      "fromLine": 667,
+      "to": "launch",
+      "toLine": 676,
+      "detail": "early selector由Early._descriptor追加1；worker sidecar由Worker._descriptor写入descriptor[20]。"
+    },
+    {
+      "id": "N06",
+      "from": "launch",
+      "fromLine": 678,
+      "to": "kworker",
+      "toLine": 6,
+      "detail": "通过early导出名调用worker构建库中的C包装器；当前stream入队，host返回不等于设备完成。"
+    },
+    {
+      "id": "N07",
+      "from": "kworker",
+      "fromLine": 11,
+      "to": "kfull",
+      "toLine": 101,
+      "detail": "编译包含关系，不是两个设备kernel之间的运行时调用；最终导出符号由宏变成early名字。"
+    },
+    {
+      "id": "N08",
+      "from": "kfull",
+      "fromLine": 123,
+      "to": "kfull",
+      "toLine": 28,
+      "detail": "C包装器用三尖括号将混合AIC/AIV kernel提交到NPU stream；源文件full名字经宏改名。"
+    },
+    {
+      "id": "N09",
+      "from": "kfull",
+      "fromLine": 51,
+      "to": "kfull",
+      "toLine": 81,
+      "detail": "核内校验header/epoch/capacity；有副本时配置pipeline/stripe ready，无副本时选择home tiling。"
+    },
+    {
+      "id": "N10",
+      "from": "kfull",
+      "fromLine": 98,
+      "to": "kh",
+      "toLine": 1336,
+      "detail": "Process分派到saved-mode实现；包含routing/count交换、dispatch、权重stripe、GMM/SwiGLU/combine/unpermute。"
+    },
+    {
+      "id": "N11",
+      "from": "host",
+      "fromLine": 546,
+      "to": "torch",
+      "toLine": 318,
+      "detail": "native提交后返回输出与保存状态tensor，设备工作继续按stream依赖执行。"
+    },
+    {
+      "id": "B01",
+      "from": "trainer",
+      "fromLine": 906,
+      "to": "bridge",
+      "toLine": 90,
+      "detail": "autograd间接触发；checkpoint重算可重新走前向，并通过saved tensor同步控制epoch。"
+    },
+    {
+      "id": "B02",
+      "from": "bridge",
+      "fromLine": 90,
+      "to": "bridge",
+      "toLine": 94,
+      "detail": "从本层ctx取回前向保存状态；捕获诊断分支另有x/y，不参与常规主链。"
+    },
+    {
+      "id": "B03",
+      "from": "bridge",
+      "fromLine": 96,
+      "to": "dispatcher",
+      "toLine": 52,
+      "detail": "重新读取本层live Parameter并核对shape；不沿用被其他层覆盖的pool内容。"
+    },
+    {
+      "id": "B04",
+      "from": "bridge",
+      "fromLine": 254,
+      "to": "bridge",
+      "toLine": 206,
+      "detail": "反向仍需刷新home与EP发布；即使前向已经复制过，本层权重也必须恢复。"
+    },
+    {
+      "id": "B05",
+      "from": "bridge",
+      "fromLine": 256,
+      "to": "bridge",
+      "toLine": 24,
+      "detail": "回放前向已成功的placement，验证容量与home/slots匹配。"
+    },
+    {
+      "id": "B06",
+      "from": "bridge",
+      "fromLine": 257,
+      "to": "device",
+      "toLine": 138,
+      "detail": "相同lease入口，但policy是replay，不能误画成重新调用MoonEPPlanner.plan。"
+    },
+    {
+      "id": "B07",
+      "from": "bridge",
+      "fromLine": 56,
+      "to": "bridge",
+      "toLine": 47,
+      "detail": "设备端clone header并更新epoch，复用前向逻辑/物理路由与copies。"
+    },
+    {
+      "id": "B08",
+      "from": "bridge",
+      "fromLine": 259,
+      "to": "workspace",
+      "toLine": 340,
+      "detail": "只有staged在host桥层显式先恢复所有副本；panel/expert将恢复交给核内ready流水。"
+    },
+    {
+      "id": "B09",
+      "from": "bridge",
+      "fromLine": 262,
+      "to": "torch",
+      "toLine": 336,
+      "detail": "输入gradY/prob/当前home权重/前向counts-state-dispatch/本次descriptor；不再依赖旧pool副本。"
+    },
+    {
+      "id": "B10",
+      "from": "torch",
+      "fromLine": 351,
+      "to": "host",
+      "toLine": 552,
+      "detail": "C++ binding提取四个梯度，丢弃backward workspace返回值。"
+    },
+    {
+      "id": "B11",
+      "from": "host",
+      "fromLine": 776,
+      "to": "launch",
+      "toLine": 1026,
+      "detail": "host构造backward tiling、分配梯度和scratch，带descriptor启动相应执行器。"
+    },
+    {
+      "id": "B12",
+      "from": "launch",
+      "fromLine": 1116,
+      "to": "kbworker",
+      "toLine": 7,
+      "detail": "full-pipeline backward分支加载early SO并解析early backward导出；该库来自worker编译目标。"
+    },
+    {
+      "id": "B13",
+      "from": "kbfull",
+      "fromLine": 91,
+      "to": "kbh",
+      "toLine": 1867,
+      "detail": "early-topk路径gather/dispatch未乘p的上游梯度，panel恢复和计算按ready交错。"
+    },
+    {
+      "id": "B14",
+      "from": "torch",
+      "fromLine": 359,
+      "to": "bridge",
+      "toLine": 265,
+      "detail": "C++提交后返回四个梯度tensor。"
+    },
+    {
+      "id": "B15",
+      "from": "bridge",
+      "fromLine": 266,
+      "to": "device",
+      "toLine": 197,
+      "detail": "反向释放lease，后续home梯度clone与其他设备操作按stream顺序执行。"
+    },
+    {
+      "id": "B16",
+      "from": "bridge",
+      "fromLine": 271,
+      "to": "bridge",
+      "toLine": 108,
+      "detail": "只返回home前缀并clone，明确FSDP梯度所有权；副本槽梯度已归主，不作为额外Parameter交回。"
+    },
+    {
+      "id": "B17",
+      "from": "bridge",
+      "fromLine": 108,
+      "to": "bridge",
+      "toLine": 68,
+      "detail": "返回顺序严格对应apply输入：bridge无梯度，x有梯度，ids无梯度，prob/w1/w2有梯度，limit无梯度。"
+    },
+    {
+      "id": "B18",
+      "from": "trainer",
+      "fromLine": 461,
+      "to": "efsdp",
+      "toLine": 69,
+      "detail": "算子内owner SUM之后，框架autograd/FSDP hooks处理其reduce-scatter与缩放；Trainer执行clip、finite检查及optimizer。"
+    },
+    {
+      "id": "I12",
+      "from": "stage",
+      "fromLine": 11,
+      "to": "run",
+      "toLine": 121,
+      "detail": "真实Python实验选择方法C、panel、20480容量与隔离库。"
+    },
+    {
+      "id": "I13",
+      "from": "entry",
+      "fromLine": 254,
+      "to": "train",
+      "toLine": 303,
+      "detail": "实验harness安装采集包装并转入原训练入口。"
+    },
+    {
+      "id": "I14",
+      "from": "engine",
+      "fromLine": 62,
+      "to": "mesh",
+      "toLine": 37,
+      "detail": "注册普通FSDP与EP/Expert-FSDP mesh。"
+    },
+    {
+      "id": "I15",
+      "from": "efsdp",
+      "fromLine": 86,
+      "to": "fsdpWrap",
+      "toLine": 39,
+      "detail": "本例YAML选custom。Expert-FSDP管专家Parameter，hook_module匹配相应decoder层。"
+    },
+    {
+      "id": "I16",
+      "from": "fsdpWrap",
+      "fromLine": 108,
+      "to": "fsdpState",
+      "toLine": 79,
+      "detail": "custom fully_shard 初始化FSDPState，在匹配模块登记pre/post-forward hooks。"
+    },
+    {
+      "id": "I17",
+      "from": "engine",
+      "fromLine": 87,
+      "to": "modelLoader",
+      "toLine": 195,
+      "detail": "本例meta + train_from_scratch，且未开pre-shard init。FSDP后to_empty与随机初始化。"
+    },
+    {
+      "id": "I18",
+      "from": "factory",
+      "fromLine": 161,
+      "to": "modelLoader",
+      "toLine": 102,
+      "detail": "按实际配置在meta上构建空模型，随后才做并行装配。"
+    },
+    {
+      "id": "I19",
+      "from": "fsdp",
+      "fromLine": 41,
+      "to": "fsdpWrap",
+      "toLine": 39,
+      "detail": "普通FSDP与Expert-FSDP使用同一custom实现，由各自mesh与模块计划区分。"
+    },
+    {
+      "id": "I20",
+      "from": "train",
+      "fromLine": 89,
+      "to": "trainer",
+      "toLine": 48,
+      "detail": "模型、数据、optimizer、scheduler、checkpoint manager和monitor都已就绪，注入Trainer。"
+    },
+    {
+      "id": "F17",
+      "from": "fsdpState",
+      "fromLine": 79,
+      "to": "fsdpState",
+      "toLine": 80,
+      "detail": "本例hooks挂在相应decoder层。进入层时框架pre-forward负责参数准备。"
+    },
+    {
+      "id": "F18",
+      "from": "fsdpState",
+      "fromLine": 80,
+      "to": "fsdpParam",
+      "toLine": 95,
+      "detail": "继承的FSDP pre-forward触发参数准备；custom参数组在等待all-gather后执行copy-out。"
+    },
+    {
+      "id": "F19",
+      "from": "fsdpState",
+      "fromLine": 144,
+      "to": "fsdpState",
+      "toLine": 157,
+      "detail": "层输出经过FSDP post-forward；参数组按配置reshard，输出上登记pre-backward hook。"
+    },
+    {
+      "id": "P12",
+      "from": "planKernel",
+      "fromLine": 12,
+      "to": "planControl",
+      "toLine": 96,
+      "detail": "编译时将control实现带入MoonEP planner SO。"
+    },
+    {
+      "id": "P13",
+      "from": "planControl",
+      "fromLine": 96,
+      "to": "planControl",
+      "toLine": 131,
+      "detail": "统计本地直方图与来源前缀，汇总EP计数。"
+    },
+    {
+      "id": "P14",
+      "from": "planControl",
+      "fromLine": 191,
+      "to": "planAlgo",
+      "toLine": 5,
+      "detail": "计算owner到目标rank的quota，按逻辑专家剩余量分配副本。"
+    },
+    {
+      "id": "P15",
+      "from": "planControl",
+      "fromLine": 318,
+      "to": "planControl",
+      "toLine": 318,
+      "detail": "根据份额和来源前缀写每条路由的物理实例。"
+    },
+    {
+      "id": "P16",
+      "from": "workspace",
+      "fromLine": 290,
+      "to": "planValidate",
+      "toLine": 129,
+      "detail": "设备本地校验生成packed摘要。"
+    },
+    {
+      "id": "P17",
+      "from": "workspace",
+      "fromLine": 309,
+      "to": "planValidate",
+      "toLine": 134,
+      "detail": "设备全局校验消费EP摘要，生成header。"
+    },
+    {
+      "id": "B19",
+      "from": "kbworker",
+      "fromLine": 9,
+      "to": "kbfull",
+      "toLine": 91,
+      "detail": "编译展开后的反向实现位于full_backward.cpp。"
+    },
+    {
+      "id": "S01",
+      "from": "engine",
+      "fromLine": 218,
+      "to": "recompute",
+      "toLine": 45,
+      "detail": "方法C实验给主干与MTP目标层包装非重入checkpoint。"
+    },
+    {
+      "id": "S02",
+      "from": "engine",
+      "fromLine": 118,
+      "to": "fsdp",
+      "toLine": 18,
+      "detail": "为模型普通参数安装FSDP包装。"
+    },
+    {
+      "id": "S03",
+      "from": "train",
+      "fromLine": 260,
+      "to": "data",
+      "toLine": 172,
+      "detail": "实验YAML选择mg管理器，读取Python BIN/IDX并创建dataloader。"
+    },
+    {
+      "id": "S04",
+      "from": "train",
+      "fromLine": 215,
+      "to": "opt",
+      "toLine": 213,
+      "detail": "框架根据配置创建Muon相关优化器，持有训练参数。"
+    },
+    {
+      "id": "S05",
+      "from": "train",
+      "fromLine": 159,
+      "to": "trainer",
+      "toLine": 213,
+      "detail": "训练组件创建后进入训练循环。"
+    },
+    {
+      "id": "S06",
+      "from": "trainer",
+      "fromLine": 377,
+      "to": "trainer",
+      "toLine": 835,
+      "detail": "取batch后进入training_step并计算loss。"
+    },
+    {
+      "id": "S07",
+      "from": "model",
+      "fromLine": 2195,
+      "to": "model",
+      "toLine": 2082,
+      "detail": "主干执行decoder层，attention之后进入MoE。"
+    },
+    {
+      "id": "S08",
+      "from": "utils",
+      "fromLine": 615,
+      "to": "fixed",
+      "toLine": 9,
+      "detail": "11月2日实验overlay在此debug入口调用fixed_routes。左侧是当前checkout的入口，右侧是冻结实验源码。"
+    },
+    {
+      "id": "S09",
+      "from": "model",
+      "fromLine": 2454,
+      "to": "mtp",
+      "toLine": 115,
+      "detail": "MTP分支内部decoder可再次调用MoE。"
+    },
+    {
+      "id": "S10",
+      "from": "trainer",
+      "fromLine": 1158,
+      "to": "trainer",
+      "toLine": 1192,
+      "detail": "Trainer收集LM/MTP等loss。"
+    },
+    {
+      "id": "K01",
+      "from": "kh",
+      "fromLine": 1382,
+      "to": "kh",
+      "toLine": 557,
+      "detail": "物理计数、索引和路由元数据为派发与反向提供地址。"
+    },
+    {
+      "id": "K02",
+      "from": "kh",
+      "fromLine": 1602,
+      "to": "kh",
+      "toLine": 1004,
+      "detail": "按物理专家收集X及路由权重，按路径发布ready。"
+    },
+    {
+      "id": "K03",
+      "from": "kh",
+      "fromLine": 1677,
+      "to": "fwCopy",
+      "toLine": 143,
+      "detail": "副本W1/W2 stripe传输与dispatch/GEMM交错。"
+    },
+    {
+      "id": "K04",
+      "from": "kh",
+      "fromLine": 1630,
+      "to": "fwCat",
+      "toLine": 430,
+      "detail": "BF16主线进入GMM1/SwiGLU流水，依据选定路径等输入就绪。"
+    },
+    {
+      "id": "K05",
+      "from": "fwCat",
+      "fromLine": 745,
+      "to": "fwSwi",
+      "toLine": 357,
+      "detail": "SwiGLU先生成H，再乘p得到Hp，gate/up进入saved state。"
+    },
+    {
+      "id": "K06",
+      "from": "kh",
+      "fromLine": 1761,
+      "to": "fwCat",
+      "toLine": 1127,
+      "detail": "GMM2读取Hp和本地或副本W2。"
+    },
+    {
+      "id": "K07",
+      "from": "fwCat",
+      "fromLine": 1293,
+      "to": "fwCat",
+      "toLine": 1293,
+      "detail": "把tile结果按原路由写回来源rank。"
+    },
+    {
+      "id": "K08",
+      "from": "kh",
+      "fromLine": 1772,
+      "to": "kh",
+      "toLine": 1267,
+      "detail": "完成必要同步后按原token还原并合并TopK贡献。"
+    },
+    {
+      "id": "G01",
+      "from": "kbh",
+      "fromLine": 1899,
+      "to": "kbh",
+      "toLine": 830,
+      "detail": "gather未乘p的dY，按保存路由恢复计数和派发。"
+    },
+    {
+      "id": "G02",
+      "from": "kbh",
+      "fromLine": 1924,
+      "to": "bwRestore",
+      "toLine": 96,
+      "detail": "AIV1搬运副本权重并按panel发布对应epoch。"
+    },
+    {
+      "id": "G03",
+      "from": "kbh",
+      "fromLine": 1210,
+      "to": "bwCat",
+      "toLine": 374,
+      "detail": "AIC计算dHp，AIV执行后处理；具体ready协议按路径。"
+    },
+    {
+      "id": "G04",
+      "from": "bwCat",
+      "fromLine": 415,
+      "to": "bwOperand",
+      "toLine": 70,
+      "detail": "P1 W2 operand首次取panel检查精确epoch，可复用本AIC本专家已完成的acquire。"
+    },
+    {
+      "id": "G05",
+      "from": "bwOperand",
+      "fromLine": 70,
+      "to": "bwRestore",
+      "toLine": 84,
+      "detail": "从对应slot/projection/panel检查ready。"
+    },
+    {
+      "id": "G06",
+      "from": "bwCat",
+      "fromLine": 493,
+      "to": "bwSwi",
+      "toLine": 154,
+      "detail": "AIV形成Hp、dp partial和dZ。"
+    },
+    {
+      "id": "G07",
+      "from": "kbh",
+      "fromLine": 1359,
+      "to": "kbh",
+      "toLine": 1380,
+      "detail": "dZ/Hp和dW2的dO读取都退休后才进入后续阶段。"
+    },
+    {
+      "id": "G08",
+      "from": "kbh",
+      "fromLine": 1384,
+      "to": "bwCat",
+      "toLine": 907,
+      "detail": "活动副本专家的owner与副本实例提前算dW1。"
+    },
+    {
+      "id": "G09",
+      "from": "bwCat",
+      "fromLine": 975,
+      "to": "grad",
+      "toLine": 51,
+      "detail": "梯度tile写完再发布；owner消费相同epoch。"
+    },
+    {
+      "id": "G10",
+      "from": "kbh",
+      "fromLine": 1401,
+      "to": "bwCat",
+      "toLine": 670,
+      "detail": "dX读取W1 panel，随后将贡献回送token来源。"
+    },
+    {
+      "id": "G11",
+      "from": "kbh",
+      "fromLine": 1430,
+      "to": "kbh",
+      "toLine": 1461,
+      "detail": "从early cursor接续，跳过已完成的专家。"
+    },
+    {
+      "id": "G12",
+      "from": "kbh",
+      "fromLine": 2044,
+      "to": "grad",
+      "toLine": 122,
+      "detail": "AIV1在P1后进入owner服务，AIV0走P5；两路各负责独占tile。"
+    },
+    {
+      "id": "G13",
+      "from": "grad",
+      "fromLine": 165,
+      "to": "bwOwner",
+      "toLine": 9,
+      "detail": "ratio2将较多任务交给较早到达的AIV1，保留固定贡献者求和次序。"
+    },
+    {
+      "id": "G14",
+      "from": "grad",
+      "fromLine": 155,
+      "to": "grad",
+      "toLine": 211,
+      "detail": "先消费dW2，再消费dW1，按slot/rank读取副本贡献。"
+    },
+    {
+      "id": "G15",
+      "from": "kbh",
+      "fromLine": 2177,
+      "to": "kbh",
+      "toLine": 2187,
+      "detail": "本地与跨rank退休边界后还原token dX。"
+    },
+    {
+      "id": "G16",
+      "from": "kbh",
+      "fromLine": 2198,
+      "to": "kbh",
+      "toLine": 2207,
+      "detail": "归约并回送dp，再进行必要同步与清理。"
+    },
+    {
+      "id": "U01",
+      "from": "trainer",
+      "fromLine": 906,
+      "to": "recompute",
+      "toLine": 45,
+      "detail": "非重入checkpoint由PyTorch按需回放层forward。"
+    },
+    {
+      "id": "U02",
+      "from": "fsdpState",
+      "fromLine": 157,
+      "to": "fsdpParam",
+      "toLine": 152,
+      "detail": "输出hook由autograd触发；FSDP为反向恢复本层参数。"
+    },
+    {
+      "id": "U03",
+      "from": "trainer",
+      "fromLine": 906,
+      "to": "bridge",
+      "toLine": 90,
+      "detail": "PyTorch间接调度自定义反向。"
+    },
+    {
+      "id": "U04",
+      "from": "fsdpParam",
+      "fromLine": 158,
+      "to": "fsdpParam",
+      "toLine": 234,
+      "detail": "custom参数组收集Parameter梯度、reshard，并调用PyTorch foreach_reduce；Expert-FSDP走其自己的mesh。"
+    },
+    {
+      "id": "U05",
+      "from": "model",
+      "fromLine": 2017,
+      "to": "model",
+      "toLine": 1826,
+      "detail": "shared MLP在框架计算图中独立求导，输入梯度在上游累加。"
+    },
+    {
+      "id": "U06",
+      "from": "trainer",
+      "fromLine": 450,
+      "to": "trainer",
+      "toLine": 460,
+      "detail": "累积完成后进行梯度裁剪和finite检查。"
+    },
+    {
+      "id": "U07",
+      "from": "trainer",
+      "fromLine": 461,
+      "to": "opt",
+      "toLine": 383,
+      "detail": "梯度范数有限时，Trainer 调用已创建的优化器。本实验的 optimizer=muon 进入 FSDPTurbo Muon 工厂。"
+    },
+    {
+      "id": "U08",
+      "from": "trainer",
+      "fromLine": 462,
+      "to": "trainer",
+      "toLine": 468,
+      "detail": "有限时随 optimizer.step 更新学习率，随后清梯度。跳过更新的分支也会清梯度。"
+    },
+    {
+      "id": "U09",
+      "from": "trainer",
+      "fromLine": 482,
+      "to": "prof",
+      "toLine": 140,
+      "detail": "采集窗口随step推进，训练循环结束停止profiler。"
+    },
+    {
+      "id": "U10",
+      "from": "fsdpParam",
+      "fromLine": 152,
+      "to": "fsdpParam",
+      "toLine": 153,
+      "detail": "custom参数组委托继承的FSDP流程进行pre-backward unshard。"
+    },
+    {
+      "id": "H01",
+      "from": "factory",
+      "fromLine": 263,
+      "to": "dispatcher",
+      "toLine": 77,
+      "detail": "配置随EP计划进入balanced dispatcher。"
+    },
+    {
+      "id": "H02",
+      "from": "dispatcher",
+      "fromLine": 101,
+      "to": "bridge",
+      "toLine": 128,
+      "detail": "格式计入pool身份。"
+    },
+    {
+      "id": "H03",
+      "from": "bridge",
+      "fromLine": 69,
+      "to": "saved",
+      "toLine": 31,
+      "detail": "解析调用格式，前向保存模式与反向mode匹配。"
+    },
+    {
+      "id": "H04",
+      "from": "bridge",
+      "fromLine": 224,
+      "to": "kh",
+      "toLine": 1336,
+      "detail": "由launcher传递saved mode，前向按模式处理gate/up。"
+    },
+    {
+      "id": "H05",
+      "from": "kbh",
+      "fromLine": 548,
+      "to": "bwSwi",
+      "toLine": 341,
+      "detail": "BF16或MXFP8保存路径使用对应前向数据。"
+    },
+    {
+      "id": "H06",
+      "from": "kbh",
+      "fromLine": 1967,
+      "to": "kbh",
+      "toLine": 1176,
+      "detail": "none走kernel内GMM1重算，和框架checkpoint是两个层级。"
+    },
+    {
+      "id": "L01",
+      "from": "dispatcher",
+      "fromLine": 119,
+      "to": "bridge",
+      "toLine": 116,
+      "detail": "dispatcher 读取 unshard 后的参数，将本层张量交给 Native bridge。"
+    },
+    {
+      "id": "L02",
+      "from": "bridge",
+      "fromLine": 85,
+      "to": "model",
+      "toLine": 2017,
+      "detail": "模型消费 routed Y，并把 shared 输出相加。反向 tape 留在自定义 autograd 节点。"
+    },
+    {
+      "id": "L03",
+      "from": "trainer",
+      "fromLine": 450,
+      "to": "trainer",
+      "toLine": 468,
+      "detail": "积累结束后裁剪梯度，有限时更新参数及学习率，然后清梯度。"
+    },
+    {
+      "id": "L04",
+      "from": "trainer",
+      "fromLine": 584,
+      "to": "trainer",
+      "toLine": 634,
+      "detail": "训练达到步数上限时跳出循环。已启用的框架 profiler 在循环外停止。"
+    },
+    {
+      "id": "L05",
+      "from": "entry",
+      "fromLine": 254,
+      "to": "entry",
+      "toLine": 256,
+      "detail": "训练入口返回后，采集轮导出保留的 kernel Timer 记录。"
+    },
+    {
+      "id": "X01",
+      "from": "worker",
+      "fromLine": 7,
+      "to": "worker",
+      "toLine": 7,
+      "detail": "实际MRO入口：Worker继承Early，Early继承Full；_forward_device来自Full，create_plan/release_pending来自Device。"
+    },
+    {
+      "id": "X02",
+      "from": "early",
+      "fromLine": 8,
+      "to": "early",
+      "toLine": 8,
+      "detail": "selector=1选early launcher分支；不是用Python类名推断SO名。"
+    },
+    {
+      "id": "X03",
+      "from": "worker",
+      "fromLine": 57,
+      "to": "worker",
+      "toLine": 57,
+      "detail": "Worker只扩展descriptor与ABI/feature检查；并不另写完整前向。"
+    },
+    {
+      "id": "X04",
+      "from": "mixed",
+      "fromLine": 46,
+      "to": "mixed",
+      "toLine": 46,
+      "detail": "创建Torch算子类与SHMEM workspace；pool的w1/w2执行存储并非optimizer拥有的Parameter。"
+    },
+    {
+      "id": "X05",
+      "from": "build",
+      "fromLine": 50,
+      "to": "build",
+      "toLine": 50,
+      "detail": "构建脚本将worker库复制为early库名；必须结合WORKER_NATIVE与LD_LIBRARY_PATH辨认运行库。"
+    },
+    {
+      "id": "X06",
+      "from": "cmake",
+      "fromLine": 908,
+      "to": "cmake",
+      "toLine": 908,
+      "detail": "CMake真正编译worker前反向cpp；不是另选early.cpp来猜运行实现。"
+    },
+    {
+      "id": "X07",
+      "from": "kbh",
+      "fromLine": 1924,
+      "to": "kbh",
+      "toLine": 1924,
+      "detail": "panel恢复由AIV执行；AIC使用相应ready约束权重消费。"
+    },
+    {
+      "id": "X08",
+      "from": "grad",
+      "fromLine": 122,
+      "to": "grad",
+      "toLine": 122,
+      "detail": "gradient_pipe负责副本partial的owner归主辅助，独立于FSDP组内梯度同步。"
+    },
+    {
+      "id": "X09",
+      "from": "runtimeDispatcher",
+      "fromLine": 164,
+      "to": "runtimeDispatcher",
+      "toLine": 164,
+      "detail": "dispatcher首次调用建立/复用一套ShmemInstance与窗口；balanced显式请求window_pool_size=1，所需容量包含home/replicas/partial空间。"
+    },
+    {
+      "id": "X10",
+      "from": "fsdpStrategy",
+      "fromLine": 58,
+      "to": "fsdpStrategy",
+      "toLine": 58,
+      "detail": "本次 YAML 的 fsdp_implementation=custom 指向 FSDPTurbo 的 fine_grained_fully_shard。该实现复用 PyTorch FSDP 的基础流程，并提供自定义 hooks 与参数组。"
+    },
+    {
+      "id": "V01",
+      "from": "bwWorkspace",
+      "fromLine": 299,
+      "to": "bwWorkspace",
+      "toLine": 272,
+      "detail": "GM 主线的 ptrDX 与 ptrDO 同址；每专家 dW2 的 dO 读取退休后才改写 dX。"
+    },
+    {
+      "id": "V02",
+      "from": "bwCat",
+      "fromLine": 369,
+      "to": "bwCat",
+      "toLine": 486,
+      "detail": "GM 主线先等全专家 dHpReady；每个 AIV tile 完整读入 dHp 后在相同 GM 地址写 Hp。"
+    },
+    {
+      "id": "V03",
+      "from": "kbh",
+      "fromLine": 2194,
+      "to": "kbh",
+      "toLine": 2212,
+      "detail": "P5 的全部跨 rank 读者退休后，P6 才复用 ptrD 作为 dp 返回区。"
+    }
+  ]
+}

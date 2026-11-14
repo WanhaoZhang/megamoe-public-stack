@@ -1,0 +1,61 @@
+{
+  "actual_execution": true,
+  "eight_ranks_identical": true,
+  "global_invocations": 900,
+  "points": [
+    {
+      "stage": "primary-step-time",
+      "maxvio": 0.2,
+      "global_invocations": 150,
+      "adopted": 0,
+      "uncertainty_fallback": 150,
+      "initial_outside_domain": 0,
+      "mean_evaluations": 3.0
+    },
+    {
+      "stage": "primary-step-time",
+      "maxvio": 1,
+      "global_invocations": 150,
+      "adopted": 0,
+      "uncertainty_fallback": 150,
+      "initial_outside_domain": 0,
+      "mean_evaluations": 3.28
+    },
+    {
+      "stage": "primary-step-time",
+      "maxvio": 5,
+      "global_invocations": 150,
+      "adopted": 0,
+      "uncertainty_fallback": 150,
+      "initial_outside_domain": 0,
+      "mean_evaluations": 3.64
+    },
+    {
+      "stage": "primary-step-time",
+      "maxvio": 10,
+      "global_invocations": 150,
+      "adopted": 0,
+      "uncertainty_fallback": 150,
+      "initial_outside_domain": 0,
+      "mean_evaluations": 3.42
+    },
+    {
+      "stage": "primary-step-time",
+      "maxvio": 15,
+      "global_invocations": 150,
+      "adopted": 0,
+      "uncertainty_fallback": 150,
+      "initial_outside_domain": 0,
+      "mean_evaluations": 3.0
+    },
+    {
+      "stage": "primary-step-time",
+      "maxvio": 20,
+      "global_invocations": 150,
+      "adopted": 0,
+      "uncertainty_fallback": 150,
+      "initial_outside_domain": 6,
+      "mean_evaluations": 2.88
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+sequenceDiagram
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant V as megaflux_device.py
+  participant P as moonep_planner.py
+  participant W as mega_moe_bf16_replica.cpp
+  participant K as mega_moe_moonep_planner.cpp
+  participant D as mega_moe_replica_planner_control.cpp
+  participant A as mega_moe_moonep_algorithm.h
+  participant C as execution_plan_device.py
+  participant L as mega_moe_plan_validator.cpp
+ end
+ V->>V: P01 create_plan：epoch++ / 固定原 stream / 校验 ids 与 capacity
+ V->>P: P02 planner.plan(context)
+ P->>W: P03 workspace.online_plan_moonep(shmem, ids, epoch, 输出buffers, capacity)
+ W->>W: online_plan_impl(..., algorithm=-2)；校验拓扑与输出buffer
+ W->>K: P04 dlopen planner SO；dlsym mega_moe_moonep_planner_do；当前stream入队
+ Note over K,D: P12 编译 include，宏改名复用 control 实现
+ D->>D: P13 每rank统计路由 / 汇总EP计数
+ D->>A: P14 Run：按owner余量分配quota，再决定专家副本
+ A-->>D: 份额 q 与 copies
+ D->>D: P15 路由映射：按来源前缀与quota确定 physical_ids
+ K-->>W: 同一 stream 写 copies / physical / logical / assignment / native_header
+ W-->>P: 返回已提交的工作；此处不等于全设备完成
+ P->>C: P05 validator.validate(context, copies, physical_ids, native_header)
+ C->>C: P06 clone logical / physical / copies，建立本次计划快照
+ C->>W: P07 validate_plan_local(..., epoch, capacity)
+ W->>L: P16 本地校验 kernel：生成 packed 摘要
+ W-->>C: 本地校验已入队
+ C->>C: P08 dist.all_gather_into_tensor(gathered, packed, group=EP)
+ Note over C: HCCL 收集全 EP 摘要；不是搬运专家完整权重
+ C->>W: P09 validate_plan_global(gathered, native_header, reduced, header, ...)
+ W->>L: P17 全局校验 kernel：消费EP摘要 / 写控制header
+ W-->>C: 全局校验已入队
+ C-->>P: P10 certified plan：logical_ids / physical_ids / copies / counts / header
+ P-->>V: checked plan
+ V->>V: P11 记录 tensor 版本 / 指针 / capacity；pending=True
+ Note over V,C: 计算核校验 header / epoch / capacity；整网主路径同stream消费，不逐层读回状态

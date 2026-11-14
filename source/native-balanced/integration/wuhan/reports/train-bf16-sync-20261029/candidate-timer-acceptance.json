@@ -1,0 +1,12 @@
+{
+  "pass_": true,
+  "world_size": 8,
+  "five_outputs_bitwise_TimerOFF_ON": true,
+  "checked_all_iterations": true,
+  "duration_overlap_count": 0,
+  "traces": [
+    "/project/optimization/train-sync-20261029-candidate-a1/sync-evidence/capture-a1/capture/kernel-trace/all_8_rank_forward_trace.json",
+    "/project/optimization/train-sync-20261029-candidate-a1/sync-evidence/capture-a1/capture/kernel-trace/all_8_rank_backward_trace.json"
+  ],
+  "diagnostic_only": true
+}

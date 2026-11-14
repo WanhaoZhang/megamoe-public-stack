@@ -1,0 +1,38 @@
+---
+config:
+  sequence:
+    messageMargin: 21
+    noteMargin: 10
+---
+sequenceDiagram
+ box rgb(235,244,255) MindSpeed-LLM
+  participant M as MindSpeed-LLM
+ end
+ box rgb(234,247,240) FSDPTurbo / FSDP
+  participant F as FSDPTurbo / FSDP
+ end
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant N as MegaMoE 算子 / Kernel
+ end
+ M->>M: I02 torchrun ×8 → bootstrap → train_fsdp2
+ M->>F: I07 模型装配：EP Shard(0)，绑定 balanced dispatcher
+ F-->>M: I15 注册 Expert-FSDP 与普通 FSDP hooks
+ M->>M: I17 meta 参数物化并随机初始化 → 创建数据、优化器和 Trainer
+ loop 每个训练 step，直到达到训练终止条件
+ M->>M: S06 取 batch → 主干 / MTP 前向
+ M-->>F: F17 层入口触发 FSDP hook，准备普通参数与 home W1/W2
+ M->>F: F03 模型 gate 后调用已绑定的 experts.forward
+ F->>N: L01 dispatcher 提交 X / ids / prob 与完整 home 权重
+ N->>N: F09 刷新 home → MoonEP 规划 → 派发 / GEMM / 合并
+ N-->>F: F15 保存层内反向状态，返回 routed Y
+ F-->>M: F16 恢复 Y 形状；模型相加 shared MLP
+ M->>M: S10 取得 LM / MTP loss → loss.backward
+ M-->>F: U02 autograd 调度重算及 FSDP 参数恢复
+ F->>N: B09 dY + 本层状态，回放 placement / 新 epoch
+ N->>N: B13 恢复副本 → 反向流水 → EP 内 dW 归主
+ N-->>F: B17 home dW 交给框架参数，dX / dp 回计算图
+ F-->>M: U04 Expert-FSDP reduce-scatter 后交给分片参数
+ M->>M: L03 裁剪 → 更新参数 → scheduler / zero_grad
+ end
+ M->>M: L04 结束训练循环，停止已启用的 profiler
+ Note over M,N: L05 采集轮由实验包装器在训练返回后落盘 kernel Timer

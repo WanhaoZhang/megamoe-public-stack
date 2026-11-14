@@ -1,0 +1,58 @@
+sequenceDiagram
+ box rgb(235,244,255) MindSpeed-LLM
+  participant T as trainer.py
+  participant M as modeling_deepseek_v4.py
+ end
+ box rgb(234,247,240) FSDPTurbo / FSDP
+  participant H as state.py
+  participant G as param_group.py
+  participant D as dispatcher_megamoe_balanced.py
+  participant U as utils.py
+  participant R as dispatcher_mega_moe.py
+ end
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant B as fsdp2_bridge.py
+  participant V as megaflux_device.py
+  participant P as moonep_planner.py
+  participant X as megaflux_full.py
+ end
+ T->>M: F01 self.model(**model_inputs) → decoder 层
+ M-->>H: F17 decoder 层入口触发已注册的 FSDP pre-forward
+ H->>G: F18 框架调度 all-gather 与 wait_for_unshard
+ G-->>M: 层计算读取完整的本 EP 位置权重
+ M->>M: F02 gate(hidden_states[, input_ids]) → indices / weights
+ M->>D: F03 self.experts(flat, indices, weights) → 已绑定的 balanced_forward
+ activate D
+ D->>U: F04 normalize 后进入 fixed_router_for_debug
+ U-->>D: 分支按 debug 配置产生路由，固定 Python 路由是整网实验覆盖
+ D->>D: x=[M,H]；ids=int32[M,K]；weights() 取得本层实时 Parameter
+ opt 本进程首次匹配静态形状
+ D->>R: X09 _ensure_mega_moe_runtime：初始化或复用单套 SHMEM
+ R-->>D: EP group 的 ShmemInstance
+ D->>B: F05 NativeFSDP2Pool(shmem, group, home, slots, ...)
+ B->>B: 分配共享执行存储；检查 worker ABI / restore 模式；创建 policy
+ end
+ D->>B: F06 bridge(x, ids, prob, limit)
+ activate B
+ B->>B: F07 _ExternalExperts.apply(bridge, x, ids, prob, w1, w2, limit)
+ B->>B: F08 pool.forward → _publish：当前 stream copy 本层 home
+ B->>V: F09 m.create_plan(ids, policy, capacity)
+ V->>P: F10 policy.plan(PlanningContext(executor, ids, capacity, epoch))
+ P-->>V: checked plan：physical_ids / copies / counts / header
+ V-->>B: plan + 当前执行 lease（epoch / stream / tensors）
+ Note over V,P: 策略与全 EP 校验见 MoonEP Planner 详图
+ B->>X: F11 m._forward_device(x, prob.bfloat16(), plan, limit)
+ X->>X: F12 op.compute_train_replica(..., physical_ids, w1, w2, descriptor)
+ Note over X: Python → C++ → 设备 launch 见 Python/C++ 提交详图
+ X-->>B: y / logical_counts视图 / counts / state / dispatch
+ B->>B: F13 clone 前向 placement，防后续层改写 planner scratch
+ B->>V: F14 m.release_pending()：校验并释放 pending lease
+ V-->>B: 同 stream 顺序保护快照和后续 scratch 复用
+ B->>B: F15 save_for_backward(prob, counts, state, dispatch, placement, control)
+ B-->>D: 返回二维 routed Y
+ deactivate B
+ D-->>M: 按输入形状恢复 routed Y
+ deactivate D
+ M->>M: F16 routed + shared_experts(residual)
+ M-->>H: F19 层返回触发 post-forward，登记 pre-backward hook
+ M-->>T: 继续各层 / LM 与 MTP 输出；计算 loss

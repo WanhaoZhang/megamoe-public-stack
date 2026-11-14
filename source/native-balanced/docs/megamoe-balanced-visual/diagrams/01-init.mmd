@@ -1,0 +1,55 @@
+sequenceDiagram
+ box rgb(235,244,255) MindSpeed-LLM
+  participant R as run_training_case.sh
+  participant T as train_fsdp2.py
+  participant F as model_factory.py
+  participant L as model_loader.py
+  participant E as mindspeed_parallel_engine.py
+  participant Y as data_factory.py
+  participant O as optimizer.py
+  participant J as trainer.py
+ end
+ box rgb(234,247,240) FSDPTurbo / FSDP
+  participant G as parallel_state.py
+  participant P as expert_parallel.py
+  participant S as expert_fully_shard_parallel.py
+  participant D as dispatcher_megamoe_balanced.py
+  participant Z as fully_shard.py
+  participant Q as state.py
+  participant C as recompute.py
+  participant A as fully_shard_parallel.py
+ end
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant B as runtime_bootstrap.py
+ end
+ R->>R: I01 METHOD=C：dispatcher=megamoe_balanced / planner=moonep / slots=2
+ R->>B: I02 torchrun ×8：包装器 + train_fsdp2.py + YAML / CLI
+ B->>B: 固定导入顺序；检查只映射一份 libshmem.so
+ B->>T: I03 runpy.run_path(train_fsdp2.py)
+ T->>T: 解析 YAML/CLI，选 NPU，初始化 HCCL
+ T->>F: I04 ModelFactory.create(model_args, parallel_args)
+ F->>L: I18 ModelLoader 在 meta 构建模型
+ F->>F: I05 MegaMoeBalancedConfig → EPPlanConfig
+ Note over F,E: ep_modules 匹配主层与 MTP 的 mlp.experts；fixed_router 来自 CLI
+ F->>E: I06 MindSpeedParallelEngine(config, hf_model, ...)
+ E->>G: I14 init_parallel_state：EP4 横组 / Expert-FSDP2 纵组
+ E->>P: I07 expert_parallelize_modules(model, ep_mesh, plan)
+ P->>P: I08 按 EP Shard(0) 切专家；记录 global/local expert 属性
+ P->>D: I09 get_megamoe_balanced_forward_fn(ep_group, fixed_router, config)
+ D-->>P: 返回 balanced_forward 闭包
+ P->>P: I10 module.forward = MethodType(experts_forward_fn, module)
+ P-->>E: 返回已绑定 forward 的 model
+ E->>S: I11 expert_fully_shard_modules(model, efsdp_mesh, ...)
+ S->>Z: I15 custom fully_shard：专家 Parameter，hook_module 匹配 decoder 层
+ Z->>Q: I16 注册 FSDPState 和 forward hooks，运行见前反向章节
+ S-->>E: 返回已安装 Expert-FSDP 的模型
+ E->>C: S01 安装主干与 MTP 层的非重入 checkpoint
+ E->>A: S02 普通 FSDP8 包装
+ A->>Z: I19 普通 Parameter 进入同一 custom FSDP 实现
+ E->>L: I17 WeightLoader.load → 本例物化并随机初始化
+ E-->>F: 包装后的训练模型
+ F-->>T: 返回模型
+ T->>Y: S03 创建数据管理器与训练 dataloader
+ T->>O: S04 用包装后的模型创建 optimizer
+ T->>J: I20 创建 scheduler / checkpoint manager / monitor 后构建 Trainer
+ T->>J: S05 进入 Trainer.train()，下一步开始整网前向

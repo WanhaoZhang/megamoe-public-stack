@@ -1,0 +1,17 @@
+{
+  "user_request": "没效果可以收尾一下了",
+  "time_utc": "2026-11-14T10:09:08.805584+00:00",
+  "status": "closed_at_user_request",
+  "original_protocol_complete": false,
+  "retained_primary_runs": 108,
+  "retained_fourth_runs": 12,
+  "canceled_stages": [
+    "heldout-a",
+    "heldout-b",
+    "ablation-no_gradient_service",
+    "ablation-linear_kernel",
+    "ablation-uniform_topology",
+    "isolated_plan_bank"
+  ],
+  "no_further_device_runs": true
+}

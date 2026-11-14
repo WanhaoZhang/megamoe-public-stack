@@ -1,0 +1,109 @@
+{
+  "pass_": true,
+  "tested_commit": "05c1159a4d92e5ae79b9b7029e95258c30d88fa2",
+  "base_commit": "91fa98d77bb66c295e07686e4941bc88012a8adb",
+  "host": "177.5.23.1",
+  "container": "moonep-plan-default-20261029",
+  "container_id": "55497b1446f458472c0be52070f9d938540ec59552acb5dc0f59d46d24f39007",
+  "runtime_archive_sha256": "e9337af00773bff391e64c0039b556cf67d1a877c0f8f0ea06b2762e7e3f748b",
+  "results": {
+    "contract-ep4": {
+      "ranks": 4,
+      "pass_": true,
+      "cases_per_rank": 16
+    },
+    "contract-ep8": {
+      "ranks": 8,
+      "pass_": true,
+      "cases_per_rank": 16
+    },
+    "bridge-moonep": {
+      "ranks": 8,
+      "pass_": true,
+      "scenarios": [
+        "balanced",
+        "hot",
+        "rotate"
+      ],
+      "checkpoint": true
+    },
+    "efsdp2": {
+      "ranks": 8,
+      "pass_": true
+    },
+    "performance-ep4": {
+      "ranks": 8,
+      "pass_": true,
+      "samples": 30,
+      "warmup": 10,
+      "timer": 0,
+      "full_fb_max_over_8_ranks_p50_ms": 34.7761,
+      "full_fb_max_over_8_ranks_p95_ms": 35.175826,
+      "rank0_full_fb_p50_ms": 34.59561,
+      "scope": "synthetic full operator forward/backward, two EP4 groups; no actual FSDP reduction or optimizer; not a paired baseline speedup"
+    },
+    "shape-ep4": {
+      "pass_": true,
+      "ranks": 8,
+      "ep": 4,
+      "groups": 2,
+      "repeat": 3,
+      "old_baseline_and_timer_pair_five_outputs_bitwise": true,
+      "config": {
+        "rank": 7,
+        "ep_rank": 3,
+        "world_size": 8,
+        "ep": 4,
+        "tokens": 8192,
+        "hidden": 7168,
+        "ffn": 3072,
+        "home": 2,
+        "slots": 2,
+        "topk": 2,
+        "capacity": 20480,
+        "limit": 10.0,
+        "window_bytes": 589299712
+      }
+    }
+  },
+  "host_gates": [
+    {
+      "case": "contract-ep4",
+      "pre": true,
+      "post": true,
+      "exit": 0
+    },
+    {
+      "case": "contract-ep8",
+      "pre": true,
+      "post": true,
+      "exit": 0
+    },
+    {
+      "case": "bridge-moonep",
+      "pre": true,
+      "post": true,
+      "exit": 0
+    },
+    {
+      "case": "efsdp2",
+      "pre": true,
+      "post": true,
+      "exit": 0
+    },
+    {
+      "case": "shape-ep4",
+      "pre": true,
+      "post": true,
+      "exit": 0
+    },
+    {
+      "case": "performance-ep4",
+      "pre": true,
+      "post": true,
+      "exit": 0
+    }
+  ],
+  "ep2_reused": "177.8.24.1 npu-cab8n24-b2/contract-ep2; source and ABI2 libraries unchanged",
+  "large_ep_scope": "EP16-256 CPU boundary/differential only; no multi-node NPU claim"
+}

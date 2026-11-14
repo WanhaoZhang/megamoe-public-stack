@@ -1,0 +1,58 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+*.bin
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# IDE
+.vscode/
+.idea/
+# python
+__pycache__/
+*.egg-info
+dist/
+# data bin
+**/data/*.bin
+
+# user define
+build/
+output/
+out/
+best_result.csv
+best_result_sorted.csv
+
+# log文件
+*.log
+.codemate
+
+.claude
+CLAUDE.md

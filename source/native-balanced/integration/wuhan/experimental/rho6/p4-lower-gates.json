@@ -1,0 +1,148 @@
+{
+  "pass_": true,
+  "scope": "P4 handoff: synthetic H512/F512 active-row EP2/EP8 and actual EP4xEFS2 checkpoint, 4SGD for bridge/3SGD for FSDP; no H7168 real-layer/deterministic wholemodel/delayed-weight/performance acceptance",
+  "base": "0fd8661",
+  "default_enabled": false,
+  "rows": [
+    {
+      "name": "rho6-original-p4-ep2-moonep-C0-a2",
+      "mode": "C0",
+      "kind": "bridge",
+      "ranks": 2,
+      "native_sha256": "38472e762930b9dfa2c1c31cfb56aaf2df7ec97d5e3e53b3bc94415fd634c53b",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": false,
+      "nonfirst_largest_coverage_count": 0
+    },
+    {
+      "name": "rho6-original-p4-ep2-moonep-C0R-a2",
+      "mode": "C0R",
+      "kind": "bridge",
+      "ranks": 2,
+      "native_sha256": "00dcf60fc8098bcd03f2aa04919a74f0b66dc459de9b46c2dbbab635e6a921c3",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": true,
+      "nonfirst_largest_coverage_count": 4
+    },
+    {
+      "name": "rho6-original-p4-ep2-moonep-P4-a2",
+      "mode": "P4",
+      "kind": "bridge",
+      "ranks": 2,
+      "native_sha256": "5ddb765d878b6e4141c7cc03b948b40b1068175b4b90c9b7edeb89ede9a06365",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": true,
+      "nonfirst_largest_coverage_count": 4
+    },
+    {
+      "name": "rho6-original-p4-ep2-native-C0-a2",
+      "mode": "C0",
+      "kind": "bridge",
+      "ranks": 2,
+      "native_sha256": "38472e762930b9dfa2c1c31cfb56aaf2df7ec97d5e3e53b3bc94415fd634c53b",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": false,
+      "nonfirst_largest_coverage_count": 0
+    },
+    {
+      "name": "rho6-original-p4-ep2-native-C0R-a2",
+      "mode": "C0R",
+      "kind": "bridge",
+      "ranks": 2,
+      "native_sha256": "00dcf60fc8098bcd03f2aa04919a74f0b66dc459de9b46c2dbbab635e6a921c3",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": true,
+      "nonfirst_largest_coverage_count": 0
+    },
+    {
+      "name": "rho6-original-p4-ep2-native-P4-a2",
+      "mode": "P4",
+      "kind": "bridge",
+      "ranks": 2,
+      "native_sha256": "5ddb765d878b6e4141c7cc03b948b40b1068175b4b90c9b7edeb89ede9a06365",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": true,
+      "nonfirst_largest_coverage_count": 0
+    },
+    {
+      "name": "rho6-original-p4-ep8-moonep-C0-a2",
+      "mode": "C0",
+      "kind": "bridge",
+      "ranks": 8,
+      "native_sha256": "38472e762930b9dfa2c1c31cfb56aaf2df7ec97d5e3e53b3bc94415fd634c53b",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": false,
+      "nonfirst_largest_coverage_count": 0
+    },
+    {
+      "name": "rho6-original-p4-ep8-moonep-C0R-a2",
+      "mode": "C0R",
+      "kind": "bridge",
+      "ranks": 8,
+      "native_sha256": "00dcf60fc8098bcd03f2aa04919a74f0b66dc459de9b46c2dbbab635e6a921c3",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": true,
+      "nonfirst_largest_coverage_count": 32
+    },
+    {
+      "name": "rho6-original-p4-ep8-moonep-P4-a2",
+      "mode": "P4",
+      "kind": "bridge",
+      "ranks": 8,
+      "native_sha256": "5ddb765d878b6e4141c7cc03b948b40b1068175b4b90c9b7edeb89ede9a06365",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": true,
+      "nonfirst_largest_coverage_count": 32
+    },
+    {
+      "name": "rho6-original-p4-efs2-moonep-C0-a2",
+      "mode": "C0",
+      "kind": "efs2",
+      "ranks": 8,
+      "native_sha256": "38472e762930b9dfa2c1c31cfb56aaf2df7ec97d5e3e53b3bc94415fd634c53b",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": false,
+      "nonfirst_largest_coverage_count": 0
+    },
+    {
+      "name": "rho6-original-p4-efs2-moonep-C0R-a2",
+      "mode": "C0R",
+      "kind": "efs2",
+      "ranks": 8,
+      "native_sha256": "00dcf60fc8098bcd03f2aa04919a74f0b66dc459de9b46c2dbbab635e6a921c3",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": true,
+      "nonfirst_largest_coverage_count": 0
+    },
+    {
+      "name": "rho6-original-p4-efs2-moonep-P4-a2",
+      "mode": "P4",
+      "kind": "efs2",
+      "ranks": 8,
+      "native_sha256": "5ddb765d878b6e4141c7cc03b948b40b1068175b4b90c9b7edeb89ede9a06365",
+      "exit": 0,
+      "immediate_eight_device_post_gate": true,
+      "same_inputs_plan_five_outputs_and_SGD_bitwise": true,
+      "nonfirst_largest_coverage_count": 0
+    }
+  ],
+  "source_device_headers_match_handoff": true,
+  "remaining": [
+    "H7168 real layer fixed and online plan",
+    "delayed weight producer",
+    "deterministic wholemodel and final parameters",
+    "Timer OFF forward/reverse screen and formal A denominator",
+    "profiling before/after and finalist200"
+  ]
+}

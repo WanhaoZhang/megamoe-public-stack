@@ -1,0 +1,30 @@
+[
+  {
+    "version": "baseline",
+    "phase": "forward",
+    "path": "D:\\gitcode\\deepep\\Profiling\\moonep_train_bf16_sync\\20261029\\baseline\\all_8_rank_forward_trace.json",
+    "bytes": 22773546,
+    "sha256": "527a1ede0a6def20e962e64430cd4aa74d10993e3b2d26fd189a9c9edef1aa67"
+  },
+  {
+    "version": "baseline",
+    "phase": "backward",
+    "path": "D:\\gitcode\\deepep\\Profiling\\moonep_train_bf16_sync\\20261029\\baseline\\all_8_rank_backward_trace.json",
+    "bytes": 410150583,
+    "sha256": "7c31d788eaab525f66fa4d4155d3ea8fd4ed078d0bbffa21b78acb683c0dae41"
+  },
+  {
+    "version": "candidate",
+    "phase": "forward",
+    "path": "D:\\gitcode\\deepep\\Profiling\\moonep_train_bf16_sync\\20261029\\candidate\\all_8_rank_forward_trace.json",
+    "bytes": 23088644,
+    "sha256": "b7d03f3e44e0ad3d9ffdea0653e8b5bf35bc44c94d23949430ac0b9205983fc3"
+  },
+  {
+    "version": "candidate",
+    "phase": "backward",
+    "path": "D:\\gitcode\\deepep\\Profiling\\moonep_train_bf16_sync\\20261029\\candidate\\all_8_rank_backward_trace.json",
+    "bytes": 410208315,
+    "sha256": "40721b6031998315bd7ffc2b4c116513abdf0dcc0be5ba09d66cd74cbaa5c454"
+  }
+]

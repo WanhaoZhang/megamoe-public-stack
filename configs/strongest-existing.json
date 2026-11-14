@@ -1,0 +1,12 @@
+{
+  "planner": "ultra_ep",
+  "scores_geomean_ms": {
+    "moonep": 1169.9297232868605,
+    "native": 1159.8034079924394,
+    "ultra_ep": 1159.3218325090043,
+    "echo": 1170.9152528137422,
+    "eplb_fixed": 1707.29144999199
+  },
+  "selection": "geometric mean of six point mean complete-step times",
+  "all_existing_points_required": true
+}

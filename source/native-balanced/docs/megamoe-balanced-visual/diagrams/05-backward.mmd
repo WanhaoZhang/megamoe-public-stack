@@ -1,0 +1,51 @@
+sequenceDiagram
+ box rgb(235,244,255) MindSpeed-LLM
+  participant T as trainer.py
+ end
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant B as fsdp2_bridge.py
+  participant V as megaflux_device.py
+  participant C as torch_classes.cpp
+  participant H as csrc/ops/mega_moe_bf16.cpp
+  participant L as launcher.cpp
+  participant K as megaflux_worker_bf16_backward.cpp
+  participant J as megaflux_full_bf16_backward.cpp
+  participant O as include/mega_moe_bf16_backward.h
+ end
+ T->>T: B01 loss.backward()：autograd 调度各层；checkpoint 可能重算前向
+ Note over T,B: 重算与 Expert-FSDP 参数准备见整网反向
+ T-->>B: B02 间接调度 _ExternalExperts.backward(ctx, gradY)
+ activate B
+ B->>B: B03 ctx.saved_tensors；current_weights()；核对完整home形状
+ B->>B: B04 pool.backward → _publish：同 stream 刷新本层 home
+ B->>B: B05 _SavedPlacementReplay(saved status / logical / physical / copies / counts)
+ B->>V: B06 create_plan(saved logical_ids, replay, capacity)
+ V->>B: B07 replay.plan(context)：复用前向placement，只更新控制epoch
+ B-->>V: checked replay plan
+ V-->>B: 新lease；此处不运行在线 MoonEP / Native 策略
+ opt backward_restore=staged
+ B->>B: B08 workspace.restore_weights(shmem, plan.copies)
+ end
+ B->>C: B09 op.backward_replica(shmem, gradY, prob, homeW, counts, state, dispatch, descriptor)
+ C->>H: B10 ops::MegaMoeBF16Backward(...)
+ H->>L: B11 LaunchMegaMoeBF16BackwardKernel(...)
+ L->>K: B12 early SO 导出 megaflux_early_bf16_backward_ready_k_kernel_do(...)
+ Note over K,J: B19 编译 include：宏改名复用 full_backward.cpp
+ par Host launch 提交后返回
+ K-->>L: launch 提交返回
+ L-->>H: host返回
+ H-->>C: dX / dProb / dW1 / dW2 / workspace
+ C-->>B: B14 四个梯度tensor；丢弃内部workspace返回值
+ and 设备按 stream 依赖执行
+ J->>O: B13 MegaMoeBF16Backward::Process()
+ O->>O: AIV gather / dispatch dY；panel恢复与AIC权重消费按ready衔接
+ O->>O: 专家反向产生 dX / dProb / dW partial；副本partial发布 → owner SUM
+ Note over O: 副本恢复、提前 dW1、发布与归主见反向 kernel
+ end
+ B->>V: B15 m.release_pending()：释放本次调用租约
+ V-->>B: 同 stream 保序
+ B->>B: B16 clone dw1[:home] / dw2[:home]；cast回原Parameter / prob dtype
+ B-->>T: B17 autograd返回槽位：None, dX, None, dProb, dW1, dW2, None
+ deactivate B
+ Note over T,B: FSDP 梯度hooks完成自身reduce-scatter / scaling；与算子owner SUM是两层职责
+ Note over T,B: B18 梯度回到框架后，接 FSDP 梯度同步与参数更新详图

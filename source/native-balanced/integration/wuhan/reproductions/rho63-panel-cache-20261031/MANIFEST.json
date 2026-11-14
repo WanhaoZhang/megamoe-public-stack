@@ -1,0 +1,146 @@
+{
+  "source_commit": "9d036d2b5ffe6b16e25666957124eed3cbf5b407",
+  "baseline_commit": "f6daec8a38cebe8d9596af05174edd8570179ca7",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 148,
+      "sha256": "fcff6291f4058ce8ac58f65a926aca6af021f8ea731f1e58f5a10dd4ea5d29ea"
+    },
+    {
+      "path": "ARTIFACTS.md",
+      "bytes": 2644,
+      "sha256": "44657968c7e2ad2582a5c583a3f931ea2875394fdb8522027662a63d40d23bf8"
+    },
+    {
+      "path": "evidence/FINGERPRINTS.json",
+      "bytes": 95785,
+      "sha256": "9eabcc6d3d9ac56a6207fa613b2d858d37d434d7163a6fb7e00c366b60026d60"
+    },
+    {
+      "path": "evidence/panel-cache-capture-acceptance.json",
+      "bytes": 6733,
+      "sha256": "a946d13ea8354fbd931c83820ea6a51bf4c6165e4dae26c606b342447ff19f95"
+    },
+    {
+      "path": "evidence/panel-cache-default-off-equivalence.json",
+      "bytes": 282,
+      "sha256": "cdc9225d817e089638d5389ce0da0f05d60f61d8609e704ae3f6b7c14d9e7e4f"
+    },
+    {
+      "path": "evidence/panel-cache-pairs.csv",
+      "bytes": 2047,
+      "sha256": "fe50ecf8edbabca54f61de73df8483c78d8a94e8981675009c6fc0a61e160ae6"
+    },
+    {
+      "path": "evidence/panel-cache-performance.json",
+      "bytes": 35936,
+      "sha256": "377215efebc89f94069dca1e3b8bdd18b0e1bc164a21cb763415db6458517f63"
+    },
+    {
+      "path": "evidence/panel-cache-processes.csv",
+      "bytes": 3957,
+      "sha256": "ab8df72581df3b7f8aa01557074af4acfdb953f78dd94b904300eae503eef750"
+    },
+    {
+      "path": "evidence/pipeline-summary.json",
+      "bytes": 82268,
+      "sha256": "0e22907766f86865a5a193a7b4c91e1558cda928b058c0239609fe112aadeaf4"
+    },
+    {
+      "path": "evidence/retire-fill-pairs.csv",
+      "bytes": 1107,
+      "sha256": "65f299d8252d4f3fc256c18e1be46b74bef834b494917629ef4fdfd9ced31a6d"
+    },
+    {
+      "path": "figures/panel-cache-performance.png",
+      "bytes": 121626,
+      "sha256": "6054c3fa7d36be03b79a237ba1851ccef1740eefbe1070c41d08214c5979d4c0"
+    },
+    {
+      "path": "figures/rho3-panel-cache-serial-comparison.png",
+      "bytes": 214533,
+      "sha256": "ee049a19ffb8f003c0665809c3d624164c4aab2259da6a703705883d5b9ac217"
+    },
+    {
+      "path": "figures/rho6-panel-cache-serial-comparison.png",
+      "bytes": 199189,
+      "sha256": "479bd9047dbf41c44dbe04c10403871f777e2b8ae091f650532e0a5e44394bb0"
+    },
+    {
+      "path": "frozen/bridge_entry.py",
+      "bytes": 637,
+      "sha256": "0a78a45d402c865156716762516ebfb1b2a5e053ded08c3e6dbe895b413bfb16"
+    },
+    {
+      "path": "frozen/build-baseline.sh",
+      "bytes": 1254,
+      "sha256": "d434f9eae049d9aa83ceac78875dcf86e46a3c52a4b4b2975ee13661b241c081"
+    },
+    {
+      "path": "frozen/build-panel-cache.sh",
+      "bytes": 343,
+      "sha256": "f21c869997226aa941199c20eaca597dec9a0a03101b4dd5838e60939ca478f2"
+    },
+    {
+      "path": "frozen/capture-current.py",
+      "bytes": 2186,
+      "sha256": "28b913854884a19f0e2640ef4d47622c03454dbd3b999a68f01bb148840e1b63"
+    },
+    {
+      "path": "frozen/ordinary-reference.py",
+      "bytes": 3162,
+      "sha256": "de5ce90081c951eb0756cde10178d8fc8b1c61039590ac1a6cdacf9b2e9d7476"
+    },
+    {
+      "path": "frozen/panel-cache-selection-entry.py",
+      "bytes": 1236,
+      "sha256": "a5a4d354f65613f100ac5d52e8de27041eb979ea992295b8fac2da05d94cb163"
+    },
+    {
+      "path": "frozen/performance-online.py",
+      "bytes": 2188,
+      "sha256": "93f789279ac64a7d02926e37797694e602ece76a6cd0c64a7b2579dd667e7671"
+    },
+    {
+      "path": "frozen/qualify-panel-cache.py",
+      "bytes": 2240,
+      "sha256": "0c0e0b4b3f88b22ea5b9d35102e9c42c568f2253dff40760f92d3ec261087d20"
+    },
+    {
+      "path": "frozen/run-device-cache.sh",
+      "bytes": 3036,
+      "sha256": "7c3870b9aeb95f3e071ce93b78b8c6e21001267851ca2b49494d9586312b6e53"
+    },
+    {
+      "path": "frozen/run-device.sh",
+      "bytes": 2894,
+      "sha256": "92e814b5e72ab471664508a7718dfa2e62139487c0c26338fd996b6d930b74f8"
+    },
+    {
+      "path": "frozen/SHA256.json",
+      "bytes": 1163,
+      "sha256": "b42adc052ea26eb2720642ae109b3191cf243525f03b5a97c5880b797f52d58a"
+    },
+    {
+      "path": "frozen/verify-baseline.py",
+      "bytes": 1505,
+      "sha256": "79ee7ded185094edabefaf683c582d6560e50f66479600db487c567a8fa619c1"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6926,
+      "sha256": "003bd40dd583a58f78c4f2e6b2b94657e1d160f04947e06f23aa6dd8441cdc5c"
+    },
+    {
+      "path": "REPRODUCTION.md",
+      "bytes": 8732,
+      "sha256": "07d2c2a94538bf78ed6cbfa0b1c0ce7d8097a914ab0507a8897ef2b71201d6d5"
+    },
+    {
+      "path": "summarize.py",
+      "bytes": 4341,
+      "sha256": "7e1a86c8aafef7dc529a50c6a0fbe31e75254547fef43373c45596a36bd03cf4"
+    }
+  ]
+}

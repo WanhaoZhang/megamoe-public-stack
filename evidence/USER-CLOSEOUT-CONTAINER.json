@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "container_id": "f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865",
+  "running": false,
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 137,
+    "Error": "",
+    "StartedAt": "2026-11-14T00:46:37.62143194Z",
+    "FinishedAt": "2026-11-14T10:16:45.49877217Z"
+  },
+  "image": "sha256:1fc454e2360ef25b7a529d26ca792a98200f12327d6c2ecf8a62eea384d8ca9e",
+  "only_task_container_stopped": true,
+  "source_and_data_retained": true,
+  "time_utc": "2026-11-14T10:17:56.409707+00:00"
+}

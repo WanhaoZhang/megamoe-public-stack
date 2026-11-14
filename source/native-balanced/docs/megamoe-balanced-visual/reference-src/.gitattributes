@@ -1,0 +1,4 @@
+# Retain the exact reference bytes, including original line endings.
+/FSDPTurbo/** -text -whitespace
+/MindSpeed-LLM/** -text -whitespace
+/experiment/** -text -whitespace

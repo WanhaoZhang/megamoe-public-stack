@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "status": "frozen-formal-matrix",
+  "plan_contract": "contract.json",
+  "framework": {
+    "MindSpeed": "dd5ee0321c1179aaaded4fba4f119ed310b30639",
+    "FSDPTurbo": "9c443c614f6aba84908a9eedbaecd50cc15fb022",
+    "basis": "new public-stack lab, audited explicit adaptations"
+  },
+  "native": {
+    "balanced": "48ef24a6586a633ddbbf265d4eab72e229bf1fae",
+    "shared": "7626dc9cb36343df500ec2cccdf7f41d3b8cdbaf",
+    "MoonEP": "d8b9db58ca13e2e8545575034f8f57b956fee342"
+  },
+  "shape": {
+    "world": 8,
+    "ep": 8,
+    "efsdp": 1,
+    "fsdp": 8,
+    "tp": 1,
+    "cp": 1,
+    "layers": 2,
+    "E": 256,
+    "K": 8,
+    "H": 7168,
+    "F": 2048,
+    "S": 16384,
+    "shared": 1,
+    "hash": 0,
+    "mtp": 0,
+    "limit": 10,
+    "home": 32,
+    "replicas": 32,
+    "physical": 64,
+    "vocab": 32768,
+    "mhc_expansion": 2,
+    "attention_query_heads": 32,
+    "attention_head_dim": 512
+  },
+  "training": {
+    "seed": 42,
+    "microbatch": 1,
+    "ga": 1,
+    "steps": 25,
+    "warmup": 5,
+    "measure": 20,
+    "repeats": 3,
+    "optimizer": "FunctionalFusedAdamW",
+    "lr": 1e-05,
+    "betas": [
+      0.9,
+      0.95
+    ],
+    "epsilon": 1e-08,
+    "weight_decay": 0.01,
+    "clip": 1,
+    "persistent_dtype": "float32",
+    "compute_dtype": "bfloat16",
+    "recompute": "whole-layer non-reentrant; preserve layer/step route on replay",
+    "routing_base_seed": 1234,
+    "routing_permutation_seed": 42
+  },
+  "maxvios": [
+    0.2,
+    1,
+    5,
+    10,
+    15,
+    20
+  ],
+  "memory": {
+    "target_whole_card_GiB": 88.5,
+    "acceptance_peak_GiB": 90,
+    "offload": false,
+    "empty_cache": "once after step0 outside measured steps"
+  },
+  "backend_features": {
+    "balanced": {
+      "shared_expert": "framework",
+      "owner_double_buffer": false
+    },
+    "shared": {
+      "shared_expert": "native-fused",
+      "owner_double_buffer": true
+    },
+    "moonep": {
+      "native_pin": "d8b9db58ca13e2e8545575034f8f57b956fee342",
+      "udma": true,
+      "rank_dedup": "official default",
+      "server_dedup": false,
+      "planning_udma": false,
+      "async_finish": true,
+      "npu_async_comm": true
+    }
+  },
+  "deviations": [
+    "L3→L2 after MoonEP first-Adam OOM",
+    "common dense crop vocab32768/mHC2/Q32; all MoE dimensions retained",
+    "supported allocator fraction derived from actual external pools; common whole-card budget88.5GiB"
+  ],
+  "scope": "common cropped Ascend experiment; official 9-layer H20 harness and optimizer remain unpublished/unknown",
+  "project": "planner-executor-ep8-lab",
+  "ordinary_only": true,
+  "planners": [
+    "moonep",
+    "native",
+    "ultra_ep",
+    "echo",
+    "eplb_fixed",
+    "step_time"
+  ],
+  "receive_capacity": 163840,
+  "capacity_fallback": 147456,
+  "fixed_owners": true,
+  "execution_plan_schema": "source-quota-v1"
+}

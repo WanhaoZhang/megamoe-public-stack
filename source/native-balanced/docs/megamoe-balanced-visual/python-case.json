@@ -1,0 +1,458 @@
+{
+  "date": "2026-11-02",
+  "branch": "megamoe-balanced",
+  "dataset": {
+    "documents": 2048,
+    "tokens": 3474093
+  },
+  "shape": {
+    "world": 8,
+    "ep": 4,
+    "groups": [
+      [
+        0,
+        1,
+        2,
+        3
+      ],
+      [
+        4,
+        5,
+        6,
+        7
+      ]
+    ],
+    "M": 8192,
+    "H": 7168,
+    "F": 3072,
+    "E": 8,
+    "TopK": 2,
+    "home": 2,
+    "slots": 2,
+    "capacity": 20480,
+    "limit": 10
+  },
+  "sourceSample": {
+    "model": "allenai/OLMoE-1B-7B-0924",
+    "event": 0,
+    "layer": 9,
+    "experts": 64,
+    "topk": 8,
+    "tokens": 32768,
+    "kappa": 3.0070735886693,
+    "hottestExpert": 46,
+    "hottestCount": 28054
+  },
+  "route": {
+    "kappa": 2.481662403792143,
+    "seed": 17,
+    "probability": 0.5,
+    "logicalCounts": [
+      12051,
+      32768,
+      3495,
+      572,
+      5497,
+      1175,
+      8107,
+      1871
+    ],
+    "initialRankRoutes": [
+      44819,
+      4067,
+      6672,
+      9978
+    ],
+    "copies": [
+      [
+        -1,
+        -1
+      ],
+      [
+        1,
+        -1
+      ],
+      [
+        1,
+        -1
+      ],
+      [
+        0,
+        -1
+      ]
+    ],
+    "executionCounts": [
+      [
+        5645,
+        10739,
+        0,
+        0
+      ],
+      [
+        3495,
+        572,
+        12317,
+        0
+      ],
+      [
+        5497,
+        1175,
+        9712,
+        0
+      ],
+      [
+        8107,
+        1871,
+        6406,
+        0
+      ]
+    ]
+  },
+  "focus": {
+    "step": 10,
+    "layer": "model.model.layers.7.mlp.experts",
+    "rank": 2,
+    "row": 2,
+    "logical": [
+      1,
+      4
+    ],
+    "physical": [
+      6,
+      8
+    ]
+  },
+  "sourceCommits": {
+    "ascend_deepep_hkq": "fac3e973e9a9eab7116a1ae8e64f3d6a3bc7649a",
+    "FSDPTurbo": "75d2bac28b9942f66a41c94cdc0c748a4337205a",
+    "MindSpeed-LLM": "c8b0365000022e5399fe4584ecc9f1257997c279",
+    "root": "e28f9f1753984421d57b4d070ecee74bc83ceb5b"
+  },
+  "wholeTiming": {
+    "p50": 2812.821,
+    "p90": 2821.312,
+    "steps": "4–12",
+    "samples": 9
+  },
+  "operatorTiming": {
+    "backward": {
+      "p50": 16.16787,
+      "p90": 16.297069,
+      "samples": 30,
+      "warmup": 10
+    },
+    "fb": {
+      "p50": 25.888855,
+      "p90": 26.01509,
+      "samples": 30,
+      "warmup": 10
+    }
+  },
+  "fingerprints": [
+    {
+      "rank": 0,
+      "logical": "4710f11894bb442a0332b5386dd7eeae63aaa98cfb4dfbb3d6561256d87f5899",
+      "physicalReplay": "5d2982118265cc22c25178f18eadab54ae6e86dc9f87f2c86df119e5e2cd30ec",
+      "physicalDevice": "5d2982118265cc22c25178f18eadab54ae6e86dc9f87f2c86df119e5e2cd30ec"
+    },
+    {
+      "rank": 1,
+      "logical": "456546c69eb090ff2f902336cf3f14bd22f7d4a6430fee39e5c87948f7fa59cc",
+      "physicalReplay": "52749bb052995e2006655f6fc1116585289cc22a942341f7400d2e7a72056bd2",
+      "physicalDevice": "52749bb052995e2006655f6fc1116585289cc22a942341f7400d2e7a72056bd2"
+    },
+    {
+      "rank": 2,
+      "logical": "be642c428d5a524eea6845342e9594fbfc0e64cbf81ce4193771b86e3dd55319",
+      "physicalReplay": "658873e7e893178073c7b06711ebef7c64bbaa67c534448bfb129b519e5e5453",
+      "physicalDevice": "658873e7e893178073c7b06711ebef7c64bbaa67c534448bfb129b519e5e5453"
+    },
+    {
+      "rank": 3,
+      "logical": "9219050bd5da39a8268a7feef22968906dde7ad41b43ab5f0eeb9fa576ab4c1a",
+      "physicalReplay": "b8f0041c5f57ad27adceca4f1127dcdb8da4590fadcd595797863105a65e87c0",
+      "physicalDevice": "b8f0041c5f57ad27adceca4f1127dcdb8da4590fadcd595797863105a65e87c0"
+    },
+    {
+      "rank": 4,
+      "logical": "4710f11894bb442a0332b5386dd7eeae63aaa98cfb4dfbb3d6561256d87f5899",
+      "physicalReplay": "5d2982118265cc22c25178f18eadab54ae6e86dc9f87f2c86df119e5e2cd30ec",
+      "physicalDevice": "5d2982118265cc22c25178f18eadab54ae6e86dc9f87f2c86df119e5e2cd30ec"
+    },
+    {
+      "rank": 5,
+      "logical": "456546c69eb090ff2f902336cf3f14bd22f7d4a6430fee39e5c87948f7fa59cc",
+      "physicalReplay": "52749bb052995e2006655f6fc1116585289cc22a942341f7400d2e7a72056bd2",
+      "physicalDevice": "52749bb052995e2006655f6fc1116585289cc22a942341f7400d2e7a72056bd2"
+    },
+    {
+      "rank": 6,
+      "logical": "be642c428d5a524eea6845342e9594fbfc0e64cbf81ce4193771b86e3dd55319",
+      "physicalReplay": "658873e7e893178073c7b06711ebef7c64bbaa67c534448bfb129b519e5e5453",
+      "physicalDevice": "658873e7e893178073c7b06711ebef7c64bbaa67c534448bfb129b519e5e5453"
+    },
+    {
+      "rank": 7,
+      "logical": "9219050bd5da39a8268a7feef22968906dde7ad41b43ab5f0eeb9fa576ab4c1a",
+      "physicalReplay": "b8f0041c5f57ad27adceca4f1127dcdb8da4590fadcd595797863105a65e87c0",
+      "physicalDevice": "b8f0041c5f57ad27adceca4f1127dcdb8da4590fadcd595797863105a65e87c0"
+    }
+  ],
+  "evidence": {
+    "dataset": {
+      "path": "whole-network-python-balanced-20261102/PYTHON-DATA.json",
+      "sha256": "76d028e08c66988de2ec9abc4c7b3a7ea9dbd800a6e54d3707113c0c72aec193"
+    },
+    "sample": {
+      "path": "whole-network-python-balanced-20261102/source/ascend_deepep_hkq/integration/wuhan/scenarios/python-olmoe-high-skew/source-profile.json",
+      "sha256": "4879ccc94d67b3202c89614b2c382c5d4107f08321436a24398b58c3106acec5"
+    },
+    "routes": {
+      "path": "whole-network-python-balanced-20261102/routes/routes.json",
+      "sha256": "2c9db30a097a464500144c92035b9eddf77df7ba76b7e03ba7763e374c7539e2"
+    },
+    "source": {
+      "path": "whole-network-python-balanced-20261102/SOURCE-MANIFEST.json",
+      "sha256": "7e612f6adac1762ce1e8e9cb2ebb814bb1c7be88a8dfa78f704441f4fd81d787"
+    },
+    "build": {
+      "path": "whole-network-python-balanced-20261102/BUILD-IDENTITY.json",
+      "sha256": "845b9e6eaa4ab2694b6881cd527fddd39742c6b68d9c8b83dc0171d4d4ed6a3f"
+    },
+    "wholeTiming": {
+      "path": "whole-network-python-balanced-20261102/analysis/validation-and-performance-a1.json",
+      "sha256": "9648c670f0c05e51d89baef3b5c0d81ab7c9d0667f1868ea566d47046f60d8ac"
+    },
+    "wholeTimer": {
+      "path": "whole-network-python-balanced-20261102/analysis/focus-layer7-a1/trace-export-audit.json",
+      "sha256": "1d5600e212416065c9d1fb748a455cbc77a11257af94ac75618e8f9a8a5d9b3b"
+    },
+    "operatorTiming": {
+      "path": "operator-python-balanced-20261102/analysis/validation-and-performance-a1.json",
+      "sha256": "54bf0a347c2b023b04e372f2690e557b6a7200d61d04734ab4b46bc77821102a"
+    },
+    "hostScopes": {
+      "path": "whole-network-python-balanced-20261102/analysis/framework-step10-a1/framework-trace-audit.json",
+      "sha256": "ef8119affdbf21a93a6015fe1ca0c97e782178b938c4873c77a34a0490b4bebc"
+    }
+  },
+  "dispatchMatrix": {
+    "before": [
+      [
+        11148,
+        1002,
+        1708,
+        2526
+      ],
+      [
+        11259,
+        999,
+        1679,
+        2447
+      ],
+      [
+        11152,
+        1061,
+        1631,
+        2540
+      ],
+      [
+        11260,
+        1005,
+        1654,
+        2465
+      ]
+    ],
+    "after": [
+      [
+        11148,
+        1002,
+        1708,
+        2526
+      ],
+      [
+        5236,
+        6644,
+        1679,
+        2825
+      ],
+      [
+        0,
+        7733,
+        3151,
+        5500
+      ],
+      [
+        0,
+        1005,
+        9846,
+        5533
+      ]
+    ],
+    "method": "Rows are source EP ranks. Before: logical_ids // home. After: CPU replay physical_ids // (home + slots), physical tensor SHA verified against device."
+  },
+  "hostScopes": [
+    {
+      "layer": 0,
+      "phase": "forward",
+      "startMs": 0,
+      "durationMs": 17.761
+    },
+    {
+      "layer": 1,
+      "phase": "forward",
+      "startMs": 30.426,
+      "durationMs": 27.084
+    },
+    {
+      "layer": 2,
+      "phase": "forward",
+      "startMs": 95.203,
+      "durationMs": 10.91
+    },
+    {
+      "layer": 3,
+      "phase": "forward",
+      "startMs": 118.802,
+      "durationMs": 27.301
+    },
+    {
+      "layer": 4,
+      "phase": "forward",
+      "startMs": 160.563,
+      "durationMs": 33.635
+    },
+    {
+      "layer": 5,
+      "phase": "forward",
+      "startMs": 206.761,
+      "durationMs": 27.469
+    },
+    {
+      "layer": 6,
+      "phase": "forward",
+      "startMs": 248.932,
+      "durationMs": 33.446
+    },
+    {
+      "layer": 7,
+      "phase": "forward",
+      "startMs": 294.55,
+      "durationMs": 28.368
+    },
+    {
+      "layer": 8,
+      "phase": "forward",
+      "startMs": 352.372,
+      "durationMs": 23.946
+    },
+    {
+      "layer": 8,
+      "phase": "recompute",
+      "startMs": 667.977,
+      "durationMs": 111.743
+    },
+    {
+      "layer": 8,
+      "phase": "backward",
+      "startMs": 782.02,
+      "durationMs": 18.847
+    },
+    {
+      "layer": 7,
+      "phase": "recompute",
+      "startMs": 828.856,
+      "durationMs": 91.51
+    },
+    {
+      "layer": 7,
+      "phase": "backward",
+      "startMs": 922.601,
+      "durationMs": 18.964
+    },
+    {
+      "layer": 6,
+      "phase": "recompute",
+      "startMs": 970.549,
+      "durationMs": 83.343
+    },
+    {
+      "layer": 6,
+      "phase": "backward",
+      "startMs": 1056.194,
+      "durationMs": 18.925
+    },
+    {
+      "layer": 5,
+      "phase": "recompute",
+      "startMs": 1104.361,
+      "durationMs": 110.381
+    },
+    {
+      "layer": 5,
+      "phase": "backward",
+      "startMs": 1217.066,
+      "durationMs": 18.982
+    },
+    {
+      "layer": 4,
+      "phase": "recompute",
+      "startMs": 1265.3,
+      "durationMs": 83.306
+    },
+    {
+      "layer": 4,
+      "phase": "backward",
+      "startMs": 1350.985,
+      "durationMs": 18.785
+    },
+    {
+      "layer": 3,
+      "phase": "recompute",
+      "startMs": 1398.895,
+      "durationMs": 110.111
+    },
+    {
+      "layer": 3,
+      "phase": "backward",
+      "startMs": 1511.182,
+      "durationMs": 19.181
+    },
+    {
+      "layer": 2,
+      "phase": "recompute",
+      "startMs": 1559.645,
+      "durationMs": 83.011
+    },
+    {
+      "layer": 2,
+      "phase": "backward",
+      "startMs": 1645.232,
+      "durationMs": 18.66
+    },
+    {
+      "layer": 1,
+      "phase": "recompute",
+      "startMs": 1692.719,
+      "durationMs": 111.36
+    },
+    {
+      "layer": 1,
+      "phase": "backward",
+      "startMs": 1806.481,
+      "durationMs": 18.701
+    },
+    {
+      "layer": 0,
+      "phase": "recompute",
+      "startMs": 1850.736,
+      "durationMs": 78.089
+    },
+    {
+      "layer": 0,
+      "phase": "backward",
+      "startMs": 1931.239,
+      "durationMs": 18.783
+    }
+  ]
+}

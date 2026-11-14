@@ -1,0 +1,132 @@
+import logging
+
+import torch
+from torch.distributed.tensor import Shard
+
+from fsdp_turbo.distributed.fully_shard_parallel.fully_shard_parallel import (
+    get_fsdp_hook_modules,
+    find_hook_module,
+    get_offload_policy,
+    get_mixprecision_policy,
+)
+from fsdp_turbo.distributed.fully_shard_parallel.prefetch import disable_default_backward_prefetch
+from fsdp_turbo.fsdp_turbo_config import EPPlanConfig, FSDPPlanConfig
+from fsdp_turbo.distributed.fine_grained_fully_shard import get_fsdp_strategy
+from fsdp_turbo.utils.log import print_rank
+from fsdp_turbo.utils.str_match import module_name_match
+from fsdp_turbo.utils.torch_patch import apply_hccl_premul_sum_patch
+
+logger = logging.getLogger(__name__)
+
+
+def set_modules_to_prefetch_efsdp(
+    model: torch.nn.Module, efsdp_modules: list[torch.nn.Module], fsdp_plan: FSDPPlanConfig
+):
+    """Configure backward prefetching for efsdp units.
+
+    No forward lists: expert all-gathers are issued at the layer's forward
+    entry; expert-held forward lists would fire wrong-direction all-gathers
+    during activation recompute. With backward_prefetch_on_moe_input, units
+    get [self] placeholders; real targets come from the MoE input grad hook
+    in fully_shard_parallel.
+    """
+    wrapped_modules_in_order: list[torch.nn.Module] = []
+    for sub_module in model.modules():  # pre-order
+        if any(sub_module is target_module for target_module in efsdp_modules):
+            wrapped_modules_in_order.append(sub_module)
+
+    if fsdp_plan.num_to_backward_prefetch > 0:
+        rev_wrapped_modules_in_order = list(reversed(wrapped_modules_in_order))
+        for i, layer in enumerate(rev_wrapped_modules_in_order):
+            if fsdp_plan.backward_prefetch_on_moe_input:
+                layer.set_modules_to_backward_prefetch([layer])
+                continue
+            j_end = min(len(rev_wrapped_modules_in_order), i + 1 + fsdp_plan.num_to_backward_prefetch)
+            layers_to_prefetch = rev_wrapped_modules_in_order[i + 1 : j_end]
+            if layers_to_prefetch:
+                layer.set_modules_to_backward_prefetch(layers_to_prefetch)
+
+
+def expert_fully_shard_modules(
+    model: torch.nn.Module,
+    efsdp_mesh,
+    ep_plan: EPPlanConfig,
+    fsdp_plan: FSDPPlanConfig,
+    enable_lp_all_gather: bool = False,
+) -> torch.nn.Module:
+    efsdp_modules = get_efsdp_modules(model, ep_plan)
+    if efsdp_mesh.size() == 1:
+        factor = ep_plan.gradient_divide_factor
+        if factor is not None and factor != 1.0:
+            if factor <= 0:
+                raise ValueError('Expert gradient divide factor must be positive')
+            for experts in efsdp_modules:
+                installed = set()
+
+                def install_live_hooks(module, inputs, divisor=factor, seen=installed):
+                    # Meta materialization can replace Parameters after parallelization.
+                    for parameter in module.parameters():
+                        if parameter.requires_grad and id(parameter) not in seen:
+                            parameter.register_hook(lambda gradient, scale=divisor: gradient.div(scale))
+                            seen.add(id(parameter))
+
+                experts.register_forward_pre_hook(install_live_hooks)
+        return model
+    efsdp_hook_modules = get_fsdp_hook_modules(model, fsdp_plan)
+    offload_policy = get_offload_policy(fsdp_plan)
+
+    # LP-AG gathers weight+scale together (torch copy-out needs dim-0); otherwise keep the historical dim-1 placement for 2D+.
+    def shard_placement_fn(x):
+        if enable_lp_all_gather:
+            return Shard(0)
+        return Shard(1) if x.dim() > 1 else Shard(0)
+
+    config = {
+        'mesh': efsdp_mesh,
+        'mp_policy': get_mixprecision_policy(fsdp_plan),
+        'offload_policy': offload_policy,
+        'shard_placement_fn': shard_placement_fn,
+    }
+
+    apply_hccl_premul_sum_patch()
+    strategy = get_fsdp_strategy(fsdp_plan.fsdp_implementation)
+    fully_shard_fn = strategy.get_unified_fully_shard_fn()
+
+    gradient_divide_factor = ep_plan.gradient_divide_factor
+    for experts in efsdp_modules:
+        hook_module = find_hook_module(experts, efsdp_hook_modules)
+        if isinstance(experts, torch.nn.ModuleList):
+            for expert in experts:
+                fully_shard_fn(expert, hook_module=hook_module, **config)
+                set_gradient_divide_factor(expert, gradient_divide_factor)
+        else:
+            fully_shard_fn(experts, hook_module=hook_module, **config)
+            set_gradient_divide_factor(experts, gradient_divide_factor)
+
+    set_modules_to_prefetch_efsdp(model, efsdp_modules, fsdp_plan)
+
+    if fsdp_plan.num_to_backward_prefetch == 0:
+        # FSDP2's default backward prefetch is enabled when no explicit list
+        # is set, so a configured depth of zero needs an explicit override.
+        disable_default_backward_prefetch(model.modules())
+    return model
+
+
+def get_efsdp_modules(modules: torch.nn.Module, plan: EPPlanConfig):
+    efsdp_modules = []
+    for plan_name in plan.apply_efsdp_modules:
+        for name, module in modules.named_modules():
+            if module_name_match(plan_name, name):
+                print_rank(logger.debug, f'[Expert Fully Shard]: Apply efsdp to module <{name}>')
+                if module not in efsdp_modules:
+                    efsdp_modules.append(module)
+    if len(efsdp_modules) == 0:
+        raise RuntimeError(f'[Expert Fully Shard] No module named {plan} or not be ModuleList')
+    return efsdp_modules
+
+
+def set_gradient_divide_factor(module, factor):
+    if hasattr(module, 'set_gradient_divide_factor'):
+        module.set_gradient_divide_factor(factor)
+    else:
+        module.set_reduce_scatter_divide_factor(factor)

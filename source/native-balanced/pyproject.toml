@@ -1,0 +1,9 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "torch", "torch-npu"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ascend-deepep"
+version = "0.1.0"
+description = "AscendC expert-parallel communication runtime based on CANN SHMEM"
+requires-python = ">=3.8"

@@ -1,0 +1,59 @@
+## Environment Requirements
+
+- Before running this example, ensure that the RDMA environment is available (the RDMA NIC and driver have been correctly installed and configured).
+
+### Ascend950 CANN Version Requirement
+
+RDMA examples on Ascend950 require the **CANN 9.1.0** package. Other versions are not currently supported by these examples. Download the corresponding package from the [CANN 9.1.0 resources](https://www.hiascend.com/developer/download/community/result?module=cann&cann=9.1.0).
+
+### Checking the RDMA Environment
+```bash
+lspci | grep -i RDMA
+for i in {0..7}; do hccn_tool -i $i -net_health -g; done
+```
+If the following command output is displayed, the environment is available:
+![](../../docs/images/rdma_env.png)
+
+## Instructions
+1. Build in the `shmem/` directory:
+```bash
+bash scripts/build.sh -enable_rdma -examples
+```
+2. Run the `bash run.sh` command in the `examples/rdma_demo` directory or run the following commands in the `shmem/` directory:
+- For single-server dual-device, run the following commands:
+    ```bash
+    export PROJECT_ROOT=<shmem-root-directory>
+    export LD_LIBRARY_PATH=${PROJECT_ROOT}/build/lib:$LD_LIBRARY_PATH
+    ./build/bin/rdma_demo 2 0 tcp://127.0.0.1:8765 2 0 0 & # PE 0
+    ./build/bin/rdma_demo 2 1 tcp://127.0.0.1:8765 2 0 0 & # PE 1
+    ```
+    > Note: \<shmem-root-directory\> is the root directory of the SHMEM project.
+- For cross-server dual-device, run the following commands:
+
+    Assume that the IP address of server A is `ip1` and that of server B is `ip2`.
+    Run the following commands on server A:
+    ```bash
+    export PROJECT_ROOT=<shmem-root-directory>
+    export LD_LIBRARY_PATH=${PROJECT_ROOT}/build/lib:$LD_LIBRARY_PATH
+    ./build/bin/rdma_demo 2 0 tcp://ip1:8765 1 0 0 # PE 0
+    ```
+    At the same time, run the following commands on host B:
+    ```bash
+    export PROJECT_ROOT=<shmem-root-directory>
+    export LD_LIBRARY_PATH=${PROJECT_ROOT}/build/lib:$LD_LIBRARY_PATH
+    ./build/bin/rdma_demo 2 1 tcp://ip1:8765 1 1 0 # PE 1
+    ```
+    > Note: \<shmem-root-directory\> is the root directory of the SHMEM project.
+
+#### Command Line Parameters
+
+```bash
+./rdma_demo <n_pes> <pe_id> <ipport> <g_npus> <f_pe> <f_npu>
+```
+
+- n_pes: number of global PEs.
+- pe_id: PE ID of the current process.
+- ipport: IP address and port number required for SHMEM initialization. The format is tcp://`<IP_address>:<port_number>`. To perform a cross-server test, set the IP address to the IP address of the host where PE0 is located.
+- g_npus: number of NPUs started on the current server.
+- f_pe: ID of the first PE used on the current server.
+- f_npu: ID of the first NPU used to run this sample on the current server.

@@ -1,0 +1,46 @@
+{
+  "absolute-step-time": {
+    "metric": "mean_ms",
+    "files": [
+      "figures\\absolute-step-time.png",
+      "figures\\absolute-step-time.svg",
+      "figures\\absolute-step-time.pdf"
+    ],
+    "source_points_sha256": "0644ce3482c98d7c2e3a3057b95b8d3d172e11965b09b99051bd941c5565562c",
+    "actual_measured_points_only": true,
+    "complete_three_repeat_points": 36
+  },
+  "normalized-step-time": {
+    "metric": "normalized_ms",
+    "files": [
+      "figures\\normalized-step-time.png",
+      "figures\\normalized-step-time.svg",
+      "figures\\normalized-step-time.pdf"
+    ],
+    "source_points_sha256": "0644ce3482c98d7c2e3a3057b95b8d3d172e11965b09b99051bd941c5565562c",
+    "actual_measured_points_only": true,
+    "complete_three_repeat_points": 36
+  },
+  "speedup-vs-moonep-planner": {
+    "metric": "speedup_vs_moonep",
+    "files": [
+      "figures\\speedup-vs-moonep-planner.png",
+      "figures\\speedup-vs-moonep-planner.svg",
+      "figures\\speedup-vs-moonep-planner.pdf"
+    ],
+    "source_points_sha256": "0644ce3482c98d7c2e3a3057b95b8d3d172e11965b09b99051bd941c5565562c",
+    "actual_measured_points_only": true,
+    "complete_three_repeat_points": 36
+  },
+  "whole-card-hbm": {
+    "metric": "peak_hbm_gib",
+    "files": [
+      "figures\\whole-card-hbm.png",
+      "figures\\whole-card-hbm.svg",
+      "figures\\whole-card-hbm.pdf"
+    ],
+    "source_points_sha256": "0644ce3482c98d7c2e3a3057b95b8d3d172e11965b09b99051bd941c5565562c",
+    "actual_measured_points_only": true,
+    "complete_three_repeat_points": 36
+  }
+}

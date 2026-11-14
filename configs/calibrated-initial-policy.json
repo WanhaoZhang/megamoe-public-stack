@@ -1,0 +1,50 @@
+{
+  "initial_policy": "native",
+  "scores": {
+    "moonep": 1168.4064358980745,
+    "native": 1157.5510450444735,
+    "ultra_ep": 1160.6871991699609,
+    "echo": 1170.0463869952218,
+    "eplb_fixed": 1618.0466536871745
+  },
+  "protocol": {
+    "selection_bank": "calibration",
+    "selection_targets": [
+      0.3,
+      7,
+      18
+    ],
+    "selection_steps": 10,
+    "selection_warmup": 5,
+    "selection_policies": [
+      "moonep",
+      "native",
+      "ultra_ep",
+      "echo",
+      "eplb_fixed"
+    ],
+    "selection_objective": "geometric mean of the three max8rank mean complete-step times",
+    "selection_tie_break": [
+      "moonep",
+      "native",
+      "ultra_ep",
+      "echo",
+      "eplb_fixed"
+    ],
+    "timer_targets": [
+      7
+    ],
+    "timer_steps": 4,
+    "primary_routes_used_for_fitting": false,
+    "owner_fixed": true,
+    "additional_branch_calibration": {
+      "bank": "calibration-uniform",
+      "target": 0,
+      "planner": "moonep",
+      "timer_off_steps": 10,
+      "timer_on_steps": 4,
+      "used_for_initial_policy_selection": false,
+      "reason": "source-confirmed no-replica home32/gradient.ready branch"
+    }
+  }
+}

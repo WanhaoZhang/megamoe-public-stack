@@ -1,0 +1,8 @@
+{
+  "original_train_sha256": "7fe71be7dc3f3299099d3b6d473c6e524d9ed6742381bbf0a1b2a0f8aa64e1d2",
+  "generated_sha256": "70ccf1c57a3384a5c2ededee1a62e048c7061a45e860e5265ea35a7a8e34d5c4",
+  "original_not_modified": true,
+  "loop": "25 identical-weight policy pairs,one Adam update after each pair",
+  "formal_timing": false,
+  "host_only_alignment_before_collectives": true
+}

@@ -1,0 +1,813 @@
+{
+  "passed": true,
+  "meaning": "user-requested bounded closeout and retained-data identity audit; not full protocol acceptance",
+  "time_utc": "2026-11-14T10:13:01.719698+00:00",
+  "original_protocol_complete": false,
+  "user_requested_closeout": true,
+  "qualified_retained_runs": 120,
+  "rank_runs": 960,
+  "measured_world_steps": 2400,
+  "stages": {
+    "primary-existing": 90,
+    "primary-step-time": 18,
+    "fourth-paired": 12
+  },
+  "parameters_and_inputs_match_all_120": true,
+  "route_identity_groups": 48,
+  "actual_runtime": {
+    "python": "3.12.13",
+    "torch": "2.10.0+cpu",
+    "ascend_home": "/home/pkg/b070/cann-9.2.0",
+    "runtime": {
+      "libshmem.so": "246ed665479f676b608d2f318824c02cd1b9eba935720b8efb373c2095bc7112",
+      "libstdc++.so.6.0.35": "11bba08278c07d15ac13a0e469cd84667c707bb480445bf370564c70a09e5357"
+    },
+    "sitecustomize": null
+  },
+  "frozen_final_sources_match": true,
+  "primary_new_plan_adoptions": 0,
+  "primary_planner_calls": 900,
+  "trajectory_warning_tags": [
+    "fourth-paired-vio5-step_time-r4"
+  ],
+  "trajectory_warning_resolved": false,
+  "diagnostics": [
+    {
+      "tag": "diagnostic-fixed-state-pair-vio5",
+      "completed_steps_by_rank": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "completed_25_step_gate": false,
+      "state": "hccl_failure",
+      "exit": 1,
+      "maxima_so_far": {
+        "loss_relative": 0.0,
+        "fixed_weight_global_norm_relative": 5.310529361146621e-06,
+        "complete_parameter_gradient_relative_l2": 0.0039814440887478205,
+        "critical_max_gradient_relative_l2": 0.001411271849044945,
+        "all_parameter_max_gradient_relative_l2": 0.4938033532177634
+      }
+    },
+    {
+      "tag": "diagnostic-fixed-state-pair-aligned-vio5",
+      "completed_steps_by_rank": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "completed_25_step_gate": false,
+      "state": "user_canceled",
+      "exit": 137,
+      "maxima_so_far": {
+        "loss_relative": 0.0,
+        "fixed_weight_global_norm_relative": 5.661266278877974e-06,
+        "complete_parameter_gradient_relative_l2": 0.0039954984955445725,
+        "critical_max_gradient_relative_l2": 0.0013927411892930993,
+        "all_parameter_max_gradient_relative_l2": 0.5907206147848232
+      }
+    }
+  ],
+  "canceled_stages": [
+    "heldout-a",
+    "heldout-b",
+    "ablation-no_gradient_service",
+    "ablation-linear_kernel",
+    "ablation-uniform_topology",
+    "isolated_plan_bank"
+  ],
+  "release_verified": true,
+  "checks": [
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-moonep-r1",
+      "mean_ms": 1134.697774,
+      "peak_hbm_gib": 88.2548828125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-native-r1",
+      "mean_ms": 1085.426165,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-ultra_ep-r1",
+      "mean_ms": 1107.7017405000001,
+      "peak_hbm_gib": 88.2587890625
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-echo-r1",
+      "mean_ms": 1142.88952,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-eplb_fixed-r1",
+      "mean_ms": 1720.0043565,
+      "peak_hbm_gib": 88.2607421875
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-moonep-r1",
+      "mean_ms": 1143.641478,
+      "peak_hbm_gib": 88.2548828125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-native-r1",
+      "mean_ms": 1122.0750895,
+      "peak_hbm_gib": 88.25390625
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-ultra_ep-r1",
+      "mean_ms": 1132.3504585,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-echo-r1",
+      "mean_ms": 1149.3628095,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-eplb_fixed-r1",
+      "mean_ms": 1725.448443,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-moonep-r1",
+      "mean_ms": 1164.788268,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-native-r1",
+      "mean_ms": 1162.8170085,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-ultra_ep-r1",
+      "mean_ms": 1160.5805275,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-echo-r1",
+      "mean_ms": 1167.9325915,
+      "peak_hbm_gib": 88.2548828125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-eplb_fixed-r1",
+      "mean_ms": 1749.8773959999999,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-moonep-r1",
+      "mean_ms": 1177.8507359999999,
+      "peak_hbm_gib": 88.25390625
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-native-r1",
+      "mean_ms": 1183.9341065,
+      "peak_hbm_gib": 88.2607421875
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-ultra_ep-r1",
+      "mean_ms": 1174.950972,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-echo-r1",
+      "mean_ms": 1179.850052,
+      "peak_hbm_gib": 88.2548828125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-eplb_fixed-r1",
+      "mean_ms": 1721.882355,
+      "peak_hbm_gib": 88.2548828125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-moonep-r1",
+      "mean_ms": 1192.3217485,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-native-r1",
+      "mean_ms": 1197.186834,
+      "peak_hbm_gib": 88.259765625
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-ultra_ep-r1",
+      "mean_ms": 1185.068397,
+      "peak_hbm_gib": 88.2548828125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-echo-r1",
+      "mean_ms": 1187.820856,
+      "peak_hbm_gib": 88.2548828125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-eplb_fixed-r1-contention-retry1",
+      "mean_ms": 1680.541041,
+      "peak_hbm_gib": 88.2626953125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-moonep-r1-contention-retry1",
+      "mean_ms": 1208.143873,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-native-r1-contention-retry1",
+      "mean_ms": 1212.9963975,
+      "peak_hbm_gib": 88.2578125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-ultra_ep-r1-contention-retry1",
+      "mean_ms": 1197.247494,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-echo-r1-contention-retry1",
+      "mean_ms": 1197.8337535,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-eplb_fixed-r1-contention-retry1",
+      "mean_ms": 1642.8235085,
+      "peak_hbm_gib": 88.2578125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-native-r2-contention-retry1",
+      "mean_ms": 1084.4504625,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-ultra_ep-r2-contention-retry1",
+      "mean_ms": 1107.957713,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-echo-r2-contention-retry1",
+      "mean_ms": 1143.2685685,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-eplb_fixed-r2-contention-retry1",
+      "mean_ms": 1719.575119,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-moonep-r2-contention-retry1",
+      "mean_ms": 1135.4327635,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-native-r2-contention-retry1",
+      "mean_ms": 1122.1717325,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-ultra_ep-r2",
+      "mean_ms": 1134.5014755,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-echo-r2",
+      "mean_ms": 1149.531265,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-eplb_fixed-r2",
+      "mean_ms": 1727.262276,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-moonep-r2-contention-retry1",
+      "mean_ms": 1143.266187,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-native-r2",
+      "mean_ms": 1161.376634,
+      "peak_hbm_gib": 88.259765625
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-ultra_ep-r2",
+      "mean_ms": 1160.85538,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-echo-r2",
+      "mean_ms": 1168.5186725,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-eplb_fixed-r2",
+      "mean_ms": 1743.6640375,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-moonep-r2",
+      "mean_ms": 1163.7141765000001,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-native-r2",
+      "mean_ms": 1185.4202225,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-ultra_ep-r2",
+      "mean_ms": 1174.818722,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-echo-r2",
+      "mean_ms": 1180.956243,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-eplb_fixed-r2",
+      "mean_ms": 1721.7923435,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-moonep-r2",
+      "mean_ms": 1178.002132,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-native-r2",
+      "mean_ms": 1196.853595,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-ultra_ep-r2",
+      "mean_ms": 1184.7678495,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-echo-r2",
+      "mean_ms": 1188.8667205,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-eplb_fixed-r2",
+      "mean_ms": 1685.2801165,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-moonep-r2",
+      "mean_ms": 1193.169749,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-native-r2",
+      "mean_ms": 1212.6789075,
+      "peak_hbm_gib": 88.259765625
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-ultra_ep-r2",
+      "mean_ms": 1196.167,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-echo-r2",
+      "mean_ms": 1195.9539790000001,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-eplb_fixed-r2",
+      "mean_ms": 1646.7846155,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-moonep-r2",
+      "mean_ms": 1207.087517,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-ultra_ep-r3",
+      "mean_ms": 1107.602937,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-echo-r3",
+      "mean_ms": 1142.884802,
+      "peak_hbm_gib": 88.259765625
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-eplb_fixed-r3",
+      "mean_ms": 1719.198901,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-moonep-r3",
+      "mean_ms": 1134.8216555,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio0.2-native-r3",
+      "mean_ms": 1085.114909,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-ultra_ep-r3",
+      "mean_ms": 1133.7573735,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-echo-r3",
+      "mean_ms": 1148.3026849999999,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-eplb_fixed-r3",
+      "mean_ms": 1727.943345,
+      "peak_hbm_gib": 88.2607421875
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-moonep-r3",
+      "mean_ms": 1143.6116895,
+      "peak_hbm_gib": 88.2607421875
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio1-native-r3",
+      "mean_ms": 1122.541766,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-ultra_ep-r3",
+      "mean_ms": 1160.7340715,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-echo-r3",
+      "mean_ms": 1169.196858,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-eplb_fixed-r3",
+      "mean_ms": 1750.823071,
+      "peak_hbm_gib": 88.2578125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-moonep-r3",
+      "mean_ms": 1164.4682665,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio5-native-r3",
+      "mean_ms": 1163.063308,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-ultra_ep-r3",
+      "mean_ms": 1174.6249905,
+      "peak_hbm_gib": 88.2578125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-echo-r3",
+      "mean_ms": 1180.6275645,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-eplb_fixed-r3",
+      "mean_ms": 1722.169144,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-moonep-r3",
+      "mean_ms": 1178.395288,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio10-native-r3",
+      "mean_ms": 1184.572655,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-ultra_ep-r3",
+      "mean_ms": 1185.8481035,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-echo-r3",
+      "mean_ms": 1188.169278,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-eplb_fixed-r3",
+      "mean_ms": 1685.451733,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-moonep-r3",
+      "mean_ms": 1192.6692405,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio15-native-r3",
+      "mean_ms": 1196.56305,
+      "peak_hbm_gib": 88.2578125
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-ultra_ep-r3",
+      "mean_ms": 1195.577913,
+      "peak_hbm_gib": 88.26171875
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-echo-r3",
+      "mean_ms": 1197.512929,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-eplb_fixed-r3",
+      "mean_ms": 1646.7548025,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-moonep-r3",
+      "mean_ms": 1207.7279045,
+      "peak_hbm_gib": 88.2587890625
+    },
+    {
+      "stage": "primary-existing",
+      "tag": "primary-existing-vio20-native-r3",
+      "mean_ms": 1212.7059435,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio0.2-step_time-r1",
+      "mean_ms": 1093.864982,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio1-step_time-r1",
+      "mean_ms": 1129.5822235,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio5-step_time-r1",
+      "mean_ms": 1169.68867,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio10-step_time-r1",
+      "mean_ms": 1191.13635,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio15-step_time-r1",
+      "mean_ms": 1202.0511375,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio20-step_time-r1",
+      "mean_ms": 1216.7999399999999,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio0.2-step_time-r2",
+      "mean_ms": 1094.47857,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio1-step_time-r2",
+      "mean_ms": 1128.882772,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio5-step_time-r2",
+      "mean_ms": 1169.1674245,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio10-step_time-r2",
+      "mean_ms": 1189.7295535,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio15-step_time-r2",
+      "mean_ms": 1202.1884085,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio20-step_time-r2",
+      "mean_ms": 1216.875156,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio0.2-step_time-r3",
+      "mean_ms": 1094.2737565,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio1-step_time-r3",
+      "mean_ms": 1129.5029875,
+      "peak_hbm_gib": 88.26171875
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio5-step_time-r3",
+      "mean_ms": 1169.568546,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio10-step_time-r3",
+      "mean_ms": 1189.691467,
+      "peak_hbm_gib": 88.259765625
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio15-step_time-r3",
+      "mean_ms": 1202.356513,
+      "peak_hbm_gib": 88.259765625
+    },
+    {
+      "stage": "primary-step-time",
+      "tag": "primary-step-time-vio20-step_time-r3",
+      "mean_ms": 1216.99491,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio0.2-step_time-r4",
+      "mean_ms": 1094.7834745,
+      "peak_hbm_gib": 88.259765625
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio0.2-ultra_ep-r4",
+      "mean_ms": 1108.038662,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio1-ultra_ep-r4",
+      "mean_ms": 1135.0911485,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio1-step_time-r4",
+      "mean_ms": 1129.4769025,
+      "peak_hbm_gib": 88.26171875
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio5-step_time-r4",
+      "mean_ms": 1168.0798255,
+      "peak_hbm_gib": 88.26171875
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio5-ultra_ep-r4",
+      "mean_ms": 1161.2198675,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio10-ultra_ep-r4",
+      "mean_ms": 1174.768855,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio10-step_time-r4",
+      "mean_ms": 1190.153987,
+      "peak_hbm_gib": 88.2548828125
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio15-step_time-r4",
+      "mean_ms": 1202.7764215,
+      "peak_hbm_gib": 88.255859375
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio15-ultra_ep-r4",
+      "mean_ms": 1185.7614275,
+      "peak_hbm_gib": 88.2578125
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio20-ultra_ep-r4",
+      "mean_ms": 1196.4607425,
+      "peak_hbm_gib": 88.2568359375
+    },
+    {
+      "stage": "fourth-paired",
+      "tag": "fourth-paired-vio20-step_time-r4",
+      "mean_ms": 1217.41528,
+      "peak_hbm_gib": 88.255859375
+    }
+  ]
+}

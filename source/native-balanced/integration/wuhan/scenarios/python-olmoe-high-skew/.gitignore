@@ -1,0 +1,4 @@
+*.npy
+*.pt
+/generated/
+/outputs/

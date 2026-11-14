@@ -1,0 +1,16 @@
+{
+  "primary_step": "max wall milliseconds over eight ranks at each step, through device completion",
+  "warmup_steps": [0, 1, 2, 3, 4],
+  "measured_steps": "5..24 inclusive",
+  "per_run_primary": "arithmetic mean of twenty measured world-max steps",
+  "point_primary": "arithmetic mean of the three independent run means",
+  "also_report": ["run P50", "run P90", "all run means", "repeat min and max"],
+  "error_bars": "min/max independent run means, not a confidence interval",
+  "normalized_denominator": "primary-bank MoonEP-planner MaxVio0.2 point mean, one common denominator for every curve",
+  "pointwise_speedup": "MoonEP-planner point mean at the same MaxVio / policy point mean",
+  "stable_point": "four paired run-mean improvements are all positive and their median is at least0.01",
+  "best_existing": "minimum geometric mean normalized time over six primary MaxVio points; failed points prevent complete-matrix best status",
+  "no_data_removal": true,
+  "failed_point_display": "explicit failure marker/status; never interpolated as a measured value",
+  "diagnostic_timing": "separate from formal TimerOFF full-step results"
+}

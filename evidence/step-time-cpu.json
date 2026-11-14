@@ -1,0 +1,441 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "case": 0,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 3,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "e33ebc500c76eb0cec72361924b173405e58ee6897b97b4e8a64044ba36c51dd"
+    },
+    {
+      "case": 1,
+      "variant": 1,
+      "rounds": 2,
+      "evaluations": 7,
+      "adopted": 2,
+      "flags": 0,
+      "body_sha": "407e206cd18a20fed902570691f06e31a56ffec3958c897488217fa8a8f34d1f"
+    },
+    {
+      "case": 2,
+      "variant": 2,
+      "rounds": 1,
+      "evaluations": 2,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "903282629b0d1b46fd6a02a5d15063597b6bca65abddce09dfd59b58cf4b918d"
+    },
+    {
+      "case": 3,
+      "variant": 3,
+      "rounds": 4,
+      "evaluations": 14,
+      "adopted": 4,
+      "flags": 0,
+      "body_sha": "f46b43b94d4c38765294fd96335b4d661ec8c973c65c0e5f498aa08a57e36dad"
+    },
+    {
+      "case": 4,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 3,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "082fe8eec707ef90401cdbd518c8399329b01571118f1fa1cc4360983f269ff5"
+    },
+    {
+      "case": 5,
+      "variant": 1,
+      "rounds": 1,
+      "evaluations": 3,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "562a0a3f91a1fd4a6a348fcf41018e6bc8ea90d19b4a8447a569b167a96fc7f8"
+    },
+    {
+      "case": 6,
+      "variant": 2,
+      "rounds": 2,
+      "evaluations": 7,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "e33ebc500c76eb0cec72361924b173405e58ee6897b97b4e8a64044ba36c51dd"
+    },
+    {
+      "case": 7,
+      "variant": 3,
+      "rounds": 2,
+      "evaluations": 7,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "0698ce203b4010ad899645b5dd7920dfe5909c8b144c9f28fbd26bc7f7eb800f"
+    },
+    {
+      "case": 8,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 2,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "903282629b0d1b46fd6a02a5d15063597b6bca65abddce09dfd59b58cf4b918d"
+    },
+    {
+      "case": 9,
+      "variant": 1,
+      "rounds": 2,
+      "evaluations": 7,
+      "adopted": 2,
+      "flags": 0,
+      "body_sha": "6f8f6e9906cf11683b028cad30b5aa91fdee20f11790d69f2e031f68dccce0d1"
+    },
+    {
+      "case": 10,
+      "variant": 2,
+      "rounds": 1,
+      "evaluations": 3,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "a2ff15aa1cf18650f5ec7269ec018984d5cb98598c2797b479b7c06e02dcebf3"
+    },
+    {
+      "case": 11,
+      "variant": 3,
+      "rounds": 1,
+      "evaluations": 3,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "cf4d82079bed2c7332e041c80955a6cf8331738d9ee0eabd26d493d0db4b7f36"
+    },
+    {
+      "case": 12,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 3,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "e33ebc500c76eb0cec72361924b173405e58ee6897b97b4e8a64044ba36c51dd"
+    },
+    {
+      "case": 13,
+      "variant": 1,
+      "rounds": 2,
+      "evaluations": 7,
+      "adopted": 2,
+      "flags": 0,
+      "body_sha": "407e206cd18a20fed902570691f06e31a56ffec3958c897488217fa8a8f34d1f"
+    },
+    {
+      "case": 14,
+      "variant": 2,
+      "rounds": 1,
+      "evaluations": 2,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "903282629b0d1b46fd6a02a5d15063597b6bca65abddce09dfd59b58cf4b918d"
+    },
+    {
+      "case": 15,
+      "variant": 3,
+      "rounds": 4,
+      "evaluations": 14,
+      "adopted": 4,
+      "flags": 0,
+      "body_sha": "acf4c8ef5f4a4ba903cdd2e7feb1e55c814710a5e77164d04b5ab3deeee157c5"
+    },
+    {
+      "case": 16,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 3,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "4a7a97d408524b1a7fd04193ad35af39d849f6e0c11951cbb7be8fdb05bf813c"
+    },
+    {
+      "case": 17,
+      "variant": 1,
+      "rounds": 1,
+      "evaluations": 3,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "d315ff153c54f3802c66e11c874d3564bde8e9e3550edb8810361307c91fe7b7"
+    },
+    {
+      "case": 18,
+      "variant": 2,
+      "rounds": 2,
+      "evaluations": 7,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "e33ebc500c76eb0cec72361924b173405e58ee6897b97b4e8a64044ba36c51dd"
+    },
+    {
+      "case": 19,
+      "variant": 3,
+      "rounds": 2,
+      "evaluations": 7,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "0698ce203b4010ad899645b5dd7920dfe5909c8b144c9f28fbd26bc7f7eb800f"
+    },
+    {
+      "case": 20,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 2,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "903282629b0d1b46fd6a02a5d15063597b6bca65abddce09dfd59b58cf4b918d"
+    },
+    {
+      "case": 21,
+      "variant": 1,
+      "rounds": 2,
+      "evaluations": 7,
+      "adopted": 2,
+      "flags": 0,
+      "body_sha": "7dd0ca9d5f264fb8d3dd29a16edb9b4038d872a7ea89977f947d8ee54ffdc63f"
+    },
+    {
+      "case": 22,
+      "variant": 2,
+      "rounds": 1,
+      "evaluations": 3,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "cba2a65311d59762a231da00ad7231351b1c2e842307140da2c7200e009342fd"
+    },
+    {
+      "case": 23,
+      "variant": 3,
+      "rounds": 1,
+      "evaluations": 3,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "73b78f48249346392b4427bc5ccdc73be975520be02bb6416d623b4b8b208230"
+    },
+    {
+      "case": 24,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 7,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "e33ebc500c76eb0cec72361924b173405e58ee6897b97b4e8a64044ba36c51dd"
+    },
+    {
+      "case": 25,
+      "variant": 1,
+      "rounds": 2,
+      "evaluations": 15,
+      "adopted": 2,
+      "flags": 0,
+      "body_sha": "407e206cd18a20fed902570691f06e31a56ffec3958c897488217fa8a8f34d1f"
+    },
+    {
+      "case": 26,
+      "variant": 2,
+      "rounds": 1,
+      "evaluations": 6,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "903282629b0d1b46fd6a02a5d15063597b6bca65abddce09dfd59b58cf4b918d"
+    },
+    {
+      "case": 27,
+      "variant": 3,
+      "rounds": 4,
+      "evaluations": 62,
+      "adopted": 4,
+      "flags": 0,
+      "body_sha": "ace9d370edddf4ed9206a0d8c84efbdfd07a7a02d504f137b9dfea079f1e9c52"
+    },
+    {
+      "case": 28,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 15,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "f41fa70d6d532166d90bb21154ca2e1ff803e9652ea028338978e14a16acc984"
+    },
+    {
+      "case": 29,
+      "variant": 1,
+      "rounds": 1,
+      "evaluations": 15,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "7f5280ed53893ad771f2d740d7e6c1d2482c87baa05ab89c4e37e4980e119de9"
+    },
+    {
+      "case": 30,
+      "variant": 2,
+      "rounds": 2,
+      "evaluations": 16,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "e33ebc500c76eb0cec72361924b173405e58ee6897b97b4e8a64044ba36c51dd"
+    },
+    {
+      "case": 31,
+      "variant": 3,
+      "rounds": 2,
+      "evaluations": 16,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "0698ce203b4010ad899645b5dd7920dfe5909c8b144c9f28fbd26bc7f7eb800f"
+    },
+    {
+      "case": 32,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 6,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "903282629b0d1b46fd6a02a5d15063597b6bca65abddce09dfd59b58cf4b918d"
+    },
+    {
+      "case": 33,
+      "variant": 1,
+      "rounds": 2,
+      "evaluations": 31,
+      "adopted": 2,
+      "flags": 0,
+      "body_sha": "ea64c3a386b252c757c6b5c34fd18665889993037d22f622176e2e75aae67826"
+    },
+    {
+      "case": 34,
+      "variant": 2,
+      "rounds": 1,
+      "evaluations": 15,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "7d971384427f8da728c9f84d7894578e6129f12360b3bf485e16b21eaaf46e1f"
+    },
+    {
+      "case": 35,
+      "variant": 3,
+      "rounds": 1,
+      "evaluations": 15,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "4b13ffb827216356cb3800a183ace692a732f53249a8df277db09c53716d2e4a"
+    },
+    {
+      "case": 36,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 7,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "e33ebc500c76eb0cec72361924b173405e58ee6897b97b4e8a64044ba36c51dd"
+    },
+    {
+      "case": 37,
+      "variant": 1,
+      "rounds": 2,
+      "evaluations": 15,
+      "adopted": 2,
+      "flags": 0,
+      "body_sha": "407e206cd18a20fed902570691f06e31a56ffec3958c897488217fa8a8f34d1f"
+    },
+    {
+      "case": 38,
+      "variant": 2,
+      "rounds": 1,
+      "evaluations": 6,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "903282629b0d1b46fd6a02a5d15063597b6bca65abddce09dfd59b58cf4b918d"
+    },
+    {
+      "case": 39,
+      "variant": 3,
+      "rounds": 4,
+      "evaluations": 62,
+      "adopted": 4,
+      "flags": 0,
+      "body_sha": "bad3f1e657ee56d26491dcd26e9e228f2dab964d3b4408756bec7de810d0058a"
+    },
+    {
+      "case": 40,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 15,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "1ca87bfa35b82fd6b6db082faa7223c39dd56d65f47015061a43d1ee9d321b01"
+    },
+    {
+      "case": 41,
+      "variant": 1,
+      "rounds": 1,
+      "evaluations": 15,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "e8058d0fe69308cd4740d65bbea27aaf16250b10ff8c991990770423d7510d77"
+    },
+    {
+      "case": 42,
+      "variant": 2,
+      "rounds": 2,
+      "evaluations": 16,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "e33ebc500c76eb0cec72361924b173405e58ee6897b97b4e8a64044ba36c51dd"
+    },
+    {
+      "case": 43,
+      "variant": 3,
+      "rounds": 2,
+      "evaluations": 16,
+      "adopted": 1,
+      "flags": 0,
+      "body_sha": "0698ce203b4010ad899645b5dd7920dfe5909c8b144c9f28fbd26bc7f7eb800f"
+    },
+    {
+      "case": 44,
+      "variant": 0,
+      "rounds": 1,
+      "evaluations": 6,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "903282629b0d1b46fd6a02a5d15063597b6bca65abddce09dfd59b58cf4b918d"
+    },
+    {
+      "case": 45,
+      "variant": 1,
+      "rounds": 2,
+      "evaluations": 31,
+      "adopted": 2,
+      "flags": 0,
+      "body_sha": "1a16f96bc8bd5cb36f4b47c3c9a445156583437966540cec7c31b2daa2277ac1"
+    },
+    {
+      "case": 46,
+      "variant": 2,
+      "rounds": 1,
+      "evaluations": 15,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "46e9729a549baca761f2d086aa3f3bc1c55c6a2c1e94ce8d0db5722bcc07c8e9"
+    },
+    {
+      "case": 47,
+      "variant": 3,
+      "rounds": 1,
+      "evaluations": 15,
+      "adopted": 0,
+      "flags": 2,
+      "body_sha": "0186bec5ee39a94b5c170010c443014c882323269620f8d206a3e29f73176c46"
+    }
+  ],
+  "adopted_cases": 24,
+  "independent_task_dag": true,
+  "independent_public_compiler": true,
+  "model_sha256": "ac66dfb82a49cf0bb453a9ebca8b8b43fd824077de546d96e96fb20881dc92a4"
+}

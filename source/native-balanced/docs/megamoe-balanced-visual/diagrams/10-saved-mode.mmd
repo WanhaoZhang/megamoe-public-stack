@@ -1,0 +1,24 @@
+sequenceDiagram
+ box rgb(235,244,255) MindSpeed-LLM
+  participant F as model_factory.py
+ end
+ box rgb(234,247,240) FSDPTurbo / FSDP
+  participant D as dispatcher_megamoe_balanced.py
+ end
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant B as fsdp2_bridge.py
+  participant S as saved_gate_up_mode.py
+  participant O as mega_moe_bf16.h
+  participant K as mega_moe_bf16_backward.h
+ end
+ F->>D: H01 配置 save_gmm1_output 随 EP plan 到 dispatcher
+ D->>B: H02 选定保存格式加入 pool 配置与身份
+ B->>S: H03 resolve：bf16 / none / mxfp8 / auto
+ S-->>B: 本次实际 mode，autograd ctx 保留给 B
+ B-->>O: H04 经 forward launcher 选择 gate/up 保存路径
+ alt bf16 或 mxfp8
+ O-->>K: H05 P1 读取对应保存的 gate/up，MXFP8按需解码
+ else none
+ K->>K: H06 P0-C 从 packed X 和 W1 重算 GMM1
+ end
+ Note over B,K: 框架 checkpoint 的层重算见整网反向。none 对应核内 GMM1 重算

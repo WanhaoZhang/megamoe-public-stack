@@ -1,0 +1,30 @@
+/build/
+/build_mega_*/
+/dist/
+*.egg-info/
+__pycache__/
+*.py[cod]
+*.so
+*.a
+*.o
+*.d
+ascend_deepep/lib/*
+!ascend_deepep/lib/.gitkeep
+3rdparty/shmem/install/
+test/megamoe_w4a8_test/perf_result.csv
+.runtime_include_dir.cache
+# Isolated planner benchmark builds and frozen native variants
+/build-planner-*/
+/build-worker-*/
+/worker-variants/
+/planner-variants/
+/bench-build-evidence/
+# MegaMoe generated build and test artifacts
+/test/megamoe_*/output/
+/test/megamoe_*/**/build/
+/test/megamoe_*/**/build_*/
+/test/megamoe_*/**/install/
+/test/megamoe_*/**/output/
+/test/transport_benchmark/build/
+/test/transport_benchmark/install/
+/test/transport_benchmark/output/

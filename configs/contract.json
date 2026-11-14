@@ -1,0 +1,89 @@
+{
+  "schema_version": 2,
+  "status": "implementation",
+  "authorized": "2026-11-13 user explicitly requested implementation and device runs",
+  "framework": {
+    "MindSpeed": "dd5ee0321c1179aaaded4fba4f119ed310b30639",
+    "FSDPTurbo": "9c443c614f6aba84908a9eedbaecd50cc15fb022",
+    "basis": "new public-stack lab, audited explicit adaptations"
+  },
+  "native": {
+    "balanced": "48ef24a6586a633ddbbf265d4eab72e229bf1fae",
+    "shared": "7626dc9cb36343df500ec2cccdf7f41d3b8cdbaf",
+    "MoonEP": "d8b9db58ca13e2e8545575034f8f57b956fee342"
+  },
+  "shape": {
+    "world": 8,
+    "ep": 8,
+    "efsdp": 1,
+    "fsdp": 8,
+    "tp": 1,
+    "cp": 1,
+    "layers": 3,
+    "E": 256,
+    "K": 8,
+    "H": 7168,
+    "F": 2048,
+    "S": 16384,
+    "shared": 1,
+    "hash": 0,
+    "mtp": 0,
+    "limit": 10,
+    "home": 32,
+    "replicas": 32,
+    "physical": 64
+  },
+  "maxvios": [
+    0.2,
+    1,
+    5,
+    10,
+    15,
+    20
+  ],
+  "training": {
+    "seed": 42,
+    "microbatch": 1,
+    "ga": 1,
+    "steps": 25,
+    "warmup": 5,
+    "measure": 20,
+    "repeats": 3,
+    "optimizer": "FunctionalFusedAdamW",
+    "lr": 0.00001,
+    "betas": [
+      0.9,
+      0.95
+    ],
+    "epsilon": 1e-8,
+    "weight_decay": 0.01,
+    "clip": 1,
+    "persistent_dtype": "float32",
+    "compute_dtype": "bfloat16",
+    "recompute": "whole-layer non-reentrant; preserve layer/step route on replay"
+  },
+  "limits": {
+    "peak_hbm_GiB": 90,
+    "fallback_layers": 2,
+    "route_tolerance": "max(0.02*target,0.005)",
+    "output_relative_l2": 0.004,
+    "grad_relative_l2": 0.02
+  },
+  "node_candidate": "pod6-1-root; recheck before admission",
+  "original_harness": "not found; disclosed local shared recipe and cropped depth",
+  "copied_lab_adaptations": [
+    "FSDPTurbo/fsdp_turbo/fsdp_turbo_config.py",
+    "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/expert_parallel.py",
+    "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/utils.py",
+    "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/dispatcher_mega_moe.py",
+    "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/dispatcher_megamoe_balanced.py",
+    "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/mega_moe_redispatch.py",
+    "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/balanced_bootstrap.py",
+    "FSDPTurbo/fsdp_turbo/distributed/expert_parallel/megamoe_balanced_diag.py",
+    "MindSpeed-LLM/mindspeed_llm/fsdp2/utils/arguments.py",
+    "MindSpeed-LLM/mindspeed_llm/fsdp2/distributed/parallel_engine_config.py",
+    "MindSpeed-LLM/mindspeed_llm/fsdp2/distributed/expert_parallel/expert_parallel.py",
+    "MindSpeed-LLM/mindspeed_llm/fsdp2/models/model_factory.py",
+    "MindSpeed-LLM/mindspeed_llm/fsdp2/models/deepseek_v4/modeling_deepseek_v4.py"
+  ]
+}

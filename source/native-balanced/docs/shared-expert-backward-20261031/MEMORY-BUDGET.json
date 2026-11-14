@@ -1,0 +1,22 @@
+{
+  "M": 8192,
+  "H": 7168,
+  "Fs": 3072,
+  "capacity": 20480,
+  "bytes": {
+    "X": 117440512,
+    "raw_GU": 100663296,
+    "A": 50331648,
+    "dA": 50331648,
+    "dG_dU": 100663296,
+    "dXg": 117440512,
+    "dXu": 117440512,
+    "dW_three": 132120576,
+    "source_X_bank": 234881024,
+    "packed_X": 293601280,
+    "packed_prob": 40960
+  },
+  "shared_scratch_keep_MiB": 368.0,
+  "shared_scratch_recompute_MiB": 512.0,
+  "existing_routed_numerical_scratch_MiB": 640.9375
+}

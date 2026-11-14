@@ -1,0 +1,5 @@
+// Keep old Full backward to isolate the forward-prefetch effect.
+#define megaflux_full_bf16_backward megaflux_prefetch_bf16_backward
+#define megaflux_full_bf16_backward_ready_k_kernel_do megaflux_prefetch_bf16_backward_ready_k_kernel_do
+#define megaflux_full_bf16_backward_timer_enabled megaflux_prefetch_bf16_backward_timer_enabled
+#include "megaflux_full_bf16_backward.cpp"

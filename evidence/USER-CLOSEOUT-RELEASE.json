@@ -1,0 +1,148 @@
+{
+  "passed": true,
+  "user_requested": true,
+  "stopped_only_verified_task_pids": true,
+  "device_reset": false,
+  "remaining_registered_task_processes": [],
+  "actions": [
+    {
+      "pid": 2515961,
+      "command": "python3 -u - ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/sshd.service\n",
+      "action": "SIGTERM waiting continuation"
+    },
+    {
+      "pid": 2512188,
+      "command": "python3 -m torch.distributed.run --nproc_per_node=8 --nnodes=1 --master_addr=127.0.0.1 --master_port=29279 /home/z00956592/megaflux/planner-executor-ep8-lab/tools/validate.py --backend balanced --out /home/z00956592/megaflux/planner-executor-ep8-lab/evidence/diagnostic-fixed-state-pair-aligned-vio5 --fixed-state-pair --root /home/z00956592/megaflux/planner-executor-ep8-lab --planner step_time --maxvio 5 --steps 25 --cost-model /home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/docker-f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865.scope\n",
+      "action": "SIGTERM user-canceled diagnostic"
+    },
+    {
+      "pid": 2516457,
+      "command": "/usr/local/python3.12.13/bin/python3 -u /home/z00956592/megaflux/planner-executor-ep8-lab/tools/validate.py --backend balanced --out /home/z00956592/megaflux/planner-executor-ep8-lab/evidence/diagnostic-fixed-state-pair-aligned-vio5 --fixed-state-pair --root /home/z00956592/megaflux/planner-executor-ep8-lab --planner step_time --maxvio 5 --steps 25 --cost-model /home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/docker-f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865.scope\n",
+      "action": "SIGTERM user-canceled diagnostic"
+    },
+    {
+      "pid": 2516458,
+      "command": "/usr/local/python3.12.13/bin/python3 -u /home/z00956592/megaflux/planner-executor-ep8-lab/tools/validate.py --backend balanced --out /home/z00956592/megaflux/planner-executor-ep8-lab/evidence/diagnostic-fixed-state-pair-aligned-vio5 --fixed-state-pair --root /home/z00956592/megaflux/planner-executor-ep8-lab --planner step_time --maxvio 5 --steps 25 --cost-model /home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/docker-f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865.scope\n",
+      "action": "SIGTERM user-canceled diagnostic"
+    },
+    {
+      "pid": 2516459,
+      "command": "/usr/local/python3.12.13/bin/python3 -u /home/z00956592/megaflux/planner-executor-ep8-lab/tools/validate.py --backend balanced --out /home/z00956592/megaflux/planner-executor-ep8-lab/evidence/diagnostic-fixed-state-pair-aligned-vio5 --fixed-state-pair --root /home/z00956592/megaflux/planner-executor-ep8-lab --planner step_time --maxvio 5 --steps 25 --cost-model /home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/docker-f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865.scope\n",
+      "action": "SIGTERM user-canceled diagnostic"
+    },
+    {
+      "pid": 2516460,
+      "command": "/usr/local/python3.12.13/bin/python3 -u /home/z00956592/megaflux/planner-executor-ep8-lab/tools/validate.py --backend balanced --out /home/z00956592/megaflux/planner-executor-ep8-lab/evidence/diagnostic-fixed-state-pair-aligned-vio5 --fixed-state-pair --root /home/z00956592/megaflux/planner-executor-ep8-lab --planner step_time --maxvio 5 --steps 25 --cost-model /home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/docker-f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865.scope\n",
+      "action": "SIGTERM user-canceled diagnostic"
+    },
+    {
+      "pid": 2516461,
+      "command": "/usr/local/python3.12.13/bin/python3 -u /home/z00956592/megaflux/planner-executor-ep8-lab/tools/validate.py --backend balanced --out /home/z00956592/megaflux/planner-executor-ep8-lab/evidence/diagnostic-fixed-state-pair-aligned-vio5 --fixed-state-pair --root /home/z00956592/megaflux/planner-executor-ep8-lab --planner step_time --maxvio 5 --steps 25 --cost-model /home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/docker-f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865.scope\n",
+      "action": "SIGTERM user-canceled diagnostic"
+    },
+    {
+      "pid": 2516462,
+      "command": "/usr/local/python3.12.13/bin/python3 -u /home/z00956592/megaflux/planner-executor-ep8-lab/tools/validate.py --backend balanced --out /home/z00956592/megaflux/planner-executor-ep8-lab/evidence/diagnostic-fixed-state-pair-aligned-vio5 --fixed-state-pair --root /home/z00956592/megaflux/planner-executor-ep8-lab --planner step_time --maxvio 5 --steps 25 --cost-model /home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/docker-f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865.scope\n",
+      "action": "SIGTERM user-canceled diagnostic"
+    },
+    {
+      "pid": 2516463,
+      "command": "/usr/local/python3.12.13/bin/python3 -u /home/z00956592/megaflux/planner-executor-ep8-lab/tools/validate.py --backend balanced --out /home/z00956592/megaflux/planner-executor-ep8-lab/evidence/diagnostic-fixed-state-pair-aligned-vio5 --fixed-state-pair --root /home/z00956592/megaflux/planner-executor-ep8-lab --planner step_time --maxvio 5 --steps 25 --cost-model /home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/docker-f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865.scope\n",
+      "action": "SIGTERM user-canceled diagnostic"
+    },
+    {
+      "pid": 2516464,
+      "command": "/usr/local/python3.12.13/bin/python3 -u /home/z00956592/megaflux/planner-executor-ep8-lab/tools/validate.py --backend balanced --out /home/z00956592/megaflux/planner-executor-ep8-lab/evidence/diagnostic-fixed-state-pair-aligned-vio5 --fixed-state-pair --root /home/z00956592/megaflux/planner-executor-ep8-lab --planner step_time --maxvio 5 --steps 25 --cost-model /home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/docker-f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865.scope\n",
+      "action": "SIGTERM user-canceled diagnostic"
+    },
+    {
+      "pid": 2512188,
+      "command": "python3 -m torch.distributed.run --nproc_per_node=8 --nnodes=1 --master_addr=127.0.0.1 --master_port=29279 /home/z00956592/megaflux/planner-executor-ep8-lab/tools/validate.py --backend balanced --out /home/z00956592/megaflux/planner-executor-ep8-lab/evidence/diagnostic-fixed-state-pair-aligned-vio5 --fixed-state-pair --root /home/z00956592/megaflux/planner-executor-ep8-lab --planner step_time --maxvio 5 --steps 25 --cost-model /home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json ",
+      "cwd": "/home/z00956592/megaflux/planner-executor-ep8-lab",
+      "cgroup": "0::/system.slice/docker-f09afea1c8febaa114a1fcb7c64ad3b782085cdca89d6a55a47ff31fefce4865.scope\n",
+      "action": "SIGKILL after35s canceled task grace"
+    },
+    {
+      "pid": 2561818,
+      "command": "python3 /home/z00956592/megaflux/planner-executor-ep8-lab/tools/monitor_device_processes.py --host-tag pod6-1-resume --quiet ",
+      "cwd": "/root",
+      "cgroup": "0::/system.slice/sshd.service\n",
+      "action": "SIGTERM task observer"
+    }
+  ],
+  "post_release_hbm": {
+    "timestamp": 1794650988.176026,
+    "cards": [
+      {
+        "rank": 0,
+        "used_MiB": 4968,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 1,
+        "used_MiB": 4957,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 2,
+        "used_MiB": 4957,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 3,
+        "used_MiB": 4950,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 4,
+        "used_MiB": 4956,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 5,
+        "used_MiB": 4957,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 6,
+        "used_MiB": 4926,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 7,
+        "used_MiB": 4960,
+        "total_MiB": 98304,
+        "utilization": 0
+      }
+    ],
+    "no_process_cards": 8
+  },
+  "time_utc": "2026-11-14T10:09:48.176037+00:00"
+}

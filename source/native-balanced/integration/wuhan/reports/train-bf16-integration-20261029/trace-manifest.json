@@ -1,0 +1,18 @@
+[
+  {
+    "phase": "forward",
+    "filename": "all_8_rank_forward_trace.json",
+    "bytes": 22988609,
+    "sha256": "9703046f794bbae6d2b35f9b4ec1980663f4f795169e089b2e06442715d30e81",
+    "compressed_bytes": 2109468,
+    "gzip_sha256": "0cc8501187a6514630d305c0f9ff263cdd5c39faf5bbf4e3b60d5e48cb3cf4d6"
+  },
+  {
+    "phase": "backward",
+    "filename": "all_8_rank_backward_trace.json",
+    "bytes": 408577415,
+    "sha256": "151fe685ea692cb7be17f3ab652cd2cd367c50a34946f201b586c5aabc949399",
+    "compressed_bytes": 33187500,
+    "gzip_sha256": "17d23df7512c442b4cae826dc4f702a6578fefcc5a1576ed3c84edcae9028fad"
+  }
+]

@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "status": "historical_evidence_plus_delivery_regression_separate",
+  "purpose": "Same-input planner, serial execution and S9 comparisons",
+  "seed": 42,
+  "warmup": 10,
+  "repeat": 30,
+  "backends": [
+    "original",
+    "moonep-reference",
+    "local-serial",
+    "s9"
+  ],
+  "local_planners": [
+    "native",
+    "moonep"
+  ],
+  "native_policy": {
+    "beta": 768,
+    "penalty_blocks": 2,
+    "min_gain_blocks": 4
+  },
+  "scopes": [
+    "online_end_to_end"
+  ],
+  "capacity": {
+    "alignment": 128,
+    "value": null,
+    "requirement": "Calibrate from actual route counts and policy; freeze before device allocation; no EP*M*K default for large EP"
+  },
+  "first_device_stage": [
+    {
+      "name": "ep8_precision",
+      "ep": 8,
+      "experts": 16,
+      "slots": 2,
+      "tokens": 2049,
+      "hidden": 512,
+      "ffn": 1024,
+      "topk": 2,
+      "routes": [
+        "balanced",
+        "hot",
+        "rotate"
+      ],
+      "require_replicas_on_hot": true
+    },
+    {
+      "name": "ep8_balanced_random_m4096",
+      "ep": 8,
+      "experts": 16,
+      "slots": 2,
+      "tokens": 4096,
+      "hidden": 7168,
+      "ffn": 3072,
+      "topk": 6,
+      "routes": [
+        "balanced_random"
+      ]
+    },
+    {
+      "name": "ep8_topk2",
+      "ep": 8,
+      "experts": 16,
+      "slots": 2,
+      "tokens": 8192,
+      "hidden": 7168,
+      "ffn": 3072,
+      "topk": 2,
+      "routes": [
+        "rank_skew"
+      ],
+      "rho": [
+        0,
+        3,
+        6
+      ]
+    },
+    {
+      "name": "ep8_topk6",
+      "ep": 8,
+      "experts": 16,
+      "slots": 2,
+      "tokens": 8192,
+      "hidden": 7168,
+      "ffn": 3072,
+      "topk": 6,
+      "routes": [
+        "rank_skew"
+      ],
+      "rho": [
+        0,
+        3,
+        6
+      ]
+    }
+  ],
+  "offline_scaling_stage": {
+    "ep": [
+      16,
+      32,
+      64,
+      128,
+      256
+    ],
+    "home": 2,
+    "slots": 2,
+    "tokens": 8192,
+    "hidden": 7168,
+    "ffn": 3072,
+    "topk": [
+      2,
+      6
+    ],
+    "rho": [
+      0,
+      3,
+      6
+    ],
+    "device_support_claim": false
+  },
+  "deferred_scopes": [
+    "same_plan_replay"
+  ],
+  "validated_cases": [
+    {
+      "tokens": 2049,
+      "hidden": 512,
+      "ffn": 1024,
+      "experts": 16,
+      "slots": 2,
+      "topk": 2,
+      "capacity": 37248,
+      "route": "hot",
+      "rho": 0.0,
+      "seed": 42,
+      "planner": "moonep",
+      "scope": "online",
+      "ep": 8,
+      "router_sha256": null
+    },
+    {
+      "tokens": 4096,
+      "hidden": 7168,
+      "ffn": 3072,
+      "experts": 16,
+      "slots": 2,
+      "topk": 6,
+      "capacity": 27776,
+      "route": "balanced_random",
+      "rho": 0.0,
+      "seed": 42,
+      "planner": "moonep",
+      "scope": "online",
+      "ep": 8,
+      "router_sha256": null
+    }
+  ],
+  "delivery_cases": [
+    {
+      "ep": 8,
+      "experts": 32,
+      "slots": 4,
+      "tokens": 4096,
+      "hidden": 7168,
+      "ffn": 3072,
+      "topk": 6,
+      "route": "balanced_random",
+      "load_ratio": 2
+    },
+    {
+      "ep": 8,
+      "experts": 32,
+      "slots": 4,
+      "tokens": 4096,
+      "hidden": 7168,
+      "ffn": 3072,
+      "topk": 6,
+      "route": "random",
+      "load_ratio": 2
+    },
+    {
+      "ep": 8,
+      "experts": 32,
+      "slots": 4,
+      "tokens": 4096,
+      "hidden": 7168,
+      "ffn": 3072,
+      "topk": 6,
+      "route": "controlled",
+      "load_ratio": 1.5
+    },
+    {
+      "ep": 8,
+      "experts": 32,
+      "slots": 4,
+      "tokens": 4096,
+      "hidden": 7168,
+      "ffn": 3072,
+      "topk": 6,
+      "route": "controlled",
+      "load_ratio": 2
+    }
+  ]
+}

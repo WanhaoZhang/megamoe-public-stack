@@ -1,0 +1,46 @@
+swimlane-beta TB
+    accTitle: 三仓训练工作流
+    accDescr: train_fsdp2 与并行装配就绪后，每步从 batch 进入前向，再经 autograd、EP 归主、Expert-FSDP 梯度同步与参数更新。泳道按代码职责划分。
+
+    subgraph model [MindSpeed-LLM]
+        boot["I03 进入 train_fsdp2<br/>I04 创建模型"]
+        batch["S06 取 batch<br/>F03 模型调用专家"]
+        loss["F16 合并 routed / shared<br/>S10 合成 loss<br/>U01 反向可重算前向"]
+        upstream["B17 梯度回上游计算图"]
+        update["U07 更新参数分片<br/>U08 调度与清梯度"]
+    end
+
+    subgraph parallel [FSDPTurbo / FSDP]
+        setup["I07 绑定 EP dispatcher<br/>I15 注册 FSDP hooks"]
+        dispatch["F17 准备前向参数<br/>F06 专家派发入口"]
+        restore["U02 恢复 home 参数"]
+        reduce["U04 Expert-FSDP<br/>reduce-scatter"]
+    end
+
+    subgraph native [MegaMoE Native / Kernel]
+        forward["F09 发布 home、规划<br/>N10 派发、计算、合并"]
+        tape["F15 本层 tape<br/>BF16 状态和 placement"]
+        backward["B07 新 epoch 回放计划<br/>B13 专家反向、EP 归主"]
+    end
+
+    boot --> setup
+    setup -->|一次性装配完成| batch
+    batch -->|本层 X / ids / prob| dispatch
+    dispatch -->|张量和权重闭包| forward
+    forward -->|routed Y| loss
+    forward -.-> tape
+    loss -->|autograd 传入 dY| backward
+    loss -.->|pre-backward hook| restore
+    restore -->|live home W1 / W2| backward
+    tape --> backward
+    backward -->|dX / dp| upstream
+    backward -->|autograd 交回 home dW| reduce
+    reduce -->|梯度分片| update
+    upstream --> update
+
+    classDef mindspeed fill:#eaf3ff,stroke:#275589,color:#15283f;
+    classDef fsdp fill:#eaf7f0,stroke:#22634d,color:#15283f;
+    classDef kernel fill:#fff2e3,stroke:#90521d,color:#15283f;
+    class boot,batch,loss,upstream,update mindspeed;
+    class setup,dispatch,restore,reduce fsdp;
+    class forward,tape,backward kernel;

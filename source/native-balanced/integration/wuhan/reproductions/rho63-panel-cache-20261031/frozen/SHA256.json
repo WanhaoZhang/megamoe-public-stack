@@ -1,0 +1,16 @@
+{
+  "scope": "Exact device/build scripts from the accepted experiment; no SSH or credentials.",
+  "files": {
+    "ordinary-reference.py": "de5ce90081c951eb0756cde10178d8fc8b1c61039590ac1a6cdacf9b2e9d7476",
+    "capture-current.py": "28b913854884a19f0e2640ef4d47622c03454dbd3b999a68f01bb148840e1b63",
+    "performance-online.py": "93f789279ac64a7d02926e37797694e602ece76a6cd0c64a7b2579dd667e7671",
+    "bridge_entry.py": "0a78a45d402c865156716762516ebfb1b2a5e053ded08c3e6dbe895b413bfb16",
+    "panel-cache-selection-entry.py": "a5a4d354f65613f100ac5d52e8de27041eb979ea992295b8fac2da05d94cb163",
+    "run-device-cache.sh": "7c3870b9aeb95f3e071ce93b78b8c6e21001267851ca2b49494d9586312b6e53",
+    "run-device.sh": "92e814b5e72ab471664508a7718dfa2e62139487c0c26338fd996b6d930b74f8",
+    "build-baseline.sh": "d434f9eae049d9aa83ceac78875dcf86e46a3c52a4b4b2975ee13661b241c081",
+    "build-panel-cache.sh": "f21c869997226aa941199c20eaca597dec9a0a03101b4dd5838e60939ca478f2",
+    "qualify-panel-cache.py": "0c0e0b4b3f88b22ea5b9d35102e9c42c568f2253dff40760f92d3ec261087d20",
+    "verify-baseline.py": "79ee7ded185094edabefaf683c582d6560e50f66479600db487c567a8fa619c1"
+  }
+}

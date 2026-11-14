@@ -1,0 +1,2795 @@
+{
+  "base_commit": "0618eebc2403bb5adb0aa1c615e870223ec78472",
+  "build_exit": "0",
+  "code_identity": "e22446e2d4820a6374390ce578a79d81509ef73074b94144ef461f080c594899",
+  "source_files_verified": 240,
+  "libraries": {
+    "worker-variants/planner-bench": {
+      "native_sha256": "b9ca378491df0f358cb9be6da3975b394cb0f87cadcf9630c95db7717d6a80b4",
+      "direct_permille": null,
+      "timer": 0
+    },
+    "planner-variants/strict": {
+      "native_sha256": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+      "direct_permille": 0,
+      "timer": 0
+    },
+    "planner-variants/direct1050": {
+      "native_sha256": "e63aa02d65ef1d90e5f07ef7d6fee68539fe3d7f99f5c590e6599f2f2f28774e",
+      "direct_permille": 1050,
+      "timer": 0
+    }
+  },
+  "cpu_checks": {
+    "benchmark_contracts": 18,
+    "timer_trace_contracts": 7,
+    "parallel_checker": [
+      "equivalence-pass",
+      "equivalence-nonfinite-rejection",
+      "artifact-tamper-rejection"
+    ],
+    "direct_integer_boundary": true,
+    "bridge_lifecycle": true,
+    "restore_operand_adl": true
+  },
+  "runs": [
+    {
+      "eligible": true,
+      "run_exit": 1,
+      "post_gate": true,
+      "state": "FAILED",
+      "allow_warning_alarm": true,
+      "utc": "2026-10-29T07:11:30.321774+00:00",
+      "directory": "delivery-contract",
+      "rank_receipts": 0
+    },
+    {
+      "eligible": true,
+      "run_exit": 0,
+      "post_gate": false,
+      "state": "FAILED",
+      "allow_warning_alarm": true,
+      "utc": "2026-10-29T07:14:49.497575+00:00",
+      "directory": "delivery-contract-v2",
+      "rank_receipts": 8,
+      "code_identity": "e22446e2d4820a6374390ce578a79d81509ef73074b94144ef461f080c594899",
+      "case": null,
+      "backend": null,
+      "mode": null,
+      "routing_variant": null,
+      "transition_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "invalid_case_counts": [
+        17,
+        17,
+        17,
+        17,
+        17,
+        17,
+        17,
+        17
+      ]
+    },
+    {
+      "eligible": true,
+      "run_exit": 0,
+      "post_gate": true,
+      "state": "COMPLETED",
+      "allow_warning_alarm": true,
+      "utc": "2026-10-29T07:20:20.638334+00:00",
+      "directory": "delivery-contract-v3",
+      "rank_receipts": 8,
+      "code_identity": "e22446e2d4820a6374390ce578a79d81509ef73074b94144ef461f080c594899",
+      "case": null,
+      "backend": null,
+      "mode": null,
+      "routing_variant": null,
+      "transition_counts": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "invalid_case_counts": [
+        17,
+        17,
+        17,
+        17,
+        17,
+        17,
+        17,
+        17
+      ]
+    },
+    {
+      "eligible": true,
+      "run_exit": 0,
+      "post_gate": true,
+      "state": "COMPLETED",
+      "allow_warning_alarm": true,
+      "utc": "2026-10-29T07:28:25.023386+00:00",
+      "directory": "delivery-small-hot/performance-0-original",
+      "rank_receipts": 8,
+      "code_identity": "e22446e2d4820a6374390ce578a79d81509ef73074b94144ef461f080c594899",
+      "case": {
+        "tokens": 2049,
+        "hidden": 512,
+        "ffn": 1024,
+        "experts": 16,
+        "slots": 2,
+        "topk": 2,
+        "capacity": 37248,
+        "route": "hot",
+        "rho": 0.0,
+        "seed": 42,
+        "planner": "moonep",
+        "scope": "online",
+        "load_ratio": 2.0,
+        "ep": 8,
+        "router_sha256": null
+      },
+      "backend": "original",
+      "mode": "performance",
+      "routing_variant": null
+    },
+    {
+      "eligible": true,
+      "run_exit": 0,
+      "post_gate": false,
+      "state": "FAILED",
+      "allow_warning_alarm": true,
+      "utc": "2026-10-29T07:30:00.099591+00:00",
+      "directory": "delivery-small-hot/performance-1-moonep-reference",
+      "rank_receipts": 8,
+      "code_identity": "e22446e2d4820a6374390ce578a79d81509ef73074b94144ef461f080c594899",
+      "case": {
+        "tokens": 2049,
+        "hidden": 512,
+        "ffn": 1024,
+        "experts": 16,
+        "slots": 2,
+        "topk": 2,
+        "capacity": 37248,
+        "route": "hot",
+        "rho": 0.0,
+        "seed": 42,
+        "planner": "moonep",
+        "scope": "online",
+        "load_ratio": 2.0,
+        "ep": 8,
+        "router_sha256": null
+      },
+      "backend": "moonep-reference",
+      "mode": "performance",
+      "routing_variant": null
+    },
+    {
+      "eligible": true,
+      "run_exit": 0,
+      "post_gate": true,
+      "state": "COMPLETED",
+      "allow_warning_alarm": true,
+      "utc": "2026-10-29T07:21:58.071947+00:00",
+      "directory": "delivery-small-hot/precision-0-original",
+      "rank_receipts": 8,
+      "code_identity": "e22446e2d4820a6374390ce578a79d81509ef73074b94144ef461f080c594899",
+      "case": {
+        "tokens": 2049,
+        "hidden": 512,
+        "ffn": 1024,
+        "experts": 16,
+        "slots": 2,
+        "topk": 2,
+        "capacity": 37248,
+        "route": "hot",
+        "rho": 0.0,
+        "seed": 42,
+        "planner": "moonep",
+        "scope": "online",
+        "load_ratio": 2.0,
+        "ep": 8,
+        "router_sha256": null
+      },
+      "backend": "original",
+      "mode": "precision",
+      "routing_variant": null
+    },
+    {
+      "eligible": true,
+      "run_exit": 0,
+      "post_gate": true,
+      "state": "COMPLETED",
+      "allow_warning_alarm": true,
+      "utc": "2026-10-29T07:23:33.528205+00:00",
+      "directory": "delivery-small-hot/precision-1-moonep-reference",
+      "rank_receipts": 8,
+      "code_identity": "e22446e2d4820a6374390ce578a79d81509ef73074b94144ef461f080c594899",
+      "case": {
+        "tokens": 2049,
+        "hidden": 512,
+        "ffn": 1024,
+        "experts": 16,
+        "slots": 2,
+        "topk": 2,
+        "capacity": 37248,
+        "route": "hot",
+        "rho": 0.0,
+        "seed": 42,
+        "planner": "moonep",
+        "scope": "online",
+        "load_ratio": 2.0,
+        "ep": 8,
+        "router_sha256": null
+      },
+      "backend": "moonep-reference",
+      "mode": "precision",
+      "routing_variant": null
+    },
+    {
+      "eligible": true,
+      "run_exit": 0,
+      "post_gate": true,
+      "state": "COMPLETED",
+      "allow_warning_alarm": true,
+      "utc": "2026-10-29T07:25:10.375305+00:00",
+      "directory": "delivery-small-hot/precision-2-local-serial",
+      "rank_receipts": 8,
+      "code_identity": "e22446e2d4820a6374390ce578a79d81509ef73074b94144ef461f080c594899",
+      "case": {
+        "tokens": 2049,
+        "hidden": 512,
+        "ffn": 1024,
+        "experts": 16,
+        "slots": 2,
+        "topk": 2,
+        "capacity": 37248,
+        "route": "hot",
+        "rho": 0.0,
+        "seed": 42,
+        "planner": "moonep",
+        "scope": "online",
+        "load_ratio": 2.0,
+        "ep": 8,
+        "router_sha256": null
+      },
+      "backend": "local-serial",
+      "mode": "precision",
+      "routing_variant": null
+    },
+    {
+      "eligible": true,
+      "run_exit": 0,
+      "post_gate": true,
+      "state": "COMPLETED",
+      "allow_warning_alarm": true,
+      "utc": "2026-10-29T07:26:45.795698+00:00",
+      "directory": "delivery-small-hot/precision-3-s9",
+      "rank_receipts": 8,
+      "code_identity": "e22446e2d4820a6374390ce578a79d81509ef73074b94144ef461f080c594899",
+      "case": {
+        "tokens": 2049,
+        "hidden": 512,
+        "ffn": 1024,
+        "experts": 16,
+        "slots": 2,
+        "topk": 2,
+        "capacity": 37248,
+        "route": "hot",
+        "rho": 0.0,
+        "seed": 42,
+        "planner": "moonep",
+        "scope": "online",
+        "load_ratio": 2.0,
+        "ep": 8,
+        "router_sha256": null
+      },
+      "backend": "s9",
+      "mode": "precision",
+      "routing_variant": null
+    }
+  ],
+  "small_precision": {
+    "pass_": true,
+    "case": {
+      "tokens": 2049,
+      "hidden": 512,
+      "ffn": 1024,
+      "experts": 16,
+      "slots": 2,
+      "topk": 2,
+      "capacity": 37248,
+      "route": "hot",
+      "rho": 0.0,
+      "seed": 42,
+      "planner": "moonep",
+      "scope": "online",
+      "load_ratio": 2.0,
+      "ep": 8,
+      "router_sha256": null
+    },
+    "code_identity": "e22446e2d4820a6374390ce578a79d81509ef73074b94144ef461f080c594899",
+    "dependency_digest": "6b866fad3e683571f4d01aec79890c2f92ecac460329d7a13bb72bc9689e8ace",
+    "backends": [
+      "original",
+      "moonep-reference",
+      "local-serial",
+      "s9"
+    ],
+    "input_hashes": {
+      "0": {
+        "x": "ffff874e68dd84456414f5d6f8c9d53bd532ce167328b690ca62a44020f90c22",
+        "dy": "377507dc35c06c779c3deb8d21e368017e7cf267c118ea29eacda06b409269f3",
+        "w1": "bd8501cc8bad3d8c70210057f75bf79fdece3a5c6207150309cc77ccbe505243",
+        "w2": "1cf281e4f29d22ab13ee1f14af64e183879365d786dc4b84095ea605c5c10bac",
+        "ids": "19eaeb1eebbb0814585f28ed7d3583425e18cc3f2cd351d56786329da37973a3",
+        "prob": "e7709ee5342e9d4f979a2104f40b22d2f607961c7d61033b981abb79fb514eb4"
+      },
+      "1": {
+        "x": "642408b87757f4f8007fdd4af01e0aae8db06509de26d60330c38cb6a93cf8f6",
+        "dy": "bcb67c13340c4c90cf0f1e4af14cc4f1c5a894af4120ad789161e4cb0d3b69a5",
+        "w1": "be177263a8dbf76b4d1f1acd3ef0fa07451b11f9d64e0ad5496c74ee695c5011",
+        "w2": "6048a14dce6d457d548acf7809c75164b2305128375b288759129a1207c85edd",
+        "ids": "19eaeb1eebbb0814585f28ed7d3583425e18cc3f2cd351d56786329da37973a3",
+        "prob": "f2c2542c3d1545dac5a3ddaa1db6a86488db17bab047ee11c34634db9c812e5c"
+      },
+      "2": {
+        "x": "5e37889592594fc888807c6b620b0a9aa56b8c7dffff71e1b313d065347fa9c6",
+        "dy": "e8a495bcc5c1424c140b453ae6d1baa31713bdffa4f60051846be06a6efeaefe",
+        "w1": "3f52d7b65686b48376a63e9ff5a2d2274c8de153f650c59c06536aa1c54e88f0",
+        "w2": "8ba468dc36a50b90a6f5ec96290bde93784231a3291190ee1f46e46401ad4169",
+        "ids": "19eaeb1eebbb0814585f28ed7d3583425e18cc3f2cd351d56786329da37973a3",
+        "prob": "89b497fcd9e427436d6780317586f12160c62d97b6f5aa34081853ed378f27f3"
+      },
+      "3": {
+        "x": "3650de06167988d4480dbccddfcbf22d8ddc42300d20a683f41bac81b952a8ef",
+        "dy": "4cdc9b17defae9375d6d03f66482e9f59751d97befa98f91fe13cdc8086eebbd",
+        "w1": "7e3f1763131053d7b80da02c73e9da29e4117b9b6c85048a6749d361757aafe1",
+        "w2": "02bc9431a955ac3ae572d47a77d138984508367d1e83c0d7ac498e76761aca8b",
+        "ids": "19eaeb1eebbb0814585f28ed7d3583425e18cc3f2cd351d56786329da37973a3",
+        "prob": "080a35264fc93a07d998c090716aed5c71e566f09045e0636f12507c0b1ddf29"
+      },
+      "4": {
+        "x": "316b4acde9d218db34c516ab3d57f79f5f73b1175fd2647c71a1db6e4e1a0769",
+        "dy": "58e1e07db19ca6bdaba5e201eefda879e8126644b161aa288dee727bc9315d34",
+        "w1": "e7d87c29c93079e169013d444f6103fcfefee04984cb983f9689da8f350a6c5b",
+        "w2": "0f308b3992e3558340dd6a5d0e3949197e7708d14e8141b4ae1bea23b36f113a",
+        "ids": "19eaeb1eebbb0814585f28ed7d3583425e18cc3f2cd351d56786329da37973a3",
+        "prob": "0b41977cef7d4ce1980620cc95f5450008ad0a6faacdfce25c91ec06af9aed55"
+      },
+      "5": {
+        "x": "70b7afcd200f57240f2dd15e277d60b620c0b7471c5fb75f38903701a0764f69",
+        "dy": "3900612cffdc804fe65584e2df06a6949a0da086e8e5d938072ff77c7a486ff2",
+        "w1": "9b7bd6bc9d30e2bbfd400894d8fd89428b9853d968cbe1682edec99874841daa",
+        "w2": "8d97a116ef75646df326c7f5894b035b45ebeba6d385f536c37c049600167652",
+        "ids": "19eaeb1eebbb0814585f28ed7d3583425e18cc3f2cd351d56786329da37973a3",
+        "prob": "b253016223e404892adb3348fd1c137b475635a66293bbab2fce1814dd2873be"
+      },
+      "6": {
+        "x": "ad00a058888d2034d1a4d1294331ab571786ac300b436b9acba2a47c7e8aa572",
+        "dy": "2b6d193b15ef055cbd97558a809d934133062780529a98ce6feebb8b9184d098",
+        "w1": "dfdc3254cdaeefb575cde5581be471f87207a518ff222124842330810dc1c675",
+        "w2": "89df0fd0043f174350cccd6a5ee65f38a5b5380cc0570f8fa03cd0ea0e77a53c",
+        "ids": "19eaeb1eebbb0814585f28ed7d3583425e18cc3f2cd351d56786329da37973a3",
+        "prob": "efde948143616d1fe361980af74c6b5ae36b890336b6ab7fe8db4fdd8ea8d74a"
+      },
+      "7": {
+        "x": "bfc16ae8bfd4fffa382b51474250a8a97418fe460ab72a81be031ca86b6a82af",
+        "dy": "ca2402f7b1eabe2bad37fb0b31785124f007a73e17d67f5d611760952c702291",
+        "w1": "620c2b965b977d04b9d837f4a9743efbe84a74eb4735a4f6c3e9af9b5ab8cad3",
+        "w2": "cf0c46770b8ab7fe8f59e82f9c280dc28e68c6d61e3b297464c7f68178d1a646",
+        "ids": "19eaeb1eebbb0814585f28ed7d3583425e18cc3f2cd351d56786329da37973a3",
+        "prob": "fde542cfeee8af01c8244c74d7fbad4a2dd5700db550727b576aac9543331bd9"
+      }
+    },
+    "native_by_backend": {
+      "original": {
+        "0": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "1": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "2": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "3": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "4": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "5": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "6": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "7": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        }
+      },
+      "moonep-reference": {
+        "0": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "1": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "2": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "3": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "4": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "5": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "6": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "7": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        }
+      },
+      "local-serial": {
+        "0": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_replica.so": "8ffa259b671e37e92bec81ee0607cfb55d4a09f0450191e2e77b7cfa7d4706d6",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "1": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_replica.so": "8ffa259b671e37e92bec81ee0607cfb55d4a09f0450191e2e77b7cfa7d4706d6",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "2": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_replica.so": "8ffa259b671e37e92bec81ee0607cfb55d4a09f0450191e2e77b7cfa7d4706d6",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "3": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_replica.so": "8ffa259b671e37e92bec81ee0607cfb55d4a09f0450191e2e77b7cfa7d4706d6",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "4": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_replica.so": "8ffa259b671e37e92bec81ee0607cfb55d4a09f0450191e2e77b7cfa7d4706d6",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "5": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_replica.so": "8ffa259b671e37e92bec81ee0607cfb55d4a09f0450191e2e77b7cfa7d4706d6",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "6": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_replica.so": "8ffa259b671e37e92bec81ee0607cfb55d4a09f0450191e2e77b7cfa7d4706d6",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "7": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_replica.so": "8ffa259b671e37e92bec81ee0607cfb55d4a09f0450191e2e77b7cfa7d4706d6",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        }
+      },
+      "s9": {
+        "0": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/worker-variants/planner-bench/libascend_deepep_megaflux_early_bf16.so": "b9ca378491df0f358cb9be6da3975b394cb0f87cadcf9630c95db7717d6a80b4",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "1": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/worker-variants/planner-bench/libascend_deepep_megaflux_early_bf16.so": "b9ca378491df0f358cb9be6da3975b394cb0f87cadcf9630c95db7717d6a80b4",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "2": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/worker-variants/planner-bench/libascend_deepep_megaflux_early_bf16.so": "b9ca378491df0f358cb9be6da3975b394cb0f87cadcf9630c95db7717d6a80b4",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "3": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/worker-variants/planner-bench/libascend_deepep_megaflux_early_bf16.so": "b9ca378491df0f358cb9be6da3975b394cb0f87cadcf9630c95db7717d6a80b4",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "4": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/worker-variants/planner-bench/libascend_deepep_megaflux_early_bf16.so": "b9ca378491df0f358cb9be6da3975b394cb0f87cadcf9630c95db7717d6a80b4",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "5": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/worker-variants/planner-bench/libascend_deepep_megaflux_early_bf16.so": "b9ca378491df0f358cb9be6da3975b394cb0f87cadcf9630c95db7717d6a80b4",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "6": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/worker-variants/planner-bench/libascend_deepep_megaflux_early_bf16.so": "b9ca378491df0f358cb9be6da3975b394cb0f87cadcf9630c95db7717d6a80b4",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        },
+        "7": {
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/_C.cpython-312-aarch64-linux-gnu.so": "b3f2850205160e63129b405f11ac7726107e8fcd0d4f843612ec3d1b8c7598c7",
+          "/project/build-inputs/control-a1/MoonEP/npu_patch/lib/libascend_moonep_kernels.so": "b8439acf3b8dd09b9cc778e59e907264f57bc01fbf7249203dcf3175801b3b3e",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/_C.cpython-312-aarch64-linux-gnu.so": "6697c079b174ecb94e78338494272b69f1d0474b5c92bd2ca1804e71e1cb6a26",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_kernels.so": "2d4feb3778a731c1883f1b7f615b16bbdefb04881567a2078ff54ee5fedfa6e3",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_mega_moe_bf16.so": "55b2c7e0dcf52d1d2169d48262857fdcf42f649ce48b41e00ecc2fb7528f39b2",
+          "/project/optimization/delivery-20261029-a1/ascend_deepep/lib/libascend_deepep_moonep_planner.so": "7f17167f0ec055b37e95f4a4f4d161a93047010a6f99851e1f017e9609afec62",
+          "/project/optimization/delivery-20261029-a1/worker-variants/planner-bench/libascend_deepep_megaflux_early_bf16.so": "b9ca378491df0f358cb9be6da3975b394cb0f87cadcf9630c95db7717d6a80b4",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl.so": "b58e2401309864b31599102af6bd26767fd94de81afcf41cdba4f3d707b30cab",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_alg.so": "31fa7cdf5b0ce54e4c7d38f79845184fd07d8753f0ab7fbbb2db74e4f24253db",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_compat.so": "a8c12718df4c8bebb3b248858d0d913425cf0d71c72ad78dda2dd8b0628cfc61",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_legacy.so": "741553bb23c5b8b62394df532b448f6f5e30d711e99afd47a1ab06a1a3284a58",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_plf.so": "1e99f7025f0eeb7095b485088dc8af58ea7bbb36a6d11875f51e6e8a0a63d953",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libhccl_v2.so": "831113526b474a5e6e04dedbccde7c283c78cc74b48402a34183c4b1ab6cce33",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime.so": "3ca0e7f78b42303b10bcb10874a3387ecca6d54d7b2e36fc3fc57e6c27eb8d72",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_common.so": "4fab7548bc87b6d0bd3409ff8a03bff814f56dcf1a19c1c904117c584f2dba0d",
+          "/usr/local/Ascend/cann-9.2.0/aarch64-linux/lib64/libruntime_v200.so": "1b2c16840373d74dc7fad097dedb060a8981b4985e10f45ae24180ba406bcb8c",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem.so": "1cd5b1c87b0765c9c3ea93fe433e91f772b6bcdbf155b2312b46335ef8b9a77e",
+          "/usr/local/python3.12.13/lib/python3.12/site-packages/shmem/backends/950/libshmem_utils.so": "d780d18047fd209e81e8b95a8542ff7f984bdc31aa9f7cacfe212f4bee7a67f8"
+        }
+      }
+    },
+    "output_hashes_by_backend": {
+      "original": {
+        "0": {
+          "y": "70852275e692bc23ce927791429cc796266e9927b9039d95d0c2f0bd86136817",
+          "dx": "cabff584cd4f06582e0f36602d5094c0564f59a63cea12093f5c2141bcfe3cbb",
+          "dp": "a15584112e814ff56ba788d435fb7f85f5c2a09ebc5d0c61df9cc60395daa4cd",
+          "dw1": "5ef3b00cf3802f9c7d9d800d6a35069de345af716acfd2ee122c1f8c95060663",
+          "dw2": "ce69a0968a88c5461c175d6ed32a6401bdaa2dc6074f61a3222cdbafd59e8714"
+        },
+        "1": {
+          "y": "83d611beace660fa82fd99609b9660932367918717e06938261de949edf430fe",
+          "dx": "ecfcda59ee8d66b3afa46f63e55cf64785396c18209fe9551c3175bdb2d0971f",
+          "dp": "bbd535509e08ba7eb27149a740e1ba229e64fca38b496af595dfeb8b03e72ed8",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "2": {
+          "y": "5ba0c112cdeaa418478d07ebac0af9a24ada6546d633205c93a1cebb692d7465",
+          "dx": "82c9ab9509791868c2095524226ad1aa8f31acff41e4af9b8b1108c236adcb43",
+          "dp": "31a94207cf042a75baab30e0c1d9c6f26cc8b590886db742f3a4b4fc064ebefc",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "3": {
+          "y": "548571e1e7243e527d506fb753c86c534db8587debc83d4de3eec56443f0a980",
+          "dx": "4e7722639f5da7e5db775d61ff4ffecaa0faca60e1d1183418c74068f34c0e77",
+          "dp": "0dd0f1e0a13713ac08c5a11d73fca7af452db9db8c951afa2665a72957960284",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "4": {
+          "y": "771448d5701a03d70196151e7abee8ddfec0e68eead17a6f461b68acd33ce3a2",
+          "dx": "b7ac1c31f69880ce7ccc4f5c41fb2e1b1ed614ef52fcfabbaa08ec94b8cb8959",
+          "dp": "5a55bb92d7f395022169bd6db0def1365eacb50638d61046115c40cc273dff5d",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "5": {
+          "y": "46ce02fd9477969396071b077beddd7094f9d4dc19639605b0754b11a2cd6d75",
+          "dx": "d2cceebdea54f190c05da53aba9b9f0a79f6d7a045295493cd5ea763402c6872",
+          "dp": "a5755b2553f8ffe0d29237fcb9aa8d15a215a07c466919343f8cbd1a9364c97b",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "6": {
+          "y": "81ff39c20222f2c899ab64d23a30522fbc8adbf519969630763fcc4599df96fc",
+          "dx": "945a9027a5b6ac7c03faee034aa00c459ed23b2cd657d86c41193daa4b5191fc",
+          "dp": "8756c4401d660903fd4238a6aa4ffe70669f4c71e6535e5696ae17f16d647620",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "7": {
+          "y": "e9790f9904c610e7465939898573515e4b4326d5a1619267ee872b50880c7dc6",
+          "dx": "2d74f41e37f357ebce94aa7be3b32ee6f273584d25d4f516ffb3a262aec67d2e",
+          "dp": "51f162af0cdc838608fbaac720f1ec1f41b60c9bed5e73b3ace6261b6ead66fe",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        }
+      },
+      "moonep-reference": {
+        "0": {
+          "y": "70852275e692bc23ce927791429cc796266e9927b9039d95d0c2f0bd86136817",
+          "dx": "cabff584cd4f06582e0f36602d5094c0564f59a63cea12093f5c2141bcfe3cbb",
+          "dp": "a15584112e814ff56ba788d435fb7f85f5c2a09ebc5d0c61df9cc60395daa4cd",
+          "dw1": "b96887c826ce99f7b648207bdc0e43d716c1580ec45c759c60fea28153aba4af",
+          "dw2": "dcda396638ff37eb3b0d60686770e7c109c43f2b309558088913942f353f3e9b"
+        },
+        "1": {
+          "y": "83d611beace660fa82fd99609b9660932367918717e06938261de949edf430fe",
+          "dx": "ecfcda59ee8d66b3afa46f63e55cf64785396c18209fe9551c3175bdb2d0971f",
+          "dp": "bbd535509e08ba7eb27149a740e1ba229e64fca38b496af595dfeb8b03e72ed8",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "2": {
+          "y": "5ba0c112cdeaa418478d07ebac0af9a24ada6546d633205c93a1cebb692d7465",
+          "dx": "82c9ab9509791868c2095524226ad1aa8f31acff41e4af9b8b1108c236adcb43",
+          "dp": "31a94207cf042a75baab30e0c1d9c6f26cc8b590886db742f3a4b4fc064ebefc",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "3": {
+          "y": "548571e1e7243e527d506fb753c86c534db8587debc83d4de3eec56443f0a980",
+          "dx": "4e7722639f5da7e5db775d61ff4ffecaa0faca60e1d1183418c74068f34c0e77",
+          "dp": "0dd0f1e0a13713ac08c5a11d73fca7af452db9db8c951afa2665a72957960284",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "4": {
+          "y": "771448d5701a03d70196151e7abee8ddfec0e68eead17a6f461b68acd33ce3a2",
+          "dx": "b7ac1c31f69880ce7ccc4f5c41fb2e1b1ed614ef52fcfabbaa08ec94b8cb8959",
+          "dp": "5a55bb92d7f395022169bd6db0def1365eacb50638d61046115c40cc273dff5d",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "5": {
+          "y": "46ce02fd9477969396071b077beddd7094f9d4dc19639605b0754b11a2cd6d75",
+          "dx": "d2cceebdea54f190c05da53aba9b9f0a79f6d7a045295493cd5ea763402c6872",
+          "dp": "a5755b2553f8ffe0d29237fcb9aa8d15a215a07c466919343f8cbd1a9364c97b",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "6": {
+          "y": "81ff39c20222f2c899ab64d23a30522fbc8adbf519969630763fcc4599df96fc",
+          "dx": "945a9027a5b6ac7c03faee034aa00c459ed23b2cd657d86c41193daa4b5191fc",
+          "dp": "8756c4401d660903fd4238a6aa4ffe70669f4c71e6535e5696ae17f16d647620",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "7": {
+          "y": "e9790f9904c610e7465939898573515e4b4326d5a1619267ee872b50880c7dc6",
+          "dx": "2d74f41e37f357ebce94aa7be3b32ee6f273584d25d4f516ffb3a262aec67d2e",
+          "dp": "51f162af0cdc838608fbaac720f1ec1f41b60c9bed5e73b3ace6261b6ead66fe",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        }
+      },
+      "local-serial": {
+        "0": {
+          "y": "70852275e692bc23ce927791429cc796266e9927b9039d95d0c2f0bd86136817",
+          "dx": "cabff584cd4f06582e0f36602d5094c0564f59a63cea12093f5c2141bcfe3cbb",
+          "dp": "a15584112e814ff56ba788d435fb7f85f5c2a09ebc5d0c61df9cc60395daa4cd",
+          "dw1": "b96887c826ce99f7b648207bdc0e43d716c1580ec45c759c60fea28153aba4af",
+          "dw2": "dcda396638ff37eb3b0d60686770e7c109c43f2b309558088913942f353f3e9b"
+        },
+        "1": {
+          "y": "83d611beace660fa82fd99609b9660932367918717e06938261de949edf430fe",
+          "dx": "ecfcda59ee8d66b3afa46f63e55cf64785396c18209fe9551c3175bdb2d0971f",
+          "dp": "bbd535509e08ba7eb27149a740e1ba229e64fca38b496af595dfeb8b03e72ed8",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "2": {
+          "y": "5ba0c112cdeaa418478d07ebac0af9a24ada6546d633205c93a1cebb692d7465",
+          "dx": "82c9ab9509791868c2095524226ad1aa8f31acff41e4af9b8b1108c236adcb43",
+          "dp": "31a94207cf042a75baab30e0c1d9c6f26cc8b590886db742f3a4b4fc064ebefc",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "3": {
+          "y": "548571e1e7243e527d506fb753c86c534db8587debc83d4de3eec56443f0a980",
+          "dx": "4e7722639f5da7e5db775d61ff4ffecaa0faca60e1d1183418c74068f34c0e77",
+          "dp": "0dd0f1e0a13713ac08c5a11d73fca7af452db9db8c951afa2665a72957960284",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "4": {
+          "y": "771448d5701a03d70196151e7abee8ddfec0e68eead17a6f461b68acd33ce3a2",
+          "dx": "b7ac1c31f69880ce7ccc4f5c41fb2e1b1ed614ef52fcfabbaa08ec94b8cb8959",
+          "dp": "5a55bb92d7f395022169bd6db0def1365eacb50638d61046115c40cc273dff5d",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "5": {
+          "y": "46ce02fd9477969396071b077beddd7094f9d4dc19639605b0754b11a2cd6d75",
+          "dx": "d2cceebdea54f190c05da53aba9b9f0a79f6d7a045295493cd5ea763402c6872",
+          "dp": "a5755b2553f8ffe0d29237fcb9aa8d15a215a07c466919343f8cbd1a9364c97b",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "6": {
+          "y": "81ff39c20222f2c899ab64d23a30522fbc8adbf519969630763fcc4599df96fc",
+          "dx": "945a9027a5b6ac7c03faee034aa00c459ed23b2cd657d86c41193daa4b5191fc",
+          "dp": "8756c4401d660903fd4238a6aa4ffe70669f4c71e6535e5696ae17f16d647620",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "7": {
+          "y": "e9790f9904c610e7465939898573515e4b4326d5a1619267ee872b50880c7dc6",
+          "dx": "2d74f41e37f357ebce94aa7be3b32ee6f273584d25d4f516ffb3a262aec67d2e",
+          "dp": "51f162af0cdc838608fbaac720f1ec1f41b60c9bed5e73b3ace6261b6ead66fe",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        }
+      },
+      "s9": {
+        "0": {
+          "y": "70852275e692bc23ce927791429cc796266e9927b9039d95d0c2f0bd86136817",
+          "dx": "cabff584cd4f06582e0f36602d5094c0564f59a63cea12093f5c2141bcfe3cbb",
+          "dp": "a15584112e814ff56ba788d435fb7f85f5c2a09ebc5d0c61df9cc60395daa4cd",
+          "dw1": "b96887c826ce99f7b648207bdc0e43d716c1580ec45c759c60fea28153aba4af",
+          "dw2": "dcda396638ff37eb3b0d60686770e7c109c43f2b309558088913942f353f3e9b"
+        },
+        "1": {
+          "y": "83d611beace660fa82fd99609b9660932367918717e06938261de949edf430fe",
+          "dx": "ecfcda59ee8d66b3afa46f63e55cf64785396c18209fe9551c3175bdb2d0971f",
+          "dp": "bbd535509e08ba7eb27149a740e1ba229e64fca38b496af595dfeb8b03e72ed8",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "2": {
+          "y": "5ba0c112cdeaa418478d07ebac0af9a24ada6546d633205c93a1cebb692d7465",
+          "dx": "82c9ab9509791868c2095524226ad1aa8f31acff41e4af9b8b1108c236adcb43",
+          "dp": "31a94207cf042a75baab30e0c1d9c6f26cc8b590886db742f3a4b4fc064ebefc",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "3": {
+          "y": "548571e1e7243e527d506fb753c86c534db8587debc83d4de3eec56443f0a980",
+          "dx": "4e7722639f5da7e5db775d61ff4ffecaa0faca60e1d1183418c74068f34c0e77",
+          "dp": "0dd0f1e0a13713ac08c5a11d73fca7af452db9db8c951afa2665a72957960284",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "4": {
+          "y": "771448d5701a03d70196151e7abee8ddfec0e68eead17a6f461b68acd33ce3a2",
+          "dx": "b7ac1c31f69880ce7ccc4f5c41fb2e1b1ed614ef52fcfabbaa08ec94b8cb8959",
+          "dp": "5a55bb92d7f395022169bd6db0def1365eacb50638d61046115c40cc273dff5d",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "5": {
+          "y": "46ce02fd9477969396071b077beddd7094f9d4dc19639605b0754b11a2cd6d75",
+          "dx": "d2cceebdea54f190c05da53aba9b9f0a79f6d7a045295493cd5ea763402c6872",
+          "dp": "a5755b2553f8ffe0d29237fcb9aa8d15a215a07c466919343f8cbd1a9364c97b",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "6": {
+          "y": "81ff39c20222f2c899ab64d23a30522fbc8adbf519969630763fcc4599df96fc",
+          "dx": "945a9027a5b6ac7c03faee034aa00c459ed23b2cd657d86c41193daa4b5191fc",
+          "dp": "8756c4401d660903fd4238a6aa4ffe70669f4c71e6535e5696ae17f16d647620",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        },
+        "7": {
+          "y": "e9790f9904c610e7465939898573515e4b4326d5a1619267ee872b50880c7dc6",
+          "dx": "2d74f41e37f357ebce94aa7be3b32ee6f273584d25d4f516ffb3a262aec67d2e",
+          "dp": "51f162af0cdc838608fbaac720f1ec1f41b60c9bed5e73b3ace6261b6ead66fe",
+          "dw1": "bb9f8df61474d25e71fa00722318cd387396ca1736605e1248821cc0de3d3af8",
+          "dw2": "5647f05ec18958947d32874eeb788fa396a05d0bab7c1b71f112ceb7e9b31eee"
+        }
+      }
+    },
+    "execution_by_backend": {
+      "original": null,
+      "moonep-reference": null,
+      "local-serial": null,
+      "s9": null
+    },
+    "details": {
+      "original": [
+        {
+          "rank": 0,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 1,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 2,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 3,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 4,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 5,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 6,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 7,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        }
+      ],
+      "moonep-reference": [
+        {
+          "rank": 0,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": false,
+              "max_abs": 0.0625,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0026635735147284715
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": false,
+              "max_abs": 0.0625,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0026681378780507668
+            }
+          }
+        },
+        {
+          "rank": 1,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 2,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 3,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 4,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 5,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 6,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 7,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        }
+      ],
+      "local-serial": [
+        {
+          "rank": 0,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": false,
+              "max_abs": 0.0625,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0026635735147284715
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": false,
+              "max_abs": 0.0625,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0026681378780507668
+            }
+          }
+        },
+        {
+          "rank": 1,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 2,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 3,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 4,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 5,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 6,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 7,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        }
+      ],
+      "s9": [
+        {
+          "rank": 0,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": false,
+              "max_abs": 0.0625,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0026635735147284715
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": false,
+              "max_abs": 0.0625,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0026681378780507668
+            }
+          }
+        },
+        {
+          "rank": 1,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 2,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 3,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 4,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 5,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 6,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        },
+        {
+          "rank": 7,
+          "outputs": {
+            "y": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dx": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dp": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw1": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            },
+            "dw2": {
+              "pass_": true,
+              "bitwise": true,
+              "max_abs": 0.0,
+              "bad_fraction": 0.0,
+              "relative_l2": 0.0
+            }
+          }
+        }
+      ]
+    },
+    "tolerance_source": "integration/wuhan/test_bridge_npu.py:metrics",
+    "additional_relative_l2_limit": 0.05,
+    "scope": "raw_single_layer_online_fb_home_publish_restore_owner_sum_no_fsdp"
+  },
+  "large_performance": {
+    "status": "NOT_RUN",
+    "reason": "External Python device-manager holders failed post-run occupancy gates twice; stopped new device launches"
+  },
+  "evidence_archive_sha256": "9712067bd47e0bc03398ba1cbc7456e40870831c03909f97be0a419eb34a9b16",
+  "source_sha256": {
+    "ascend_deepep/megaflux_planners.py": "d2958d9ca3b0dae7531489871fba2329673ea2326ffb5570e11d4fbfd870d47f",
+    "ascend_deepep/megaflux_worker_pipeline.py": "644059c29055cb91824fe3f573502902c75c36bfa79e6993577844fe9f2014be",
+    "ascend_deepep/megaflux_network.py": "4e1f4d1a2a6d1cda4767f1d3c57ad978b0a7f707231a5e672b31c190e4a845d3",
+    "ascend_deepep/sft_bridge.py": "23d92e85e5ec3b72db800d1b2d58ee7523ca6f35d9c3f1998bc20373e13801e7",
+    "ascend_deepep/megaflux_stage_layout.py": "284d9c0f99dc2cd5e96ae5d42a03cf46c05f4354c98bfb58166167a0f02bee0f",
+    "ascend_deepep/sft_checkpoint.py": "9bb975e670b52724300e122faf0517d8d52aa847d5d99e2596d953164b8cf5aa",
+    "ascend_deepep/megaflux_completion.py": "55f7fb746beabb727958662e95e560daff69f9a0cce2b2cede3db4ff80be1fb9",
+    "ascend_deepep/megaflux.py": "853022cc864136f09caf466f76af8a29f4db36af0727262902b99a74923a4c2b",
+    "ascend_deepep/megaflux_plan_search.py": "99da24148a9adc79a33b1f493e1b88238dab5baeff95b928c167cd6adda54a78",
+    "ascend_deepep/megaflux_stripe.py": "8700fbfae75bd189a03aa5b13c33d64bdc08aeda01f0e6f003c093dbbc68522d",
+    "ascend_deepep/sft_capture.py": "0bf9ed01527b71939338b2ccc78db12f141a2def09cc591c3ba5a08db1496c4b",
+    "ascend_deepep/megaflux_device.py": "93de72e8c931226dfd765153b1a94c5a77a89017d7dca0dab38b4d76e67108c7",
+    "ascend_deepep/execution_plan_device.py": "f7e0a851b7847760e6b0787d751e9880192f8d39b08790d6264bd8f82c3a40f2",
+    "ascend_deepep/fsdp2_bridge.py": "c3a008d6312ab51618c17f570b1bdae36664787018425733ca527228369c1bf9",
+    "ascend_deepep/megaflux_plan.py": "63b7fe40fb33157862b97ace46ab6ca79a801c83869fb8f90ab54334c2e3fdc5",
+    "ascend_deepep/megaflux_control.py": "31743e4cec072b3681fae6322be74f472582f4eaf33deff81a0fd508d0c1e1a1",
+    "ascend_deepep/megaflux_search.py": "d91886ec5d1afc3e535ca8340ef843ab2e08b11188c372000b846f90627c48b0",
+    "ascend_deepep/wuhan_replay_capture.py": "4fe0869c4e8278644856c694c0d583d61270691c294d8dc28ab7285e6b63c413",
+    "ascend_deepep/megaflux_mixed.py": "211b7639f454f3a601fef01feef9397e01f41ae59508a2c06de9ca8bde38eaae",
+    "ascend_deepep/runtime_limits.py": "dfab1eb247e3630881f94c8720d675e678be4957d95f24046b45d6ddfc832eca",
+    "ascend_deepep/megaflux_cached.py": "06bb77964b00605d9aca5a0c378c79284a82612db868c3033b83007196c6c19d",
+    "ascend_deepep/moonep_plan.py": "95ebda78369fb9fd635a4fcb1e4f5099611d5d083b0e216167fa7003e3e8fb2d",
+    "ascend_deepep/megaflux_early.py": "d4c20dd5fca4f29da7666af8f17381a46f8275219f9226732b1d494b814120c3",
+    "ascend_deepep/megaflux_worker_stage_layout.py": "7f610d0671e37648661d7465d93d4e5e5ed065e1e2edb71bfcb9dba6f139edfc",
+    "ascend_deepep/megaflux_prefetch.py": "e050386539e420e7fd0e46c3d89e9c670a9b77737e670fe8e7ccd62b27d7c1ea",
+    "ascend_deepep/megaflux_worker_timer.py": "5dffe9dd8eaaab23be70a415483624fa03764717f8b3d26355d45e048571795e",
+    "ascend_deepep/moonep_planner.py": "2a49451490af5ce427c1e02ee41a80d671b8af787e7c32b679d5c702f02afb62",
+    "ascend_deepep/megaflux_full.py": "409fd9a562b33514a0947f20eb5fe6e35dee126ab59013a8dea7e34a07fd85e8",
+    "ascend_deepep/__init__.py": "f3255dd16c6ed0567a9abf16cc6a17d7c7ee4444d4313bdcbdacc91bb8ed7770",
+    "ascend_deepep/megaflux_detail.py": "8fcbd0e5c72fa0982dda30f1392f5b61dfe336dd96eb37457157b268b071eb6e",
+    "ascend_deepep/execution_plan.py": "d03e48075ee20773f47e99a2c3e3e85572c310a672eef38ffb1eb43f36516da2",
+    "ascend_deepep/megaflux_stream.py": "b39349ababaff1b3800dd94635446c3a24a43206cb2b41afb02d85ad2487a09d",
+    "ascend_deepep/execution_plan_fused.py": "8258e89d47e6f8c4b53106976c67b18fc5bd71f815aa855c076997764b189235",
+    "ascend_deepep/megaflux_stage_timer.py": "0d0ac2809ce63f2a6d8c760798fc08b50485037d6317f824566b7e260bb05031",
+    "ascend_deepep/megaflux_pipeline.py": "a7fb1df4715066ad00027084b966cc353256a8f059fb3d5b82bdee055d40d650",
+    "ascend_deepep/megaflux_trace.py": "45bc5aa395c87cea1cf563a88169a594f992766fa447f8833a3a7825fe66a048",
+    "ascend_deepep/megaflux_plan_features.py": "451c87bf09269d9346062c8010c9e4d93cb6861b07c47a3dfcc53dfa79f989ef",
+    "csrc/shmem_instance.cpp": "44b6e2413348363dcdff3aca19881b130c7879ae789f21a970c63cdfee868a3f",
+    "csrc/pybind.cpp": "39511ddee7fd0981e1ebeb5551f13978e7e85eb17aae2027910f91ea5ff6f345",
+    "csrc/launcher.h": "6812345421e5e92b316fe78510afa3f45b9e2a9218600fa903ecc5fc156d51d6",
+    "csrc/torch_classes.cpp": "38f0d24e2a4304c63645efcd012ab04868be1a786591518815f65f2951dee630",
+    "csrc/shmem_instance.h": "36d7fdde459655f99bbf7f08ed0cdb596e0714fa9ae5c51eebcb898714176d95",
+    "csrc/launcher.cpp": "ef45e012b2321bda403a425b41cd18564ec7eb5b89f7976d4cf0a9ed4a7fbfd5",
+    "csrc/ops/mega_moe.cpp": "9ff3153d9af05d5dbbe272bb9303215f06d2d9e9170b549a83c280a13dfb5acd",
+    "csrc/ops/dispatch.cpp": "3ed998d1dc5c24c9cc035e48601c0587e065e9eb786a14f7c6706998e6403a27",
+    "csrc/ops/dispatch.h": "aa56cab6d2a09b61e97d87aaf1a054147ba0264acf06a778cb3cd7b343789325",
+    "csrc/ops/combine.h": "a10a9801d1cc5ba663da461015af3cb8348f3f6f58dda3d90fa24359230bedf2",
+    "csrc/ops/mega_moe.h": "526a7e85f27bac44661c1b16a0b59a9d68d760efb4a5e5f06c80ef26eacff3ff",
+    "csrc/ops/combine.cpp": "0bc597184a3ae8e2179e6fbf6512b51a62981419af2ca3a4b5e24e5b6ce6a6ee",
+    "csrc/ops/mega_moe_w4a8.h": "1db1e219c1d1cd65fc55ff15a717c51983244cd58256ff6e79930325a28f10d4",
+    "csrc/ops/mega_moe_w4a8.cpp": "382f17fbf09e8d3a5b9cb7841e2c9253f5bf1f52be37305de651aa22bf728ae3",
+    "csrc/ops/mega_moe_bf16_udma.cpp": "2dfa21c2399849e92002157a7a139dda3709514b146e88d4f935c7fe879027b9",
+    "csrc/ops/mega_moe_bf16.h": "0d28d878506bf20ef9f4d82892815902e5765771ee73d64c40dc61fd9ca7c555",
+    "csrc/ops/mega_moe_bf16_replica.cpp": "5ef4fdf02c45191475eca513d767717c26eb846a573534573f973f24323f6a22",
+    "csrc/ops/mega_moe_bf16_mgroup.cpp": "b62e39b5b61917adf0e174c157f0604d4c4a43ef5b0cf794f63253f7bc86531f",
+    "csrc/ops/allgather_matmul.cpp": "72fe8054c76b75f2fe7592141bde5fe05b1ad7aad6c2b359aee2ab264e0c6498",
+    "csrc/ops/mega_moe_bf16_mgroup.h": "dd5d9c464af9e5f14949c7d9fa94fd32284b3216cb0983c52ae7450d03c2ac43",
+    "csrc/ops/mega_moe_bf16_udma.h": "8862aefff2d18d09257a98dc780f216cefd84177e49f7d71d7c3614ef8d82cc6",
+    "csrc/ops/allgather_matmul.h": "43e42f39fb20633d4e3a98f83521ae5b813cfd9e497fbe817cc6afea9a7486ed",
+    "csrc/ops/mega_moe_bf16.cpp": "4b0ad373e683120340de35b0063ba41002adae0ce72be253465a2ba07a49582e",
+    "csrc/ops/mega_moe_bf16_result.h": "7ee7be4781359586121741d55d4416a9ff1913b1db0cf5ab0522a24cc10d566c",
+    "csrc/common/check.h": "f0afa78fa56b91cd586e649f26344014cd9d7768ae7a98c82eb9968b734ce5c3",
+    "include/mega_moe_moonep_algorithm.h": "d5e1f0571867aa59f8e277d1a79cdb14222075840595bf80b163a067fa5ff731",
+    "include/mega_moe_moonep_direct.h": "cfffc0ca079ecc93e24d0217f18a5c912266b4828695e752c10442144d527ff2",
+    "include/mega_moe_large_ep_policy.h": "988da463436df57cac944081a19ed65bc31be74fdcb7e035b84d426ecc914bd8",
+    "include/mega_moe_large_ep_limits.h": "42a9922faaeb2f6341252806705dfff1a1baa2605c4bfd3a3b96fa5f41c4211d",
+    "include/ascend_deepep/kernels/launch.h": "140956222d68921b9f33be2dcef8d6816a9c8711bca3ff9217618fe926ec1004",
+    "include/ascend_deepep/kernels/types.h": "b35314f409dcc9ee8c55ad35ffbe6253ad26cda453f6db4cf7c3da61d784abdb",
+    "kernels/dispatch.cpp": "f715bde8f5effd7b72304af572c4e4950b6c30acec5d8b0fe6db6704320e8292",
+    "kernels/combine.cpp": "9ea5a07973ed412afb1caaf7ad7bb35ddbd44603a0e114b2ee8b934f13693cac",
+    "kernels/allgather_matmul.cpp": "148bf5c2f66163874a6e200f1deca5a1c415d024bb8782bb8302b91d321e53b7",
+    "kernels/mega_moe_bf16_mgroup/mega_moe_bf16_mgroup.cpp": "d52bd8ba4e89e25ad95f589f06f66fcefa8e93a17aa01d079af3d92b5b8a48c8",
+    "kernels/mega_moe_bf16/mega_moe_bf16_stub.cpp": "2ef21c187bebdf40410daff6bdffb8d477c98b79968d30dc50366637d695201f",
+    "kernels/mega_moe_bf16/megaflux_prefetch_bf16_backward.cpp": "c9d41f1151bdd66ef0c1797d4c3acf0520b1c2349e8eb908b0fd0f2c8c66ab74",
+    "kernels/mega_moe_bf16/megaflux_prefetch_bf16.cpp": "52adc07dd9ebe9c2a43834973aa9d71ccf912d6f7a52bfc484c89fb5a2bcb35e",
+    "kernels/mega_moe_bf16/mega_moe_plan_validator.cpp": "1ad38f9b6d5d78b36dba24bd72eb6ef25f59333f549f29c7ea7059b53a55555b",
+    "kernels/mega_moe_bf16/megaflux_stream_bf16.cpp": "aa7ae0446c53eda8480ff22f12628f3f35c4d44dc568fc8cb7d468cf5a15bd3c",
+    "kernels/mega_moe_bf16/megaflux_bf16_backward.cpp": "f1ab64756bd70609de997f56f865f3021ff3575ef874265cf711437e90d0bb33",
+    "kernels/mega_moe_bf16/mega_moe_replica_planner.cpp": "af1fa92d26149fa08193fb243e3d921c1a64aeb9c11bf758a4b730452f0d0319",
+    "kernels/mega_moe_bf16/megaflux_detail_bf16.cpp": "3c6a3014fde005868bd872598a6fcdb7aa473000e17839713595f94f38adc46e",
+    "kernels/mega_moe_bf16/mega_moe_replica.cpp": "d97e38c5ca1f07f23976ad81aa9760da8176600e72982cf1db03a56ad2d648c7",
+    "kernels/mega_moe_bf16/megaflux_operator_opt_bf16.cpp": "5be2389c1381b2113f1703927765a00536c44000d8e57660665eb2fd2f39ecc4",
+    "kernels/mega_moe_bf16/megaflux_stage_timer_bf16.cpp": "871e011cd12842b2d235eac45de23ccb3401df00a9f02aab1bb9922bc2930b09",
+    "kernels/mega_moe_bf16/megaflux_full_bf16.cpp": "96d4311b6b8ebfa207784342a023a9296f07da5a1eb59686d9e1c8bb1e82ea89",
+    "kernels/mega_moe_bf16/mega_moe_large_ep_planner.cpp": "4d5e79db1040d9f51d6251df464bb165c9cf62f0fcefe8dd61fe517bcd79dede",
+    "kernels/mega_moe_bf16/mega_moe_replica_planner_optimized.cpp": "eb63437cf703777dd4548a57d5465910cf988fb7b30aec9784c2d2ba61a5fc0d",
+    "kernels/mega_moe_bf16/megaflux_stage_timer_bf16_backward.cpp": "ecc40a6f53002ee10a71c061bf23050fa06bb09699b39284cde2c42a55bbdee0",
+    "kernels/mega_moe_bf16/megaflux_owner_db_bf16.cpp": "762e9173b77aecbc2cc6cbb85b783aabe0541099fbd877add69a61d4ea31913e",
+    "kernels/mega_moe_bf16/megaflux_full_bf16_backward.cpp": "7e3a3c61bce23bfc2d2c5de17db3e5605df7087e4eb7ba3d3661a220252b8ed7",
+    "kernels/mega_moe_bf16/megaflux_operator_opt_bf16_backward.cpp": "822b31d38a3e32e89fabb858b95607f1464834b5630fef497e311c0375ac2970",
+    "kernels/mega_moe_bf16/mega_moe_moonep_planner.cpp": "d3a2e0d3b80aaed0ad0713b56aab93561f52316af5ada5502866d24f667844be",
+    "kernels/mega_moe_bf16/mega_moe_replica_planner_control.cpp": "169d168a11bb11d3fddbc9f5be3e70540146c5f07692c9909a470e5c8a85ddb9",
+    "kernels/mega_moe_bf16/megaflux_owner_db_bf16_backward.cpp": "81e802a0a3010c42d8b1a6639b6927b9401f2c2374b9e893b7206747d7199f21",
+    "kernels/mega_moe_bf16/megaflux_early_bf16.cpp": "8037c57e6e64aa0a2dcfa592acccabc7a1eeeaf76d10a0eed4fa71b2d932e115",
+    "kernels/mega_moe_bf16/megaflux_worker_bf16.cpp": "2311e96791a3c03c6594f2326f2d376bb459ca144d4c95560d1986d59f6eb879",
+    "kernels/mega_moe_bf16/megaflux_bf16.cpp": "fb8586143bb7bbe97f1f59468ce50a35730bf0a75d6992c2d26c4c6da53e4c58",
+    "kernels/mega_moe_bf16/megaflux_pipeline_bf16.cpp": "2cc1a6e8b02da52389676751fb188f34dff93080222048a30212089d56581450",
+    "kernels/mega_moe_bf16/megaflux_device_bf16.cpp": "36245c83294fbbc2df7f2f86af0f102b52694702cb7dc99ef1e756d8e1872bdc",
+    "kernels/mega_moe_bf16/mega_moe_replica_planner_device.cpp": "0a14d81d0a4a3375272d43b969a717fdd4c4a3205ef8640a0f96acf4df4488dd",
+    "kernels/mega_moe_bf16/megaflux_early_bf16_backward.cpp": "7d553765f91422673b086c179f408459a7c5a3f3a663ae30db49278dd7cc94b8",
+    "kernels/mega_moe_bf16/megaflux_stripe_bf16.cpp": "2091b156d8598dea493ecf87a55e39867cbea1ee259750745892465c97100b40",
+    "kernels/mega_moe_bf16/megaflux_worker_bf16_backward.cpp": "3bb58865c84f80e116710dcd4cfc763f2082e7f6f791a6ac9a22567cdeb9dcf9",
+    "kernels/mega_moe_bf16/mega_moe_bf16.cpp": "6569098b786776b9236dd39f1493f04f3bcaf1d0e27222a6d4276769714d9bc6",
+    "kernels/mega_moe_bf16/mega_moe_bf16_backward.cpp": "4125cb614bd828b2e553e8db0973239ba41dc20e193883a2144f3baa9a892189",
+    "kernels/mega_moe_bf16/megaflux_device_bf16_backward.cpp": "4c1408d865eaf5519e4f96da8919113b6d82ecf41d93db4145ecc5ef25703703",
+    "kernels/mega_moe_bf16/megaflux_detail_bf16_backward.cpp": "38a7835d10bcdb1fc40d284d7ae2dbce9262c664d4f4ca3cca1e25343fd10256",
+    "kernels/mega_moe_w4a8/mega_moe_w4a8_stub.cpp": "a5f965e42342c01cf015e6a4db8db896e3cae15511e90df6411233be8594f470",
+    "kernels/mega_moe_w4a8/mega_moe_w4a8.cpp": "b8bdce54b3235b9595d880e3ba83e15029f3322bb3d3f0ff25d65646f2ed34a5",
+    "kernels/mega_moe/mega_moe.cpp": "4d0a6f579fd0cabf7a986cd1bee34d6d772dd4a5e0c609864fa87d6ea85be037",
+    "kernels/mega_moe/mega_moe_stub.cpp": "5bfc3a02fe881144e276fe2841e7aa00c78478ae417baee9c587eb4523fadd7c",
+    "kernels/mega_moe_bf16_udma/mega_moe_bf16_udma.cpp": "b24fa86b6674dcbb97e932fd21ca31a47ea73d69658986e83d469d2a484592b0",
+    "kernels/mega_moe_bf16_mgroup/include/mega_moe_bf16_mgroup.h": "5db8e3aef3779ee7621bb788ffaa52788915de7b6aa9f53b9d7ed97447b96d0f",
+    "kernels/mega_moe_bf16_mgroup/catlass_overlay/catlass/arch/resource.hpp": "67c973f5d8aa3cc9da64463295feba330a2e83b5d92b4df6878e2288adcdd030",
+    "kernels/common/timer/AscendTimerV2.hpp": "714d95e6efa7ac443af3de2f298ce1c3573a4b3767dc2a314b13a414b55ec40d",
+    "kernels/common/timer/AscendTimerV2_device.hpp": "f7e7edf543f74fe55e69665eb233e3d1eaadaea779b42396d6ca7fb2d583ba87",
+    "kernels/mega_moe_bf16/include/mega_moe_owner_reduce_db.h": "79e6c3e1a23791cfd50d4ece8acae139a9d25df52474628f2cd9431ae3a12506",
+    "kernels/mega_moe_bf16/include/mega_moe_detail_trace.h": "7cbdacdc510ce154fe08cc9a07615f6fca8be3655a002ae643973b42c4e3d3d8",
+    "kernels/mega_moe_bf16/include/mega_moe_gradient_pipe.h": "09e181cbfdb55d9720d5f610b0e7e5dd1b7f64314339ace7cfcebf85892fc389",
+    "kernels/mega_moe_bf16/include/block_epilogue_swiglu_backward_bf16.h": "5ccc7e21e762541a1aa91bbb74a272709504a820cc016eef0dec0fe3181e8285",
+    "kernels/mega_moe_bf16/include/mega_moe_bf16_timer.h": "6c724975708a6fcda476c0c7c7a7d14dc1156cd0ab2796e0e2ca92216a4ce704",
+    "kernels/mega_moe_bf16/include/block_saved_gate_up_mxfp8.h": "5461e50456c50496874b29d00162716e024ecf8ed3042aebdd7602a4a1ef8028",
+    "kernels/mega_moe_bf16/include/mega_moe_full_descriptor.h": "fd47ea91c7646c06a426c839335571d6fc436772e967f85ed2c9136c1fde0f1e",
+    "kernels/mega_moe_bf16/include/mega_moe_input_ready_selection.h": "782a309517f5620bc777980d68f699f8cdd377c304cffd840bd9242300128be2",
+    "kernels/mega_moe_bf16/include/mega_moe_base.h": "3e899ac3e4a65452f1376c1bde707e47c9071d6e64a9f8af38a9ace19d8a0305",
+    "kernels/mega_moe_bf16/include/mega_moe_backward_restore.h": "11685fba3ed92db518f3552dd0819ef71044b06599b7b25ad097f268a0f9eb3e",
+    "kernels/mega_moe_bf16/include/mega_moe_unpermute_layout.h": "8d4d2b10125a79e5954278c166d708b46525ac50c6b1e96aeb6306b1a5ce5ba2",
+    "kernels/mega_moe_bf16/include/mega_moe_bf16_catlass_impl.h": "7b01e2663cde7295f3e43585e13bfede79ddd0ef60cae1c80b9b8171e31a4879",
+    "kernels/mega_moe_bf16/include/mega_moe_stage_timer.h": "0de26b61e2e9d1a27dcd155e737a6f7e087580d4eb2849c6d9f276e207436a52",
+    "kernels/mega_moe_bf16/include/mega_moe_search_algorithm.h": "4b9c7194ac0c1458c6b87ce05c328150213e0a7055d762934582813df0339b59",
+    "kernels/mega_moe_bf16/include/mega_moe_saved_meta.h": "9bbe3c1cf9a8652e3527e065450e2747adc56e6224a5e329b5aa3674dfcd6d67",
+    "kernels/mega_moe_bf16/include/mega_moe_restore_operand.h": "ad295a9d7786ed708bf6f88ea4980f3b08f34eecea5f4fa1eb26c777beecbc76",
+    "kernels/mega_moe_bf16/include/mega_moe_device_descriptor.h": "8ddc7c773e16755d3ad38b2d48c63b2f3600e632bb3ee1a7b7ceb42db73e81ee",
+    "kernels/mega_moe_bf16/include/mega_moe_topk_weight_gather.h": "3aa916acea3a6bde55727b2887d9fa4e789eec7b2704b66c8875a040a55e611b",
+    "kernels/mega_moe_bf16/include/mega_moe_replica_descriptor.h": "bd69a57401942ae40bf942a08f35e81a407b93b1dabfa26ebbfffd3b0ee9e207",
+    "kernels/mega_moe_bf16/include/mega_moe_replica_plan.h": "890afa3f22095f5eeeb529def321f9196738b529978c76a3a8d9ea424345d453",
+    "kernels/mega_moe_bf16/include/mega_moe_bf16.h": "141a6eeb5a53ab6f61449cd788a45e400ff89ad2e46648e7eae6a08df1eef685",
+    "kernels/mega_moe_bf16/include/block_epilogue_swiglu_bf16.h": "7b6280552359e53b7472e437aa98cb53c412eb979f8ff16144e391ddca27ad19",
+    "kernels/mega_moe_bf16/include/mega_moe_workspace_info.h": "b15c6c0d721668307d38bf42226afe1c147c58a89c54fbd38be05618b6e005b1",
+    "kernels/mega_moe_bf16/include/mega_moe_stripe_descriptor.h": "9bb2e8b21485d98fd4cd6330c21d794efd900a3b7ee31cdb377da725619178a4",
+    "kernels/mega_moe_bf16/include/mega_moe_plan_validator_logic.h": "f213e7af44d3e33fc7db6641dde57cfb352b5065ce685772e7deab554e1d0861",
+    "kernels/mega_moe_bf16/include/mega_moe_unpermute.h": "845698dd35bc83f5d93e1d09b6d288ce6c6e188108f9b5940944ee12e8fd19ab",
+    "kernels/mega_moe_bf16/include/mega_moe_replica_mixed.h": "bdba7d07c30af06bf607be16153ae0369ece62fc423dc45bb74f6cd6ea93a2ba",
+    "kernels/mega_moe_bf16/include/mega_moe_owner_schedule.h": "dfd94dce6495c3ceb3349f106c7769f275231d59e556f34d55b40dc482d85010",
+    "kernels/mega_moe_bf16/include/mega_moe_replica_pipeline.h": "69437656b5488171e623ef75b3c5d2f367dc87f991c6c1ae8b7eebb2ccc3c208",
+    "kernels/mega_moe_bf16/include/mega_moe_bf16_backward_catlass_impl.h": "c18a8a95d330184b9db4f922a7d07536014b5026be9907c118fccbc36672c994",
+    "kernels/mega_moe_bf16/include/mega_moe_combine_send.h": "926a42c9cc2222185ca2ed247110a21fd70219bc07b787afd83dd87e7adb3e78",
+    "kernels/mega_moe_bf16/include/mega_moe_topk_weight_gather_layout.h": "d819a637f69640db7545a1e91226e5b23aaded367c67d1a679ad05350fbfbb68",
+    "kernels/mega_moe_bf16/include/mega_moe_pipeline_descriptor.h": "3385be4c728917748bfc35f576ffe4da42a0017cc5c974488557949121913865",
+    "kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h": "895230e50ad331b27fef9b1b058dd1784c4026f8479b6e6418552abad6930c9c",
+    "kernels/mega_moe_bf16/include/mega_moe_worker_queue.h": "32b536f4eefe829659a5c03cd139d3bd60e7f35b9696bc66f59c11b1774fa978",
+    "kernels/mega_moe_bf16/include/mega_moe_stream_descriptor.h": "ec6c951205f6dba6e4242af90ba1839b8651762d8acb104fad5a1e787fa787c6",
+    "kernels/mega_moe_bf16/include/mega_moe_training_workspace.h": "826a94cf7e5378baf58d7cd40d85d270e9e8d935e82175dbfc81287fbee750a4",
+    "kernels/mega_moe_bf16/include/mega_moe_forward_save.h": "307191f604480d4433b6930dd758a097686067b6c3a4ebd8e0dec766b89a39c5",
+    "kernels/mega_moe_w4a8/include/mega_moe.h": "eab253afcaffaae00945217588da955243dfa6f12ad8fd67215e7b053bb0c6e4",
+    "kernels/mega_moe_w4a8/include/mega_moe_tiling_host.h": "71d0e1b6b4af8cd32bb73b1e9ae931936d3a6a381230d9550c49f285d1be9cbe",
+    "kernels/mega_moe_w4a8/include/mega_moe_base.h": "912d46e6036474ac4f4e076870fc6c498be766cd3f8d1a68f289fc4a75983819",
+    "kernels/mega_moe_w4a8/include/mega_moe_tiling.h": "c55fdf865735931aba01d21cb2d746602836a97e3ca593b633cd016fa00c45d2",
+    "kernels/mega_moe_w4a8/include/block_epilogue_swiglu_mx_quant.h": "f6a4074c4f430718571e4bffcab4a46243a459f422bb7f92af57bd41176e3e2a",
+    "kernels/mega_moe_w4a8/include/mega_moe_workspace_info.h": "02932b106cfb1109bd6fe9c776fff7dfe32e7efaf3a0e6b59c9b8ca00b4f4781",
+    "kernels/mega_moe_w4a8/include/mega_moe_quant_constants.h": "e0118d0b10ae4ce82d172252e0feca15bd540726d295db1ab8c41a91a29ad93e",
+    "kernels/mega_moe_w4a8/include/mega_moe_combine_send.h": "a2aa680c71e7f5954888ec919f023038c787abf3b5ca974cc1a45706f6a670a4",
+    "kernels/mega_moe_w4a8/include/tile_copy.hpp": "5f5a6e5d09cd1ef2176e3e22c4c6ef7559b37121ba4bbcd484f738efddcb6ae0",
+    "kernels/mega_moe_w4a8/include/mega_moe_grouped_matmul/mega_moe_matmul_kernel.h": "3efe774770f2f16dc3687cee9ce44e00cd5559b9ae891aed48562d207d2c5dd5",
+    "kernels/mega_moe_w4a8/include/mega_moe_grouped_matmul/tile_copy.h": "58f55288cbd43a367ee0c15f963af8cf652fa605a6ced224c37b16c418874085",
+    "kernels/mega_moe_w4a8/include/mega_moe_grouped_matmul/block_mmad_mx4_tla.h": "0cf1ec811493faee25a4e1e83b1eb8becab40f9dc69af50b9ab2873abae56d0f",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/load_store_utils.h": "7ab190b08d9ab0630cfeda8591ba838725118664c609b0c5927dbf310658263f",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/platform_util.h": "a51d93e24bf5694ab67a7f00f38c16bf5996a7a39ebed6615494438d9901cb80",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_gather_out.h": "0ceb2e6b6072055ba92020cf5c47afbc29e7403f2c75193e8504fbbedc89b42c",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_sort_multi_core.h": "a31e867f6ae919e1e5dc75cec0688557514367da10e5a10e6c6c1f1cbe17bb4b",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_init_routing_v3_arch35_tiling_def.h": "4fa771e1cb55459f7f7022a389d367540cc2f286a2cbc240a287696ed31d8752",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_common.h": "7cbfe2a2ec51b39d25a808ec2636230920edc572f9f6317f0837d5d7e3e0db1e",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_init_routing_v3_apt.h": "37de42ded5d42d754e829f10ce84410675f3c05da30a0c1fa2c8e6b2da37f6dd",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_sort_base.h": "24858d814dde370799f2b9be6d3408ed37b652abe1735ac2babb93f2ede5a400",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_expert_tokens_count_v2.h": "1db3283d871b3222833fa8a8cecf333cacd032c5d9c2d7d271e16588557fa745",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_mrgsort.h": "7a8d0f371a7ac9bb530c2eeec6329526fe48da87c04e778b1e199373d1b8af73",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_gather_mxfp8_quant.h": "6d76772d4e1076b9d7d8a349d100cddb15c006216b6cfcae081fb1dada408361",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_expert_tokens_count.h": "57da8604eb43f5aec9f641c7d2e558eb6dc5ee3048fc9f3434f2852fd760bde4",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_row_idx_gather.h": "f0797b134ab55f1fbf48fe4210d8912f5c9ade91c7c4625bfc0a7506dd6d70cd",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_gather_dynamic_quant.h": "63a8678fcd7699f5b9b0a90a75ccc96b6f22615135cd49a3d51f0f8db40394c1",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/math_util.h": "9d743c57fb74df2aae134004aaa71971432c08e48d95259f9174140b5c064765",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_sort_one_core.h": "025cba73a87e05ff6cbc53152fca3fc0d7c6e29c35befba613ff1795725f0e96",
+    "kernels/mega_moe_w4a8/include/moe_init_routing_v3/arch35/moe_v3_mrgsort_out.h": "33bb82fc3dad86e6852d9c02f78a18ca009718f8adee707ff2bea65ae9929a46",
+    "kernels/mega_moe/include/mega_moe.h": "e908e134855573d29a4aaf3d95f34efef34cdae2fae9e758aecdc9d754591b10",
+    "kernels/mega_moe/include/mega_moe_tiling_host.h": "35caf0cf6aa4e6e868e173acfb39d03345421297f6a87e5d98f28b9ce17d9811",
+    "kernels/mega_moe/include/mega_moe_base.h": "130a8ef4a21aaaf10d90c0561fe48cefcde1316ebec8e0def163c846ebd2b2da",
+    "kernels/mega_moe/include/mega_moe_tiling.h": "d77f4ec2e92995ee4852435078b95f28cfa4a039ff48fdf27b129b15d432cd4d",
+    "kernels/mega_moe/include/mega_moe_tiling_key.h": "441a96cfcdb9c5c423435342eabf56c86325f804f57b3d6642fb647d4ecba99a",
+    "kernels/mega_moe/include/block_epilogue_swiglu_mx_quant.h": "7515a9706f86fb89de88ea0cc0af3449044e0f878b8853dd190d3be3a9ffb772",
+    "kernels/mega_moe/include/mega_moe_workspace_info.h": "5ad8cc3b927c74994306e116acdcdde3cfa55fe9f234c540166ebb4ff4749660",
+    "kernels/mega_moe/include/copy_l0c_to_ub.hpp": "63d2d8886dc2ace27e621cb98bea482a5a5df07b306d20e296206d686257fd3c",
+    "kernels/mega_moe/include/mega_moe_quant_constants.h": "62a4a6d15e7568bef8451987bc5eae9cc95c4ca50a3da49bf621c6a5fa680b6d",
+    "kernels/mega_moe/include/mega_moe_timer.h": "5c5cdb4208612a42f7f431a6b25e042bc50c702de8996b93176054557a60d4e6",
+    "kernels/mega_moe/include/mega_moe_catlass_impl.h": "4a16f24b5d58471600e7a602d89751adf4f082105a82301b7effe6dc5e450cdd",
+    "kernels/mega_moe/include/mega_moe_combine_send.h": "609b62bf2319f5a9f46400fad50de53fb3d5a890cb443fc02e8b66f819e9098e",
+    "kernels/mega_moe/include/tile_copy.hpp": "b2e0c8d8a635f3be81e48bfd1f4b1f50ebe66d0227ffbe6d67d855629d2e6e6d",
+    "kernels/mega_moe/include/op_kernel/load_store_utils.h": "c87abce33faec15d8a273cf8feb1f187dede5e973e52d55b4999bc220278ea61",
+    "kernels/mega_moe/include/op_kernel/platform_util.h": "9568480f658b31a8fb3b124a1aaff5e80012c21ede7f02d1c019b19f7e659f8f",
+    "kernels/mega_moe/include/op_kernel/mc2_kernel_utils.h": "b384e52403544dc8bb2d725b028927fcf24fa74cec475c4d0c55939245cd66dd",
+    "kernels/mega_moe/include/op_kernel/math_util.h": "65981e5553219d8346572994867fe50f6319f95a2e0182be7b61026d4a232905",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_gather_out.h": "0f67c112a11d9933558123fb132d2234fd3ca03aa1cfa91b2db84e061d4b2b48",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_sort_multi_core.h": "c71271e494098a5360308475dcf22eb4653aa6198f61992dc6f396ebbffe4b37",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_init_routing_v3_arch35_tiling_def.h": "ffd2c63761ce729695c777f9781bcbb35de69e95c449f4fd9189c05d1c41dea9",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_common.h": "9d9e8f19241eee121e4e4e11eb6b2dc747f64569ba452143eb7b2552c43a86af",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_init_routing_v3_apt.h": "3988bc5dcb499934b203d9bd6e4d18d734262d0d28b5bcd953bd46a73b57ce20",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_sort_base.h": "d498d81baf1bb2f5f0a05ce35555d064a9527863a2e77aeff5010fd851645870",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_expert_tokens_count_v2.h": "70fb24f8b8d0dffa9558b16bc19173e96846997e5c12dbbe8fdc102394b59721",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_mrgsort.h": "1d9c9ea49e5d11b5a52e0d3e2f5dfbe0800241de5bf9758f9b220a92f8d6ce4c",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_gather_mxfp8_quant.h": "be95a07118abf87477003c4d911418597cc5c7e8af43891672be9bdb10abd9ed",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_expert_tokens_count.h": "752b0249fa23cb480c41c521f55b48ccc8d231cbf59ec8cd1585e7315edb7e09",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_row_idx_gather.h": "297939b170de612eb0fcc81a5df0c107b88db87551993a0f67fef37e92fa5531",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_gather_dynamic_quant.h": "f7c62e92b3df0e6108d553a9843857a071ee4458f4546771421047ddd639dead",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_sort_one_core.h": "565cb9f30175e950799c61571d64badfffc6df3c0975ae773090254ff04e8861",
+    "kernels/mega_moe/include/moe_init_routing_v3/arch35/moe_v3_mrgsort_out.h": "3dc6f8ed4d63aa3a27df7e7267d93a5b5af595a7e202b72f612bdf470dc5885d",
+    "kernels/mega_moe_bf16_udma/include/mega_moe_bf16_udma_tiling_host.h": "07105d93749452480461f519930935c5c678712a700f4cf6fbd35ca9c3fd40ea",
+    "kernels/mega_moe_bf16_udma/include/mega_moe_base.h": "8dde0d83c4e354c0cb59214a4b0f82b76870824dcc829361a118ef4811f3bc3c",
+    "kernels/mega_moe_bf16_udma/include/mega_moe_bf16_catlass_impl.h": "42d2ab2af656611be5cfaa91358e3346cdf731d76a468bcb69ce9fdacc7cfba6",
+    "kernels/mega_moe_bf16_udma/include/mega_moe_workspace_info.h": "1fe2e4d8c4263b819c9db4c31de4d87bf7bcb4b31d88c04b12ef8fa59bf441d2",
+    "kernels/mega_moe_bf16_udma/include/mega_moe_bf16_udma.h": "7625402f0d788804de427c3d4568ff4db4ed7142cb95efd748080b2f33106a5e",
+    "kernels/mega_moe_bf16_udma/include/mega_moe_combine_send.h": "1ed555c0bdc34499e816957851d67289389be943a58369b4a38bd7b9cbbda401",
+    "cmake/AscendDeepEPKernel.cmake": "5748c8074d8a303e71e32a97186ff258376c2de8220d3eec9f79ed96a013707f",
+    "test/megamoe_planner_test/launch_config.py": "5da49d874a3c362b370c14d5e81e0ed68655356d5b786c3d2d3a7cc042675a3f",
+    "test/megamoe_planner_test/test_contract_cpu.py": "0c70cb4cd9404d80069c7a50818f992057f339cbba14db6d441cdd346b959889",
+    "test/megamoe_planner_test/gate_and_run.py": "a6e86c09d798d02b3cdb486805dcf49f181a8e50b2ecc69ae4d2f81806ec5504",
+    "test/megamoe_planner_test/build_identity.py": "3074136795952a24cd2b8c31f6cadfad57866c954ff3d7d78fa9cca89cf0036d",
+    "test/megamoe_planner_test/routing_contract.py": "1e48d171e33e5014ec7e6bd92be971c0c9871946aa5d3f92f809426693223533",
+    "test/megamoe_planner_test/routing_compare.py": "e3a61f37b893458f5aa716fd3392a4de75cf3c1ac54d47230ef34e5c01f8bf6f",
+    "test/megamoe_planner_test/common.py": "57a58ca4fe0bda4aaadce560775002ccd7614159ddc175ba046419c603d3c088",
+    "test/megamoe_planner_test/routing_campaign.py": "24f7ab93aed18eca04c9d25611dd6852ae0017c3718d4cfd57b2c57bd0ff328a",
+    "test/megamoe_planner_test/runners.py": "8185b381727c92f4c1b9b3679cdf4d5bf055c326e7b2a62ccae35fb27f6423ff",
+    "test/megamoe_planner_test/inputs.py": "01351b3ac6d7ae0d8da3cf2888ae8ebe15d9893c05315eb764240f2716101584",
+    "test/megamoe_planner_test/compare_results.py": "8a027fe61c763ad65ae1a61fa2f2d06f1ca44a54649487c7d29ea6ddb2c26e21",
+    "test/megamoe_planner_test/test_planner_megamoe.py": "69e9c547629e514bf4b7c9d9966e5bbb0bf3be869a0c9811424fea12b46cac1c",
+    "test/megamoe_planner_test/campaign.py": "92135a3c0d83e086905610ce18c19e8ab45365f6294134560cba71d522dda678",
+    "test/megamoe_planner_test/routing_variants.py": "5719045dd87c85f10591aac93c164514a6430c41d2b6a85885cbe3dedd50a8a0",
+    "test/megamoe_planner_test/stage_probe.py": "f213c2af27597b582b91e90302fcf6a2bf9aa3dad633606a7fd293657d464efe",
+    "test/megamoe_planner_test/build_routing_variants.sh": "2b4674737f795a63b6c408f59898b81560346b38daad9ad1c6b5c69323fc85ba",
+    "test/megamoe_planner_test/run_planner_megamoe.sh": "f636f746f0e59d79b50195e9a7de7fa8b7a33c8c21624d3d5ff84c42e71671fa",
+    "test/megamoe_planner_test/build_benchmark.sh": "60d493bb82b1608419e763c2fa3b8c0e3f860410ad478aa4883197a2bd89d9ce",
+    "CMakeLists.txt": "bd4470a77d57093829d4a2c94ef204131d03ca80ccb377817001250232fef3d0",
+    "setup.py": "c5f706f00b4c633b1b54425e829aba10df1114267fb6b47cc2595c1df80a7515"
+  }
+}

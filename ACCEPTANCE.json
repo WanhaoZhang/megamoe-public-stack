@@ -1,0 +1,228 @@
+{
+  "schema": 1,
+  "complete": false,
+  "passed": false,
+  "closed_at_user_request": true,
+  "remaining_protocol_canceled": true,
+  "time_utc": "2026-11-14T10:16:26.842859+00:00",
+  "ordinary_executor_only": true,
+  "scope": "common cropped Ascend L2 synthetic complete-model training; Planner strategies, not original full systems",
+  "main_planned_cells": 108,
+  "main_resolved_cells": 108,
+  "fourth_planned_cells": 12,
+  "heldout_planned_cells": 72,
+  "conditional_ablations_required": true,
+  "conditional_ablation_planned_cells": 54,
+  "strongest_existing": "ultra_ep",
+  "stable_points": [
+    0.2
+  ],
+  "effective_audited_runs": 120,
+  "measured_world_steps": 2400,
+  "main_denominator": "primary MoonEP-planner MaxVio0.2 mean of three run means",
+  "stages": {
+    "cpu_reference": {
+      "complete": true,
+      "path": "evidence\\cpu-policy-oracle.json",
+      "sha256": "37c1c316fe397171657f3c13b4c0e68c0521f48bdffab07cdaa73717e573eaec"
+    },
+    "plan_lifetime": {
+      "complete": true,
+      "path": "evidence\\plan-lifetime.json",
+      "sha256": "bd29a075074a5eb5adc7ebc3345c6dbf9f8c51ca09d12ecc9d563c3d5d177721"
+    },
+    "device_final": {
+      "complete": true,
+      "path": "evidence\\final-gates-v4.json",
+      "sha256": "eab31b8ed4ccc53d4e348e3aa23fcb203ee59c8b0bbdb69b58780f4e25099202"
+    },
+    "common_capacity": {
+      "complete": true,
+      "path": "evidence\\capacity-gate-163840.json",
+      "sha256": "32bd2f58969dba35ac5a143c398fd9a53823c30d297aef7a1f49325977965360"
+    },
+    "primary-existing": {
+      "complete": true,
+      "expected": 90,
+      "original_attempts": 90,
+      "all_attempts": 103,
+      "excluded_attempts": 13,
+      "resolved": 90,
+      "peak_hbm_gib": 88.2626953125,
+      "linked_recoveries": 13
+    },
+    "independent_calibration": {
+      "complete": true,
+      "path": "evidence\\CALIBRATION-ACCEPTANCE.json",
+      "sha256": "6120dc442c58df980d7dc797a5bfeec53ea4381fcfc077fc9159a82d415cfbf8"
+    },
+    "step_time_qualification": {
+      "complete": true,
+      "path": "evidence\\step-time-qualification.json",
+      "sha256": "fdab814e13e7ac4ef93e7dc4484193f2818c6600922cecde7c62533197f8ea9e"
+    },
+    "identical_weight_correctness": {
+      "complete": false,
+      "path": "evidence\\fixed-state-pair-acceptance.json"
+    },
+    "cross_stage_identities": {
+      "complete": false,
+      "path": "evidence\\cross-stage-identity-audit.json"
+    },
+    "isolated_plan_diagnostics": {
+      "complete": false,
+      "path": "analysis\\planning-overhead.json"
+    },
+    "primary-step-time": {
+      "complete": true,
+      "expected": 18,
+      "original_attempts": 18,
+      "all_attempts": 18,
+      "excluded_attempts": 0,
+      "resolved": 18,
+      "peak_hbm_gib": 88.26171875,
+      "linked_recoveries": 0
+    },
+    "fourth-paired": {
+      "complete": true,
+      "expected": 12,
+      "original_attempts": 12,
+      "all_attempts": 12,
+      "excluded_attempts": 0,
+      "resolved": 12,
+      "peak_hbm_gib": 88.26171875,
+      "linked_recoveries": 0
+    },
+    "heldout-a": {
+      "complete": false,
+      "expected": 36,
+      "original_attempts": 0,
+      "all_attempts": 0,
+      "excluded_attempts": 0
+    },
+    "heldout-b": {
+      "complete": false,
+      "expected": 36,
+      "original_attempts": 0,
+      "all_attempts": 0,
+      "excluded_attempts": 0
+    },
+    "ablation-no_gradient_service": {
+      "complete": false,
+      "expected": 18,
+      "original_attempts": 0,
+      "all_attempts": 0,
+      "excluded_attempts": 0
+    },
+    "ablation-linear_kernel": {
+      "complete": false,
+      "expected": 18,
+      "original_attempts": 0,
+      "all_attempts": 0,
+      "excluded_attempts": 0
+    },
+    "ablation-uniform_topology": {
+      "complete": false,
+      "expected": 18,
+      "original_attempts": 0,
+      "all_attempts": 0,
+      "excluded_attempts": 0
+    }
+  },
+  "pending": [
+    "ablation-linear_kernel",
+    "ablation-no_gradient_service",
+    "ablation-uniform_topology",
+    "cross_stage_identities",
+    "heldout-a",
+    "heldout-b",
+    "identical_weight_correctness",
+    "isolated_plan_diagnostics"
+  ],
+  "errors": [],
+  "excluded_attempts": [
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio15-eplb_fixed-r1",
+      "reason": "verified_external_contention",
+      "original_state": "pass"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio20-moonep-r1",
+      "reason": "verified_external_contention",
+      "original_state": "failed"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio20-native-r1",
+      "reason": "verified_external_contention",
+      "original_state": "pass"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio20-ultra_ep-r1",
+      "reason": "verified_external_contention",
+      "original_state": "failed"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio20-echo-r1",
+      "reason": "verified_external_contention",
+      "original_state": "pass"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio20-eplb_fixed-r1",
+      "reason": "verified_external_contention",
+      "original_state": "pass"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio0.2-native-r2",
+      "reason": "verified_external_contention",
+      "original_state": "failed"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio0.2-ultra_ep-r2",
+      "reason": "verified_external_contention",
+      "original_state": "failed"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio0.2-echo-r2",
+      "reason": "verified_external_contention",
+      "original_state": "pass"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio0.2-eplb_fixed-r2",
+      "reason": "verified_external_contention",
+      "original_state": "pass"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio0.2-moonep-r2",
+      "reason": "verified_external_contention",
+      "original_state": "pass"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio1-native-r2",
+      "reason": "verified_external_contention",
+      "original_state": "failed"
+    },
+    {
+      "campaign": "primary-existing",
+      "tag": "primary-existing-vio1-moonep-r2",
+      "reason": "verified_external_contention",
+      "original_state": "failed"
+    }
+  ],
+  "observational_trajectory_warnings": [
+    "fourth-paired-vio5-step_time-r4"
+  ],
+  "baseline_freeze_sha256": "1cf44e713a4d684f8081c040f0c8a850bacb17a834be14a10e5c9fba11579dac",
+  "maximum_audited_driver_hbm_gib": 88.2626953125
+}

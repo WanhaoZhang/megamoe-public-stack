@@ -1,0 +1,322 @@
+{
+  "pass_": true,
+  "source": "f6daec8 + independent panel acquire cache patch",
+  "default_flag": 0,
+  "device_variant_flag": 1,
+  "checks": [
+    {
+      "case": "small-ep4-ordinary",
+      "rank": 0,
+      "pass_": true,
+      "SGD_updates": 3,
+      "two_layers": true
+    },
+    {
+      "case": "small-ep4-ordinary",
+      "rank": 1,
+      "pass_": true,
+      "SGD_updates": 3,
+      "two_layers": true
+    },
+    {
+      "case": "small-ep4-ordinary",
+      "rank": 2,
+      "pass_": true,
+      "SGD_updates": 3,
+      "two_layers": true
+    },
+    {
+      "case": "small-ep4-ordinary",
+      "rank": 3,
+      "pass_": true,
+      "SGD_updates": 3,
+      "two_layers": true
+    },
+    {
+      "case": "small-ep4-checkpoint",
+      "rank": 0,
+      "pass_": true,
+      "SGD_updates": 3,
+      "two_layers": true
+    },
+    {
+      "case": "small-ep4-checkpoint",
+      "rank": 1,
+      "pass_": true,
+      "SGD_updates": 3,
+      "two_layers": true
+    },
+    {
+      "case": "small-ep4-checkpoint",
+      "rank": 2,
+      "pass_": true,
+      "SGD_updates": 3,
+      "two_layers": true
+    },
+    {
+      "case": "small-ep4-checkpoint",
+      "rank": 3,
+      "pass_": true,
+      "SGD_updates": 3,
+      "two_layers": true
+    },
+    {
+      "case": "rho6-panel-cache-off",
+      "rank": 0,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-off",
+      "rank": 1,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-off",
+      "rank": 2,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-off",
+      "rank": 3,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-off",
+      "rank": 4,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-off",
+      "rank": 5,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-off",
+      "rank": 6,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-off",
+      "rank": 7,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-on",
+      "rank": 0,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-on",
+      "rank": 1,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-on",
+      "rank": 2,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-on",
+      "rank": 3,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-on",
+      "rank": 4,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-on",
+      "rank": 5,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-on",
+      "rank": 6,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho6-panel-cache-on",
+      "rank": 7,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-off",
+      "rank": 0,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-off",
+      "rank": 1,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-off",
+      "rank": 2,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-off",
+      "rank": 3,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-off",
+      "rank": 4,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-off",
+      "rank": 5,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-off",
+      "rank": 6,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-off",
+      "rank": 7,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 0,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-on",
+      "rank": 0,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-on",
+      "rank": 1,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-on",
+      "rank": 2,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-on",
+      "rank": 3,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-on",
+      "rank": 4,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-on",
+      "rank": 5,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-on",
+      "rank": 6,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    },
+    {
+      "case": "rho3-panel-cache-on",
+      "rank": 7,
+      "pass_": true,
+      "repeats": 3,
+      "timer": 1,
+      "bitwise_current_C1": true
+    }
+  ],
+  "full_shape_actual_rank_calls": 96,
+  "full_network": false
+}

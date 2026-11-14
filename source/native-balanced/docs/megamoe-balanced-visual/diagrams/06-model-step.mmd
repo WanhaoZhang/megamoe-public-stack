@@ -1,0 +1,47 @@
+sequenceDiagram
+ box rgb(235,244,255) MindSpeed-LLM
+  participant L as trainer.py
+  participant M as modeling_deepseek_v4.py
+  participant P as mtp.py
+ end
+ box rgb(234,247,240) FSDPTurbo / FSDP
+  participant H as state.py
+  participant D as dispatcher_megamoe_balanced.py
+ end
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant B as fsdp2_bridge.py
+  participant C as launcher.cpp
+  participant K as mega_moe_bf16.h
+ end
+ loop 每个训练 step
+ L->>L: S06 取 batch → training_step → _compute_loss
+ L->>M: F01 经并行包装器进入 CausalLM.forward
+ M->>M: S07 主干 embedding
+ loop 每个主干 decoder 层
+ M-->>H: F17 层入口触发 FSDP hook，准备本层参数
+ H-->>M: F18 参数 all-gather / unshard 就绪
+ M->>M: F02 attention 后进入 MoE，gate 产生 ids/prob
+ M->>D: F03 self.experts 调用 balanced_forward
+ opt 固定 Python 诊断场景的实验覆盖
+ D->>D: S08 经 debug helper 换入冻结 ids 与 prob=.5
+ end
+ D->>B: F06 传入 X / ids / prob，bridge 通过闭包取当前 home 权重
+ B->>B: F09 刷新 home 并在线规划物理路由和副本
+ B->>C: N04 经 Python 执行器和 C++ Host 提交前向
+ par 设备按当前 stream 执行
+ C-)K: N10 经 worker 入口进入 Process
+ K->>K: K02 按物理路由派发 X / p，搬运副本权重
+ K->>K: K06 GMM1 / SwiGLU × p / GMM2 → combine
+ and Host 提交后返回张量
+ C-->>B: N11 返回 routed Y 及反向所需状态的张量句柄
+ B->>B: F15 保存本层反向 tape
+ B-->>D: routed Y 按设备 stream 依赖交还
+ D-->>M: 恢复 Y 的 batch / seq 形状
+ end
+ M->>M: F16 routed Y + shared MLP
+ end
+ M->>P: S09 MTP forward，内部 decoder 层复用 MoE 链
+ P-->>M: MTP输出
+ M-->>L: S10 LM/MTP 输出或分块loss；汇成训练loss
+ Note over L,B: 本层 tape 在整网反向中回放 placement，B 阶段使用新 epoch
+ end

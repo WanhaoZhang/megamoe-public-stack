@@ -1,0 +1,64 @@
+---
+config:
+  htmlLabels: false
+  flowchart:
+    nodeSpacing: 22
+    rankSpacing: 30
+    wrappingWidth: 235
+---
+flowchart TB
+  accTitle: MegaMoE Balanced 三仓架构
+  accDescr: 模型和训练、分布式参数管理、Native 控制及 NPU 数据执行分区图。箭头标出模块之间传递的张量和控制数据。
+
+  subgraph framework["MindSpeed-LLM · 模型和训练"]
+    trainer["训练入口、Trainer 与优化器<br/>装配模型、组织 step、更新参数"]
+    model["DeepSeek-V4 MoE<br/>gate、routed + shared 汇合"]
+    shared["shared MLP<br/>模型原有分支"]
+    trainer --> model
+    model <-->|"输入与 shared Y"| shared
+  end
+
+  subgraph parallel["FSDPTurbo · 并行与参数"]
+    params["FSDP 参数组<br/>Expert-FSDP2 管 routed home<br/>普通 FSDP8 管 shared / 其余参数"]
+    dispatch["balanced dispatcher<br/>绑定 experts.forward"]
+  end
+
+  subgraph native["ascend_deepep_hkq_wuhan · MegaMoE Native"]
+    subgraph host["Host · Python / C++"]
+      bridge["fsdp2_bridge.py<br/>_ExternalExperts 与执行池接口"]
+      tape[("本层 autograd tape<br/>ctx 持有保存态与 placement 张量引用")]
+      launch["Torch 自定义类 → C++ launcher<br/>worker SO 的 early 导出符号"]
+    end
+    subgraph device["设备 · 每个 EP4 域"]
+      plan["MoonEP 规划与全 EP 校验<br/>物理 ID、copies、counts、header"]
+      weights[("SHMEM 执行权重<br/>home 与活动副本槽")]
+      compute["BF16 routed kernel<br/>前向 dispatch / GEMM / combine<br/>反向 dX / dp 回源，dW 在 EP 内归主"]
+    end
+    bridge <-->|"F15 / B07 保存与回放"| tape
+    bridge <-->|"F09 / P05 逻辑路由与已校验计划"| plan
+    bridge -->|"F08 刷新 home W1/W2"| weights
+    bridge -->|"N02 张量、计划与 descriptor"| launch
+    launch -->|"N06 当前 stream 入队<br/>设备读写提交的张量"| compute
+    weights -->|"home / replica 权重"| compute
+  end
+
+  frozen["11 月 2 日实验覆盖<br/>冻结 ids 与 p=.5"]
+  model <-->|"F03 X、gate 路由与 routed Y"| dispatch
+  frozen -.->|"S08 替换路由，保留模型 X"| dispatch
+  dispatch <-->|"F06 X、ids、p、权重闭包与 routed Y"| bridge
+  params <-->|"F18 / B16 本层 W1/W2 与 home dW"| bridge
+  trainer <-->|"I11 / U04 FSDP 包装与梯度分片"| params
+
+  classDef ms fill:#eff6ff,stroke:#275589,color:#14283f
+  classDef fsdp fill:#eaf7f0,stroke:#22634d,color:#14283f
+  classDef kernel fill:#fff6ec,stroke:#90521d,color:#14283f
+  classDef experiment fill:#f5f6f8,stroke:#788599,stroke-dasharray:4 3,color:#14283f
+  class trainer,model,shared ms
+  class params,dispatch fsdp
+  class bridge,tape,launch,plan,weights,compute kernel
+  class frozen experiment
+  style framework fill:#f8fbff,stroke:#8aa9ca
+  style parallel fill:#f6fbf8,stroke:#8eb7a4
+  style native fill:#fffcf8,stroke:#d4ae86
+  style host fill:#ffffff,stroke:#d5b898
+  style device fill:#fffaf4,stroke:#d5b898

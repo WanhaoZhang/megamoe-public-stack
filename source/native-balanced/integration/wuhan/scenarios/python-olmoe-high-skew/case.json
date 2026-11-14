@@ -1,0 +1,205 @@
+{
+  "name": "python-olmoe-high-skew-e8-ep4-m8192",
+  "kind": "NEW_PYTHON_TRAINING_HISTOGRAM_DERIVED",
+  "world": 8,
+  "ep": 4,
+  "groups": [
+    [
+      0,
+      1,
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      6,
+      7
+    ]
+  ],
+  "M": 8192,
+  "H": 7168,
+  "F": 3072,
+  "E": 8,
+  "TopK": 2,
+  "home": 2,
+  "slots": 2,
+  "capacity": 20480,
+  "limit": 10,
+  "dtype": "bfloat16",
+  "weight_layout": "canonical",
+  "source_kappa": 3.0070735886693,
+  "target_kappa": 2.481662403792143,
+  "counts": [
+    12051,
+    32768,
+    3495,
+    572,
+    5497,
+    1175,
+    8107,
+    1871
+  ],
+  "initial_rank_routes": [
+    44819,
+    4067,
+    6672,
+    9978
+  ],
+  "route_seed": 17,
+  "tensor_rng": {
+    "device": "CPU",
+    "generator": "torch.Generator",
+    "seed": "42+global_rank",
+    "order": [
+      "x",
+      "dy",
+      "w1",
+      "w2"
+    ],
+    "scales": [
+      0.2,
+      0.1,
+      0.01,
+      0.01
+    ],
+    "algorithm": "FP32 torch.randn(shape,generator=generator) * scale, then bfloat16; prob constant FP32 0.5",
+    "full_tensor_regeneration_verified_in_this_assessment": false
+  },
+  "source_scope": "frozen OLMoE pretrained/Python histogram; not author P95 or DeepSeek natural router; no optimizer updates",
+  "tensor_scope": "synthetic fixed-seed tensors and reconstructed unique Top2 co-occurrences; no actual FSDP/router/shared/optimizer benchmark",
+  "exact_route_files": [
+    {
+      "file": "rank0-ids.npy",
+      "bytes": 65664,
+      "sha256": "b7335c976bb36f1c9f23287f04edfe5b928bab3090bc867ac56b5869e8ce2165",
+      "raw_tensor_sha256": "4710f11894bb442a0332b5386dd7eeae63aaa98cfb4dfbb3d6561256d87f5899",
+      "equal_original_file": true,
+      "equal_capture_logical_ids": true
+    },
+    {
+      "file": "rank1-ids.npy",
+      "bytes": 65664,
+      "sha256": "1c40eb1f23a7150e57bccccffd39ce1af7f3e0354e7f04b4b7a23894a08e79e3",
+      "raw_tensor_sha256": "456546c69eb090ff2f902336cf3f14bd22f7d4a6430fee39e5c87948f7fa59cc",
+      "equal_original_file": true,
+      "equal_capture_logical_ids": true
+    },
+    {
+      "file": "rank2-ids.npy",
+      "bytes": 65664,
+      "sha256": "2720515a3a9bdf2c12b71d85c451ebaf7bd50fabb282812da035cbfafac689db",
+      "raw_tensor_sha256": "be642c428d5a524eea6845342e9594fbfc0e64cbf81ce4193771b86e3dd55319",
+      "equal_original_file": true,
+      "equal_capture_logical_ids": true
+    },
+    {
+      "file": "rank3-ids.npy",
+      "bytes": 65664,
+      "sha256": "00c9752fd44f38309493676a88e23f877bd79f7f9e5fb53891a041edb2fcb469",
+      "raw_tensor_sha256": "9219050bd5da39a8268a7feef22968906dde7ad41b43ab5f0eeb9fa576ab4c1a",
+      "equal_original_file": true,
+      "equal_capture_logical_ids": true
+    }
+  ],
+  "numpy_cpu_proof_version": "2.5.4",
+  "expected_plan": {
+    "ep_group": 0,
+    "global_ranks": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "logical_counts": [
+      12051,
+      32768,
+      3495,
+      572,
+      5497,
+      1175,
+      8107,
+      1871
+    ],
+    "initial_rank_routes": [
+      44819,
+      4067,
+      6672,
+      9978
+    ],
+    "physical_rows_per_rank_slot": [
+      [
+        5645,
+        10739,
+        0,
+        0
+      ],
+      [
+        3495,
+        572,
+        12317,
+        0
+      ],
+      [
+        5497,
+        1175,
+        9712,
+        0
+      ],
+      [
+        8107,
+        1871,
+        6406,
+        0
+      ]
+    ],
+    "executed_rank_routes": [
+      16384,
+      16384,
+      16384,
+      16384
+    ],
+    "copies": [
+      [
+        -1,
+        -1
+      ],
+      [
+        1,
+        -1
+      ],
+      [
+        1,
+        -1
+      ],
+      [
+        0,
+        -1
+      ]
+    ],
+    "active_replicas": 3,
+    "inputs": [
+      {
+        "rank": 0,
+        "file_sha256": "4cc5f09ef8b3b3b273a9b9c02ec5a5345456b535406249b2a9c7ab70907bb163",
+        "bytes": 499323051
+      },
+      {
+        "rank": 1,
+        "file_sha256": "9d6b153bcc26a9e99becc4d409831db805062a1baf6e536577046f305ab101ce",
+        "bytes": 499323051
+      },
+      {
+        "rank": 2,
+        "file_sha256": "234036880730a8d86c8b6db54233d7b05f66dcd1cd861bb352454ef59d4e8e6a",
+        "bytes": 499323051
+      },
+      {
+        "rank": 3,
+        "file_sha256": "de4d4bb3dc832d0676deb6188eec644152b2ee2a1ed61893886fe006b0415993",
+        "bytes": 499323051
+      }
+    ],
+    "capacity_per_rank": 20480
+  }
+}

@@ -1,0 +1,41 @@
+---
+config:
+  sequence:
+    messageMargin: 24
+    noteMargin: 10
+---
+sequenceDiagram
+ box rgb(235,244,255) MindSpeed-LLM
+  participant T as trainer.py
+  participant M as modeling_deepseek_v4.py
+  participant O as optimizer.py
+ end
+ box rgb(234,247,240) FSDPTurbo / FSDP
+  participant S as state.py
+  participant F as param_group.py
+ end
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant B as fsdp2_bridge.py
+  participant K as mega_moe_bf16_backward.h
+ end
+ T->>T: B01 loss.backward() 启动 autograd
+ loop 反向计算图经过各层（含 MTP）
+ T-->>S: U02 输出上的 hook 触发 FSDP 参数准备
+ S-->>F: U10 参数组 pre_backward，按需 unshard 本层权重
+ opt checkpoint 需要的保存张量
+ T-->>M: U01 重算层前向，按需再次进入 routed 前向
+ end
+ Note over T,M: U05 shared MLP 由框架 autograd 求导，具体调度顺序由计算图决定
+ T-->>B: U03 autograd 将本层 dY 交给 _ExternalExperts.backward
+ B->>B: B03 从 tape 取回 counts / state / dispatch / placement，读当前权重
+ B->>B: B07 回放前向 placement，以新 epoch 执行
+ B->>K: B09 经 C++ 和 launcher 提交 routed 反向
+ K->>K: B13 恢复副本、计算 dX/dp/dW，在 EP 内把副本 dW 归给 owner
+ K-->>B: B14 dX/dp/dW 的数据依赖，Host 提交后返回张量句柄
+ B-->>M: B17 dX / dp 回计算图，与其他分支的输入梯度累加
+ B-->>F: B16 home dW 通过 autograd 回到专家 Parameter
+ F->>F: U04 Expert-FSDP reduce-scatter / scaling，交还参数分片梯度
+ end
+ T->>T: U06 micro-batch 累积结束，裁剪梯度并检查 finite
+ T->>O: U07 更新分片参数（本例 Muon 配置）
+ T->>T: U08 更新学习率、清梯度，下一 step 使用更新后的参数

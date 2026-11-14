@@ -1,0 +1,3 @@
+# Mail patches contain significant context prefixes and git's "-- " footer.
+integration/wuhan/patches/*.patch -whitespace
+integration/wuhan/*.sh text eol=lf

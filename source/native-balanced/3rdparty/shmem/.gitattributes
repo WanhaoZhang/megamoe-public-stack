@@ -1,0 +1,14 @@
+# 行尾保护配置（配合本仓库 core.autocrlf=false / core.filemode=false 使用）
+#
+# 1) 默认禁用 git 对所有文件的行尾自动转换：
+#    仓库中存在历史遗留的 CRLF / mixed 行尾文件（git ls-files --eol 显示
+#    i/crlf、i/mixed），保持原样存储可避免 checkout/checkin 自动转换
+#    产生大面积行尾 diff。
+* -text
+
+# 2) shell 脚本例外，强制 LF：
+#    - checkin 时 CRLF 自动规范化回 LF，Windows 编辑器误存 CRLF 不会
+#      产生行尾差异提交；
+#    - checkout 时始终输出 LF（.sh 需分发至 Linux NPU 节点执行，
+#      CRLF 会导致 bash 解析报错）。
+*.sh text eol=lf

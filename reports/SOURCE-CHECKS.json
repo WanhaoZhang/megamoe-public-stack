@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "source_equivalence": [
+    {
+      "component": "native-balanced",
+      "repo": "native",
+      "exact_files": 481,
+      "line_ending_only_files": [],
+      "all_frozen_source_files_equivalent": true
+    },
+    {
+      "component": "FSDPTurbo",
+      "repo": "FSDPTurbo",
+      "exact_files": 476,
+      "line_ending_only_files": [],
+      "all_frozen_source_files_equivalent": true
+    },
+    {
+      "component": "MindSpeed-LLM",
+      "repo": "MindSpeed-LLM",
+      "exact_files": 1054,
+      "line_ending_only_files": [],
+      "all_frozen_source_files_equivalent": true
+    }
+  ],
+  "publication_checks": [
+    {
+      "repo": "native",
+      "changed_files": 40,
+      "maximum_file_bytes": 127046,
+      "python_syntax_checked": true,
+      "no_raw_or_binary_artifacts": true,
+      "credential_marker_scan_passed": true
+    },
+    {
+      "repo": "FSDPTurbo",
+      "changed_files": 3,
+      "maximum_file_bytes": 164889,
+      "python_syntax_checked": true,
+      "no_raw_or_binary_artifacts": true,
+      "credential_marker_scan_passed": true
+    },
+    {
+      "repo": "MindSpeed-LLM",
+      "changed_files": 3,
+      "maximum_file_bytes": 27734,
+      "python_syntax_checked": true,
+      "no_raw_or_binary_artifacts": true,
+      "credential_marker_scan_passed": true
+    },
+    {
+      "repo": "wuhan",
+      "changed_files": 282,
+      "maximum_file_bytes": 1025707,
+      "python_syntax_checked": true,
+      "no_raw_or_binary_artifacts": true,
+      "credential_marker_scan_passed": true
+    }
+  ],
+  "no_new_device_tests": true
+}

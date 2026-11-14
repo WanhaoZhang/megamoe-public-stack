@@ -1,0 +1,220 @@
+# ============================================================
+# Kimi K3 MOE Training Configuration
+# Shared entry for Ulysses/KCP and Hybrid P2P.
+# Default parallelism is unchanged; see README.md for complete CP mode switches.
+# ============================================================
+
+# --- Model Configuration ---
+model:
+  model_name_or_path: "moonshotai/Kimi-K3"
+  tokenizer_name_or_path: "moonshotai/Kimi-K3"
+  torch_dtype: "bf16"
+  # Non-CP runs use this interface (upstream behavior); CP runs switch to the
+  # flash kernel from the CP state.
+  attn_implementation: "flash_attention_2"
+  # Performance-testing switch: builds on the meta device (zero-fill after
+  # sharding), skips checkpoint reading. Values are meaningless; pair with
+  # ep_plan.fixed_router for MoE models to keep the a2a load balanced.
+  skip_weight_load: false
+
+# --- Optimizer Configuration ---
+optimizer:
+  optimizer_type: "AdamWSwap"
+  weight_decay: 0.1
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  adam_epsilon: 1e-8
+  lr: 1.0e-5
+  warmup_ratio: 0.03
+  lr_scheduler_type: "CosineAnnealingLR"
+  min_lr: 3.0e-5
+  clip_grad: 1.0
+  clip_grad_norm_type: 2.0
+  param_prefetch: true
+  clip_grad_keep_on_device: true
+
+# --- Run Configuration ---
+run:
+  seed: 42
+  max_steps: 100
+  num_train_epochs: 5
+  gradient_accumulation_steps: 1
+  logging_steps: 1
+  profile:
+    enabled: false
+    # Global ranks that collect profiler data; unlisted ranks run with a
+    # zero-overhead no-op. null = all ranks collect.
+    ranks: null
+    wait_steps: 0
+    warmup_steps: 0
+    active_steps: 10
+    repeat: 1
+    skip_first: 0
+    output_dir: "./profile"
+    record_shapes: false
+    profile_memory: false
+    with_stack: false
+  # Device memory snapshot collection (0-based micro steps; the window is
+  # inclusive on both ends).
+  memory_snapshot:
+    enable: false        # true: record allocator history from start_step and dump at end_step
+    start_step: 1
+    end_step: 2          # the single dump step; without it one snapshot per step from start_step
+    save_path: ./memory_snapshot  # None -> <checkpoint.output_dir>/memory_snapshot
+    dump_ranks: [0]      # ranks that record and dump; null/omitted -> all ranks
+    stacks: all          # allocation stack scope: all / python
+    max_entries: null    # allocator history entry cap; null -> unbounded
+    mem_info: false      # per-step memory stats line (independent of enable)
+
+# --- Checkpoint Configuration ---
+checkpoint:
+  output_dir: "./output/kimi_k3"
+  save_steps: 10000
+  strict: true
+  save_optim: true
+  load_optim: true
+  resume_from_checkpoint: null
+
+# --- Data Configuration ---
+data:
+  dataset_path: "/home/dataset/coco/llava_instruct_150k_fsdp_turbo_100.json"
+  dataset_config: null
+  text_column: "text"
+  image_column: "images"
+  media_key: "medias"  # codespell:ignore
+  conversation_column: "messages"
+  split: "train"
+  batch_size: 1
+  max_seq_length: 2048
+  num_workers: 8
+  pin_memory: true
+  shuffle: false
+  is_multimodal: true
+
+# --- Distributed Configuration ---
+distributed:
+  data_parallel_size: 1
+  fully_shard_parallel_size: 16
+  tensor_parallel_size: 1
+  ulysses_parallel_size: 2  # U: Ulysses parallel size
+  kcp_parallel_size: 1     # KCP state group size. Keep 1 for Hybrid P2P.
+  kda_p2p_parallel_size: 1  # K: Hybrid P2P state axis (CP=U*K).
+  expert_parallel_size: 16
+  expert_fully_shard_parallel_size: 1
+  expert_data_parallel_size: 1
+
+  # --- FSDP Plan ---
+  fsdp_plan:
+    ignored_modules: []
+    apply_modules:
+      vision_tower.encoder.blocks.{*}:
+        {}
+      mm_projector:
+        {}
+      language_model.model.embed_tokens:
+        {}
+      language_model.model.layers.{*}:
+        {}
+      language_model.lm_head:
+        {}
+    cpu_offload: false
+    param_dtype: "bf16"
+    reduce_dtype: "fp32"
+    output_dtype: "bf16"
+    cast_forward_inputs: true
+    num_to_forward_prefetch: 1
+    num_to_backward_prefetch: 1
+    hook_modules:
+      - language_model.model.layers.{*}
+    fsdp_implementation: "native"
+
+  # --- Tensor Parallel Plan ---
+  tp_plan:
+    colwise_parallel: ['*.q_proj', '*.k_proj', '*.v_proj']
+    rowwise_parallel: ['*.o_proj']
+    sequence_parallel: []
+
+  ep_plan:
+    apply_modules: ["language_model.model.layers.{*}.block_sparse_moe.experts"]
+    fixed_router: false
+    # Kimi's SiTU transforms the complete gate/up projection, so use its
+    # model-specific eager EP implementation instead of the generic GLU path.
+    dispatcher: custom_ep_forward_eager
+
+  # --- Context Parallel Plan ---
+  cp_plan:
+    kda_backend: kcp       # hybrid_p2p selects Hybrid P2P
+    mla_backend: ulysses   # hybrid_p2p also supports kv_allgather (front/back shards)
+    # Legacy mode applies the patch set for its active axis. For hybrid_p2p,
+    # replace all four function patch lists and module_patches with [] (README).
+    # Only the patch set whose parallel size is greater than 1 is applied.
+    # CP runs switch to the flash kernel inside the model; single-rank runs keep
+    # the upstream model.attn_implementation path untouched. Every CP kernel
+    # call goes through modeling_kimi_linear.dispatch_attention, so the wrapper
+    # only needs to wrap that single surface.
+    ulysses_function_patches:
+      - target_functions:
+          - modeling_kimi_linear.dispatch_attention
+        type: full_attention
+      - target_functions:
+          - modeling_kimi_linear.KimiDeltaAttention.forward
+        type: kda
+    kcp_function_patches:
+      # KCP 的 MLA 走 Ulysses all-to-all(1M 推荐:96 个 head 支持到很大 cp,
+      # 每 rank 的 KV 随 cp 缩小;a2a 不物化全序列 KV)。
+      - target_functions:
+          - modeling_kimi_linear.dispatch_attention
+        type: full_attention
+      - target_functions:
+          - modeling_kimi_linear.KimiDeltaAttention.forward
+        type: kda
+    kv_allgather_function_patches: []
+    loss_function_patches:
+      - target_functions:
+          - transformers.loss.loss_utils.ForCausalLMLoss
+        type: causal_lm_loss
+
+# --- Module Patch Plan ---
+# Legacy fused-input CP entry; set module_patches: [] for hybrid_p2p.
+module_patches:
+  - target: modeling_kimi_k3.KimiK3ForConditionalGeneration.forward
+    replacement: fsdp_turbo.models.kimi.kimi_k3_cp.kimi_k3_model_forward
+
+# --- Memory Configuration ---
+memory:
+  # Chunked cross-entropy: streams [chunk_loss_size, vocab] logits instead of
+  # materializing [local_seq, vocab]; required at 1M scale. Supported together
+  # with context parallelism (labels are globally shifted and normalized across
+  # the CP group).
+  chunk_loss: false
+  chunk_loss_size: 1024
+  # Multimodal image-text merge: move the text embeddings this many tokens at a
+  # time so the merge does not materialize a full-sequence copy (~14 GiB at 1M
+  # tokens); 0 keeps the single-shot assignment.
+  mm_merge_chunk_tokens: 0
+  recompute: false
+  recompute_plan:
+    use_reentrant: false
+    flatten_inputs: true
+    swap_inputs: true
+    apply_modules:
+      - language_model.model.layers.{*}
+      - vision_tower.encoder.blocks.{*}
+    op_replay_scopes:
+      - name: forward_matmul
+        apply_modules:
+          - language_model.model.layers.{*}
+          - vision_tower.encoder.blocks.{*}
+        save_rng: false
+        quantizer: fp8_blockwise
+        cache_ops:
+          - aten.matmul.default
+          - npu.npu_grouped_matmul.default
+  swap_plan:
+    capacity_mb: 1024
+    keep_rate: 0.0
+    enable_prefetch: true
+
+# --- Quantization Configuration ---
+quantization:
+  quantization_plan: null

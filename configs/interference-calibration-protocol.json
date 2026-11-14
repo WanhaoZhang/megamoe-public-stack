@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "reason": "independent EPLB dense-replica backward envelope underprediction",
+  "parameters": [
+    "data_fluid_scale",
+    "weight_copy_scale",
+    "owner_service_contention_scale"
+  ],
+  "grid": [
+    0.5,
+    1,
+    2,
+    4,
+    8
+  ],
+  "additive_residual": "nonnegative median per phase; suffix only",
+  "training_steps": [
+    1,
+    2
+  ],
+  "validation_steps": [
+    3
+  ],
+  "final_refit_steps": [
+    1,
+    2,
+    3
+  ],
+  "objective": "mean of per-job per-phase mean relative absolute errors; equal job weight",
+  "source": "eight accepted original TimerV2 diagnostic jobs",
+  "primary_heldout_or_step_time_training_data_used": false
+}

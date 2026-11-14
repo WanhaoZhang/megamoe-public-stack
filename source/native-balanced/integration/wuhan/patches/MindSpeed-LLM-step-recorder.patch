@@ -1,0 +1,307 @@
+From bc77abcf1bbca815080bb9be6b4918d5c36d4c6e Mon Sep 17 00:00:00 2001
+From: zhangwanhao <zhangwanhao1@huaiwei.com>
+Date: Mon, 26 Oct 2026 19:51:59 +0800
+Subject: [PATCH 1/3] feat: add opt-in complete-step records for Wuhan pairing
+
+---
+ mindspeed_llm/fsdp2/train/step_record.py | 53 ++++++++++++++++++++++++
+ mindspeed_llm/fsdp2/train/trainer.py     | 12 ++++++
+ 2 files changed, 65 insertions(+)
+ create mode 100644 mindspeed_llm/fsdp2/train/step_record.py
+
+diff --git a/mindspeed_llm/fsdp2/train/step_record.py b/mindspeed_llm/fsdp2/train/step_record.py
+new file mode 100644
+index 00000000..1f88edbb
+--- /dev/null
++++ b/mindspeed_llm/fsdp2/train/step_record.py
+@@ -0,0 +1,53 @@
++"""Opt-in complete-step wall records for paired Wuhan backend experiments.
++
++No per-layer synchronization. Each boundary waits for the current device;
++JSON serialization, log aggregation and file writes are outside the interval.
++"""
++import json
++import math
++import os
++from pathlib import Path
++import time
++
++import torch
++import torch.distributed as dist
++
++
++class StepRecorder:
++    def __init__(self, directory):
++        self.directory = Path(directory)
++        self.directory.mkdir(parents=True, exist_ok=True)
++        self.path = self.directory / f'rank{dist.get_rank()}.jsonl'
++        self.file = self.path.open('x', buffering=1)
++        self.started = None
++
++    @classmethod
++    def from_environment(cls):
++        directory = os.environ.get('WUHAN_STEP_RECORD_DIR', '')
++        return cls(directory) if directory else None
++
++    def start(self):
++        if self.started is not None:
++            raise RuntimeError('overlapping complete-step measurement')
++        torch.accelerator.synchronize()
++        self.started = time.perf_counter_ns()
++
++    def stop(self, step, losses, grad_norm):
++        torch.accelerator.synchronize()
++        stopped = time.perf_counter_ns()
++        if self.started is None:
++            raise RuntimeError('missing complete-step measurement start')
++        elapsed = (stopped - self.started) / 1e6
++        self.started = None
++        values = [float(v) for v in losses]
++        norm = float(grad_norm)
++        if not all(math.isfinite(v) for v in [*values, norm]):
++            raise FloatingPointError('nonfinite loss/gradient in paired training acceptance')
++        return dict(step=int(step), rank=dist.get_rank(), wall_ms=elapsed,
++                    loss=values[0], lm_loss=values[1], mtp_loss=values[2], aux_loss=values[3],
++                    grad_norm=norm, allocated_bytes=torch.npu.memory_allocated(),
++                    reserved_bytes=torch.npu.memory_reserved(),
++                    boundary='before_fetch_to_optimizer_zero_grad_device_complete')
++
++    def write(self, row):
++        self.file.write(json.dumps(row, allow_nan=False) + '\n')
+diff --git a/mindspeed_llm/fsdp2/train/trainer.py b/mindspeed_llm/fsdp2/train/trainer.py
+index 7d016fd5..32c201c1 100644
+--- a/mindspeed_llm/fsdp2/train/trainer.py
++++ b/mindspeed_llm/fsdp2/train/trainer.py
+@@ -301,6 +301,8 @@ class Trainer:
+         self.model.train()
+         train_start_time = time.time()
+         self._step_start_time = time.time()
++        from .step_record import StepRecorder
++        paired_step_recorder = StepRecorder.from_environment()
+ 
+         # Start profiler
+         if self.profiler_manager.profiler is not None:
+@@ -368,6 +370,8 @@ class Trainer:
+                 num_batches = args.gradient_accumulation_steps if update_step != (total_updates - 1) else remainder
+ 
+                 # [Helper] Fetch N samples from the iterator and calculate valid token count
++                if paired_step_recorder is not None:
++                    paired_step_recorder.start()
+                 batch_samples, batch_seqlens, num_items_in_batch = self.get_batch_samples_func()(
+                     ps, epoch_iterator, num_batches
+                 )
+@@ -459,6 +463,12 @@ class Trainer:
+                         f"non-finite gradient norm ({grad_norm})."
+                     )
+                 self.optimizer.zero_grad()
++                paired_step_row = None
++                if paired_step_recorder is not None:
++                    paired_step_row = paired_step_recorder.stop(
++                        self.global_step + 1,
++                        (current_step_loss, current_step_lm_loss, current_step_mtp_loss, current_step_aux_loss),
++                        grad_norm)
+                 self.msprobe_manager.end_step()
+                 self.model_io_trace_manager.end_step()
+ 
+@@ -479,6 +489,8 @@ class Trainer:
+                 )
+ 
+                 self._total_loss_scalar += reduced_loss
++                if paired_step_recorder is not None:
++                    paired_step_recorder.write(paired_step_row)
+                 self._total_lm_loss_scalar += reduced_lm_loss
+                 self._total_mtp_loss_scalar += reduced_mtp_loss
+                 self._total_aux_loss_scalar += reduced_aux_loss
+-- 
+2.56.0.windows.1
+
+
+From 4493df581551770c4bdb3f4c9242b2f874ab3b26 Mon Sep 17 00:00:00 2001
+From: zhangwanhao <zhangwanhao1@huaiwei.com>
+Date: Mon, 26 Oct 2026 20:28:05 +0800
+Subject: [PATCH 2/3] test: fingerprint initial training shards and close step
+ records
+
+---
+ mindspeed_llm/fsdp2/train/step_record.py | 20 ++++++++++++++++++++
+ mindspeed_llm/fsdp2/train/trainer.py     |  4 ++++
+ 2 files changed, 24 insertions(+)
+
+diff --git a/mindspeed_llm/fsdp2/train/step_record.py b/mindspeed_llm/fsdp2/train/step_record.py
+index 1f88edbb..9bad3721 100644
+--- a/mindspeed_llm/fsdp2/train/step_record.py
++++ b/mindspeed_llm/fsdp2/train/step_record.py
+@@ -3,6 +3,7 @@
+ No per-layer synchronization. Each boundary waits for the current device;
+ JSON serialization, log aggregation and file writes are outside the interval.
+ """
++import hashlib
+ import json
+ import math
+ import os
+@@ -32,6 +33,22 @@ class StepRecorder:
+         torch.accelerator.synchronize()
+         self.started = time.perf_counter_ns()
+ 
++    def snapshot_parameters(self, model):
++        """Hash actual local shards once, before any measured step; no RNG use."""
++        rows = []
++        for name, parameter in model.named_parameters():
++            local = parameter.to_local() if hasattr(parameter, 'to_local') else parameter
++            flat = local.detach().contiguous().reshape(-1)
++            sha = hashlib.sha256()
++            chunk = max(1, 16 * 1024**2 // flat.element_size())
++            for start in range(0, flat.numel(), chunk):
++                sha.update(flat[start:start + chunk].cpu().view(torch.uint8).numpy().tobytes())
++            rows.append(dict(name=name, shape=list(parameter.shape), local_shape=list(local.shape),
++                             dtype=str(local.dtype), sha256=sha.hexdigest()))
++        path = self.directory / f'initial-rank{dist.get_rank()}.json'
++        with path.open('x') as handle:
++            json.dump(dict(rank=dist.get_rank(), parameters=rows), handle, indent=2)
++
+     def stop(self, step, losses, grad_norm):
+         torch.accelerator.synchronize()
+         stopped = time.perf_counter_ns()
+@@ -51,3 +68,6 @@ class StepRecorder:
+ 
+     def write(self, row):
+         self.file.write(json.dumps(row, allow_nan=False) + '\n')
++
++    def close(self):
++        self.file.close()
+diff --git a/mindspeed_llm/fsdp2/train/trainer.py b/mindspeed_llm/fsdp2/train/trainer.py
+index 32c201c1..5ed6b4f1 100644
+--- a/mindspeed_llm/fsdp2/train/trainer.py
++++ b/mindspeed_llm/fsdp2/train/trainer.py
+@@ -303,6 +303,8 @@ class Trainer:
+         self._step_start_time = time.time()
+         from .step_record import StepRecorder
+         paired_step_recorder = StepRecorder.from_environment()
++        if paired_step_recorder is not None:
++            paired_step_recorder.snapshot_parameters(self.model)
+ 
+         # Start profiler
+         if self.profiler_manager.profiler is not None:
+@@ -618,6 +620,8 @@ class Trainer:
+ 
+             if self.global_step >= total_steps:
+                 break
++        if paired_step_recorder is not None:
++            paired_step_recorder.close()
+         # Stop profiler
+         if self.profiler_manager.profiler is not None:
+             self.profiler_manager.stop()
+-- 
+2.56.0.windows.1
+
+
+From 08f2e5c2d67a095f482a5546b01022c4a74c46aa Mon Sep 17 00:00:00 2001
+From: zhangwanhao <zhangwanhao1@huaiwei.com>
+Date: Mon, 26 Oct 2026 20:48:43 +0800
+Subject: [PATCH 3/3] feat: record reduced losses and actual training batch
+ identity outside timing
+
+---
+ mindspeed_llm/fsdp2/train/step_record.py | 35 ++++++++++++++++++++++++
+ mindspeed_llm/fsdp2/train/trainer.py     |  7 +++++
+ 2 files changed, 42 insertions(+)
+
+diff --git a/mindspeed_llm/fsdp2/train/step_record.py b/mindspeed_llm/fsdp2/train/step_record.py
+index 9bad3721..03c41209 100644
+--- a/mindspeed_llm/fsdp2/train/step_record.py
++++ b/mindspeed_llm/fsdp2/train/step_record.py
+@@ -69,5 +69,40 @@ class StepRecorder:
+     def write(self, row):
+         self.file.write(json.dumps(row, allow_nan=False) + '\n')
+ 
++    @staticmethod
++    def hold_batch(value):
++        # _compute_loss replaces inputs['labels'] with None in PT. Retain the
++        # fetched tensor references in a separate container before that edit;
++        # no payload copy, device work or random-number use is introduced.
++        if isinstance(value, dict):
++            return {key: StepRecorder.hold_batch(item) for key, item in value.items()}
++        if isinstance(value, (tuple, list)):
++            return [StepRecorder.hold_batch(item) for item in value]
++        return value
++
++    def fingerprint_batch(self, batches):
++        """Actual fetched data identity; call only after the timed interval."""
++        if self.started is not None:
++            raise RuntimeError('batch fingerprint must be outside step timing')
++        rows = []
++        def visit(value, path):
++            if isinstance(value, torch.Tensor):
++                local = value.to_local() if hasattr(value, 'to_local') else value
++                payload = local.detach().contiguous().cpu().reshape(-1).view(torch.uint8).numpy().tobytes()
++                rows.append(dict(path=path, shape=list(local.shape), dtype=str(local.dtype),
++                                 sha256=hashlib.sha256(payload).hexdigest()))
++            elif isinstance(value, dict):
++                for key in sorted(value):
++                    visit(value[key], f'{path}/{key}')
++            elif isinstance(value, (tuple, list)):
++                for index, item in enumerate(value):
++                    visit(item, f'{path}/{index}')
++            elif isinstance(value, (str, int, float, bool)):
++                rows.append(dict(path=path, scalar=value))
++            elif value is not None:
++                raise TypeError(f'unhandled batch identity type at {path}: {type(value)}')
++        visit(batches, 'batches')
++        return rows
++
+     def close(self):
+         self.file.close()
+diff --git a/mindspeed_llm/fsdp2/train/trainer.py b/mindspeed_llm/fsdp2/train/trainer.py
+index 5ed6b4f1..d7696248 100644
+--- a/mindspeed_llm/fsdp2/train/trainer.py
++++ b/mindspeed_llm/fsdp2/train/trainer.py
+@@ -377,6 +377,7 @@ class Trainer:
+                 batch_samples, batch_seqlens, num_items_in_batch = self.get_batch_samples_func()(
+                     ps, epoch_iterator, num_batches
+                 )
++                paired_batch = paired_step_recorder.hold_batch(batch_samples) if paired_step_recorder is not None else None
+                 self.current_gradient_accumulation_steps = len(batch_samples)
+                 # Initialize accumulated loss for the current step
+                 current_step_loss = 0.0
+@@ -492,6 +493,12 @@ class Trainer:
+ 
+                 self._total_loss_scalar += reduced_loss
+                 if paired_step_recorder is not None:
++                    paired_step_row['reduced_losses'] = dict(
++                        loss=float(reduced_loss), lm_loss=float(reduced_lm_loss),
++                        mtp_loss=float(reduced_mtp_loss), aux_loss=float(reduced_aux_loss),
++                        grad_norm=float(reduced_grad_norm))
++                    paired_step_row['batch_fingerprints'] = paired_step_recorder.fingerprint_batch(paired_batch)
++                    del paired_batch
+                     paired_step_recorder.write(paired_step_row)
+                 self._total_lm_loss_scalar += reduced_lm_loss
+                 self._total_mtp_loss_scalar += reduced_mtp_loss
+-- 
+2.56.0.windows.1
+
+From f508611e7d498f7f437b10e0691fe5b19993d0c7 Mon Sep 17 00:00:00 2001
+From: zhangwanhao <zhangwanhao1@huaiwei.com>
+Date: Tue, 27 Oct 2026 00:22:51 +0800
+Subject: [PATCH] feat(wuhan): record full-process NPU allocator peaks outside
+ step timing
+
+---
+ mindspeed_llm/fsdp2/train/step_record.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mindspeed_llm/fsdp2/train/step_record.py b/mindspeed_llm/fsdp2/train/step_record.py
+index 03c41209..f71379e0 100644
+--- a/mindspeed_llm/fsdp2/train/step_record.py
++++ b/mindspeed_llm/fsdp2/train/step_record.py
+@@ -64,6 +64,8 @@ class StepRecorder:
+                     loss=values[0], lm_loss=values[1], mtp_loss=values[2], aux_loss=values[3],
+                     grad_norm=norm, allocated_bytes=torch.npu.memory_allocated(),
+                     reserved_bytes=torch.npu.memory_reserved(),
++                    peak_allocated_bytes=torch.npu.max_memory_allocated(),
++                    peak_reserved_bytes=torch.npu.max_memory_reserved(),
+                     boundary='before_fetch_to_optimizer_zero_grad_device_complete')
+ 
+     def write(self, row):
+-- 
+2.56.0.windows.1
+

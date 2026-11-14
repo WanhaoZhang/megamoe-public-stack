@@ -1,0 +1,35 @@
+---
+config:
+  sequence:
+    mirrorActors: false
+    messageMargin: 20
+    actorMargin: 25
+    width: 160
+---
+sequenceDiagram
+    accTitle: 专家前向进入 Native 执行池
+    accDescr: Decoder hook 准备当前层 home 权重，模型调用已绑定的 dispatcher，随后 bridge 在同一 stream 发布 home，创建并校验 placement。
+    box rgb(235,244,255) MindSpeed-LLM
+        participant M as DeepSeek-V4 MoE
+    end
+    box rgb(234,247,240) FSDPTurbo
+        participant F as Expert-FSDP hook
+        participant D as balanced dispatcher
+    end
+    box rgb(255,246,236) MegaMoE
+        participant B as bridge / pool
+    end
+    M-->>F: F17 decoder 入口触发 pre-forward
+    F-->>M: F18 当前 EP 位置的 home 参数就绪
+    M->>M: F02 gate 计算路由
+    M->>D: F03 X、逻辑 ids、prob
+    D->>D: S08 实验换入固定 ids 和 p=.5
+    opt 本进程首次遇到这组静态配置
+        D->>B: F05 创建共享 SHMEM pool
+    end
+    Note over D,B: 每层 bridge 持有读取当前 Parameter 的闭包
+    D->>B: F06 调用 bridge，取得当前 W1/W2
+    B->>B: F07 _ExternalExperts.apply
+    B->>B: F08 同一 stream 发布本层 home 权重
+    B->>B: F09 create_plan(ids, policy, capacity)
+    Note over B: Planner 校验完成后，以物理 ID 提交 routed F

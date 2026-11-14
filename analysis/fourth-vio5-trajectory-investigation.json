@@ -1,0 +1,738 @@
+{
+  "failed_tag": "fourth-paired-vio5-step_time-r4",
+  "identities_identical": true,
+  "actual_step_time_decisions_identical": true,
+  "statistics": [
+    {
+      "tag": "primary-existing-vio5-moonep-r1",
+      "max_rank_norm_spread": 2.384185791015625e-07,
+      "norm_max_vs_moon": 0.0,
+      "norm_max_vs_failed": 0.02474912283134789
+    },
+    {
+      "tag": "primary-existing-vio5-native-r1",
+      "max_rank_norm_spread": 1.1920928955078125e-07,
+      "norm_max_vs_moon": 0.0015472919937830065,
+      "norm_max_vs_failed": 0.02409564952085086
+    },
+    {
+      "tag": "primary-existing-vio5-native-r2",
+      "max_rank_norm_spread": 1.1920928955078125e-07,
+      "norm_max_vs_moon": 0.010887031317571516,
+      "norm_max_vs_failed": 0.013592647038429106
+    },
+    {
+      "tag": "primary-existing-vio5-native-r3",
+      "max_rank_norm_spread": 1.1920928955078125e-07,
+      "norm_max_vs_moon": 0.012456289846807356,
+      "norm_max_vs_failed": 0.011984550737099031
+    },
+    {
+      "tag": "primary-step-time-vio5-step_time-r1",
+      "max_rank_norm_spread": 1.1920928955078125e-07,
+      "norm_max_vs_moon": 0.016015761469996836,
+      "norm_max_vs_failed": 0.008336985313492473
+    },
+    {
+      "tag": "primary-step-time-vio5-step_time-r2",
+      "max_rank_norm_spread": 2.384185791015625e-07,
+      "norm_max_vs_moon": 0.009344298136249263,
+      "norm_max_vs_failed": 0.015173561512751954
+    },
+    {
+      "tag": "primary-step-time-vio5-step_time-r3",
+      "max_rank_norm_spread": 1.1920928955078125e-07,
+      "norm_max_vs_moon": 0.009643317300610077,
+      "norm_max_vs_failed": 0.014867141886363289
+    },
+    {
+      "tag": "fourth-paired-vio5-step_time-r4",
+      "max_rank_norm_spread": 1.1920928955078125e-07,
+      "norm_max_vs_moon": 0.024151396941884506,
+      "norm_max_vs_failed": 0.0
+    },
+    {
+      "tag": "fourth-paired-vio5-ultra_ep-r4",
+      "max_rank_norm_spread": 2.384185791015625e-07,
+      "norm_max_vs_moon": 0.008105388455261764,
+      "norm_max_vs_failed": 0.03305511254108473
+    }
+  ],
+  "steps": [
+    {
+      "step": 0,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.817909240722656,
+        "primary-existing-vio5-native-r1": 11.817909240722656,
+        "primary-existing-vio5-native-r2": 11.817909240722656,
+        "primary-existing-vio5-native-r3": 11.817909240722656,
+        "primary-step-time-vio5-step_time-r1": 11.817909240722656,
+        "primary-step-time-vio5-step_time-r2": 11.817909240722656,
+        "primary-step-time-vio5-step_time-r3": 11.817909240722656,
+        "fourth-paired-vio5-step_time-r4": 11.817909240722656,
+        "fourth-paired-vio5-ultra_ep-r4": 11.817909240722656
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.751437783241272,
+        "primary-existing-vio5-native-r1": 1.7514418363571167,
+        "primary-existing-vio5-native-r2": 1.7514349222183228,
+        "primary-existing-vio5-native-r3": 1.7514399290084839,
+        "primary-step-time-vio5-step_time-r1": 1.7514430284500122,
+        "primary-step-time-vio5-step_time-r2": 1.7514399290084839,
+        "primary-step-time-vio5-step_time-r3": 1.7514355182647705,
+        "fourth-paired-vio5-step_time-r4": 1.7514351606369019,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7514337301254272
+      },
+      "failed_vs_moon_norm_relative": -1.4974008184509557e-06,
+      "failed_vs_moon_loss_relative": 0.0
+    },
+    {
+      "step": 1,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.848091125488281,
+        "primary-existing-vio5-native-r1": 11.848224639892578,
+        "primary-existing-vio5-native-r2": 11.847976684570312,
+        "primary-existing-vio5-native-r3": 11.848007202148438,
+        "primary-step-time-vio5-step_time-r1": 11.84786605834961,
+        "primary-step-time-vio5-step_time-r2": 11.847979545593262,
+        "primary-step-time-vio5-step_time-r3": 11.848109245300293,
+        "fourth-paired-vio5-step_time-r4": 11.847990036010742,
+        "fourth-paired-vio5-ultra_ep-r4": 11.84792423248291
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.7060203552246094,
+        "primary-existing-vio5-native-r1": 1.705949068069458,
+        "primary-existing-vio5-native-r2": 1.7060136795043945,
+        "primary-existing-vio5-native-r3": 1.7060877084732056,
+        "primary-step-time-vio5-step_time-r1": 1.7059059143066406,
+        "primary-step-time-vio5-step_time-r2": 1.706026554107666,
+        "primary-step-time-vio5-step_time-r3": 1.7058827877044678,
+        "fourth-paired-vio5-step_time-r4": 1.7059762477874756,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7059855461120605
+      },
+      "failed_vs_moon_norm_relative": -2.5853992303592754e-05,
+      "failed_vs_moon_loss_relative": -8.532132009131388e-06
+    },
+    {
+      "step": 2,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.834177017211914,
+        "primary-existing-vio5-native-r1": 11.834038734436035,
+        "primary-existing-vio5-native-r2": 11.834031105041504,
+        "primary-existing-vio5-native-r3": 11.83398151397705,
+        "primary-step-time-vio5-step_time-r1": 11.833779335021973,
+        "primary-step-time-vio5-step_time-r2": 11.833879470825195,
+        "primary-step-time-vio5-step_time-r3": 11.833993911743164,
+        "fourth-paired-vio5-step_time-r4": 11.833837509155273,
+        "fourth-paired-vio5-ultra_ep-r4": 11.833648681640625
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.7122218608856201,
+        "primary-existing-vio5-native-r1": 1.7124481201171875,
+        "primary-existing-vio5-native-r2": 1.7132843732833862,
+        "primary-existing-vio5-native-r3": 1.713019609451294,
+        "primary-step-time-vio5-step_time-r1": 1.71359384059906,
+        "primary-step-time-vio5-step_time-r2": 1.7126384973526,
+        "primary-step-time-vio5-step_time-r3": 1.7128163576126099,
+        "fourth-paired-vio5-step_time-r4": 1.7133677005767822,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7125095129013062
+      },
+      "failed_vs_moon_norm_relative": 0.0006692121607239088,
+      "failed_vs_moon_loss_relative": -2.8688776257723703e-05
+    },
+    {
+      "step": 3,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.82708740234375,
+        "primary-existing-vio5-native-r1": 11.826905250549316,
+        "primary-existing-vio5-native-r2": 11.827305793762207,
+        "primary-existing-vio5-native-r3": 11.826976776123047,
+        "primary-step-time-vio5-step_time-r1": 11.827201843261719,
+        "primary-step-time-vio5-step_time-r2": 11.8272123336792,
+        "primary-step-time-vio5-step_time-r3": 11.827505111694336,
+        "fourth-paired-vio5-step_time-r4": 11.82742691040039,
+        "fourth-paired-vio5-ultra_ep-r4": 11.827330589294434
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.7253220081329346,
+        "primary-existing-vio5-native-r1": 1.7253445386886597,
+        "primary-existing-vio5-native-r2": 1.7274131774902344,
+        "primary-existing-vio5-native-r3": 1.7276345491409302,
+        "primary-step-time-vio5-step_time-r1": 1.7270389795303345,
+        "primary-step-time-vio5-step_time-r2": 1.7260936498641968,
+        "primary-step-time-vio5-step_time-r3": 1.7269103527069092,
+        "fourth-paired-vio5-step_time-r4": 1.7275985479354858,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7257455587387085
+      },
+      "failed_vs_moon_norm_relative": 0.001319486908426315,
+      "failed_vs_moon_loss_relative": 2.8705973422749054e-05
+    },
+    {
+      "step": 4,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.821125030517578,
+        "primary-existing-vio5-native-r1": 11.821228981018066,
+        "primary-existing-vio5-native-r2": 11.821125030517578,
+        "primary-existing-vio5-native-r3": 11.821040153503418,
+        "primary-step-time-vio5-step_time-r1": 11.820731163024902,
+        "primary-step-time-vio5-step_time-r2": 11.821005821228027,
+        "primary-step-time-vio5-step_time-r3": 11.821176528930664,
+        "fourth-paired-vio5-step_time-r4": 11.821032524108887,
+        "fourth-paired-vio5-ultra_ep-r4": 11.820868492126465
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.702007532119751,
+        "primary-existing-vio5-native-r1": 1.7022958993911743,
+        "primary-existing-vio5-native-r2": 1.7054156064987183,
+        "primary-existing-vio5-native-r3": 1.706153392791748,
+        "primary-step-time-vio5-step_time-r1": 1.7047452926635742,
+        "primary-step-time-vio5-step_time-r2": 1.704282283782959,
+        "primary-step-time-vio5-step_time-r3": 1.7051185369491577,
+        "fourth-paired-vio5-step_time-r4": 1.7056430578231812,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7031044960021973
+      },
+      "failed_vs_moon_norm_relative": 0.002136022100267976,
+      "failed_vs_moon_loss_relative": -7.825516476045458e-06
+    },
+    {
+      "step": 5,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.8208589553833,
+        "primary-existing-vio5-native-r1": 11.820761680603027,
+        "primary-existing-vio5-native-r2": 11.820781707763672,
+        "primary-existing-vio5-native-r3": 11.820685386657715,
+        "primary-step-time-vio5-step_time-r1": 11.820733070373535,
+        "primary-step-time-vio5-step_time-r2": 11.820734024047852,
+        "primary-step-time-vio5-step_time-r3": 11.820764541625977,
+        "fourth-paired-vio5-step_time-r4": 11.820730209350586,
+        "fourth-paired-vio5-ultra_ep-r4": 11.82077693939209
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.7221964597702026,
+        "primary-existing-vio5-native-r1": 1.7218973636627197,
+        "primary-existing-vio5-native-r2": 1.726060390472412,
+        "primary-existing-vio5-native-r3": 1.7258994579315186,
+        "primary-step-time-vio5-step_time-r1": 1.7255609035491943,
+        "primary-step-time-vio5-step_time-r2": 1.7249690294265747,
+        "primary-step-time-vio5-step_time-r3": 1.724799633026123,
+        "fourth-paired-vio5-step_time-r4": 1.7261738777160645,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7219892740249634
+      },
+      "failed_vs_moon_norm_relative": 0.0023095030321875765,
+      "failed_vs_moon_loss_relative": -1.0891427873471748e-05
+    },
+    {
+      "step": 6,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.847692489624023,
+        "primary-existing-vio5-native-r1": 11.847933769226074,
+        "primary-existing-vio5-native-r2": 11.84747314453125,
+        "primary-existing-vio5-native-r3": 11.84776496887207,
+        "primary-step-time-vio5-step_time-r1": 11.847404479980469,
+        "primary-step-time-vio5-step_time-r2": 11.847253799438477,
+        "primary-step-time-vio5-step_time-r3": 11.84755802154541,
+        "fourth-paired-vio5-step_time-r4": 11.847229957580566,
+        "fourth-paired-vio5-ultra_ep-r4": 11.847909927368164
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.6860077381134033,
+        "primary-existing-vio5-native-r1": 1.6848258972167969,
+        "primary-existing-vio5-native-r2": 1.689051866531372,
+        "primary-existing-vio5-native-r3": 1.6890475749969482,
+        "primary-step-time-vio5-step_time-r1": 1.6894258260726929,
+        "primary-step-time-vio5-step_time-r2": 1.6885360479354858,
+        "primary-step-time-vio5-step_time-r3": 1.6882597208023071,
+        "fourth-paired-vio5-step_time-r4": 1.68943190574646,
+        "fourth-paired-vio5-ultra_ep-r4": 1.684659481048584
+      },
+      "failed_vs_moon_norm_relative": 0.0020309323353926434,
+      "failed_vs_moon_loss_relative": -3.903984205044786e-05
+    },
+    {
+      "step": 7,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.860517501831055,
+        "primary-existing-vio5-native-r1": 11.861047744750977,
+        "primary-existing-vio5-native-r2": 11.860599517822266,
+        "primary-existing-vio5-native-r3": 11.860760688781738,
+        "primary-step-time-vio5-step_time-r1": 11.860536575317383,
+        "primary-step-time-vio5-step_time-r2": 11.860651016235352,
+        "primary-step-time-vio5-step_time-r3": 11.860733985900879,
+        "fourth-paired-vio5-step_time-r4": 11.86054515838623,
+        "fourth-paired-vio5-ultra_ep-r4": 11.860578536987305
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.7072304487228394,
+        "primary-existing-vio5-native-r1": 1.7060714960098267,
+        "primary-existing-vio5-native-r2": 1.711377739906311,
+        "primary-existing-vio5-native-r3": 1.7104337215423584,
+        "primary-step-time-vio5-step_time-r1": 1.7112787961959839,
+        "primary-step-time-vio5-step_time-r2": 1.7102458477020264,
+        "primary-step-time-vio5-step_time-r3": 1.7095255851745605,
+        "fourth-paired-vio5-step_time-r4": 1.7117866277694702,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7057313919067383
+      },
+      "failed_vs_moon_norm_relative": 0.0026687545609553887,
+      "failed_vs_moon_loss_relative": 2.3318169017905177e-06
+    },
+    {
+      "step": 8,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.829312324523926,
+        "primary-existing-vio5-native-r1": 11.828963279724121,
+        "primary-existing-vio5-native-r2": 11.829916954040527,
+        "primary-existing-vio5-native-r3": 11.829296112060547,
+        "primary-step-time-vio5-step_time-r1": 11.82946491241455,
+        "primary-step-time-vio5-step_time-r2": 11.829632759094238,
+        "primary-step-time-vio5-step_time-r3": 11.82945728302002,
+        "fourth-paired-vio5-step_time-r4": 11.828950881958008,
+        "fourth-paired-vio5-ultra_ep-r4": 11.829255104064941
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.7257786989212036,
+        "primary-existing-vio5-native-r1": 1.7240310907363892,
+        "primary-existing-vio5-native-r2": 1.729736328125,
+        "primary-existing-vio5-native-r3": 1.7287052869796753,
+        "primary-step-time-vio5-step_time-r1": 1.7297265529632568,
+        "primary-step-time-vio5-step_time-r2": 1.7283785343170166,
+        "primary-step-time-vio5-step_time-r3": 1.727332592010498,
+        "fourth-paired-vio5-step_time-r4": 1.7309083938598633,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7228739261627197
+      },
+      "failed_vs_moon_norm_relative": 0.0029723943990420665,
+      "failed_vs_moon_loss_relative": -3.055482482849925e-05
+    },
+    {
+      "step": 9,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.840957641601562,
+        "primary-existing-vio5-native-r1": 11.840669631958008,
+        "primary-existing-vio5-native-r2": 11.840629577636719,
+        "primary-existing-vio5-native-r3": 11.84109115600586,
+        "primary-step-time-vio5-step_time-r1": 11.841063499450684,
+        "primary-step-time-vio5-step_time-r2": 11.841129302978516,
+        "primary-step-time-vio5-step_time-r3": 11.840929985046387,
+        "fourth-paired-vio5-step_time-r4": 11.840677261352539,
+        "fourth-paired-vio5-ultra_ep-r4": 11.840773582458496
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.73111891746521,
+        "primary-existing-vio5-native-r1": 1.7291806936264038,
+        "primary-existing-vio5-native-r2": 1.7366045713424683,
+        "primary-existing-vio5-native-r3": 1.7341315746307373,
+        "primary-step-time-vio5-step_time-r1": 1.7358739376068115,
+        "primary-step-time-vio5-step_time-r2": 1.7342380285263062,
+        "primary-step-time-vio5-step_time-r3": 1.7330559492111206,
+        "fourth-paired-vio5-step_time-r4": 1.737398386001587,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7270705699920654
+      },
+      "failed_vs_moon_norm_relative": 0.003627404491409303,
+      "failed_vs_moon_loss_relative": -2.3678849085495557e-05
+    },
+    {
+      "step": 10,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.83840560913086,
+        "primary-existing-vio5-native-r1": 11.838423728942871,
+        "primary-existing-vio5-native-r2": 11.839139938354492,
+        "primary-existing-vio5-native-r3": 11.838343620300293,
+        "primary-step-time-vio5-step_time-r1": 11.838545799255371,
+        "primary-step-time-vio5-step_time-r2": 11.83822250366211,
+        "primary-step-time-vio5-step_time-r3": 11.838430404663086,
+        "fourth-paired-vio5-step_time-r4": 11.83857250213623,
+        "fourth-paired-vio5-ultra_ep-r4": 11.838382720947266
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.7318854331970215,
+        "primary-existing-vio5-native-r1": 1.729538083076477,
+        "primary-existing-vio5-native-r2": 1.7373781204223633,
+        "primary-existing-vio5-native-r3": 1.7364001274108887,
+        "primary-step-time-vio5-step_time-r1": 1.7388392686843872,
+        "primary-step-time-vio5-step_time-r2": 1.7361863851547241,
+        "primary-step-time-vio5-step_time-r3": 1.734157919883728,
+        "fourth-paired-vio5-step_time-r4": 1.741461992263794,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7262885570526123
+      },
+      "failed_vs_moon_norm_relative": 0.005529556911333611,
+      "failed_vs_moon_loss_relative": 1.4097591422457256e-05
+    },
+    {
+      "step": 11,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.822805404663086,
+        "primary-existing-vio5-native-r1": 11.823083877563477,
+        "primary-existing-vio5-native-r2": 11.822134971618652,
+        "primary-existing-vio5-native-r3": 11.822936058044434,
+        "primary-step-time-vio5-step_time-r1": 11.822278022766113,
+        "primary-step-time-vio5-step_time-r2": 11.822863578796387,
+        "primary-step-time-vio5-step_time-r3": 11.822486877441406,
+        "fourth-paired-vio5-step_time-r4": 11.822306632995605,
+        "fourth-paired-vio5-ultra_ep-r4": 11.822822570800781
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.753381371498108,
+        "primary-existing-vio5-native-r1": 1.7517298460006714,
+        "primary-existing-vio5-native-r2": 1.7587229013442993,
+        "primary-existing-vio5-native-r3": 1.7589577436447144,
+        "primary-step-time-vio5-step_time-r1": 1.7609760761260986,
+        "primary-step-time-vio5-step_time-r2": 1.759150505065918,
+        "primary-step-time-vio5-step_time-r3": 1.7559634447097778,
+        "fourth-paired-vio5-step_time-r4": 1.7638720273971558,
+        "fourth-paired-vio5-ultra_ep-r4": 1.747351884841919
+      },
+      "failed_vs_moon_norm_relative": 0.005983099894625088,
+      "failed_vs_moon_loss_relative": -4.218725170623827e-05
+    },
+    {
+      "step": 12,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.857817649841309,
+        "primary-existing-vio5-native-r1": 11.858170509338379,
+        "primary-existing-vio5-native-r2": 11.857529640197754,
+        "primary-existing-vio5-native-r3": 11.857267379760742,
+        "primary-step-time-vio5-step_time-r1": 11.857396125793457,
+        "primary-step-time-vio5-step_time-r2": 11.857000350952148,
+        "primary-step-time-vio5-step_time-r3": 11.857694625854492,
+        "fourth-paired-vio5-step_time-r4": 11.856888771057129,
+        "fourth-paired-vio5-ultra_ep-r4": 11.858466148376465
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.7778948545455933,
+        "primary-existing-vio5-native-r1": 1.7764489650726318,
+        "primary-existing-vio5-native-r2": 1.782971978187561,
+        "primary-existing-vio5-native-r3": 1.7838979959487915,
+        "primary-step-time-vio5-step_time-r1": 1.785679578781128,
+        "primary-step-time-vio5-step_time-r2": 1.7834986448287964,
+        "primary-step-time-vio5-step_time-r3": 1.780487060546875,
+        "fourth-paired-vio5-step_time-r4": 1.7887462377548218,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7726644277572632
+      },
+      "failed_vs_moon_norm_relative": 0.0061035011049637156,
+      "failed_vs_moon_loss_relative": -7.833471652285429e-05
+    },
+    {
+      "step": 13,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.82982349395752,
+        "primary-existing-vio5-native-r1": 11.830174446105957,
+        "primary-existing-vio5-native-r2": 11.829571723937988,
+        "primary-existing-vio5-native-r3": 11.829289436340332,
+        "primary-step-time-vio5-step_time-r1": 11.829046249389648,
+        "primary-step-time-vio5-step_time-r2": 11.829556465148926,
+        "primary-step-time-vio5-step_time-r3": 11.83002758026123,
+        "fourth-paired-vio5-step_time-r4": 11.82931137084961,
+        "fourth-paired-vio5-ultra_ep-r4": 11.82986831665039
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.803776502609253,
+        "primary-existing-vio5-native-r1": 1.8014575242996216,
+        "primary-existing-vio5-native-r2": 1.8090612888336182,
+        "primary-existing-vio5-native-r3": 1.8113092184066772,
+        "primary-step-time-vio5-step_time-r1": 1.812723994255066,
+        "primary-step-time-vio5-step_time-r2": 1.8102813959121704,
+        "primary-step-time-vio5-step_time-r3": 1.8059155941009521,
+        "fourth-paired-vio5-step_time-r4": 1.8153657913208008,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7951160669326782
+      },
+      "failed_vs_moon_norm_relative": 0.006425013683670544,
+      "failed_vs_moon_loss_relative": -4.329084945109418e-05
+    },
+    {
+      "step": 14,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.822922706604004,
+        "primary-existing-vio5-native-r1": 11.82295036315918,
+        "primary-existing-vio5-native-r2": 11.8236665725708,
+        "primary-existing-vio5-native-r3": 11.824838638305664,
+        "primary-step-time-vio5-step_time-r1": 11.824445724487305,
+        "primary-step-time-vio5-step_time-r2": 11.8241548538208,
+        "primary-step-time-vio5-step_time-r3": 11.823858261108398,
+        "fourth-paired-vio5-step_time-r4": 11.82475757598877,
+        "fourth-paired-vio5-ultra_ep-r4": 11.823169708251953
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.8703346252441406,
+        "primary-existing-vio5-native-r1": 1.868886113166809,
+        "primary-existing-vio5-native-r2": 1.8743209838867188,
+        "primary-existing-vio5-native-r3": 1.875073790550232,
+        "primary-step-time-vio5-step_time-r1": 1.876761794090271,
+        "primary-step-time-vio5-step_time-r2": 1.8752845525741577,
+        "primary-step-time-vio5-step_time-r3": 1.8739418983459473,
+        "fourth-paired-vio5-step_time-r4": 1.8775469064712524,
+        "fourth-paired-vio5-ultra_ep-r4": 1.8602310419082642
+      },
+      "failed_vs_moon_norm_relative": 0.003856144846899001,
+      "failed_vs_moon_loss_relative": 0.00015519592154156214
+    },
+    {
+      "step": 15,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.832467079162598,
+        "primary-existing-vio5-native-r1": 11.832420349121094,
+        "primary-existing-vio5-native-r2": 11.832314491271973,
+        "primary-existing-vio5-native-r3": 11.832109451293945,
+        "primary-step-time-vio5-step_time-r1": 11.832226753234863,
+        "primary-step-time-vio5-step_time-r2": 11.832037925720215,
+        "primary-step-time-vio5-step_time-r3": 11.831853866577148,
+        "fourth-paired-vio5-step_time-r4": 11.832422256469727,
+        "fourth-paired-vio5-ultra_ep-r4": 11.832432746887207
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.8146963119506836,
+        "primary-existing-vio5-native-r1": 1.8120814561843872,
+        "primary-existing-vio5-native-r2": 1.8192883729934692,
+        "primary-existing-vio5-native-r3": 1.823894739151001,
+        "primary-step-time-vio5-step_time-r1": 1.8239784240722656,
+        "primary-step-time-vio5-step_time-r2": 1.822651982307434,
+        "primary-step-time-vio5-step_time-r3": 1.8175959587097168,
+        "fourth-paired-vio5-step_time-r4": 1.826452374458313,
+        "fourth-paired-vio5-ultra_ep-r4": 1.805270791053772
+      },
+      "failed_vs_moon_norm_relative": 0.006478253375074239,
+      "failed_vs_moon_loss_relative": -3.788110507385589e-06
+    },
+    {
+      "step": 16,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.831707000732422,
+        "primary-existing-vio5-native-r1": 11.831575393676758,
+        "primary-existing-vio5-native-r2": 11.832070350646973,
+        "primary-existing-vio5-native-r3": 11.831331253051758,
+        "primary-step-time-vio5-step_time-r1": 11.831305503845215,
+        "primary-step-time-vio5-step_time-r2": 11.831616401672363,
+        "primary-step-time-vio5-step_time-r3": 11.831584930419922,
+        "fourth-paired-vio5-step_time-r4": 11.83099365234375,
+        "fourth-paired-vio5-ultra_ep-r4": 11.832137107849121
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.8345551490783691,
+        "primary-existing-vio5-native-r1": 1.832858920097351,
+        "primary-existing-vio5-native-r2": 1.8357796669006348,
+        "primary-existing-vio5-native-r3": 1.8361326456069946,
+        "primary-step-time-vio5-step_time-r1": 1.8363922834396362,
+        "primary-step-time-vio5-step_time-r2": 1.8359758853912354,
+        "primary-step-time-vio5-step_time-r3": 1.8350380659103394,
+        "fourth-paired-vio5-step_time-r4": 1.8378463983535767,
+        "fourth-paired-vio5-ultra_ep-r4": 1.8297442197799683
+      },
+      "failed_vs_moon_norm_relative": 0.0017940312543129888,
+      "failed_vs_moon_loss_relative": -6.029124864470603e-05
+    },
+    {
+      "step": 17,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.84317684173584,
+        "primary-existing-vio5-native-r1": 11.84355354309082,
+        "primary-existing-vio5-native-r2": 11.843565940856934,
+        "primary-existing-vio5-native-r3": 11.843832969665527,
+        "primary-step-time-vio5-step_time-r1": 11.843147277832031,
+        "primary-step-time-vio5-step_time-r2": 11.843844413757324,
+        "primary-step-time-vio5-step_time-r3": 11.843986511230469,
+        "fourth-paired-vio5-step_time-r4": 11.843156814575195,
+        "fourth-paired-vio5-ultra_ep-r4": 11.84404182434082
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.8268842697143555,
+        "primary-existing-vio5-native-r1": 1.8249526023864746,
+        "primary-existing-vio5-native-r2": 1.8263684511184692,
+        "primary-existing-vio5-native-r3": 1.8281562328338623,
+        "primary-step-time-vio5-step_time-r1": 1.826809287071228,
+        "primary-step-time-vio5-step_time-r2": 1.8279410600662231,
+        "primary-step-time-vio5-step_time-r3": 1.8260036706924438,
+        "fourth-paired-vio5-step_time-r4": 1.826767921447754,
+        "fourth-paired-vio5-ultra_ep-r4": 1.8220943212509155
+      },
+      "failed_vs_moon_norm_relative": -6.368671980505614e-05,
+      "failed_vs_moon_loss_relative": -1.6910294351468735e-06
+    },
+    {
+      "step": 18,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.84086799621582,
+        "primary-existing-vio5-native-r1": 11.841129302978516,
+        "primary-existing-vio5-native-r2": 11.840688705444336,
+        "primary-existing-vio5-native-r3": 11.840569496154785,
+        "primary-step-time-vio5-step_time-r1": 11.840407371520996,
+        "primary-step-time-vio5-step_time-r2": 11.84058666229248,
+        "primary-step-time-vio5-step_time-r3": 11.840863227844238,
+        "fourth-paired-vio5-step_time-r4": 11.84020709991455,
+        "fourth-paired-vio5-ultra_ep-r4": 11.841474533081055
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.8643637895584106,
+        "primary-existing-vio5-native-r1": 1.864699363708496,
+        "primary-existing-vio5-native-r2": 1.8639200925827026,
+        "primary-existing-vio5-native-r3": 1.863907814025879,
+        "primary-step-time-vio5-step_time-r1": 1.8634638786315918,
+        "primary-step-time-vio5-step_time-r2": 1.8637503385543823,
+        "primary-step-time-vio5-step_time-r3": 1.8632948398590088,
+        "fourth-paired-vio5-step_time-r4": 1.862301230430603,
+        "fourth-paired-vio5-ultra_ep-r4": 1.864040493965149
+      },
+      "failed_vs_moon_norm_relative": -0.0011063072236005,
+      "failed_vs_moon_loss_relative": -5.581485254968488e-05
+    },
+    {
+      "step": 19,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.814866065979004,
+        "primary-existing-vio5-native-r1": 11.815017700195312,
+        "primary-existing-vio5-native-r2": 11.814676284790039,
+        "primary-existing-vio5-native-r3": 11.814722061157227,
+        "primary-step-time-vio5-step_time-r1": 11.814630508422852,
+        "primary-step-time-vio5-step_time-r2": 11.814970970153809,
+        "primary-step-time-vio5-step_time-r3": 11.814566612243652,
+        "fourth-paired-vio5-step_time-r4": 11.813952445983887,
+        "fourth-paired-vio5-ultra_ep-r4": 11.816184043884277
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.8597517013549805,
+        "primary-existing-vio5-native-r1": 1.857027530670166,
+        "primary-existing-vio5-native-r2": 1.8550136089324951,
+        "primary-existing-vio5-native-r3": 1.8562217950820923,
+        "primary-step-time-vio5-step_time-r1": 1.8558335304260254,
+        "primary-step-time-vio5-step_time-r2": 1.8556350469589233,
+        "primary-step-time-vio5-step_time-r3": 1.8552229404449463,
+        "fourth-paired-vio5-step_time-r4": 1.8540741205215454,
+        "fourth-paired-vio5-ultra_ep-r4": 1.8556556701660156
+      },
+      "failed_vs_moon_norm_relative": -0.003052870353229653,
+      "failed_vs_moon_loss_relative": -7.732800270565665e-05
+    },
+    {
+      "step": 20,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.81101131439209,
+        "primary-existing-vio5-native-r1": 11.811614990234375,
+        "primary-existing-vio5-native-r2": 11.81192684173584,
+        "primary-existing-vio5-native-r3": 11.811450004577637,
+        "primary-step-time-vio5-step_time-r1": 11.81170654296875,
+        "primary-step-time-vio5-step_time-r2": 11.811674118041992,
+        "primary-step-time-vio5-step_time-r3": 11.811690330505371,
+        "fourth-paired-vio5-step_time-r4": 11.811156272888184,
+        "fourth-paired-vio5-ultra_ep-r4": 11.810908317565918
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.8715485334396362,
+        "primary-existing-vio5-native-r1": 1.8686527013778687,
+        "primary-existing-vio5-native-r2": 1.8656619787216187,
+        "primary-existing-vio5-native-r3": 1.860619068145752,
+        "primary-step-time-vio5-step_time-r1": 1.8621175289154053,
+        "primary-step-time-vio5-step_time-r2": 1.8665070533752441,
+        "primary-step-time-vio5-step_time-r3": 1.868021845817566,
+        "fourth-paired-vio5-step_time-r4": 1.8554331064224243,
+        "fourth-paired-vio5-ultra_ep-r4": 1.8742191791534424
+      },
+      "failed_vs_moon_norm_relative": -0.00861074491485081,
+      "failed_vs_moon_loss_relative": 1.2273165458598356e-05
+    },
+    {
+      "step": 21,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.811017990112305,
+        "primary-existing-vio5-native-r1": 11.810616493225098,
+        "primary-existing-vio5-native-r2": 11.807767868041992,
+        "primary-existing-vio5-native-r3": 11.807063102722168,
+        "primary-step-time-vio5-step_time-r1": 11.806334495544434,
+        "primary-step-time-vio5-step_time-r2": 11.807896614074707,
+        "primary-step-time-vio5-step_time-r3": 11.808401107788086,
+        "fourth-paired-vio5-step_time-r4": 11.804863929748535,
+        "fourth-paired-vio5-ultra_ep-r4": 11.812040328979492
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.8277881145477295,
+        "primary-existing-vio5-native-r1": 1.8289705514907837,
+        "primary-existing-vio5-native-r2": 1.822420597076416,
+        "primary-existing-vio5-native-r3": 1.8191593885421753,
+        "primary-step-time-vio5-step_time-r1": 1.8178915977478027,
+        "primary-step-time-vio5-step_time-r2": 1.8208186626434326,
+        "primary-step-time-vio5-step_time-r3": 1.8233575820922852,
+        "fourth-paired-vio5-step_time-r4": 1.8106118440628052,
+        "fourth-paired-vio5-ultra_ep-r4": 1.8308318853378296
+      },
+      "failed_vs_moon_norm_relative": -0.009397298487836214,
+      "failed_vs_moon_loss_relative": -0.0005210440259190152
+    },
+    {
+      "step": 22,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.801207542419434,
+        "primary-existing-vio5-native-r1": 11.801743507385254,
+        "primary-existing-vio5-native-r2": 11.800017356872559,
+        "primary-existing-vio5-native-r3": 11.800058364868164,
+        "primary-step-time-vio5-step_time-r1": 11.799308776855469,
+        "primary-step-time-vio5-step_time-r2": 11.800268173217773,
+        "primary-step-time-vio5-step_time-r3": 11.800415992736816,
+        "fourth-paired-vio5-step_time-r4": 11.797955513000488,
+        "fourth-paired-vio5-ultra_ep-r4": 11.802900314331055
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.761712670326233,
+        "primary-existing-vio5-native-r1": 1.7605892419815063,
+        "primary-existing-vio5-native-r2": 1.7425328493118286,
+        "primary-existing-vio5-native-r3": 1.7397682666778564,
+        "primary-step-time-vio5-step_time-r1": 1.7334975004196167,
+        "primary-step-time-vio5-step_time-r2": 1.7452507019042969,
+        "primary-step-time-vio5-step_time-r3": 1.744723916053772,
+        "fourth-paired-vio5-step_time-r4": 1.7191648483276367,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7759920358657837
+      },
+      "failed_vs_moon_norm_relative": -0.024151396941884506,
+      "failed_vs_moon_loss_relative": -0.00027556751351554
+    },
+    {
+      "step": 23,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.799049377441406,
+        "primary-existing-vio5-native-r1": 11.799432754516602,
+        "primary-existing-vio5-native-r2": 11.79651165008545,
+        "primary-existing-vio5-native-r3": 11.795537948608398,
+        "primary-step-time-vio5-step_time-r1": 11.794694900512695,
+        "primary-step-time-vio5-step_time-r2": 11.79651927947998,
+        "primary-step-time-vio5-step_time-r3": 11.796661376953125,
+        "fourth-paired-vio5-step_time-r4": 11.792253494262695,
+        "fourth-paired-vio5-ultra_ep-r4": 11.80090618133545
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.7165007591247559,
+        "primary-existing-vio5-native-r1": 1.7181001901626587,
+        "primary-existing-vio5-native-r2": 1.7060726881027222,
+        "primary-existing-vio5-native-r3": 1.7059931755065918,
+        "primary-step-time-vio5-step_time-r1": 1.7023329734802246,
+        "primary-step-time-vio5-step_time-r2": 1.703530192375183,
+        "primary-step-time-vio5-step_time-r3": 1.7081162929534912,
+        "fourth-paired-vio5-step_time-r4": 1.6934276819229126,
+        "fourth-paired-vio5-ultra_ep-r4": 1.7294621467590332
+      },
+      "failed_vs_moon_norm_relative": -0.013441926593500741,
+      "failed_vs_moon_loss_relative": -0.0005759687040299832
+    },
+    {
+      "step": 24,
+      "loss": {
+        "primary-existing-vio5-moonep-r1": 11.768428802490234,
+        "primary-existing-vio5-native-r1": 11.768317222595215,
+        "primary-existing-vio5-native-r2": 11.766740798950195,
+        "primary-existing-vio5-native-r3": 11.765972137451172,
+        "primary-step-time-vio5-step_time-r1": 11.764774322509766,
+        "primary-step-time-vio5-step_time-r2": 11.76657772064209,
+        "primary-step-time-vio5-step_time-r3": 11.766950607299805,
+        "fourth-paired-vio5-step_time-r4": 11.762208938598633,
+        "fourth-paired-vio5-ultra_ep-r4": 11.770219802856445
+      },
+      "norm": {
+        "primary-existing-vio5-moonep-r1": 1.6179301738739014,
+        "primary-existing-vio5-native-r1": 1.6188291311264038,
+        "primary-existing-vio5-native-r2": 1.6189758777618408,
+        "primary-existing-vio5-native-r3": 1.6205743551254272,
+        "primary-step-time-vio5-step_time-r1": 1.6198216676712036,
+        "primary-step-time-vio5-step_time-r2": 1.620826005935669,
+        "primary-step-time-vio5-step_time-r3": 1.6197019815444946,
+        "fourth-paired-vio5-step_time-r4": 1.6153135299682617,
+        "fourth-paired-vio5-ultra_ep-r4": 1.6139144897460938
+      },
+      "failed_vs_moon_norm_relative": -0.0016172786365523661,
+      "failed_vs_moon_loss_relative": -0.0005285211812035007
+    }
+  ]
+}

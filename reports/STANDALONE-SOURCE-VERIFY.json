@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "exported_component_files": 7396,
+  "committed_upstream_blobs_byte_exact": 7396,
+  "upstream_git_modes_preserved": true,
+  "executable_source_files": 60,
+  "frozen_source_files_byte_exact": 2011,
+  "core_runtime_scripts_byte_exact": 6,
+  "original_ignore_omissions_fixed": [
+    "source/native-balanced/3rdparty/catlass/python/tla_dsl/docs/zh/dsl_development/build_guide/ascend_npu_ir.md",
+    "source/native-balanced/3rdparty/catlass/python/tla_dsl/docs/zh/dsl_development/build_guide/conda.md",
+    "source/native-balanced/3rdparty/catlass/python/tla_dsl/docs/zh/dsl_development/build_guide/docker.md",
+    "source/native-balanced/3rdparty/catlass/python/tla_dsl/docs/zh/dsl_development/build_guide/index.md",
+    "source/native-balanced/3rdparty/shmem/docs/debug/images/log/0.png",
+    "source/native-balanced/3rdparty/shmem/docs/debug/images/log/1.png",
+    "source/native-balanced/3rdparty/shmem/docs/debug/images/log/2.png",
+    "source/native-balanced/3rdparty/shmem/docs/debug/images/log/3.png",
+    "source/native-balanced/3rdparty/shmem/docs/debug/images/log/4.png",
+    "source/native-balanced/3rdparty/shmem/docs/debug/images/log/5.png",
+    "source/native-balanced/3rdparty/shmem/docs/debug/images/log/6.png",
+    "source/native-balanced/3rdparty/shmem/src/host/utils/log/shmemi_log_defs.h",
+    "source/native-balanced/3rdparty/shmem/src/host/utils/log/shmemi_logger.cpp"
+  ],
+  "original_modes_corrected": 60,
+  "original_blob_filters_corrected": [],
+  "framework_gitlinks": 0,
+  "all_gitlinks": 0,
+  "raw_artifacts_published": false,
+  "credential_marker_scan_passed": true,
+  "new_device_runs": false,
+  "python_entry_syntax_passed": true,
+  "source_manifest_sha256": "d536e937b580d9a93c886e820591d4683b3ecabcc80a421d9dce7867bae4c60a"
+}

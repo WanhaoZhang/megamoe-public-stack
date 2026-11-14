@@ -1,0 +1,31 @@
+{
+  "name": "primary-step-time",
+  "planners": [
+    "step_time"
+  ],
+  "repeats": 3,
+  "first_repeat": 1,
+  "bank": "/home/z00956592/megaflux/planner-executor-ep8-lab/routes",
+  "model_paths": {
+    "step_time": "/home/z00956592/megaflux/planner-executor-ep8-lab/configs/step-time-full.json"
+  },
+  "model_sha": {
+    "step_time": "ac66dfb82a49cf0bb453a9ebca8b8b43fd824077de546d96e96fb20881dc92a4"
+  },
+  "capacity": 163840,
+  "targets": [
+    0.2,
+    1,
+    5,
+    10,
+    15,
+    20
+  ],
+  "steps": 25,
+  "warmup": 5,
+  "online": true,
+  "ordinary_executor": true,
+  "fixed_owners": true,
+  "rotate_order": true,
+  "fourth_pair_order": "alternate across MaxVio"
+}

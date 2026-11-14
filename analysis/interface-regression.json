@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "interface": "legacy",
+      "maxvio": 0.2,
+      "receive_capacity": 131072,
+      "mean_ms": 1139.9068495,
+      "p50_ms": 1139.93671,
+      "peak_hbm_gib": 86.2685546875,
+      "planner_calls_per_process": 100,
+      "independent_repeats": 1,
+      "tag": "interface-original-cap-vio0.2-legacy"
+    },
+    {
+      "interface": "unified",
+      "maxvio": 0.2,
+      "receive_capacity": 131072,
+      "mean_ms": 1135.7615245,
+      "p50_ms": 1135.659745,
+      "peak_hbm_gib": 86.267578125,
+      "planner_calls_per_process": 50,
+      "independent_repeats": 1,
+      "tag": "interface-original-cap-vio0.2-unified"
+    },
+    {
+      "interface": "unified",
+      "maxvio": 20,
+      "receive_capacity": 131072,
+      "mean_ms": 1208.561362,
+      "p50_ms": 1208.31227,
+      "peak_hbm_gib": 86.2685546875,
+      "planner_calls_per_process": 50,
+      "independent_repeats": 1,
+      "tag": "interface-original-cap-vio20-unified"
+    },
+    {
+      "interface": "legacy",
+      "maxvio": 20,
+      "receive_capacity": 131072,
+      "mean_ms": 1213.513297,
+      "p50_ms": 1216.1954700000001,
+      "peak_hbm_gib": 86.267578125,
+      "planner_calls_per_process": 100,
+      "independent_repeats": 1,
+      "tag": "interface-original-cap-vio20-legacy"
+    }
+  ],
+  "trajectory_checks": [
+    {
+      "maxvio": 0.2,
+      "maximum_relative_loss_difference": 0.00014716123395098514,
+      "maximum_relative_global_norm_difference": 0.007621971711861682
+    },
+    {
+      "maxvio": 20,
+      "maximum_relative_loss_difference": 0.00010677900721492202,
+      "maximum_relative_global_norm_difference": 0.0033755146093525294
+    }
+  ],
+  "limitation": "One independent full-length diagnostic pair per endpoint; this is not a stable performance gain claim.",
+  "isolation": "131072 legacy vs131072 unified isolates interface/replay changes;163840 primary uses a larger common receive budget."
+}

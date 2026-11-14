@@ -1,0 +1,23 @@
+sequenceDiagram
+ box rgb(235,244,255) MindSpeed-LLM
+  participant T as trainer.py
+  participant O as optimizer.py
+  participant P as profiler.py
+ end
+ box rgb(234,247,240) FSDPTurbo / FSDP
+  participant E as state.py
+  participant G as param_group.py
+ end
+ box rgb(255,246,236) MegaMoE Native / Kernel
+  participant B as fsdp2_bridge.py
+ end
+ Note over T,B: 接反向 kernel。各副本梯度已在 EP 组内归到专家 owner
+ B-->>G: B17 autograd 将 owner dW 交回 Parameter
+ G->>G: U04 post_backward：收集梯度，reshard，foreach_reduce
+ G-->>E: Expert-FSDP 组内 reduce-scatter / scaling
+ E-->>T: 反向完成，分片梯度可供 optimizer 使用
+ T->>T: U06 累积结束 → clip_grad_norm → 检查 finite
+ T->>O: U07 optimizer.step 更新框架参数分片
+ T->>T: U08 scheduler.step、zero_grad，下一步重新 publish
+ T->>P: U09 profiler.step；训练循环结束后 profiler.stop
+ Note over T: 本次训练 save_steps/save_epochs 为0，HF权重导出关闭

@@ -1,0 +1,418 @@
+# Copyright (c) 2023, HUAWEI CORPORATION.  All rights reserved.
+# Copyright (c) 2023, NVIDIA CORPORATION.  All rights reserved.
+"""Pretrain GPT."""
+
+import os
+import time
+from functools import partial
+from typing import List, Union
+
+import torch
+
+# Captured as early as possible so that (main_entry - program_start) reflects
+# import/library setup time in the 018 startup timing report.
+_PROGRAM_START_TIME = time.time()
+
+# MindSpeed patches must be applied before any Megatron modules.
+# isort: off
+from mindspeed_llm import megatron_adaptor  # noqa: F401  # pylint: disable=ungrouped-imports
+# isort: on
+# ruff: noqa: E402
+
+import megatron.core.models.gpt.gpt_model
+from megatron.core import mpu
+from megatron.core.datasets.blended_megatron_dataset_builder import BlendedMegatronDatasetBuilder
+from megatron.core.datasets.gpt_dataset import GPTDatasetConfig
+from megatron.core.datasets.gpt_dataset import MockGPTDataset, GPTDataset
+from megatron.core.datasets.utils import get_blend_from_list
+from megatron.core.enums import ModelType
+from megatron.core.models.gpt import GPTModel
+from megatron.core.models.gpt.gpt_layer_specs import (
+    get_gpt_layer_local_spec,
+    get_gpt_layer_with_transformer_engine_spec,
+    get_gpt_mtp_block_spec,
+)
+from megatron.core.rerun_state_machine import get_rerun_state_machine
+from megatron.core.transformer.spec_utils import import_module
+from megatron.training import get_args
+from megatron.training import get_timers
+from megatron.training import get_tokenizer
+from megatron.training import print_rank_0
+from megatron.training.arguments import core_transformer_config_from_args
+from megatron.training.yaml_arguments import core_transformer_config_from_yaml
+
+from mindspeed_llm.core.transformer.multi_token_prediction import generate_mtp_batch_list_on_this_tp_rank
+from mindspeed_llm.training.utils import set_mtp_batch_list, auto_coverage
+
+# Version-conditional imports (018 uses tests/mindspeed_llm codebase).
+_VERSION_018 = os.environ.get("MINDSPEED_LLM_VERSION", "012") == "018"
+if _VERSION_018:
+    from megatron.core.utils import get_batch_on_this_cp_rank, get_batch_on_this_tp_rank  # pylint: disable=ungrouped-imports
+    from megatron.training import inprocess_restart, set_startup_timestamps  # pylint: disable=ungrouped-imports
+    from megatron.training.arguments import parse_and_validate_args  # pylint: disable=ungrouped-imports
+    from megatron.training.argument_utils import pretrain_cfg_container_from_args  # pylint: disable=ungrouped-imports
+    from megatron.core.transformer.multi_token_prediction import get_mtp_ranks  # pylint: disable=ungrouped-imports
+else:
+    import megatron.legacy.model  # noqa: E402  # pylint: disable=ungrouped-imports
+    from megatron.training.utils import get_batch_on_this_cp_rank, get_batch_on_this_tp_rank
+try:
+    from megatron.post_training.arguments import add_modelopt_args
+
+    has_nvidia_modelopt = True
+except ImportError:
+    has_nvidia_modelopt = False
+
+from mindspeed_llm.training.training import pretrain  # noqa: E402  # pylint: disable=ungrouped-imports
+
+
+def model_provider(
+    pre_process=True,
+    post_process=True,
+    vp_stage=None,
+    config=None,
+    pg_collection=None,
+) -> Union[GPTModel, megatron.core.models.gpt.gpt_model.GPTModel]:
+    """Builds the model.
+
+    If you set the use_mcore_models to True, it will return the mcore GPT model and if not the legacy GPT model.
+
+    Args:
+        pre_process (bool, optional): Set to true if you need to compute embedings. Defaults to True.
+        post_process (bool, optional): Set to true if you need to want to compute output logits/loss. Defaults to True.
+        vp_stage (int, optional): Virtual pipeline stage index. Defaults to None.
+        config (TransformerConfig, optional): Transformer config object passed from get_model. Defaults to None.
+        pg_collection (ProcessGroupCollection, optional): Process groups collection for parallel communication. Defaults to None.
+
+    Returns:
+        Union[GPTModel, megatron.core.models.gpt.gpt_model.GPTModel]: The returned model
+    """
+    args = get_args()
+    use_te = args.transformer_impl == "transformer_engine"
+
+    print_rank_0('building GPT model ...')
+    # Experimental loading arguments from yaml
+    if config is None:
+        if args.yaml_cfg is not None:
+            config = core_transformer_config_from_yaml(args, "language_model")
+        else:
+            config = core_transformer_config_from_args(args)
+
+    if not _VERSION_018 and args.use_legacy_models:
+        if not args.context_parallel_size == 1:
+            raise ValueError("Context parallelism is only supported with Megatron Core!")
+        return megatron.legacy.model.GPTModel(
+            config, num_tokentypes=0, parallel_output=True, pre_process=pre_process, post_process=post_process
+        )
+
+    if args.spec is not None:
+        transformer_layer_spec = import_module(args.spec)
+    else:
+        if use_te:
+            transformer_layer_spec = get_gpt_layer_with_transformer_engine_spec(args.num_experts, args.moe_grouped_gemm)
+        else:
+            transformer_layer_spec = get_gpt_layer_local_spec(args.num_experts, args.moe_grouped_gemm)
+    mtp_block_spec = None
+
+    if _VERSION_018:
+        if args.mtp_num_layers is not None:
+            mtp_block_spec = get_gpt_mtp_block_spec(
+                config, transformer_layer_spec, use_transformer_engine=use_te, vp_stage=vp_stage
+            )
+        model = GPTModel(
+            config=config,
+            transformer_layer_spec=transformer_layer_spec,
+            vocab_size=args.padded_vocab_size,
+            max_sequence_length=args.max_position_embeddings,
+            pre_process=pre_process,
+            post_process=post_process,
+            fp16_lm_cross_entropy=args.fp16_lm_cross_entropy,
+            parallel_output=True,
+            share_embeddings_and_output_weights=not args.untie_embeddings_and_output_weights,
+            position_embedding_type=args.position_embedding_type,
+            rotary_percent=args.rotary_percent,
+            rotary_base=args.rotary_base,
+            rope_scaling=args.use_rope_scaling,
+            mtp_block_spec=mtp_block_spec,
+            pg_collection=pg_collection,
+            vp_stage=vp_stage,
+        )
+    else:
+        if args.mtp_num_layers is not None:
+            mtp_block_spec = get_gpt_mtp_block_spec(config, transformer_layer_spec, use_transformer_engine=use_te)
+        model = GPTModel(
+            config=config,
+            transformer_layer_spec=transformer_layer_spec,
+            vocab_size=args.padded_vocab_size,
+            max_sequence_length=args.max_position_embeddings,
+            pre_process=pre_process,
+            post_process=post_process,
+            fp16_lm_cross_entropy=args.fp16_lm_cross_entropy,
+            parallel_output=True,
+            share_embeddings_and_output_weights=not args.untie_embeddings_and_output_weights,
+            position_embedding_type=args.position_embedding_type,
+            rotary_percent=args.rotary_percent,
+            rotary_base=args.rotary_base,
+            rope_scaling=args.use_rope_scaling,
+            mtp_block_spec=mtp_block_spec,
+        )
+
+    return model
+
+
+def get_batch(data_iterator):
+    """Generate a batch."""
+
+    args = get_args()
+
+    is_middle_stage = not (mpu.is_pipeline_first_stage() or mpu.is_pipeline_last_stage())
+    pretrain_not_tnd_flags = not args.is_instruction_dataset and not args.reset_attention_mask
+    if pretrain_not_tnd_flags and is_middle_stage:
+        return (None,) * 5
+
+    # get batches based on the TP rank you are on
+    batch = get_batch_on_this_tp_rank(data_iterator)
+
+    if (
+        not _VERSION_018
+        and args.return_document_ids
+        and mpu.get_context_parallel_rank() == 0
+        and mpu.get_tensor_model_parallel_rank() == 0
+        and mpu.get_pipeline_model_parallel_rank() == 0
+    ):
+        print(
+            "current idx: {}, current rank: {}, data_parallel_rank: {}, document_ids: {}".format(
+                batch['idx'], torch.distributed.get_rank(), mpu.get_data_parallel_rank(), batch['document_ids']
+            )
+        )
+        batch.pop('document_ids', None)
+        batch.pop('idx', None)
+
+    # get batch_list for mtp_block
+    if args.mtp_num_layers:
+        mtp_batch_list = generate_mtp_batch_list_on_this_tp_rank(batch)
+        set_mtp_batch_list(mtp_batch_list)
+
+    # slice batch along sequence dimension for context parallelism
+    if _VERSION_018:
+        batch = get_batch_on_this_cp_rank(
+            batch, is_hybrid_cp=args.context_parallel_size > 1, cp_group=mpu.get_context_parallel_group()
+        )
+    else:
+        batch = get_batch_on_this_cp_rank(batch)
+    return batch.values()
+
+
+# define spiky loss as a loss that's 10x the max loss observed
+SPIKY_LOSS_FACTOR = 10
+
+
+def loss_func(loss_mask: torch.Tensor, output_tensor: torch.Tensor):
+    """Loss function.
+
+    Args:
+        loss_mask (torch.Tensor): Used to mask out some portions of the loss
+        output_tensor (torch.Tensor): The tensor with the losses
+
+    Returns:
+        the loss scalar for this micro-batch
+        the number of non-padded tokens in this microbatch
+        a dict containing reporting metrics on the loss and number of tokens across
+            the data parallel ranks
+    """
+    args = get_args()
+
+    losses = output_tensor.float()
+    loss_mask = loss_mask.view(-1).float()
+    total_tokens = loss_mask.sum()
+    loss = torch.cat([torch.sum(losses.view(-1) * loss_mask).view(1), total_tokens.view(1)])
+
+    if args.context_parallel_size > 1:
+        torch.distributed.all_reduce(loss, group=mpu.get_context_parallel_group())
+
+    # Check individual rank losses are not NaN prior to DP all-reduce.
+    rerun_state_machine = get_rerun_state_machine()
+    if args.check_for_nan_in_loss_and_grad:
+        rerun_state_machine.validate_result(
+            result=loss[0],
+            rejection_func=torch.isnan,
+            message="found NaN in local forward loss calculation",
+            tolerance=0.0,  # forward pass calculations are determinisic
+            fatal=True,
+        )
+        rerun_state_machine.validate_result(
+            result=loss[0],
+            rejection_func=torch.isinf,
+            message="found Inf in local forward loss calculation",
+            tolerance=0.0,  # forward pass calculations are determinisic
+            fatal=True,
+        )
+    # Check for spiky loss
+    if args.check_for_spiky_loss:
+        rerun_state_machine.validate_result(
+            result=loss[0],
+            rejection_func=partial(
+                rerun_state_machine.is_unexpectedly_large,
+                threshold=SPIKY_LOSS_FACTOR,
+                context="loss",
+            ),
+            message="Spiky loss",
+            tolerance=0.0,  # forward pass calculations are determinisic
+            fatal=False,
+        )
+    # Reduce loss for logging.
+    reporting_loss = loss.clone().detach()
+    try:
+        torch.distributed.all_reduce(reporting_loss, group=mpu.get_data_parallel_group())
+    except Exception:
+        torch.distributed.all_reduce(reporting_loss, group=mpu.get_data_parallel_group())
+
+    # loss[0] is a view of loss, so it has ._base not None, which triggers assert error
+    # in core/pipeline_parallel/schedule.py::deallocate_output_tensor, calling .clone()
+    # on loss[0] fixes this
+    local_num_tokens = loss[1].clone().detach().to(torch.int)
+    loss_dict = {'lm loss': reporting_loss} if _VERSION_018 else {'lm loss': (reporting_loss[0], reporting_loss[1])}
+    if _VERSION_018 and args.context_parallel_size > 1:
+        loss[0] = loss[0] * args.context_parallel_size
+    return (
+        loss[0].clone(),
+        local_num_tokens,
+        loss_dict,
+    )
+
+
+def forward_step(data_iterator, model: GPTModel):
+    """Forward training step.
+
+    Args:
+        data_iterator : Input data iterator
+        model (GPTModel): The GPT Model
+    """
+    args = get_args()
+    timers = get_timers()
+
+    # Get the batch.
+    timers('batch-generator', log_level=2).start()
+    tokens, labels, loss_mask, attention_mask, position_ids = get_batch(data_iterator)
+    timers('batch-generator').stop()
+
+    if not _VERSION_018 and args.use_legacy_models:
+        output_tensor = model(tokens, position_ids, attention_mask, labels=labels)
+    else:
+        output_tensor = model(tokens, position_ids, attention_mask, labels=labels, loss_mask=loss_mask)
+
+    return output_tensor, partial(loss_func, loss_mask)
+
+
+def is_dataset_built_on_rank():
+    return mpu.get_tensor_model_parallel_rank() == 0
+
+
+def core_gpt_dataset_config_from_args(args):
+    tokenizer = get_tokenizer()
+
+    return GPTDatasetConfig(
+        random_seed=args.seed,
+        sequence_length=args.seq_length,
+        blend=get_blend_from_list(args.data_path),
+        blend_per_split=[
+            get_blend_from_list(args.train_data_path),
+            get_blend_from_list(args.valid_data_path),
+            get_blend_from_list(args.test_data_path),
+        ],
+        split=args.split,
+        path_to_cache=args.data_cache_path,
+        mmap_bin_files=args.mmap_bin_files,
+        tokenizer=tokenizer,
+        reset_position_ids=args.reset_position_ids,
+        reset_attention_mask=args.reset_attention_mask,
+        eod_mask_loss=args.eod_mask_loss,
+        create_attention_mask=args.create_attention_mask_in_dataloader,
+    )
+
+
+def train_valid_test_datasets_provider(train_val_test_num_samples):
+    """Build the train test and validation datasets.
+
+    Args:
+        train_val_test_num_samples : A list containing the number of samples in train test and validation.
+    """
+    args = get_args()
+
+    config = core_gpt_dataset_config_from_args(args)
+
+    if config.mock:
+        dataset_type = MockGPTDataset
+    else:
+        dataset_type = GPTDataset
+    print_rank_0("> building train, validation, and test datasets for GPT ...")
+
+    train_ds, valid_ds, test_ds = BlendedMegatronDatasetBuilder(
+        dataset_type, train_val_test_num_samples, is_dataset_built_on_rank, config
+    ).build()
+
+    print_rank_0("> finished creating GPT datasets ...")
+
+    return train_ds, valid_ds, test_ds
+
+
+if _VERSION_018:
+
+    def get_embedding_ranks(pp_ranks: List[int]):
+        """Get the embedding ranks."""
+        embedding_ranks = [pp_ranks[0]]
+        if len(pp_ranks) > 1:
+            args = get_args()
+            if not args.untie_embeddings_and_output_weights:
+                embedding_ranks.append(pp_ranks[-1])
+            config = core_transformer_config_from_args(args)
+            mtp_ranks = get_mtp_ranks(pp_ranks, config)
+            embedding_ranks.extend(mtp_ranks)
+        return sorted(set(embedding_ranks))
+
+    def _main_018():
+        # Timestamp right after entering main (after all imports/library setup).
+        _main_entry_time = time.time()
+
+        # Register startup timestamps for the timing report in pretrain().
+        set_startup_timestamps(program_start=_PROGRAM_START_TIME, main_entry=_main_entry_time)
+
+        # Temporary for transition to core datasets
+        setattr(train_valid_test_datasets_provider, "is_distributed", True)
+
+        wrapped_pretrain, store = inprocess_restart.maybe_wrap_for_inprocess_restart(pretrain)
+
+        # 0.18.0: args are parsed by the caller, pretrain() no longer does it itself.
+        args = parse_and_validate_args(
+            extra_args_provider=add_modelopt_args if has_nvidia_modelopt else None,
+            args_defaults={'tokenizer_type': 'GPT2BPETokenizer'},
+        )
+        full_config = pretrain_cfg_container_from_args(args)
+
+        wrapped_pretrain(
+            full_config,
+            train_valid_test_datasets_provider,
+            model_provider,
+            ModelType.encoder_or_decoder,
+            forward_step,
+            store=store,
+            get_embedding_ranks=get_embedding_ranks,
+        )
+else:
+
+    def _main_012():
+        # Temporary for transition to core datasets
+        train_valid_test_datasets_provider.is_distributed = True
+
+        pretrain(train_valid_test_datasets_provider, model_provider, ModelType.encoder_or_decoder, forward_step)
+
+
+@auto_coverage
+def main():
+    if _VERSION_018:
+        _main_018()
+    else:
+        _main_012()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,1209 @@
+{
+  "passed": false,
+  "runs": 120,
+  "pending_reference": 0,
+  "scope": "cross-policy consistency only; reference=moonep",
+  "eligible_only": true,
+  "rows": [
+    {
+      "tag": "primary-existing-vio0.2-moonep-r1",
+      "planner": "moonep",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0,
+      "maximum_relative_global_norm_difference": 0.0,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-native-r1",
+      "planner": "native",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0002523360037818133,
+      "maximum_relative_global_norm_difference": 0.006685820916399263,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-ultra_ep-r1",
+      "planner": "ultra_ep",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00034506065701099927,
+      "maximum_relative_global_norm_difference": 0.0161596314742913,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-echo-r1",
+      "planner": "echo",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00016403754303259623,
+      "maximum_relative_global_norm_difference": 0.004564763418822386,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-eplb_fixed-r1",
+      "planner": "eplb_fixed",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00013308955910391098,
+      "maximum_relative_global_norm_difference": 0.0034750653748972914,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-moonep-r1",
+      "planner": "moonep",
+      "maxvio": 1.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0,
+      "maximum_relative_global_norm_difference": 0.0,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-native-r1",
+      "planner": "native",
+      "maxvio": 1.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.71252535854991e-05,
+      "maximum_relative_global_norm_difference": 0.0019715953009131976,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-ultra_ep-r1",
+      "planner": "ultra_ep",
+      "maxvio": 1.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.050533145200936e-05,
+      "maximum_relative_global_norm_difference": 0.0011324514433223663,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-echo-r1",
+      "planner": "echo",
+      "maxvio": 1.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00014262412397412187,
+      "maximum_relative_global_norm_difference": 0.01152809180965049,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-eplb_fixed-r1",
+      "planner": "eplb_fixed",
+      "maxvio": 1.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 9.717744358861516e-05,
+      "maximum_relative_global_norm_difference": 0.004601910110325889,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-moonep-r1",
+      "planner": "moonep",
+      "maxvio": 5.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0,
+      "maximum_relative_global_norm_difference": 0.0,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-native-r1",
+      "planner": "native",
+      "maxvio": 5.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0001441242142178901,
+      "maximum_relative_global_norm_difference": 0.0015473556893204304,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-ultra_ep-r1",
+      "planner": "ultra_ep",
+      "maxvio": 5.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00041896146466539056,
+      "maximum_relative_global_norm_difference": 0.014004774697957826,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-echo-r1",
+      "planner": "echo",
+      "maxvio": 5.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00026456476231422656,
+      "maximum_relative_global_norm_difference": 0.008609099398801636,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-eplb_fixed-r1",
+      "planner": "eplb_fixed",
+      "maxvio": 5.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0003462424741696254,
+      "maximum_relative_global_norm_difference": 0.013175045575216718,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-moonep-r1",
+      "planner": "moonep",
+      "maxvio": 10.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0,
+      "maximum_relative_global_norm_difference": 0.0,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-native-r1",
+      "planner": "native",
+      "maxvio": 10.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00013885286531651708,
+      "maximum_relative_global_norm_difference": 0.0017527566524020936,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-ultra_ep-r1",
+      "planner": "ultra_ep",
+      "maxvio": 10.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 9.822285295223081e-05,
+      "maximum_relative_global_norm_difference": 0.005836621292122088,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-echo-r1",
+      "planner": "echo",
+      "maxvio": 10.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0001876395478226297,
+      "maximum_relative_global_norm_difference": 0.0038613449347990997,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-eplb_fixed-r1",
+      "planner": "eplb_fixed",
+      "maxvio": 10.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0001751948921961504,
+      "maximum_relative_global_norm_difference": 0.003127143730788492,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-moonep-r1",
+      "planner": "moonep",
+      "maxvio": 15.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0,
+      "maximum_relative_global_norm_difference": 0.0,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-native-r1",
+      "planner": "native",
+      "maxvio": 15.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.720411996388155e-05,
+      "maximum_relative_global_norm_difference": 0.001931267552727707,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-ultra_ep-r1",
+      "planner": "ultra_ep",
+      "maxvio": 15.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.681475999514483e-05,
+      "maximum_relative_global_norm_difference": 0.004749553991025831,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-echo-r1",
+      "planner": "echo",
+      "maxvio": 15.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.558777765802766e-05,
+      "maximum_relative_global_norm_difference": 0.003313897224157456,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-ultra_ep-r2",
+      "planner": "ultra_ep",
+      "maxvio": 1.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.021380006940554e-05,
+      "maximum_relative_global_norm_difference": 0.002646666810946843,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-echo-r2",
+      "planner": "echo",
+      "maxvio": 1.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.687095566310506e-05,
+      "maximum_relative_global_norm_difference": 0.004553452700123524,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-eplb_fixed-r2",
+      "planner": "eplb_fixed",
+      "maxvio": 1.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00010563553463088981,
+      "maximum_relative_global_norm_difference": 0.0027901763929499604,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-native-r2",
+      "planner": "native",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00029692915209092116,
+      "maximum_relative_global_norm_difference": 0.010887031317571547,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-ultra_ep-r2",
+      "planner": "ultra_ep",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0001862768369192297,
+      "maximum_relative_global_norm_difference": 0.0070147365224335085,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-echo-r2",
+      "planner": "echo",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00032049623891085836,
+      "maximum_relative_global_norm_difference": 0.010597147158231887,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-eplb_fixed-r2",
+      "planner": "eplb_fixed",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0001843672259193024,
+      "maximum_relative_global_norm_difference": 0.004216988984604945,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-moonep-r2",
+      "planner": "moonep",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00023324959215622782,
+      "maximum_relative_global_norm_difference": 0.00844839097713224,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-native-r2",
+      "planner": "native",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00013196183531195276,
+      "maximum_relative_global_norm_difference": 0.005717307114564864,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-ultra_ep-r2",
+      "planner": "ultra_ep",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.000255681106507666,
+      "maximum_relative_global_norm_difference": 0.00554092871591219,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-echo-r2",
+      "planner": "echo",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.000134041922054703,
+      "maximum_relative_global_norm_difference": 0.005159251851093887,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-eplb_fixed-r2",
+      "planner": "eplb_fixed",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00020104920533847053,
+      "maximum_relative_global_norm_difference": 0.004007753939868174,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-moonep-r2",
+      "planner": "moonep",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00019458460066520782,
+      "maximum_relative_global_norm_difference": 0.0016789380443044837,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-native-r2",
+      "planner": "native",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.24177546399378e-05,
+      "maximum_relative_global_norm_difference": 0.00381076703323251,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-ultra_ep-r2",
+      "planner": "ultra_ep",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.187495149047144e-05,
+      "maximum_relative_global_norm_difference": 0.0011633364500893931,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-echo-r2",
+      "planner": "echo",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00011929810740574884,
+      "maximum_relative_global_norm_difference": 0.0049761041096665504,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-eplb_fixed-r2",
+      "planner": "eplb_fixed",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 9.330758603589016e-05,
+      "maximum_relative_global_norm_difference": 0.0046904539600760775,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-moonep-r2",
+      "planner": "moonep",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.791593741462821e-05,
+      "maximum_relative_global_norm_difference": 0.002824211253430931,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-native-r2",
+      "planner": "native",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.923654024931043e-05,
+      "maximum_relative_global_norm_difference": 0.0010038844380587434,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-ultra_ep-r2",
+      "planner": "ultra_ep",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.073461975705844e-05,
+      "maximum_relative_global_norm_difference": 0.0012415451026613462,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-echo-r2",
+      "planner": "echo",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.824294862621176e-05,
+      "maximum_relative_global_norm_difference": 0.002990829174660746,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-eplb_fixed-r2",
+      "planner": "eplb_fixed",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 9.470767530556357e-05,
+      "maximum_relative_global_norm_difference": 0.002728926379405716,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-moonep-r2",
+      "planner": "moonep",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0,
+      "maximum_relative_global_norm_difference": 0.0,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-ultra_ep-r3",
+      "planner": "ultra_ep",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0003462722463965716,
+      "maximum_relative_global_norm_difference": 0.015833794990320466,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-echo-r3",
+      "planner": "echo",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00014601284106300575,
+      "maximum_relative_global_norm_difference": 0.0032049450142359677,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-eplb_fixed-r3",
+      "planner": "eplb_fixed",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00021401771676251617,
+      "maximum_relative_global_norm_difference": 0.006194144924104653,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-moonep-r3",
+      "planner": "moonep",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00017056920064314194,
+      "maximum_relative_global_norm_difference": 0.005501725805214287,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-native-r3",
+      "planner": "native",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00011554871204712646,
+      "maximum_relative_global_norm_difference": 0.002596778665208293,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-ultra_ep-r3",
+      "planner": "ultra_ep",
+      "maxvio": 1,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.673743439875815e-05,
+      "maximum_relative_global_norm_difference": 0.005795560489370393,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-echo-r3",
+      "planner": "echo",
+      "maxvio": 1,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00010636232859045984,
+      "maximum_relative_global_norm_difference": 0.006108505992207238,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-eplb_fixed-r3",
+      "planner": "eplb_fixed",
+      "maxvio": 1,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 6.695096193349209e-05,
+      "maximum_relative_global_norm_difference": 0.004159712223577523,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-moonep-r3",
+      "planner": "moonep",
+      "maxvio": 1,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 9.822168037489766e-05,
+      "maximum_relative_global_norm_difference": 0.005333346582708217,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-native-r3",
+      "planner": "native",
+      "maxvio": 1,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00010644314575192108,
+      "maximum_relative_global_norm_difference": 0.010823414342613928,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-ultra_ep-r3",
+      "planner": "ultra_ep",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0002610942666523865,
+      "maximum_relative_global_norm_difference": 0.008027165745598771,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-echo-r3",
+      "planner": "echo",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00023365313816341854,
+      "maximum_relative_global_norm_difference": 0.006965272161911265,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-eplb_fixed-r3",
+      "planner": "eplb_fixed",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0003063721286591837,
+      "maximum_relative_global_norm_difference": 0.010900632325047567,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-moonep-r3",
+      "planner": "moonep",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0004036267163921437,
+      "maximum_relative_global_norm_difference": 0.01432565020766573,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio5-native-r3",
+      "planner": "native",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0003365573699970485,
+      "maximum_relative_global_norm_difference": 0.01245628984680732,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-ultra_ep-r3",
+      "planner": "ultra_ep",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0002779845152927848,
+      "maximum_relative_global_norm_difference": 0.01451390150661852,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-echo-r3",
+      "planner": "echo",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00016169971369211114,
+      "maximum_relative_global_norm_difference": 0.0034932576256586456,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-eplb_fixed-r3",
+      "planner": "eplb_fixed",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 9.273012762266527e-05,
+      "maximum_relative_global_norm_difference": 0.0017152203155268093,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-moonep-r3",
+      "planner": "moonep",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00011567033341085076,
+      "maximum_relative_global_norm_difference": 0.002281047752924471,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio10-native-r3",
+      "planner": "native",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00023764154968766764,
+      "maximum_relative_global_norm_difference": 0.00218238475050669,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-ultra_ep-r3",
+      "planner": "ultra_ep",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00010117394859572737,
+      "maximum_relative_global_norm_difference": 0.010439005842682383,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-echo-r3",
+      "planner": "echo",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 6.691946817786018e-05,
+      "maximum_relative_global_norm_difference": 0.002197564225847919,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-eplb_fixed-r3",
+      "planner": "eplb_fixed",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.953922566928558e-05,
+      "maximum_relative_global_norm_difference": 0.0044495361647383,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-moonep-r3",
+      "planner": "moonep",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.640739879472964e-05,
+      "maximum_relative_global_norm_difference": 0.006166399469847542,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-native-r3",
+      "planner": "native",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.240689968411079e-05,
+      "maximum_relative_global_norm_difference": 0.0016346352940619278,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-ultra_ep-r3",
+      "planner": "ultra_ep",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.762285959380753e-05,
+      "maximum_relative_global_norm_difference": 0.003131906891993143,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-echo-r3",
+      "planner": "echo",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.69093346971707e-05,
+      "maximum_relative_global_norm_difference": 0.001203443160605825,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-eplb_fixed-r3",
+      "planner": "eplb_fixed",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 6.828694625769013e-05,
+      "maximum_relative_global_norm_difference": 0.0005110026317685492,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-moonep-r3",
+      "planner": "moonep",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.589602728704402e-05,
+      "maximum_relative_global_norm_difference": 0.0006897838398263107,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-native-r3",
+      "planner": "native",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.14729700830424e-05,
+      "maximum_relative_global_norm_difference": 0.002408201643412182,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio15-eplb_fixed-r1-contention-retry1",
+      "planner": "eplb_fixed",
+      "maxvio": 15.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.890384220018971e-05,
+      "maximum_relative_global_norm_difference": 0.004466454518848631,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-moonep-r1-contention-retry1",
+      "planner": "moonep",
+      "maxvio": 20.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.245908149619825e-05,
+      "maximum_relative_global_norm_difference": 0.0017731579310182675,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-native-r1-contention-retry1",
+      "planner": "native",
+      "maxvio": 20.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.148847558975168e-05,
+      "maximum_relative_global_norm_difference": 0.0012430402426743875,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-ultra_ep-r1-contention-retry1",
+      "planner": "ultra_ep",
+      "maxvio": 20.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 9.260930138110584e-05,
+      "maximum_relative_global_norm_difference": 0.0013782574106449312,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-echo-r1-contention-retry1",
+      "planner": "echo",
+      "maxvio": 20.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.817544797194009e-05,
+      "maximum_relative_global_norm_difference": 0.00308888639290731,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio20-eplb_fixed-r1-contention-retry1",
+      "planner": "eplb_fixed",
+      "maxvio": 20.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.459565534778411e-05,
+      "maximum_relative_global_norm_difference": 0.0008155657282959607,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-native-r2-contention-retry1",
+      "planner": "native",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.000313882423488938,
+      "maximum_relative_global_norm_difference": 0.01528073567109176,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-ultra_ep-r2-contention-retry1",
+      "planner": "ultra_ep",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00018981567040633155,
+      "maximum_relative_global_norm_difference": 0.008546803789630941,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-echo-r2-contention-retry1",
+      "planner": "echo",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00016729697987429425,
+      "maximum_relative_global_norm_difference": 0.00551411684783078,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-eplb_fixed-r2-contention-retry1",
+      "planner": "eplb_fixed",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00019722002909459618,
+      "maximum_relative_global_norm_difference": 0.0062020419794188136,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio0.2-moonep-r2-contention-retry1",
+      "planner": "moonep",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00017051878606434012,
+      "maximum_relative_global_norm_difference": 0.004622953356930755,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-native-r2-contention-retry1",
+      "planner": "native",
+      "maxvio": 1.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00011936492368842137,
+      "maximum_relative_global_norm_difference": 0.00804040680786005,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-existing-vio1-moonep-r2-contention-retry1",
+      "planner": "moonep",
+      "maxvio": 1.0,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00013470953498801545,
+      "maximum_relative_global_norm_difference": 0.011688716820519118,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio0.2-step_time-r1",
+      "planner": "step_time",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00037292721287916287,
+      "maximum_relative_global_norm_difference": 0.018687485516535107,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio1-step_time-r1",
+      "planner": "step_time",
+      "maxvio": 1,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 6.153778653985528e-05,
+      "maximum_relative_global_norm_difference": 0.0014587977372727554,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio5-step_time-r1",
+      "planner": "step_time",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00043808954540623,
+      "maximum_relative_global_norm_difference": 0.01601576146999689,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio10-step_time-r1",
+      "planner": "step_time",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00018092812329294032,
+      "maximum_relative_global_norm_difference": 0.008252222671308955,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio15-step_time-r1",
+      "planner": "step_time",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.784294679511329e-05,
+      "maximum_relative_global_norm_difference": 0.002308974517444174,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio20-step_time-r1",
+      "planner": "step_time",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.79700061400372e-05,
+      "maximum_relative_global_norm_difference": 0.0005510082424572117,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio0.2-step_time-r2",
+      "planner": "step_time",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.000318890326282637,
+      "maximum_relative_global_norm_difference": 0.014607959647772752,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio1-step_time-r2",
+      "planner": "step_time",
+      "maxvio": 1,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00010869907671858356,
+      "maximum_relative_global_norm_difference": 0.0031496839846643218,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio5-step_time-r2",
+      "planner": "step_time",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00026427663053351904,
+      "maximum_relative_global_norm_difference": 0.009344298136249209,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio10-step_time-r2",
+      "planner": "step_time",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00018178729982629393,
+      "maximum_relative_global_norm_difference": 0.007356520040758887,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio15-step_time-r2",
+      "planner": "step_time",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.391035366506791e-05,
+      "maximum_relative_global_norm_difference": 0.001641961336183715,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio20-step_time-r2",
+      "planner": "step_time",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.229289336652997e-05,
+      "maximum_relative_global_norm_difference": 0.001509702280122568,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio0.2-step_time-r3",
+      "planner": "step_time",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00016926811698067046,
+      "maximum_relative_global_norm_difference": 0.006949097649956777,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio1-step_time-r3",
+      "planner": "step_time",
+      "maxvio": 1,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.705450985161486e-05,
+      "maximum_relative_global_norm_difference": 0.0031466213150958488,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio5-step_time-r3",
+      "planner": "step_time",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00022156280909990108,
+      "maximum_relative_global_norm_difference": 0.009643317300610077,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio10-step_time-r3",
+      "planner": "step_time",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0001386690198379124,
+      "maximum_relative_global_norm_difference": 0.0038633246915812003,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio15-step_time-r3",
+      "planner": "step_time",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 6.991470889353804e-05,
+      "maximum_relative_global_norm_difference": 0.0019175664177330902,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "primary-step-time-vio20-step_time-r3",
+      "planner": "step_time",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.473190232354947e-05,
+      "maximum_relative_global_norm_difference": 0.0032072473599353366,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio0.2-step_time-r4",
+      "planner": "step_time",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0002160491383323689,
+      "maximum_relative_global_norm_difference": 0.00842615802020956,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio0.2-ultra_ep-r4",
+      "planner": "ultra_ep",
+      "maxvio": 0.2,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00012263070187412122,
+      "maximum_relative_global_norm_difference": 0.0029292885191418198,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio1-ultra_ep-r4",
+      "planner": "ultra_ep",
+      "maxvio": 1,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0001496520871184789,
+      "maximum_relative_global_norm_difference": 0.00828471581687897,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio1-step_time-r4",
+      "planner": "step_time",
+      "maxvio": 1,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0001278815787553381,
+      "maximum_relative_global_norm_difference": 0.013716155092923663,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio5-step_time-r4",
+      "planner": "step_time",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.0006782801288861379,
+      "maximum_relative_global_norm_difference": 0.02415139694188452,
+      "passed": false,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio5-ultra_ep-r4",
+      "planner": "ultra_ep",
+      "maxvio": 5,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00033351458657488196,
+      "maximum_relative_global_norm_difference": 0.008105388455261854,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio10-ultra_ep-r4",
+      "planner": "ultra_ep",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00010726969467151524,
+      "maximum_relative_global_norm_difference": 0.0012139572221555408,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio10-step_time-r4",
+      "planner": "step_time",
+      "maxvio": 10,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 0.00013956597806045426,
+      "maximum_relative_global_norm_difference": 0.0027488387743256604,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio15-step_time-r4",
+      "planner": "step_time",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.757467691598565e-05,
+      "maximum_relative_global_norm_difference": 0.004561737351315838,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio15-ultra_ep-r4",
+      "planner": "ultra_ep",
+      "maxvio": 15,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 8.786461290671403e-05,
+      "maximum_relative_global_norm_difference": 0.002837838328236388,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio20-ultra_ep-r4",
+      "planner": "ultra_ep",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 7.5915816217248e-05,
+      "maximum_relative_global_norm_difference": 0.0015092598066890537,
+      "passed": true,
+      "state": "compared"
+    },
+    {
+      "tag": "fourth-paired-vio20-step_time-r4",
+      "planner": "step_time",
+      "maxvio": 20,
+      "compared_rank_steps": 200,
+      "maximum_relative_loss_difference": 6.618717378026955e-05,
+      "maximum_relative_global_norm_difference": 0.0013473205035189095,
+      "passed": true,
+      "state": "compared"
+    }
+  ]
+}

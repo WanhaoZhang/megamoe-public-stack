@@ -1,0 +1,647 @@
+{
+  "predictions": [
+    {
+      "planner": "moonep",
+      "maxvio": 0.3,
+      "observed_ms": 1129.752496,
+      "predicted_ms": 1194.7875840000002,
+      "predicted_step_ms": [
+        1200.5312720000002,
+        1193.39164,
+        1193.479536,
+        1193.211848,
+        1193.323624
+      ],
+      "measured_step_ms": [
+        1125.35397,
+        1126.31766,
+        1127.9525,
+        1141.92738,
+        1127.21097
+      ],
+      "tag": "calibration-select-vio0.3-moonep",
+      "inside_calibrated_domain": true,
+      "plan_hashes": [
+        "0591a5c7a4a1389bb82bb59c8e38396853d89d4892e98868f93bac8afcc9119f",
+        "5514471e85072ec014cf013e5e69d91bccbf4be51e2498752f9d8e26d6836e8a",
+        "a20cb1b296aeff608b12fa55a589246b51a3e511345874d44eb90f8a696b1700",
+        "770e772345c99533961c00fbdcde35f246763ecfbb626f41c2f9d59f370d81e9",
+        "ee4fa2220cf12d77d412d744f1d12d78dd55570181b8880bdb1e39e6098d9fd8",
+        "b793640648c846501019abfea958aebd18fe1bc397817b734123905dd8ec55b7",
+        "cef3e602cdf8b9c649ec36974f201ff3c1417a336dfbd2450cde724538321b55",
+        "4301ada619f511568973ae5e419615c73704f567d30f6f7bfc15eb54d69a4508",
+        "35f9ee68012d2de625f1a61583b8af81a564a6288e07e08dab27dc31f94d2df0",
+        "dc34ec5a0f412211d7c0e8ead08dd88b9312753d29354837ac0bd2b050a933ff"
+      ]
+    },
+    {
+      "planner": "native",
+      "maxvio": 0.3,
+      "observed_ms": 1092.529674,
+      "predicted_ms": 1196.8250544,
+      "predicted_step_ms": [
+        1196.769608,
+        1195.9040559999999,
+        1197.324192,
+        1195.464256,
+        1198.66316
+      ],
+      "measured_step_ms": [
+        1087.48696,
+        1106.30467,
+        1092.35024,
+        1087.98312,
+        1088.52338
+      ],
+      "tag": "calibration-select-vio0.3-native",
+      "inside_calibrated_domain": true,
+      "plan_hashes": [
+        "1f2fc1366e4fa176fecd5d29b45999721debde77b48cf7e7b45178ff4e15c5fe",
+        "2e6d319172e18ad4663ed6f22d579272c268d63be3e90f2c942b3e7ca964ef9d",
+        "683629370d0410b5f68f745d3c31c2810b5f051dfe695b2b22d1b9fa3144da78",
+        "5cf682a8e841c04c8127b10ff6302a760c4a91653f47e2e2a4faac58ca75f488",
+        "e0e356b0d6b5e5d35d1a1735c0ff2752b1737b8ba4fba84f0bd7099cec7bf65e",
+        "d50e1ee7bbe2f75780076122ff8be1cfd095cfba4cecf413628e68ef88a34d75",
+        "3e31980605c3dee74fb7eedcba4bb08c1a47fe71d45476f7680e6698bea67af7",
+        "96a1c757aa295176c505c2960705c51d56ef79606a17100929926916d3f6acdc",
+        "1a70b0ee10a3874c0438ac0cfbadb705e344b8d029bd055cff206d559409812a",
+        "ca2c9815cd6bb1c5026fe5c86c36520027db71d70530334a36e1d4f54a571991"
+      ]
+    },
+    {
+      "planner": "ultra_ep",
+      "maxvio": 0.3,
+      "observed_ms": 1119.020928,
+      "predicted_ms": 1194.4543488,
+      "predicted_step_ms": [
+        1194.73736,
+        1194.667872,
+        1194.593032,
+        1194.047792,
+        1194.225688
+      ],
+      "measured_step_ms": [
+        1115.66474,
+        1116.03448,
+        1121.65973,
+        1121.6349,
+        1120.11079
+      ],
+      "tag": "calibration-select-vio0.3-ultra_ep",
+      "inside_calibrated_domain": true,
+      "plan_hashes": [
+        "912be2d64fd384f7a08a30b811b0639e355966f7357a77471c83f006d981a4c4",
+        "2a36042db84e2f4c82168827568ba53f42c3396391cecf2fec2da9d2455d0e7d",
+        "dc215c94a7e63fd14b1cb62fa2147c4dbac2a4b58f3bc03efbf9c7cbed3b1e9b",
+        "df166609ec3f6827fa136df7295e3787a9a972be5261d6d72c6448fa47c3c2d4",
+        "52f87bbefbe0f01a236bef36dd08985b305069b197a2be64818bf4d39896a956",
+        "29d9b148f6dda7203f772d4cd0265ee9822ffe24cec6319fe5556226541d08e7",
+        "3e31980605c3dee74fb7eedcba4bb08c1a47fe71d45476f7680e6698bea67af7",
+        "ead20741b1cc7144b9002e97ca229b861919fe444811663db2f6523fd6456228",
+        "7b494e216c829af72c6038ebc337c0ec2d6d422e85184fe755853084bac63d1b",
+        "70d11c9e1d0872322176432a58b25eb6ed90125ed692e3e160ae82c030c2c4c1"
+      ]
+    },
+    {
+      "planner": "echo",
+      "maxvio": 0.3,
+      "observed_ms": 1140.03854,
+      "predicted_ms": 1193.8632592,
+      "predicted_step_ms": [
+        1193.505264,
+        1193.926184,
+        1194.431216,
+        1193.7149760000002,
+        1193.738656
+      ],
+      "measured_step_ms": [
+        1129.34428,
+        1136.3737,
+        1143.17969,
+        1145.39423,
+        1145.9008
+      ],
+      "tag": "calibration-select-vio0.3-echo",
+      "inside_calibrated_domain": true,
+      "plan_hashes": [
+        "5f87698c2e1e7a8f146a8422ac75fba0e103c385d65f6154f3659d19b1639296",
+        "780e90e60ca950beaa663639f6b13ff572113189cddeac7a6dafd8950b8d7ece",
+        "b98478ad7ac3f99db3210b26b17c66ccd69d992d0c558ac89665ef6471cb07e0",
+        "d2fb3479b4b0bb5960fba45b6f94978a14def3d93bd204220fe3aaeff5397763",
+        "60c5bff96fe9ce254262038bc7810dec8df7ebc64c2bc4a3255de2607649f67c",
+        "7b1547d5178b5bc5ad1390c22c373880e15ed10b3aa1a78fc2b0b197dbea85bd",
+        "18f8f21bab62f16e61a312075df975685e65cbe46229e697925649cdae326ee4",
+        "3654e4015d00803eb051c68682b694d79112536785b5b5c84b6e7fee026f7a87",
+        "047b66aa63bdbf5fea47255e51ccb75b8b082cf251c5d3fc3489a388d6ef0600",
+        "9b24cc16fb49ba65c43b29018349ffd55192a99a0f9af30ac21f0d09b03d8f4c"
+      ]
+    },
+    {
+      "planner": "eplb_fixed",
+      "maxvio": 0.3,
+      "observed_ms": 1616.641918,
+      "predicted_ms": 1803.8463328,
+      "predicted_step_ms": [
+        1855.332592,
+        1802.649456,
+        1782.1085600000001,
+        1775.355008,
+        1803.786048
+      ],
+      "measured_step_ms": [
+        1598.54313,
+        1581.90305,
+        1602.90518,
+        1671.42729,
+        1628.43094
+      ],
+      "tag": "calibration-select-vio0.3-eplb_fixed",
+      "inside_calibrated_domain": false,
+      "plan_hashes": [
+        "3331707074d8e132bd2caeae4b351a50880b17c3c839c45f8d33b4758367384b",
+        "3ca9120099de4346fa2a2e20e5e857291b361d04ae62892f4b9eeaaa36282a3c",
+        "ca8510c81d3e801b81364789d1bb088e51141a311497631f2d66f2836931daf1",
+        "9e92a40f8e9f3bd2ccdbb65077c44a2f8f2a556c420c5610da230666fce5ab3a",
+        "9b20e2b3257600ca0bd74629f3c4f1a96ce40343365ce6edeed7580968a28c00",
+        "5f5734a98b9cc3e538132fc6747108952cc6b0cfd5a2be5bc611245842184820",
+        "96cf36d0fdd586ff926484615e4149559e41b23606fc832e60ef1886d92076df",
+        "39bd45a0720a608d5876f542ed125fe24185ceebc70706b676a8e97be45032c4",
+        "d7a729b0deaf0dc9874ac82e6d8cb9a40029f37ef4c8878734208df59ab86d2d",
+        "c611110fdabeb09d2fb0fab952a36141a07fa3a7157cf7fab7b3ab721fcde122"
+      ]
+    },
+    {
+      "planner": "moonep",
+      "maxvio": 7,
+      "observed_ms": 1174.34344,
+      "predicted_ms": 1220.4213536,
+      "predicted_step_ms": [
+        1215.3109279999999,
+        1228.0420640000002,
+        1214.322032,
+        1227.7760640000001,
+        1216.65568
+      ],
+      "measured_step_ms": [
+        1163.42962,
+        1169.60333,
+        1171.48146,
+        1179.2163,
+        1187.98649
+      ],
+      "tag": "calibration-select-vio7-moonep",
+      "inside_calibrated_domain": true,
+      "plan_hashes": [
+        "3898fbe2831b861cc94113e820788267c3e1e7d8a7930200f6665848c62b4c01",
+        "a104d82876a51de07762a65087dec806de89b4f1319061736eba9b180f8384c0",
+        "ba5fa7027e845633d20e048026b01cbdc2807b00246c94304723eac4e1913518",
+        "1c7a8295806c9b1130aeac12e7e187ebfd05b039cea414623f976bccd9344b0b",
+        "edfcf81b9753cfd9d4ae7d70e199c0ffae42bbe54b7abe42a0fcc8e3f89f2383",
+        "35affd7b32f71a6a8ad30f78e9d7e5958e95ee0e5baf5f9e1ed4e7b8ad0f2e62",
+        "ed9bd2deba51619a4da9c278ab240f1fcf00df2a72e19049a1d70db4b48ddbab",
+        "e0a52ed8c63476ee06964b1f1e2e02a0f8a545a875ae78103c0c19be6d1355a5",
+        "b8608cbfa329b00be9c5197b5bc4d5feef46a0b4a65567e1069366e80387c3e5",
+        "0482dce54fa4aa250541ca8a9d134e071f475b1b459043593bacd3087bfa6203"
+      ]
+    },
+    {
+      "planner": "native",
+      "maxvio": 7,
+      "observed_ms": 1174.151298,
+      "predicted_ms": 1212.8063808,
+      "predicted_step_ms": [
+        1213.48096,
+        1216.934096,
+        1207.869968,
+        1212.2985760000001,
+        1213.448304
+      ],
+      "measured_step_ms": [
+        1161.84414,
+        1175.21614,
+        1180.46646,
+        1171.04709,
+        1182.18266
+      ],
+      "tag": "calibration-select-vio7-native",
+      "inside_calibrated_domain": true,
+      "plan_hashes": [
+        "8ae71ac61ad7b145973613ab3a0759c5ecf636a29f7a494dfa25ed801bc85afb",
+        "2d1e66b69a6bea6e2034226ef226218481d70e4ec058cb975c55f9b9568f6f93",
+        "ac0f16d3634025def463281bfad96e8efe0eef8507c2242cd52c42f3b468aac7",
+        "5ee896e7548288275922634cd6dadb1b2e7f17351d01700d07c101a1d8b28e8a",
+        "a382125f46488f772c297f2aeb28f132e007c7eb759c64e43d9989737116a586",
+        "a92af1fef8273d8aff8e2602788e064163c97eedf29b4f995f7f0e796e9bbe2a",
+        "6ccb447bc729542cbeef171bee23523888540136fa271e44cf21d0d21f9538f0",
+        "567d5ece0691d06fd0e10c3c89f52f99ae1374284868c637522a2d972d505304",
+        "e1eb3965b1aab68b6938b291db18fac348f683a4ae503af9b0aae1f3ddd325ad",
+        "260769d9be5eb7d7893151cb07e4e64f6fdb020e5502f52fc1829fb87892d302"
+      ]
+    },
+    {
+      "planner": "ultra_ep",
+      "maxvio": 7,
+      "observed_ms": 1168.314872,
+      "predicted_ms": 1214.4728128000002,
+      "predicted_step_ms": [
+        1212.771792,
+        1218.257168,
+        1209.6190080000001,
+        1212.882896,
+        1218.8332
+      ],
+      "measured_step_ms": [
+        1168.30849,
+        1160.03681,
+        1166.17422,
+        1172.52906,
+        1174.52578
+      ],
+      "tag": "calibration-select-vio7-ultra_ep",
+      "inside_calibrated_domain": true,
+      "plan_hashes": [
+        "87dc06418b77e6a29de42e33b5d5cb68435ec1ad56bbcc55c8ffd80c6a83085e",
+        "515b4a29a03f265348bf7dd9c28f9729837fe41cc1e8dc5d5bd40b9c3430db60",
+        "c8822ad325b48bc95bb55fdaf2f051703f77e4b5832bdb0ccf4ea54cbd2d5d1d",
+        "dec26fb38155a9e49e06c87fd0dc0e6159b250ed0873ee4f6ca6aed24e115182",
+        "1f0559e832b4151d85c8cef43c76c0c9df21249da7b370d169487de0d8d59d71",
+        "75bd3c8fc6e99ddc4b2189ccac15ac78e62affc31ae3807e6a333ae41d66f79a",
+        "64b528100042d66a3c164c82e6fcebfd091bcf4a5fd84f47a1213d182056a796",
+        "9312b1b753cbe04dec66cae957550edb41b77c506f31c27fb9774c3a23c6a434",
+        "fdabec837146a70d986930b6a5a9453568b0e6be3c785d2ca9e8076a4aacd820",
+        "17e44034c0b22e2d5297cc026bb9ae29976119029ef3ab168c643b67596c5d97"
+      ]
+    },
+    {
+      "planner": "echo",
+      "maxvio": 7,
+      "observed_ms": 1172.3688300000001,
+      "predicted_ms": 1212.062496,
+      "predicted_step_ms": [
+        1211.48144,
+        1214.81,
+        1207.3124480000001,
+        1212.714336,
+        1213.994256
+      ],
+      "measured_step_ms": [
+        1163.72462,
+        1165.63189,
+        1167.02079,
+        1178.54204,
+        1186.92481
+      ],
+      "tag": "calibration-select-vio7-echo",
+      "inside_calibrated_domain": true,
+      "plan_hashes": [
+        "d3c78a2740156353831697eef9dde834ceff548611cf7188e8f97290ee6d813d",
+        "19c70aad2c2c76a5a80631c1c0b0dbce4277073b6611c7e0110fe1894eb3e7d2",
+        "ed2072c522556f8c9b05af0a97b2fd37b5bdd03b3697ae141649c2f55eaed34d",
+        "32db42b454ac8d9645c73fb7f9fb125ff2249ba5155d43f8ac2915c2148a0b6f",
+        "433f6d25f898415b4f7becd18aee1191b43c465585c1567a13599d91355278f8",
+        "aba78941825c7b228073f6c9db258ef7f0a16ba5aecd37a8044096964e317c91",
+        "b73b323edaab02b6d0f8113ca04e470577265da9b08a9bdb7c232f5a8ffac806",
+        "2eab39a1a47bdbc179445c4c961b903c53e6840d02f50ebc658b4f88a24053c6",
+        "8faeaf357fe243241a59cc23b5ab7f782fbeb0e10ab643514f4b157ba3abeee2",
+        "36e79d3c81bf39ec8574d6a9ca4a7f7fee0453c8b9c846b95c7e3348a4534f18"
+      ]
+    },
+    {
+      "planner": "eplb_fixed",
+      "maxvio": 7,
+      "observed_ms": 1657.911026,
+      "predicted_ms": 1669.3521856,
+      "predicted_step_ms": [
+        1654.3563199999999,
+        1666.473536,
+        1649.140672,
+        1710.077264,
+        1666.7131359999998
+      ],
+      "measured_step_ms": [
+        1653.80459,
+        1632.10128,
+        1631.99727,
+        1680.90228,
+        1690.74971
+      ],
+      "tag": "calibration-select-vio7-eplb_fixed",
+      "inside_calibrated_domain": true,
+      "plan_hashes": [
+        "a5a443cc207de347aa9a52dfd6fe3c3d6fd743cc8bd76304ff1c75805cce9e03",
+        "598ea4b3734c173ecd1d5be4808b322f50ba507a3d92f13354cb77eb915a3edf",
+        "bee0f95f4cf871cb95163eae299737b59480f13414df274e8ce1c14a271541ed",
+        "55e7c8a3f1d9f4da872fcafb4efc1bdd30dfe6fad721e046fe348f4d047ef720",
+        "eff2c05afde2cf8d82a55048b7ce472a5b7b77b1dbfc6cde1e8e9e52570e59e0",
+        "64f63132afd2490f0e8c384f5fd58858ecd2a46dd0d73b9080365a267457afbc",
+        "e724f05312fd062cac11b316461a5098b2d44107718c5c9d8364358e94ab321d",
+        "9c2f7f1c62bef08787a0449904bf2684d8d9eb826130e422c764273dd475af61",
+        "74a485d2491e7f8a94e7a7796eff4f2c35d621cabc7d69b2da26bce362ae977c",
+        "a66b7fcaa51e3ad0e27dcaffafb87ecd1c27a431bff43592aa711097beff14a7"
+      ]
+    },
+    {
+      "planner": "moonep",
+      "maxvio": 18,
+      "observed_ms": 1202.273808,
+      "predicted_ms": 1252.1730976,
+      "predicted_step_ms": [
+        1251.929824,
+        1257.530544,
+        1234.6340639999999,
+        1262.410032,
+        1254.361024
+      ],
+      "measured_step_ms": [
+        1202.91273,
+        1200.09869,
+        1204.15071,
+        1191.32902,
+        1212.87789
+      ],
+      "tag": "calibration-select-vio18-moonep",
+      "inside_calibrated_domain": false,
+      "plan_hashes": [
+        "a636034492ec795c39c358336bdff1d3839fd8c1079b95f6000b6998a70d4b72",
+        "67b033c6a2b6a3fa0bd3ce4e057fdf3c8cd87ac5a1f8ac66f5d5df34c1046415",
+        "20441f588c951f51c762504baa171952d6737cdf137a68d829b113807aa87f1a",
+        "fc255acdd3932d5a7b42ecd8ced38c6cc8fcd4b468fb94e6e841bb063383f614",
+        "a3cda7245e860bbc42feabbd2197211bf914d0141f662891d53e8e0b8f1ae67d",
+        "559e43b363bc6de46c4c270168103bae8273054689f9d1ffb799b62596f35742",
+        "56cac422c82b951c8c6f5e93b68c6c2a89f52c1c831d5f62393ec436120faeba",
+        "fe7972675a485d5dc9bf6f774853130d7f09369f28de0b3f1a523aaa96a98fe8",
+        "1052bb92938da65022e7511a03884ce5a59fcc164a2db6dc6be783b460491af5",
+        "7bac9f9898a4fac51c10c0d7e18e4297de27d8105877fa6a3f078f037b6ea4f7"
+      ]
+    },
+    {
+      "planner": "native",
+      "maxvio": 18,
+      "observed_ms": 1209.102586,
+      "predicted_ms": 1247.4154208,
+      "predicted_step_ms": [
+        1248.7576,
+        1254.019232,
+        1236.5917279999999,
+        1252.8567520000001,
+        1244.851792
+      ],
+      "measured_step_ms": [
+        1208.08436,
+        1211.14738,
+        1214.40022,
+        1198.12078,
+        1213.76019
+      ],
+      "tag": "calibration-select-vio18-native",
+      "inside_calibrated_domain": false,
+      "plan_hashes": [
+        "4d0d8c7dd4b94d4319d52196dfce58de23f7690b36380915a1c56bcc19d221c9",
+        "7657f8076ed7435da9cc668db8a57d5ddd205ef01adc42a810f5a9d66f90e3a3",
+        "b10e68581058e11494748ecfbf1db0ed3e8b62477012c9be6402d6b031a2b242",
+        "d8ba6a571acf873146abc9386676b7741e15281c486ba68a4b17c7b867aa0c85",
+        "9bc1f43c0f7539cb800bd009408285a98dc863eeee53bdc6a80a0f8fa2c2aefa",
+        "9a426408e8bb88cce26a141b50044ead12dee70f27dcd01195533535ef9c15f0",
+        "77f84ce93c53363392b2d505c92f95d6c26c9383def0a4be0bbf8079b2183ae5",
+        "f26fe9127667e6d3253f8a17ecd8b060cb4001d14440d1a711a667576a2ce07b",
+        "d3b8e15d9ec1caff8a6a9ca326900d666feaaf03002e139444687b499c9f1a5b",
+        "8211aa189dae241fc591311de6ad1f334cb31f9a8ad1d1391c480dc746d804db"
+      ]
+    },
+    {
+      "planner": "ultra_ep",
+      "maxvio": 18,
+      "observed_ms": 1196.044864,
+      "predicted_ms": 1251.1947168,
+      "predicted_step_ms": [
+        1248.194864,
+        1257.015088,
+        1237.3639199999998,
+        1259.994768,
+        1253.404944
+      ],
+      "measured_step_ms": [
+        1203.09428,
+        1196.03697,
+        1190.28585,
+        1192.17151,
+        1198.63571
+      ],
+      "tag": "calibration-select-vio18-ultra_ep",
+      "inside_calibrated_domain": false,
+      "plan_hashes": [
+        "550c02406d04de8243022b862777f8c9284c85dd1bebb9bc57edb353ed622c64",
+        "fd8d87e33fc5b225935c2b3c61eba280d9c620a2cb8919d3d9a5a5245146e9c8",
+        "dcc342c2504688d051feaf45d82f131c155c37e7478649b299941d097784c401",
+        "465c9b8c4cdf621d5a0d3bf9a913233873c6f0adb1cca53a9b8a65bbbc860bfe",
+        "c8ceabb231c1053455d9e95613fa8a7e0755260b79a5c5e5cdc3293147b26ead",
+        "9de392b2ed5c72d70ab960f5c482e061466a22a4aefe1912b8e1ea22910370a4",
+        "3175de965413f92ea6e3f6a5817b52a87e8fbdb775c8aff98dbd73cf58085d7f",
+        "0f82e0b3e4a0f7789cdd63e74e22d679e056a97fa753d36393abf66fa0106750",
+        "5260acdacdf569040e79da6efb48676c49f319751e8e5482d67439b63cefd958",
+        "050f1c8d40fbcdd4bff83bbe39d287e5871ef35e79af54ca3dd80ddc79d75349"
+      ]
+    },
+    {
+      "planner": "echo",
+      "maxvio": 18,
+      "observed_ms": 1198.465242,
+      "predicted_ms": 1246.5616479999999,
+      "predicted_step_ms": [
+        1251.17952,
+        1248.622464,
+        1231.006688,
+        1257.753328,
+        1244.24624
+      ],
+      "measured_step_ms": [
+        1197.92746,
+        1195.61056,
+        1189.27827,
+        1197.17881,
+        1212.33111
+      ],
+      "tag": "calibration-select-vio18-echo",
+      "inside_calibrated_domain": false,
+      "plan_hashes": [
+        "79737b8faa8f3ee39e9a2b265741e671da6036aa05061542c1169e197e06601f",
+        "c35b00b49dd5d9a9fa27c631d98e6b7bf76be3419d9addc69aede211b1a4fd6f",
+        "3c9e504fa9865583a86d1eeac49de32eb47059430986aafdeb664f791096f4f3",
+        "7a6e1b8c2ed0cbb4648bd93589c59c908ebc0c16bd0c2d595421198023013891",
+        "27de6169a48946f0c513e3c82e6b42c60fb37d5def003a87439996cef6926416",
+        "330b73535e3c11a626c067514df8632dabc73865fd26e70c72ff19ac9bff16ec",
+        "6209f6f4c14709e5bd6f3a233c9aa0764726c28b674d1f6ac8475dc604cc619b",
+        "bfc74fca2c73a83ecbdd2dc4ac13bcafa969933886a6306a7813e75ffd515602",
+        "85e50d976ceb32a8ce806c4797e52c9c1d40f480f73a6b34db3b8eb47c893ffa",
+        "553ce6edd7e6acec8ff939a3d83896d2658ad889f6f2059f91678eaf7f6f7de9"
+      ]
+    },
+    {
+      "planner": "eplb_fixed",
+      "maxvio": 18,
+      "observed_ms": 1580.512968,
+      "predicted_ms": 1569.5226848,
+      "predicted_step_ms": [
+        1590.018544,
+        1533.1573600000002,
+        1531.520512,
+        1666.1856320000002,
+        1526.731376
+      ],
+      "measured_step_ms": [
+        1618.97987,
+        1567.95019,
+        1555.16,
+        1586.92987,
+        1573.54491
+      ],
+      "tag": "calibration-select-vio18-eplb_fixed",
+      "inside_calibrated_domain": true,
+      "plan_hashes": [
+        "ec1f4871f696fb8d6c7a49710ace875ee3fbb97d03eb1ca36a8dc673c4dd4d71",
+        "5301a03044c9cd267b27738a282c5d9e7706ae202c25a58c88080234690ae24d",
+        "c641a3beadbae1886dea3b59517c6be99c9dd37d91dd7b2ea18ae178031ea4c1",
+        "2056aa2a855c16ca85ed35653bfea50aec9c9012fccdecc8e741fa1147048a26",
+        "b52f84697b231cde4620c71ad05ed8233db44b4684b9ffa03bc8b12869355948",
+        "8f3cc373c2be075ce702180e5739297531741ae713755f4b308548ed052c3cc6",
+        "fe03d6dd30a8781a6516beebc4dda74c68d0c582e367c104ce1366b2ec63bd20",
+        "3884f9edb79c2ac4840ee48c63adf0b51f54b826c637e9ac026d67a7b847b942",
+        "57d7bc6050c4d354d266e28988710fc328ba1d4aab34831409225275a018f6ed",
+        "39a9dc5b76ec776399ee46f8a0dffd3fb2f4855c7b921c0ef31eba748fd20c85"
+      ]
+    }
+  ],
+  "paired_errors": [
+    {
+      "planner": "moonep",
+      "maxvio": 0.3,
+      "predicted_delta_ms": -2.0374703999998474,
+      "observed_delta_ms": 37.22282199999995,
+      "absolute_error_ms": 39.2602923999998,
+      "used_in_guard": true
+    },
+    {
+      "planner": "native",
+      "maxvio": 0.3,
+      "predicted_delta_ms": 0.0,
+      "observed_delta_ms": 0.0,
+      "absolute_error_ms": 0.0,
+      "used_in_guard": false
+    },
+    {
+      "planner": "ultra_ep",
+      "maxvio": 0.3,
+      "predicted_delta_ms": -2.370705600000065,
+      "observed_delta_ms": 26.4912539999998,
+      "absolute_error_ms": 28.861959599999864,
+      "used_in_guard": true
+    },
+    {
+      "planner": "echo",
+      "maxvio": 0.3,
+      "predicted_delta_ms": -2.961795200000097,
+      "observed_delta_ms": 47.5088659999999,
+      "absolute_error_ms": 50.470661199999995,
+      "used_in_guard": true
+    },
+    {
+      "planner": "eplb_fixed",
+      "maxvio": 0.3,
+      "predicted_delta_ms": 607.0212784,
+      "observed_delta_ms": 524.1122439999999,
+      "absolute_error_ms": 82.90903440000011,
+      "used_in_guard": false
+    },
+    {
+      "planner": "moonep",
+      "maxvio": 7,
+      "predicted_delta_ms": 7.614972800000032,
+      "observed_delta_ms": 0.1921420000001035,
+      "absolute_error_ms": 7.422830799999929,
+      "used_in_guard": true
+    },
+    {
+      "planner": "native",
+      "maxvio": 7,
+      "predicted_delta_ms": 0.0,
+      "observed_delta_ms": 0.0,
+      "absolute_error_ms": 0.0,
+      "used_in_guard": false
+    },
+    {
+      "planner": "ultra_ep",
+      "maxvio": 7,
+      "predicted_delta_ms": 1.6664320000002135,
+      "observed_delta_ms": -5.836426000000074,
+      "absolute_error_ms": 7.502858000000288,
+      "used_in_guard": true
+    },
+    {
+      "planner": "echo",
+      "maxvio": 7,
+      "predicted_delta_ms": -0.7438847999999325,
+      "observed_delta_ms": -1.7824679999998807,
+      "absolute_error_ms": 1.0385831999999482,
+      "used_in_guard": true
+    },
+    {
+      "planner": "eplb_fixed",
+      "maxvio": 7,
+      "predicted_delta_ms": 456.54580480000004,
+      "observed_delta_ms": 483.759728,
+      "absolute_error_ms": 27.213923199999954,
+      "used_in_guard": true
+    },
+    {
+      "planner": "moonep",
+      "maxvio": 18,
+      "predicted_delta_ms": 4.757676799999899,
+      "observed_delta_ms": -6.828778000000057,
+      "absolute_error_ms": 11.586454799999956,
+      "used_in_guard": false
+    },
+    {
+      "planner": "native",
+      "maxvio": 18,
+      "predicted_delta_ms": 0.0,
+      "observed_delta_ms": 0.0,
+      "absolute_error_ms": 0.0,
+      "used_in_guard": false
+    },
+    {
+      "planner": "ultra_ep",
+      "maxvio": 18,
+      "predicted_delta_ms": 3.779295999999931,
+      "observed_delta_ms": -13.057722000000012,
+      "absolute_error_ms": 16.837017999999944,
+      "used_in_guard": false
+    },
+    {
+      "planner": "echo",
+      "maxvio": 18,
+      "predicted_delta_ms": -0.8537728000001152,
+      "observed_delta_ms": -10.637343999999985,
+      "absolute_error_ms": 9.78357119999987,
+      "used_in_guard": false
+    },
+    {
+      "planner": "eplb_fixed",
+      "maxvio": 18,
+      "predicted_delta_ms": 322.107264,
+      "observed_delta_ms": 371.410382,
+      "absolute_error_ms": 49.30311800000004,
+      "used_in_guard": false
+    }
+  ],
+  "differential_p90_ms": 43.74443991999988,
+  "baseline_mean_error_ms": 3.651165433738123,
+  "total_ms": 47.395605353738,
+  "within_domain_pairs": 7,
+  "background_ms": 0.0,
+  "selection_targets": [
+    0.3,
+    7,
+    18
+  ],
+  "future_or_primary_or_heldout_used": false
+}

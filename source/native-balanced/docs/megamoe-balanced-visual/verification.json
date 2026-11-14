@@ -1,0 +1,903 @@
+{
+  "ok": true,
+  "errors": [],
+  "sourceFiles": 63,
+  "callpoints": 154,
+  "checks": [
+    {
+      "id": "00-lifecycle",
+      "width": 845.5,
+      "height": 2244,
+      "outside": [],
+      "actors": [
+        "N",
+        "F",
+        "M"
+      ],
+      "links": [
+        "L05",
+        "I02",
+        "I07",
+        "I15",
+        "I17",
+        "S06",
+        "F17",
+        "F03",
+        "L01",
+        "F09",
+        "F15",
+        "F16",
+        "S10",
+        "U02",
+        "B09",
+        "B13",
+        "B17",
+        "U04",
+        "L03",
+        "L04"
+      ],
+      "fitted": true,
+      "lifelines": 3,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 3,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 3,
+      "themePaints": {
+        "labelBoxes": [
+          "rgb(232, 239, 246)"
+        ],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 3,
+      "callpoints": 20,
+      "scroll": {
+        "x": 0,
+        "y": 1466,
+        "endX": 0,
+        "endY": 1466
+      }
+    },
+    {
+      "id": "01-init",
+      "width": 4192,
+      "height": 2765,
+      "outside": [],
+      "actors": [
+        "B",
+        "A",
+        "C",
+        "Q",
+        "Z",
+        "D",
+        "S",
+        "P",
+        "G",
+        "J",
+        "O",
+        "Y",
+        "E",
+        "L",
+        "F",
+        "T",
+        "R"
+      ],
+      "links": [
+        "I01",
+        "I02",
+        "I03",
+        "I04",
+        "I18",
+        "I05",
+        "I06",
+        "I14",
+        "I07",
+        "I08",
+        "I09",
+        "I10",
+        "I11",
+        "I15",
+        "I16",
+        "S01",
+        "S02",
+        "I19",
+        "I17",
+        "S03",
+        "S04",
+        "I20",
+        "S05"
+      ],
+      "fitted": true,
+      "lifelines": 17,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 3,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 17,
+      "themePaints": {
+        "labelBoxes": [],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 17,
+      "callpoints": 23,
+      "scroll": {
+        "x": 2662,
+        "y": 1987,
+        "endX": 2662,
+        "endY": 1987
+      }
+    },
+    {
+      "id": "02-forward",
+      "width": 2779,
+      "height": 3550,
+      "outside": [],
+      "actors": [
+        "X",
+        "P",
+        "V",
+        "B",
+        "R",
+        "U",
+        "D",
+        "G",
+        "H",
+        "M",
+        "T"
+      ],
+      "links": [
+        "F01",
+        "F17",
+        "F18",
+        "F02",
+        "F03",
+        "F04",
+        "X09",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "F14",
+        "F15",
+        "F16",
+        "F19"
+      ],
+      "fitted": true,
+      "lifelines": 11,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 3,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 11,
+      "themePaints": {
+        "labelBoxes": [
+          "rgb(232, 239, 246)"
+        ],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 11,
+      "callpoints": 20,
+      "scroll": {
+        "x": 1249,
+        "y": 2772,
+        "endX": 1249,
+        "endY": 2772
+      }
+    },
+    {
+      "id": "03-planner",
+      "width": 1993,
+      "height": 2695,
+      "outside": [],
+      "actors": [
+        "L",
+        "C",
+        "A",
+        "D",
+        "K",
+        "W",
+        "P",
+        "V"
+      ],
+      "links": [
+        "P12",
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P13",
+        "P14",
+        "P15",
+        "P05",
+        "P06",
+        "P07",
+        "P16",
+        "P08",
+        "P09",
+        "P17",
+        "P10",
+        "P11"
+      ],
+      "fitted": true,
+      "lifelines": 8,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 1,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 8,
+      "themePaints": {
+        "labelBoxes": [],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 8,
+      "callpoints": 17,
+      "scroll": {
+        "x": 463,
+        "y": 1917,
+        "endX": 463,
+        "endY": 1917
+      }
+    },
+    {
+      "id": "04-native",
+      "width": 1751,
+      "height": 2490,
+      "outside": [],
+      "actors": [
+        "O",
+        "K",
+        "W",
+        "L",
+        "H",
+        "T",
+        "P"
+      ],
+      "links": [
+        "N07",
+        "N01",
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N06",
+        "N08",
+        "N11",
+        "N09",
+        "N10"
+      ],
+      "fitted": true,
+      "lifelines": 7,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 1,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 7,
+      "themePaints": {
+        "labelBoxes": [
+          "rgb(232, 239, 246)"
+        ],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 7,
+      "callpoints": 11,
+      "scroll": {
+        "x": 221,
+        "y": 1712,
+        "endX": 221,
+        "endY": 1712
+      }
+    },
+    {
+      "id": "05-backward",
+      "width": 2300,
+      "height": 3551,
+      "outside": [],
+      "actors": [
+        "O",
+        "J",
+        "K",
+        "L",
+        "H",
+        "C",
+        "V",
+        "B",
+        "T"
+      ],
+      "links": [
+        "B19",
+        "B18",
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B09",
+        "B10",
+        "B11",
+        "B12",
+        "B14",
+        "B13",
+        "B15",
+        "B16",
+        "B17"
+      ],
+      "fitted": true,
+      "lifelines": 9,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 2,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 9,
+      "themePaints": {
+        "labelBoxes": [
+          "rgb(232, 239, 246)"
+        ],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 9,
+      "callpoints": 19,
+      "scroll": {
+        "x": 770,
+        "y": 2773,
+        "endX": 770,
+        "endY": 2773
+      }
+    },
+    {
+      "id": "06-model-step",
+      "width": 2097,
+      "height": 2756,
+      "outside": [],
+      "actors": [
+        "K",
+        "C",
+        "B",
+        "D",
+        "H",
+        "P",
+        "M",
+        "L"
+      ],
+      "links": [
+        "S06",
+        "F01",
+        "S07",
+        "F17",
+        "F18",
+        "F02",
+        "F03",
+        "S08",
+        "F06",
+        "F09",
+        "N04",
+        "N10",
+        "K02",
+        "K06",
+        "N11",
+        "F15",
+        "F16",
+        "S09",
+        "S10"
+      ],
+      "fitted": true,
+      "lifelines": 8,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 3,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 8,
+      "themePaints": {
+        "labelBoxes": [
+          "rgb(232, 239, 246)"
+        ],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 8,
+      "callpoints": 19,
+      "scroll": {
+        "x": 567,
+        "y": 1978,
+        "endX": 567,
+        "endY": 1978
+      }
+    },
+    {
+      "id": "07-kernel-forward",
+      "width": 1011,
+      "height": 1458,
+      "outside": [],
+      "actors": [
+        "S",
+        "G",
+        "P",
+        "O"
+      ],
+      "links": [
+        "K01",
+        "K02",
+        "K03",
+        "K04",
+        "K05",
+        "K06",
+        "K07",
+        "K08"
+      ],
+      "fitted": true,
+      "lifelines": 4,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 1,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 4,
+      "themePaints": {
+        "labelBoxes": [
+          "rgb(232, 239, 246)"
+        ],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 4,
+      "callpoints": 8,
+      "scroll": {
+        "x": 0,
+        "y": 680,
+        "endX": 0,
+        "endY": 680
+      }
+    },
+    {
+      "id": "08-kernel-backward",
+      "width": 1737,
+      "height": 2200,
+      "outside": [],
+      "actors": [
+        "A",
+        "G",
+        "S",
+        "C",
+        "W",
+        "R",
+        "O"
+      ],
+      "links": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G14",
+        "G15",
+        "G16"
+      ],
+      "fitted": true,
+      "lifelines": 7,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 1,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 7,
+      "themePaints": {
+        "labelBoxes": [
+          "rgb(232, 239, 246)"
+        ],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 7,
+      "callpoints": 16,
+      "scroll": {
+        "x": 207,
+        "y": 1422,
+        "endX": 207,
+        "endY": 1422
+      }
+    },
+    {
+      "id": "09-update",
+      "width": 1550,
+      "height": 1237,
+      "outside": [],
+      "actors": [
+        "B",
+        "G",
+        "E",
+        "P",
+        "O",
+        "T"
+      ],
+      "links": [
+        "B17",
+        "U04",
+        "U06",
+        "U07",
+        "U08",
+        "U09"
+      ],
+      "fitted": true,
+      "lifelines": 6,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 3,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 6,
+      "themePaints": {
+        "labelBoxes": [],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 6,
+      "callpoints": 6,
+      "scroll": {
+        "x": 20,
+        "y": 459,
+        "endX": 20,
+        "endY": 459
+      }
+    },
+    {
+      "id": "10-saved-mode",
+      "width": 1561,
+      "height": 1142,
+      "outside": [],
+      "actors": [
+        "K",
+        "O",
+        "S",
+        "B",
+        "D",
+        "F"
+      ],
+      "links": [
+        "H01",
+        "H02",
+        "H03",
+        "H04",
+        "H05",
+        "H06"
+      ],
+      "fitted": true,
+      "lifelines": 6,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 3,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 6,
+      "themePaints": {
+        "labelBoxes": [
+          "rgb(232, 239, 246)"
+        ],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 6,
+      "callpoints": 6,
+      "scroll": {
+        "x": 31,
+        "y": 364,
+        "endX": 31,
+        "endY": 364
+      }
+    },
+    {
+      "id": "11-model-backward",
+      "width": 1806,
+      "height": 2163,
+      "outside": [],
+      "actors": [
+        "K",
+        "B",
+        "F",
+        "S",
+        "O",
+        "M",
+        "T"
+      ],
+      "links": [
+        "U05",
+        "B01",
+        "U02",
+        "U10",
+        "U01",
+        "U03",
+        "B03",
+        "B07",
+        "B09",
+        "B13",
+        "B14",
+        "B17",
+        "B16",
+        "U04",
+        "U06",
+        "U07",
+        "U08"
+      ],
+      "fitted": true,
+      "lifelines": 7,
+      "classified": true,
+      "fullLifelines": true,
+      "nativeGroups": 3,
+      "groupsBehindMarks": true,
+      "bottomParticipants": 7,
+      "themePaints": {
+        "labelBoxes": [
+          "rgb(232, 239, 246)"
+        ],
+        "notes": [
+          "rgb(255, 246, 221)"
+        ],
+        "messages": [
+          "rgb(20, 40, 63)"
+        ],
+        "noteText": [
+          "rgb(56, 46, 19)"
+        ],
+        "arrows": [
+          "rgb(51, 65, 85)"
+        ]
+      },
+      "actorCount": 7,
+      "callpoints": 17,
+      "scroll": {
+        "x": 276,
+        "y": 1385,
+        "endX": 276,
+        "endY": 1385
+      }
+    }
+  ],
+  "linkCoverage": "packaged assets, embedded source excerpts and SVG callpoint links",
+  "lifecycle": {
+    "defaultTab": true,
+    "distinctColors": 3,
+    "topStages": [
+      "00-lifecycle",
+      "01-init",
+      "06-model-step",
+      "11-model-backward"
+    ],
+    "verifiedDetailReturns": 8
+  },
+  "experiment": {
+    "sections": [
+      "conditions",
+      "step",
+      "scenes",
+      "forward",
+      "forward-entry",
+      "planner",
+      "kernel",
+      "tape",
+      "backward",
+      "backward-replay",
+      "gradients",
+      "owner",
+      "update",
+      "evidence"
+    ],
+    "stickySidebar": true,
+    "narrowWidth": 390,
+    "narrowMenu": true,
+    "sourceJump": "B07",
+    "hostScopes": 27,
+    "dispatchMatrixCells": 32,
+    "learningScenes": {
+      "scenes": [
+        "token",
+        "tape",
+        "pipeline"
+      ],
+      "routes": [
+        {
+          "slot": 0,
+          "expert": 1,
+          "physical": 6,
+          "rank": 1,
+          "localSlot": 2,
+          "owner": 0,
+          "replica": true,
+          "rows": 12317,
+          "probability": 0.5,
+          "shared": true
+        },
+        {
+          "slot": 1,
+          "expert": 4,
+          "physical": 8,
+          "rank": 2,
+          "localSlot": 0,
+          "owner": 2,
+          "replica": false,
+          "rows": 5497,
+          "probability": 0.5,
+          "shared": false
+        }
+      ],
+      "buffers": [
+        "hp",
+        "do",
+        "return"
+      ],
+      "checkpoints": 10
+    },
+    "assignments": 65536,
+    "paths": [
+      {
+        "rank": 1,
+        "slot": 2,
+        "owner": 0
+      },
+      {
+        "rank": 2,
+        "slot": 0,
+        "owner": 2
+      }
+    ],
+    "verifiedRankFingerprints": 8
+  },
+  "systemGuide": [
+    {
+      "id": "system-architecture",
+      "syntax": "flowchart"
+    },
+    {
+      "id": "run-lifecycle",
+      "syntax": "stateDiagram-v2"
+    },
+    {
+      "id": "training-workflow",
+      "syntax": "swimlane-beta"
+    },
+    {
+      "id": "parameter-lifecycle",
+      "syntax": "stateDiagram-v2"
+    }
+  ],
+  "nativeBridge": {
+    "acquireCalls": 1,
+    "messages": [
+      "to",
+      "from",
+      "V02"
+    ],
+    "inlinedMaps": true,
+    "mobileWidth": 390
+  },
+  "editorLinks": {
+    "referencedFiles": 63,
+    "sourceEndpoints": 308,
+    "protocol": "vscode:"
+  }
+}

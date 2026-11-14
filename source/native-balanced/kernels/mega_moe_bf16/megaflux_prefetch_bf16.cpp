@@ -1,0 +1,5 @@
+#define DEEPEP_BF16_W2_PREFETCH 1
+#define megaflux_full_bf16 megaflux_prefetch_bf16
+#define megaflux_full_bf16_kernel_do megaflux_prefetch_bf16_kernel_do
+#define megaflux_full_bf16_timer_enabled megaflux_prefetch_bf16_timer_enabled
+#include "megaflux_full_bf16.cpp"

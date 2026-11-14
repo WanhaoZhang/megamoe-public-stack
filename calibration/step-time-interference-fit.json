@@ -1,0 +1,540 @@
+{
+  "protocol": {
+    "schema": 1,
+    "reason": "independent EPLB dense-replica backward envelope underprediction",
+    "parameters": [
+      "data_fluid_scale",
+      "weight_copy_scale",
+      "owner_service_contention_scale"
+    ],
+    "grid": [
+      0.5,
+      1,
+      2,
+      4,
+      8
+    ],
+    "additive_residual": "nonnegative median per phase; suffix only",
+    "training_steps": [
+      1,
+      2
+    ],
+    "validation_steps": [
+      3
+    ],
+    "final_refit_steps": [
+      1,
+      2,
+      3
+    ],
+    "objective": "mean of per-job per-phase mean relative absolute errors; equal job weight",
+    "source": "eight accepted original TimerV2 diagnostic jobs",
+    "primary_heldout_or_step_time_training_data_used": false
+  },
+  "cases": 144,
+  "train_scales": [
+    0.5,
+    4,
+    8
+  ],
+  "train_error": 0.23903402284102085,
+  "held_step3": [
+    {
+      "tag": "calibration-timer-vio7-moonep-revision-74f16f19d82e",
+      "phase": "forward",
+      "observed_ms": 34.2034689018105,
+      "predicted_ms": 45.645264,
+      "relative_error": 0.33452148175484747
+    },
+    {
+      "tag": "calibration-timer-vio7-moonep-revision-74f16f19d82e",
+      "phase": "forward",
+      "observed_ms": 34.04410714228591,
+      "predicted_ms": 39.067008,
+      "relative_error": 0.14754097784738748
+    },
+    {
+      "tag": "calibration-timer-vio7-moonep-revision-74f16f19d82e",
+      "phase": "forward",
+      "observed_ms": 33.94237226467276,
+      "predicted_ms": 39.067008,
+      "relative_error": 0.1509804823118083
+    },
+    {
+      "tag": "calibration-timer-vio7-moonep-revision-74f16f19d82e",
+      "phase": "backward",
+      "observed_ms": 124.36203293767886,
+      "predicted_ms": 150.58281567419272,
+      "relative_error": 0.2108423456671361
+    },
+    {
+      "tag": "calibration-timer-vio7-moonep-revision-74f16f19d82e",
+      "phase": "forward",
+      "observed_ms": 34.167343316035144,
+      "predicted_ms": 45.645264,
+      "relative_error": 0.33593248903780376
+    },
+    {
+      "tag": "calibration-timer-vio7-moonep-revision-74f16f19d82e",
+      "phase": "backward",
+      "observed_ms": 130.12474802427377,
+      "predicted_ms": 159.18230367419272,
+      "relative_error": 0.22330537496601716
+    },
+    {
+      "tag": "calibration-timer-vio0-moonep",
+      "phase": "forward",
+      "observed_ms": 31.7318458681896,
+      "predicted_ms": 33.806192,
+      "relative_error": 0.06537111457136775
+    },
+    {
+      "tag": "calibration-timer-vio0-moonep",
+      "phase": "forward",
+      "observed_ms": 31.58668279869685,
+      "predicted_ms": 33.806192,
+      "relative_error": 0.07026724570757151
+    },
+    {
+      "tag": "calibration-timer-vio0-moonep",
+      "phase": "forward",
+      "observed_ms": 31.80786656701008,
+      "predicted_ms": 33.806192,
+      "relative_error": 0.062824881033125
+    },
+    {
+      "tag": "calibration-timer-vio0-moonep",
+      "phase": "backward",
+      "observed_ms": 76.56939924116848,
+      "predicted_ms": 133.74895967419272,
+      "relative_error": 0.7467677819036739
+    },
+    {
+      "tag": "calibration-timer-vio0-moonep",
+      "phase": "forward",
+      "observed_ms": 31.68541815619254,
+      "predicted_ms": 33.806192,
+      "relative_error": 0.06693217155453518
+    },
+    {
+      "tag": "calibration-timer-vio0-moonep",
+      "phase": "backward",
+      "observed_ms": 76.52643801276979,
+      "predicted_ms": 133.74895967419272,
+      "relative_error": 0.7477484010411454
+    },
+    {
+      "tag": "calibration-timer-vio0.3-native",
+      "phase": "forward",
+      "observed_ms": 32.91987475202511,
+      "predicted_ms": 34.875728,
+      "relative_error": 0.059412536126206755
+    },
+    {
+      "tag": "calibration-timer-vio0.3-native",
+      "phase": "forward",
+      "observed_ms": 32.01240579272348,
+      "predicted_ms": 34.989728,
+      "relative_error": 0.09300526260207775
+    },
+    {
+      "tag": "calibration-timer-vio0.3-native",
+      "phase": "forward",
+      "observed_ms": 32.107169490046275,
+      "predicted_ms": 34.989728,
+      "relative_error": 0.08977927845204055
+    },
+    {
+      "tag": "calibration-timer-vio0.3-native",
+      "phase": "backward",
+      "observed_ms": 78.08144072509727,
+      "predicted_ms": 137.09124767419272,
+      "relative_error": 0.7557469022229282
+    },
+    {
+      "tag": "calibration-timer-vio0.3-native",
+      "phase": "forward",
+      "observed_ms": 33.38340730897118,
+      "predicted_ms": 34.875728,
+      "relative_error": 0.044702467822324086
+    },
+    {
+      "tag": "calibration-timer-vio0.3-native",
+      "phase": "backward",
+      "observed_ms": 97.02377590701732,
+      "predicted_ms": 136.15932767419272,
+      "relative_error": 0.40336042790873167
+    },
+    {
+      "tag": "calibration-timer-vio7-native",
+      "phase": "forward",
+      "observed_ms": 34.51814331092184,
+      "predicted_ms": 36.542896,
+      "relative_error": 0.05865763609705816
+    },
+    {
+      "tag": "calibration-timer-vio7-native",
+      "phase": "forward",
+      "observed_ms": 34.28011168472086,
+      "predicted_ms": 36.55032,
+      "relative_error": 0.06622523100737172
+    },
+    {
+      "tag": "calibration-timer-vio7-native",
+      "phase": "forward",
+      "observed_ms": 34.43925293313717,
+      "predicted_ms": 36.55032,
+      "relative_error": 0.0612982828332951
+    },
+    {
+      "tag": "calibration-timer-vio7-native",
+      "phase": "backward",
+      "observed_ms": 129.31844667046525,
+      "predicted_ms": 140.11033567419273,
+      "relative_error": 0.08345204633665161
+    },
+    {
+      "tag": "calibration-timer-vio7-native",
+      "phase": "forward",
+      "observed_ms": 34.22791792857753,
+      "predicted_ms": 36.542896,
+      "relative_error": 0.06763420656357387
+    },
+    {
+      "tag": "calibration-timer-vio7-native",
+      "phase": "backward",
+      "observed_ms": 124.40993167646519,
+      "predicted_ms": 144.8761916741927,
+      "relative_error": 0.16450664124590264
+    },
+    {
+      "tag": "calibration-timer-vio18-native",
+      "phase": "forward",
+      "observed_ms": 35.84552206544602,
+      "predicted_ms": 49.1356,
+      "relative_error": 0.3707597816622457
+    },
+    {
+      "tag": "calibration-timer-vio18-native",
+      "phase": "forward",
+      "observed_ms": 36.4443037956818,
+      "predicted_ms": 46.715024,
+      "relative_error": 0.2818196298082434
+    },
+    {
+      "tag": "calibration-timer-vio18-native",
+      "phase": "forward",
+      "observed_ms": 36.54594828989208,
+      "predicted_ms": 46.715024,
+      "relative_error": 0.2782545312395271
+    },
+    {
+      "tag": "calibration-timer-vio18-native",
+      "phase": "backward",
+      "observed_ms": 156.48970250205394,
+      "predicted_ms": 149.16235167419273,
+      "relative_error": 0.04682321399240335
+    },
+    {
+      "tag": "calibration-timer-vio18-native",
+      "phase": "forward",
+      "observed_ms": 35.774467924156085,
+      "predicted_ms": 49.1356,
+      "relative_error": 0.37348234232778177
+    },
+    {
+      "tag": "calibration-timer-vio18-native",
+      "phase": "backward",
+      "observed_ms": 136.68390508652635,
+      "predicted_ms": 149.78335967419272,
+      "relative_error": 0.0958375792627076
+    },
+    {
+      "tag": "calibration-timer-vio7-ultra_ep",
+      "phase": "forward",
+      "observed_ms": 34.288561913154716,
+      "predicted_ms": 36.665424,
+      "relative_error": 0.06931938682250213
+    },
+    {
+      "tag": "calibration-timer-vio7-ultra_ep",
+      "phase": "forward",
+      "observed_ms": 34.26496216697441,
+      "predicted_ms": 36.870128,
+      "relative_error": 0.07603002216463918
+    },
+    {
+      "tag": "calibration-timer-vio7-ultra_ep",
+      "phase": "forward",
+      "observed_ms": 33.67102257745121,
+      "predicted_ms": 36.870128,
+      "relative_error": 0.0950106405349021
+    },
+    {
+      "tag": "calibration-timer-vio7-ultra_ep",
+      "phase": "backward",
+      "observed_ms": 140.438436877515,
+      "predicted_ms": 144.45948767419273,
+      "relative_error": 0.02863212441039021
+    },
+    {
+      "tag": "calibration-timer-vio7-ultra_ep",
+      "phase": "forward",
+      "observed_ms": 33.59574643302904,
+      "predicted_ms": 36.665424,
+      "relative_error": 0.09137101844396177
+    },
+    {
+      "tag": "calibration-timer-vio7-ultra_ep",
+      "phase": "backward",
+      "observed_ms": 124.66473608786751,
+      "predicted_ms": 144.66711967419272,
+      "relative_error": 0.16044941187078693
+    },
+    {
+      "tag": "calibration-timer-vio7-echo",
+      "phase": "forward",
+      "observed_ms": 33.95721160435932,
+      "predicted_ms": 36.656688,
+      "relative_error": 0.07949640939582123
+    },
+    {
+      "tag": "calibration-timer-vio7-echo",
+      "phase": "forward",
+      "observed_ms": 33.834615520305796,
+      "predicted_ms": 36.921616,
+      "relative_error": 0.09123793583058584
+    },
+    {
+      "tag": "calibration-timer-vio7-echo",
+      "phase": "forward",
+      "observed_ms": 33.56864159672024,
+      "predicted_ms": 36.921616,
+      "relative_error": 0.09988412529648967
+    },
+    {
+      "tag": "calibration-timer-vio7-echo",
+      "phase": "backward",
+      "observed_ms": 127.02012444966239,
+      "predicted_ms": 148.56055967419272,
+      "relative_error": 0.16958285403874504
+    },
+    {
+      "tag": "calibration-timer-vio7-echo",
+      "phase": "forward",
+      "observed_ms": 33.41519245012673,
+      "predicted_ms": 36.656688,
+      "relative_error": 0.09700664015960132
+    },
+    {
+      "tag": "calibration-timer-vio7-echo",
+      "phase": "backward",
+      "observed_ms": 124.59418197890925,
+      "predicted_ms": 149.09415967419272,
+      "relative_error": 0.1966382162164741
+    },
+    {
+      "tag": "calibration-timer-vio7-eplb_fixed",
+      "phase": "forward",
+      "observed_ms": 58.77399601746337,
+      "predicted_ms": 74.165712,
+      "relative_error": 0.2618796921339725
+    },
+    {
+      "tag": "calibration-timer-vio7-eplb_fixed",
+      "phase": "forward",
+      "observed_ms": 56.90490036836249,
+      "predicted_ms": 74.141856,
+      "relative_error": 0.3029081066842667
+    },
+    {
+      "tag": "calibration-timer-vio7-eplb_fixed",
+      "phase": "forward",
+      "observed_ms": 56.7914449287614,
+      "predicted_ms": 74.141856,
+      "relative_error": 0.3055109989365965
+    },
+    {
+      "tag": "calibration-timer-vio7-eplb_fixed",
+      "phase": "backward",
+      "observed_ms": 362.4307921607265,
+      "predicted_ms": 357.32462367419276,
+      "relative_error": 0.014088671815360925
+    },
+    {
+      "tag": "calibration-timer-vio7-eplb_fixed",
+      "phase": "forward",
+      "observed_ms": 58.620853029724834,
+      "predicted_ms": 74.165712,
+      "relative_error": 0.2651762669231859
+    },
+    {
+      "tag": "calibration-timer-vio7-eplb_fixed",
+      "phase": "backward",
+      "observed_ms": 282.62944960762167,
+      "predicted_ms": 356.09827167419274,
+      "relative_error": 0.2599475113742352
+    }
+  ],
+  "held_step3_median_relative": 0.0984453827280455,
+  "final_scales": [
+    0.5,
+    4,
+    8
+  ],
+  "suffix_ms": {
+    "forward": 0.0,
+    "backward": 34.32772589667262
+  },
+  "final_error": 0.20552552276274405,
+  "snapshot_sha256": {
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0006-forward.npz": "06e5810eba6b5fd1f1dee51671443883d3770a29c73dd82bd1816d5d8e6bc2e0",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0007-forward.npz": "e0eeb7c104b27cc9cd4f7d178508ed83b756b64d57848b1cf632ddf42f13e315",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0008-forward.npz": "8301244bf591fd854b675afff94006fa90971c99efe94046410fe75f6560040f",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0009-backward.npz": "3e9ecf0073bf052598c389e5e36ad37275f6c202b7f9f129baabfa04b6f031f1",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0010-forward.npz": "d589ad11cc2f008b82de34249646b74010ed7d6ac7410a30a49ada63b011c2ff",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0011-backward.npz": "32bee296c56961896373a0ff14b5497635c0f59399727729457544fe9378c346",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0012-forward.npz": "61b45ba24a21f0505379a0085eede3e6d60c6992994c392977215a2cbc5649de",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0013-forward.npz": "d4c07433859d2519b4a2e38ff8c08ea75d2ae64c91b703de78a919a8d11dda4e",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0014-forward.npz": "ba53e92d4f2b79ef1338d0dc566271fb9e76fe974df69b101d0ba7b944d7456b",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0015-backward.npz": "a94a188446c1a9ba00e2b45ec0cb15724d3f2b67229aabb806bd772c4257417a",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0016-forward.npz": "4a6cec487c8aa452ff48ef4803327f5d504eadfab4857856657a777dd8478563",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0017-backward.npz": "13c0a8090a8fac7c8e0c94d48d5e2869c531109cb1a75649b762790e170b9769",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0018-forward.npz": "056762abf66eb9f702213ff2ee8e2e89e2997d9c924b04f868adad0e7b9ee3bf",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0019-forward.npz": "81e401b08cbe1c82e7c497efe8744c6d38086a36853741e8ff39273460f4bdad",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0020-forward.npz": "3a6dd01c340f093c3b5266fc662cc4efe96c88294aa51b2a535c274433dfbe15",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0021-backward.npz": "5aea3c2a401c3fe1857ce1217f22b8e41bfad7857ad06b7ed3d02a1edc10ff1d",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0022-forward.npz": "c70e138f116971218178f0c262bfc52adf3a7c595bb0385d37634ebafab2fff3",
+    "evidence/calibration-timer-vio7-moonep-revision-74f16f19d82e/timer/rank0-0023-backward.npz": "70f5d47102df48de3befaf8d56b1fae754079c1677ceab4fee30fe09d373ebe3",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0006-forward.npz": "1b6678644ab0c4f67fe9a72b62124f7718574b5ee1f6a840aef129e676592731",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0007-forward.npz": "a9a3db2e05b62fb291ad8659ae51b64da708de297d939aa68628c185b677a2e5",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0008-forward.npz": "b63c1ffe8a7baf80611b1feec27637bfbb6c88862fd1da2ac12e9e2bf8452b26",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0009-backward.npz": "2b85498b3b61abef3cf50e5f435782977ccdec0606a17a3e1e84ffb9cc83b3ca",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0010-forward.npz": "2acb6a3282d5f67adc4e6474c75791657439c6e342392e17591b673a24ec61c8",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0011-backward.npz": "4976e869531d926b01844316ed4c596257c7fa21c29e13611c7020d76d4ac3ce",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0012-forward.npz": "59347fe7325186901da94819ea616082ad17701e0d4c1158baa15af708f2af69",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0013-forward.npz": "da714287c416dfc530efd0a3ee8eca59d9224a6daa41d58c30cad2c3071b1379",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0014-forward.npz": "fe29c946c6367246180b52138179d371168e14324d4ee7127296c5c2dfe290bc",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0015-backward.npz": "846cd0a03e0dda7c19a1e30d8db5d51a9f5a843e8c5a9e5902914b95c80b6606",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0016-forward.npz": "02631b6dc15d9984143cb12374227508e65b0674cd8fc9177e2760b1aa305b51",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0017-backward.npz": "58a11737c5510652c2fcd523789812ec8be66e5843f4babbe661ddedd4000ea1",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0018-forward.npz": "637ed14d53a20a1c2419a43e31f9110ce9120235b9131e15308be7f5705132f7",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0019-forward.npz": "d0710d38277729710e89c7773386352c8bbb86e0225d4d1f98815210ccff9cd1",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0020-forward.npz": "547aff464581663a0200437be152433a708f3adbba8ea5d98411172e176ffe1d",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0021-backward.npz": "31274dd0b93be5c6579cbf48e8bc17017df455a5f84f4f127d41063d7c68ff23",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0022-forward.npz": "0e7e191b24c0dbeb5184be94527d3026b9534f2b404e7cf6ca98d7cc71882f07",
+    "evidence/calibration-timer-vio0-moonep/timer/rank0-0023-backward.npz": "a0c6e7dbaa45a05564664da7b6a293503072945c68827d2348dde72e2b76d792",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0006-forward.npz": "d57566953c76323d254a3eaaf4afaa30e35fbb49086c77083aa1eea1a09dbbaa",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0007-forward.npz": "a3f7600c9ae86f82d433e9d9c6952e4e3fb80ca1bd5ed3fc0f86f63d054bf711",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0008-forward.npz": "d90f12df90fe8c024c0d5ca85496840845964168d622e122dc3c665c4ee77369",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0009-backward.npz": "c6c2f483e8f0a6a00e8393b00d8d3dbfbfd3c9e41d7e4be55928603717fb0fc6",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0010-forward.npz": "10e444b59947076306e6295eec95828efd6c988b716038be5c7c267615db9993",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0011-backward.npz": "74ff7d948d5ecd4d782e0e10a4c56a9f8848c72eb5f090ebf5979eaa935ba392",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0012-forward.npz": "2a797dfa50692dac36221e9e05e8a8f4ced1ef880fc0d06b77a50e6dd1521500",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0013-forward.npz": "ac2fa048c2c94418a7d7063efcacfde0742793c6569d6041b539c2604427a118",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0014-forward.npz": "41850d17cbffd6747775f147fbf2d8e42c42c503a3f63e796fd00998b864ba85",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0015-backward.npz": "c780cc21af599ff1221fd9bb7f8098faa79b334fee4f4470085fe71f3bb0ec50",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0016-forward.npz": "5224b4d4114dcbbb6ea401c06b05d39698aef4b90d1c394edbe0dfa16de2a593",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0017-backward.npz": "82d752016de456ff5820672a28627ff681a8c785acf2657c2b98673c3624cbfa",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0018-forward.npz": "d8079298a75562231af70544ffa7e23d5aebeaca892240b12949e11036b16f63",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0019-forward.npz": "992a5d53aa77107e1461ff0c2106d44f71a39a74bc0894e9956b5e0c75f1f225",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0020-forward.npz": "dd893c3f77b607865ec8ff67bb891b202829add7014c4e8b9733254e07a85e9f",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0021-backward.npz": "e4ad44ea7b9c3888d0fc282ba94b87f1d57e437820720971040ac160d5b919ea",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0022-forward.npz": "2c89321546236ebf33665ddb0ce2094e8e370544e112d447130a0b99bc3f27fb",
+    "evidence/calibration-timer-vio0.3-native/timer/rank0-0023-backward.npz": "c54aa27b3393c4138dce129fec537a0d2e12cde7b6a9bb415e05cd1c3a5eb6e6",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0006-forward.npz": "ed8f581f6d6c1d4fd963e031d1cbb04f41be31098de81f4f1208518b33fc0733",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0007-forward.npz": "a45ae6a5395f853114f530e4e958237393d07e2216b877742d4afc72a94c86da",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0008-forward.npz": "6fe29deb4f99d2ffefd278a6ef5aa007aa2b8268f4dcae96b68f984e66ba5af8",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0009-backward.npz": "97a7668437cc4a9863a686a3a9ea448b315b98690fac29fb280b820099563d22",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0010-forward.npz": "ddaa6f692b40e6e1fa065f8c6d879dcd30a33d3b88b42bd89c5b9268ca64e6ef",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0011-backward.npz": "9d49203026f509399e37b106a9968644e32752dcf0dfad5c9d2e2740bcbfd5f2",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0012-forward.npz": "f791d138bd38e2e03cdfc9698036368e6f0600dfd6118958cb6c88ebb217f5db",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0013-forward.npz": "39e85066e793292f1276fbbe13b095da3d7994d2a5d700e12a2bd0c487fd842c",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0014-forward.npz": "1bf683de14c3ad3a11f476c7ddca3317abf54e926fd176f81eb3e265929cf3c4",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0015-backward.npz": "5b75d8e6a3fd27530441f7e34b89104c8aabd4c5089f9399e2dce946c31944fe",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0016-forward.npz": "9394e3922ddb4fad74df7849f25513f0eba9542110e9871c0f2865a47758b1c4",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0017-backward.npz": "7a3d2543b48e9076f622c5d1dc68232a9a4c9ab4762587794c397f4e8db4cd8e",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0018-forward.npz": "3db27912a462ff96925aa435b41ad930edeccc67653b5ef9f7885cb35946cf1c",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0019-forward.npz": "2ee498493b5d6b996215cda79593a7fc5930a6337ecb2d4abdae3cc8a71cc920",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0020-forward.npz": "50267701f823720463825f641ba7a0bfe54411a54f307da0df7e8757aafd6061",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0021-backward.npz": "432b2c83af6db24a69f99620d5cf064dc9ab12573a3c57de2e96e24f3abd3a1b",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0022-forward.npz": "b0f777f66230bc5f01d92d379e0ddd4fb37506a958c5b29b7a98b9e49c9318e6",
+    "evidence/calibration-timer-vio7-native/timer/rank0-0023-backward.npz": "aaffe2e104bad14aee5d2ac092e6a4e3a41dff18a50f96afbf6cacdd4009f2e9",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0006-forward.npz": "f957d7ff855cc798eca3836b7b08f3b96f959e1e72f613b52325a8b544f5dead",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0007-forward.npz": "f0765d96561b23ee6f15477769bc634182f221abb949b203fd0626987cf48362",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0008-forward.npz": "b86aba369f8db59b7932f51ffa2cdafa20d67ee44e4ccd28f7dca3d791ec4957",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0009-backward.npz": "b0db1b2288e9def5868ce4d5f6cb89e44040d51c5d7ceeec2a83eab81bf03d10",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0010-forward.npz": "f5328e63bf6dbb41aaab925524c95fc7743079c1eaff54c19ec02b0370a98d1a",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0011-backward.npz": "832b754554b4aef1c47b9376babce3c5fd2fbc8593114b7263e86e49044c2344",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0012-forward.npz": "9e41b32efe9e0d7820cbb113fc62d3d91fee11c332a9d886f7adab51fb1d576e",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0013-forward.npz": "ab187cac990eb1bbfc642351547f130742f60d3427fbe54168d04d62bce937e4",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0014-forward.npz": "7165c10b6d4525e31e19f0e9ac67eb9f62272d895ddf8d3b9dcb27a2021aa318",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0015-backward.npz": "903bd05da11f1b71161e76e37f131f5741f85c363111f9bc1c02ec0fa25e5688",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0016-forward.npz": "a3b2683a5fc69aca91164134216c65a39497444434ed67c323f417020e2aa838",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0017-backward.npz": "e221c08bda697750e1e8c0ebc2c9ffbbac20f4b6e459557ec41f7fbe25451642",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0018-forward.npz": "c0882c5b6aed0b565771dc40de12927072b323a7d5bc172cf81c13323061c22f",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0019-forward.npz": "1da71eea0c9804f4bb301938f748cdc1a588714d20b4a142fb11981fbc0a79b5",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0020-forward.npz": "fd8cec7a347b97099463640c671bb47c07ccbe5873fe31620aeb0888c0e978d4",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0021-backward.npz": "142e326cc8a00ec11a26af68e224d382302e482e13d4c7873b016e2627269a3c",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0022-forward.npz": "d95415f98a86fef97878d135b91acc1dc76685f2e9f6d585338983094db24f5c",
+    "evidence/calibration-timer-vio18-native/timer/rank0-0023-backward.npz": "8ed9c23ae625102ef9fb3a7fef468c50a87796ecd83ac1203bf98d49790430d5",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0006-forward.npz": "3dd7df3e91609dd33be585bf8b9256f19c4def7e605248d874b7b2473346ac98",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0007-forward.npz": "51e9e33b3d255d07b1db72a59974a00b349484b7819621c24d75cf4f92d5be52",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0008-forward.npz": "c45a342a039f03f1392a515d3ce47bf0aa52cc6f70ee6ebd32276d0dffbcb39a",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0009-backward.npz": "45782609ea04428dd100748400a94335903016dcaf102bbb74ec3e41053f1988",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0010-forward.npz": "6e8567ae303cf881461b17df2b74e83121501091baacb6962675f80ac7fb9e24",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0011-backward.npz": "ae06af245b3cfd6f2c6f440b1cf22846a6aa052f966dcb40f54c1019833a7a08",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0012-forward.npz": "da09acd0aa19feb898cb8d20256008488c494f0a9165ddef0677ff0d0ffec96e",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0013-forward.npz": "faae85e35c2098602333f4fbecf81adabd10ca88a359ee9cedd94ba2194418ff",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0014-forward.npz": "3817798df8d711cd89eb3a3afb00f5998d3fc9859742aef5e10373af7e72e32a",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0015-backward.npz": "e687771c2ccb464c79abd13a12c75edb6b25d9ffbfc2f53dc7d99528cbd45061",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0016-forward.npz": "4596598ace480d8beed525b01f5268aa255b00238fc349d927dba707a6db99ad",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0017-backward.npz": "747c417abf13309ad37c1668108e3b8bfcf994d089c5071c1eec5a7cd5f445d7",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0018-forward.npz": "9fe117944a476dceaf073fd6f8f49fb9a1b081f6c0c9b748b2212211ffdd7e8f",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0019-forward.npz": "4ad2b60563e300156756f7b3f605aabbefb142039993632bfe3edb33505dc44e",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0020-forward.npz": "f5bf29db8970a2da3bb26f09314d1e7f04718422091cb0a47920a8993991021e",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0021-backward.npz": "557ea516fb78e58e3203b5b580bde8cdeb57bc34588b588bc62715a026ef163e",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0022-forward.npz": "44892272a813d77196499b91767a6676529950a8f0fd544b0a74352a67d42ec1",
+    "evidence/calibration-timer-vio7-ultra_ep/timer/rank0-0023-backward.npz": "61791f9082bc4d2f9349d549bc32b4d79497550e711fa334f7e2827d28826f1e",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0006-forward.npz": "42ca9d3020578a2d3a2763dbacb3f6a8f49f4b40b6757f0ea639f207ae82712c",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0007-forward.npz": "6cb1d2593329c94153d2c154f75176e1ab13037775940388cb07877f14df3239",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0008-forward.npz": "9be185ea400d8198124ea8c19c87ae7ef3d6ca7ce881ec3516055bd8771f4e30",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0009-backward.npz": "c3eb0eaa318729a974a3618585827f78e1d5bfb01642ecc35d320f8023e47689",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0010-forward.npz": "fbd881e73d3c146a7942b6edfab47ef16f1559f0739230b648c4cfb2e5aa841a",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0011-backward.npz": "3975cd6b93a25dcbba68e566120ec30fe973651a2fd32c660dfcdac2d49e5a24",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0012-forward.npz": "e211731ca6ef699e2d4d1677cc08d4f7528246f61b3f4c3764082df8b5b77ead",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0013-forward.npz": "b582499baa619fd680cd32ca30aa3e5365d126cd5afcfeaf1af1067ae876ddac",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0014-forward.npz": "65cef31d3b7459647d6fa25eaecff2c8bc6980a83e76c5bf77be1332475b3f7b",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0015-backward.npz": "968b8b346f1be303f070600cc05fbcdc2f66a74c2a0bc3a3c790e7b510823933",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0016-forward.npz": "d47072c9cdd20876a0e6c89e118cb740e5054405f3402413ed9b7f7cee682116",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0017-backward.npz": "8c357622bd9eed74aab29de002ae54f05d78c6068a8cf0e6e31023f971f1c963",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0018-forward.npz": "a1eba4a238aecefbb328da0fa6e54dfaaaf6d85dc821678d15d7f790042797ba",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0019-forward.npz": "f2ca7a82a74e851eccaedd945c19bd8ae2758ed7907c2e28ba63954745aeb883",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0020-forward.npz": "f2e0dd9198953ca2bec0845df42a5aac544063b548f30b3cbab508af4a5374f4",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0021-backward.npz": "6014c8090930d9bb245c4161dbd28b1e725cfe32c6968163f2407a3563b384eb",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0022-forward.npz": "d4f15e2ead729b3125bacb858e5261d7ba53f16574e1b3d72aee28319a0fd17a",
+    "evidence/calibration-timer-vio7-echo/timer/rank0-0023-backward.npz": "8b732d8cfe99dfdf440f719f6c705ecafb89b8cd556576d8c14c89b4bcd738cf",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0006-forward.npz": "65c84b7b9777f477c48c49f417a83ced6944fe83cc73972124601354e8bdf4a6",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0007-forward.npz": "1549afa276709e382f929f130dbcb8fae4c47900ece21ac3c79a7882b44e354a",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0008-forward.npz": "f4f5a68d61da83dac75a84e7ec1359aae6027d4d431ae3770e96077777a01b2a",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0009-backward.npz": "dc907a51b4ff8f7209c74db75bef24ad25b40becede08aeed4a7c55793784181",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0010-forward.npz": "b71bd864459f1339d40983005a5ce1db8fbf01a387086104a58468e7b593d0fb",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0011-backward.npz": "dfdcc11ec1570124752d66946aca753c3fe3df5b06665763dbd7f43724875d6d",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0012-forward.npz": "8e8ec548d388b696dfecafeacd50d2b210cc054d3f4718d643782ded2b45a3c6",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0013-forward.npz": "e6421bf2d71b9e8c19255e945d9fdc2a5e7d4c8f96bd4bfd08c62e3c68764be7",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0014-forward.npz": "4bbb86af9faf1c5ecee61447e562b4367ed60dcf5cd63d154ef233807fabab9f",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0015-backward.npz": "5ecf52f52a6810803c6c6df100acac2802d9ba8252f2280bd1e11734bd235608",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0016-forward.npz": "4b00d2cb1375f09f1ae2784fa0590f42eea27cd9d4e1fb3a7c59a225956b6c55",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0017-backward.npz": "6712d682436e02be7ba08ebfb3d2f69e5cbbf245922495d4a0660c1af9a49a55",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0018-forward.npz": "2947adb7c79f9b26996e08d00426ced7b80b676531c3cc4bcbbf47d19b45f8a7",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0019-forward.npz": "3c430e203f1ffbff0a979db4b0d2cac2e0ff13c4cf983f58d428e300d860ca01",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0020-forward.npz": "39aef9407470b67700c7c714f9671cdf61fa88399b167d09a538d6ccfa682951",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0021-backward.npz": "0a34df9228048016deab1cea7333842653c5ccc8907604b371fae8a1a085f5f9",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0022-forward.npz": "128119e35f6e687e884405d720d1ab9e276410070fd91eb6012420729ceeb391",
+    "evidence/calibration-timer-vio7-eplb_fixed/timer/rank0-0023-backward.npz": "f19f299984c993f9022b5583e2069a9d85d112bac9082735bacd2cea88ca03be"
+  },
+  "limitations": [
+    "positive scales approximate unmeasured concurrent interference; not new measured link bandwidth",
+    "global durations use max over ranks; independent rank zero points are never merged"
+  ]
+}

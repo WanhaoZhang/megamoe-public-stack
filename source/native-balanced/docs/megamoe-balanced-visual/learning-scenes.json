@@ -1,0 +1,49 @@
+{
+  "tileWindow": 3,
+  "scenes": [
+    {"id":"token","title":"同一 token 的前后向","callpoint":"K02"},
+    {"id":"tape","title":"保存态与同址生命周期","callpoint":"F15"},
+    {"id":"pipeline","title":"多 tile 依赖与复用","callpoint":"G03"}
+  ],
+  "tape": [
+    {"id":"placement","title":"placement + header","saved":"冻结 logical_ids / physical_ids / copies / logical_counts 与 header","used":"反向复用已校验落点，clone header 后写入新 epoch；不重新运行 MoonEP 规划。","callpoint":"B07"},
+    {"id":"state","title":"BF16 gate / up","saved":"保存本层限幅前的 gate / up","used":"P1 重建 h，配合 dHp 与 p 生成 Hp、dp partial、dZ。","callpoint":"G06"},
+    {"id":"dispatch","title":"前向 dispatch / Xpacked","saved":"保留前向物理实例的派发行序与 X","used":"dW1 = dZᵀ × Xpacked；它不是原始源卡 X 的相同地址。","callpoint":"G11"},
+    {"id":"counts","title":"counts / prob","saved":"保存各实例行数和本 token 的原概率","used":"counts 对齐专家行段；p 在 P1 参与 dH 与 Hp，dp 按原 TopK 槽返回。","callpoint":"B02"}
+  ],
+  "buffers": [
+    {"id":"hp","title":"GM · dHp → Hp","shape":"m × F","dimension":"F","callpoint":"V02","stages":[
+      {"title":"AIC 写 dHp","text":"各 tile 先写独占 GM 地址。","callpoint":"G03"},
+      {"title":"专家 dHpReady","text":"所有 AIC 的 Fixpipe 写入退休后发布；两路 AIV 才开始消费该专家。","callpoint":"V02"},
+      {"title":"AIV 先完整读入 UB","text":"每个 tile 只有一个 AIV owner，先读完原 dHp。","callpoint":"V02"},
+      {"title":"同地址写 Hp","text":"SwiGLU 反向同时产出 Hp、dZ、dp partial；原 dHp 生命周期结束。","callpoint":"G06"},
+      {"title":"dW2 消费 Hp","text":"等待 Hp / dZ 的 MTE3 写入退休后读取。","callpoint":"G07"}
+    ]},
+    {"id":"do","title":"GM · dO → dX","shape":"m × H","dimension":"H","callpoint":"V01","stages":[
+      {"title":"P0 派发原 dY 为 dO","text":"dO 保持未乘 p；按物理专家打包。","callpoint":"G01"},
+      {"title":"P1 与 dW2 读取 dO","text":"dHp = dO × W2；dW2 = dOᵀ × Hp。","callpoint":"G07"},
+      {"title":"doReleased 退休边界","text":"所有 AIC 结束 dO 读取；不能只等本核。","callpoint":"G07"},
+      {"title":"P2 覆盖成 dX","text":"ptrDX 与 ptrDO 同址；按专家行段切换生命周期。","callpoint":"V01"},
+      {"title":"专家 dXReady 后回源","text":"AIV0 等该专家所有 AIC 写完，再逐 tile 搬运到源卡。","callpoint":"G10"}
+    ]},
+    {"id":"return","title":"SHMEM · ptrD 的两次用途","shape":"路由返回区","dimension":null,"callpoint":"V03","stages":[
+      {"title":"写路由 dX","text":"执行实例把 dX 贡献写回 token 来源卡。","callpoint":"G10"},
+      {"title":"P5 源卡合并","text":"同 token 的 TopK 路由求和，形成最终 dX。","callpoint":"G15"},
+      {"title":"读者全部退休","text":"本地管线排空，再跨 rank 同步，保证没有源卡仍在读 dX。","callpoint":"V03"},
+      {"title":"P6 复用为 dp","text":"F 方向 partial 归约后，使用该传输区回送标量 dp。","callpoint":"G16"},
+      {"title":"原 TopK 槽还原","text":"dp 写入完成后同步，再按原路由槽序写回。","callpoint":"G16"}
+    ]}
+  ],
+  "checkpoints": [
+    {"title":"派发与 panel","callpoint":"G02","text":"AIV0 派发原 dY，AIV1 恢复副本权重。AIC 按实际 operand 所需 panel 的 epoch 等待。"},
+    {"title":"AIC 产生多个 dHp tile","callpoint":"G03","text":"GM 主线为每个 tile 写独立地址；不需要每写一个 tile 都等待 AIV 确认。"},
+    {"title":"专家 dHpReady","callpoint":"V02","text":"该专家所有 AIC 的写入退休后，两路 AIV 才消费 dHp。它不是 UB 逐 tile ready 协议。"},
+    {"title":"双 AIV 消费 tile","callpoint":"G06","text":"tile 按当前调度器交替归属 AIV0 / AIV1；每个 tile 先读 dHp，再同址写 Hp，同时写 dZ 与 dp partial。"},
+    {"title":"Hp / dZ 写入退休","callpoint":"G07","text":"到齐全部 AIV 的专家写入计数后，才能启动 dW2 或读取完整 dZ。"},
+    {"title":"dW2 读取退休","callpoint":"G07","text":"dW2 仍读取原 dO。所有 AIC 发布 doReleased 后，才允许 dX 覆盖同一行段。"},
+    {"title":"共享专家 early dW1","callpoint":"G08","text":"本实验启用 early dW1；满足共享专家条件时提前产出梯度 tile，owner 按当前 epoch 消费。"},
+    {"title":"AIC 写多个 dX tile","callpoint":"G10","text":"dX 覆盖已退休的 dO 行段；每个 tile 使用 GM 地址，不直接覆盖仍活跃的输入。"},
+    {"title":"dXReady 与 UB 复用","callpoint":"G10","text":"等该专家所有 AIC 写完，AIV0 才开始回源。下一 tile 覆盖 UB 前必须等上一 tile 的 MTE3 读完。"},
+    {"title":"源卡还原与 ptrD 复用","callpoint":"V03","text":"P5 合并 dX；全部读者退休后，P6 才把 ptrD 改作 dp 返回区。owner SUM 与 Expert-FSDP 仍是不同通信域。"}
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "pass_": true,
+  "method": "Select compile-time cache=0 branches, strip line comments and whitespace; compare both modified implementation headers to baseline.",
+  "checks": {
+    "mega_moe_restore_operand.h": true,
+    "mega_moe_bf16_backward_catlass_impl.h": true
+  }
+}

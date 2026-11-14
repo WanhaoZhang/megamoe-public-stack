@@ -1,0 +1,150 @@
+{
+  "event": 0,
+  "layer": 9,
+  "kappa": 3.0070735886693,
+  "counts": [
+    342,
+    3921,
+    848,
+    373,
+    22133,
+    19578,
+    6478,
+    7096,
+    7217,
+    2543,
+    762,
+    2061,
+    2178,
+    3532,
+    3819,
+    1298,
+    1343,
+    930,
+    705,
+    305,
+    8835,
+    1809,
+    634,
+    350,
+    3141,
+    108,
+    1770,
+    3715,
+    6532,
+    422,
+    2226,
+    4249,
+    380,
+    4292,
+    4017,
+    6620,
+    1572,
+    757,
+    1190,
+    10321,
+    2626,
+    665,
+    5545,
+    951,
+    1854,
+    230,
+    28054,
+    3867,
+    4675,
+    598,
+    6075,
+    27183,
+    8639,
+    531,
+    2826,
+    605,
+    183,
+    4328,
+    650,
+    565,
+    2282,
+    4858,
+    1289,
+    2663
+  ],
+  "ids_sha256": "420b16aea3cb0c43f14a7cab0773089f56e20164f5aa00962fa52d47339f21d0",
+  "prob_sha256": "17d51b6d3046e7d70ad1749fd2e796d0e008f94b14454af674ae991a4df47696",
+  "provenance": {
+    "kind": "NEW_SAMPLING_NOT_AUTHOR_TRACE",
+    "model": {
+      "model": "allenai/OLMoE-1B-7B-0924",
+      "modelscope_revision": "d799cc18394603b9bd1abc813be923515bbb5bee",
+      "hf_revision": "6d84c48581ece794365f2b8e9cfb043c68ade9c5",
+      "hf_lfs_sha256_matches": true,
+      "files": [
+        {
+          "name": "model-00001-of-00003.safetensors",
+          "bytes": 4997744872,
+          "sha256": "5e3cff7e367794685c241169072c940d200918617d5e2813f1c387dff52d845e"
+        },
+        {
+          "name": "model-00002-of-00003.safetensors",
+          "bytes": 4997235176,
+          "sha256": "15ef5c730ee3cfed7199498788cd2faf337203fc74b529625e7502cdd759f4a7"
+        },
+        {
+          "name": "model-00003-of-00003.safetensors",
+          "bytes": 3843741912,
+          "sha256": "a9abac4ac1b55c9adabac721a02fa39971f103eea9a65c310972b1246de76e04"
+        },
+        {
+          "name": "config.json",
+          "bytes": 759,
+          "sha256": "3643aa880d2f1c9b418156269ae791c73e5612d6b6b6fde0724d927cf89b6335"
+        },
+        {
+          "name": "model.safetensors.index.json",
+          "bytes": 287214,
+          "sha256": "0e2e1e0d8d357ac7af817cff28410c3dbad398f060c517a433e4076b2aae5579"
+        },
+        {
+          "name": "special_tokens_map.json",
+          "bytes": 65,
+          "sha256": "b77491e270c6fcc5b2ecf22370f7318a6a18d3cabea09ba7bab92e9bf12656c2"
+        },
+        {
+          "name": "tokenizer.json",
+          "bytes": 2115417,
+          "sha256": "a094266ac6c4982efba277bc251349a5a6d6ad37efb39a2a90f53d8be2a40a40"
+        },
+        {
+          "name": "tokenizer_config.json",
+          "bytes": 5372,
+          "sha256": "78a839c7851f14f9fb30e664c2b46166dc0628f2900679e5ec160656f702edff"
+        }
+      ],
+      "transfer": {
+        "from_node": "rack08os4",
+        "to_node": "rack07os1",
+        "seconds": 351.30235838890076,
+        "scope": "public pretrained checkpoint only, read-only HTTP endpoint restricted to destination host, SHA checked after copy"
+      }
+    },
+    "transformers": "5.17.0",
+    "torch": "2.10.0+cpu",
+    "dtype": "BF16",
+    "device": "Ascend950DT",
+    "model_training": true,
+    "search_grad_enabled": true,
+    "gradient_checkpointing": true,
+    "optimizer_updates": 0,
+    "source_E": 64,
+    "source_TopK": 8,
+    "sequence_length": 4096,
+    "source_event_tokens": 32768,
+    "contexts_per_event": 8,
+    "python_source": "first2048 docs of pinned official mix python-0000 shard",
+    "packed_tokens_sha256": "2d2c3ef82592b37dec1223ef33cd0f474f3c967515fd6114eff5b958a257d862",
+    "original_text_sha256": "ca273d567637b5ab0435552a471cd2bbf52954141252595d86b76affa441e55b",
+    "sampling_source_sha256": "73f1e39db6d4954b41992ec8d4e760ac3599875e66d703f8bae75742044a67b3",
+    "router_source_sha256": "00566cfb8da6686bfa44e804e20d3782da8ac4820100b9367b787643d551da6f",
+    "selection": "first event with any layer kappa in [2.7,3.3]; closest to3 then lowest layer; max32 events; no router overrides",
+    "kappa_definition": "64*sum(counts**2)/(32768*8)**2; valid top8 assignments, padding absent"
+  }
+}

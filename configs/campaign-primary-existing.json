@@ -1,0 +1,28 @@
+{
+  "name": "primary-existing",
+  "planners": [
+    "moonep",
+    "native",
+    "ultra_ep",
+    "echo",
+    "eplb_fixed"
+  ],
+  "targets": [
+    0.2,
+    1.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0
+  ],
+  "repeats": 3,
+  "first_repeat": 1,
+  "receive_capacity": 163840,
+  "route_bank": "/home/z00956592/megaflux/planner-executor-ep8-lab/routes",
+  "steps": 25,
+  "warmup": 5,
+  "timer": false,
+  "ordinary_only": true,
+  "online_planning": true,
+  "device_complete_wall_max8": true
+}

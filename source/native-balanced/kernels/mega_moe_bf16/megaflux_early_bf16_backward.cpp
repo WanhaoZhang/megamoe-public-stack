@@ -1,0 +1,5 @@
+#define DEEPEP_BF16_EARLY_REDUCE 1
+#define megaflux_full_bf16_backward megaflux_early_bf16_backward
+#define megaflux_full_bf16_backward_ready_k_kernel_do megaflux_early_bf16_backward_ready_k_kernel_do
+#define megaflux_full_bf16_backward_timer_enabled megaflux_early_bf16_backward_timer_enabled
+#include "megaflux_full_bf16_backward.cpp"

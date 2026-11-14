@@ -1,0 +1,26 @@
+---
+config:
+  layout: dagre
+---
+stateDiagram-v2
+  direction TB
+  accTitle: 八卡训练进程生命周期
+  accDescr: 创建 rank 进程，装配模型与 Trainer，循环执行训练 step，达到运行上限后退出。采集轮另有导出阶段。
+  state "启动八个 rank" as Bootstrap
+  state "装配模型与并行组" as Assemble
+  state "Trainer 就绪" as Ready
+  state "取 batch 并前向" as Forward
+  state "反向、同步与更新" as Backward
+  state "训练循环结束" as Finished
+  state "采集包装器导出打点" as Export
+
+  [*] --> Bootstrap: I02 torchrun / runtime_bootstrap
+  Bootstrap --> Assemble: I03 进入 train_fsdp2
+  Assemble --> Ready: I14 mesh、FSDP hooks、数据与优化器
+  Ready --> Forward: S06 取本 rank batch
+  Forward --> Backward: S10 loss → B01 autograd
+  Backward --> Ready: U08 scheduler / zero_grad，继续训练
+  Backward --> Finished: L04 达到步数上限
+  Finished --> Export: L05 采集轮
+  Export --> [*]: 导出完成
+  Finished --> [*]: 普通训练轮

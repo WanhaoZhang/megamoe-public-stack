@@ -1,0 +1,111 @@
+[
+  {
+    "attempt": "validation-a1",
+    "description": "177.8.24.1 device admission rejected; no NPU launch",
+    "gates": [
+      {
+        "case": "control",
+        "pre": false,
+        "post": false,
+        "exit": null,
+        "state": "NOT_STARTED"
+      }
+    ]
+  },
+  {
+    "attempt": "validation-b1",
+    "description": "Python shmem import missing; resolved using copied task-owned python-runtime",
+    "gates": [
+      {
+        "case": "control",
+        "pre": true,
+        "post": true,
+        "exit": 1,
+        "state": "FAILED"
+      }
+    ]
+  },
+  {
+    "attempt": "validation-b2",
+    "description": "Control accepted; Timer SHMEM listener bind failed on port34860",
+    "gates": [
+      {
+        "case": "control",
+        "pre": true,
+        "post": true,
+        "exit": 0,
+        "state": "COMPLETED"
+      },
+      {
+        "case": "timer",
+        "pre": true,
+        "post": true,
+        "exit": 1,
+        "state": "FAILED"
+      }
+    ]
+  },
+  {
+    "attempt": "validation-b3",
+    "description": "Timer reference symlink pointed outside container namespace; corrected relative link",
+    "gates": [
+      {
+        "case": "control",
+        "pre": true,
+        "post": true,
+        "exit": 0,
+        "state": "COMPLETED",
+        "evidence": "validation-b2/control"
+      },
+      {
+        "case": "timer",
+        "pre": true,
+        "post": false,
+        "exit": 1,
+        "state": "FAILED"
+      }
+    ]
+  },
+  {
+    "attempt": "validation-b4",
+    "description": "Timer SHMEM listener bind failed on port35060",
+    "gates": [
+      {
+        "case": "control",
+        "pre": true,
+        "post": true,
+        "exit": 0,
+        "state": "COMPLETED",
+        "evidence": "validation-b2/control"
+      },
+      {
+        "case": "timer",
+        "pre": true,
+        "post": true,
+        "exit": 1,
+        "state": "FAILED"
+      }
+    ]
+  },
+  {
+    "attempt": "validation-b5",
+    "description": "Timer accepted using ports22050/22060/22061; reused accepted b2 control",
+    "gates": [
+      {
+        "case": "control",
+        "pre": true,
+        "post": true,
+        "exit": 0,
+        "state": "COMPLETED",
+        "evidence": "validation-b2/control"
+      },
+      {
+        "case": "timer",
+        "pre": true,
+        "post": true,
+        "exit": 0,
+        "state": "COMPLETED"
+      }
+    ]
+  }
+]

@@ -1,0 +1,54 @@
+{
+  "moescheduler_commit": "0dca1919e0c77cc342eb25ca88a8bd63f395d3b1",
+  "ultraep_commit": "1474022d7e19b30d931d43364fe814c478b9fb3a",
+  "files": [
+    {
+      "file": "moescheduler-echo.py",
+      "url": "https://github.com/VVsssssk/Megatron-LM/blob/0dca1919e0c77cc342eb25ca88a8bd63f395d3b1/megatron/core/transformer/moe/echo_moe_scheduler.py",
+      "git_blob": "1a607b5218a80cc43bfd2ceff232367c5487efb7",
+      "characters": 40357
+    },
+    {
+      "file": "moescheduler-eplb.py",
+      "url": "https://github.com/VVsssssk/Megatron-LM/blob/0dca1919e0c77cc342eb25ca88a8bd63f395d3b1/megatron/core/transformer/moe/eplb_moe_scheduler.py",
+      "git_blob": "1ed0e5605230296c7788477136838507fb7f880c",
+      "characters": 35813
+    },
+    {
+      "file": "moescheduler-ultraep.py",
+      "url": "https://github.com/VVsssssk/Megatron-LM/blob/0dca1919e0c77cc342eb25ca88a8bd63f395d3b1/megatron/core/transformer/moe/ultraep_moe_scheduler.py",
+      "git_blob": "0077f509d84e7f5af82e09f53682dfad768d5e8f",
+      "characters": 6934
+    },
+    {
+      "file": "moescheduler-interface.py",
+      "url": "https://github.com/VVsssssk/Megatron-LM/blob/0dca1919e0c77cc342eb25ca88a8bd63f395d3b1/megatron/core/transformer/moe/moe_scheduler.py",
+      "git_blob": "10e5a9686c5529e285c4fd8ecf59cde47c94bff6",
+      "characters": 25867
+    },
+    {
+      "file": "moescheduler-design.md",
+      "url": "https://github.com/VVsssssk/Megatron-LM/blob/0dca1919e0c77cc342eb25ca88a8bd63f395d3b1/docs/moe_load_balance.md",
+      "git_blob": "0ff50c0666067faca64b0d69c6f23bba5cbe4a87",
+      "characters": 5646
+    },
+    {
+      "file": "UltraEP-README.md",
+      "url": "https://github.com/Dots-Infra/UltraEP/blob/main/README.md",
+      "git_blob": "ca5a00c634650e7d1bff48ff0ad98d15633798a6",
+      "characters": 13866
+    },
+    {
+      "file": "ultraep-placement.cu",
+      "url": "https://github.com/Dots-Infra/UltraEP/blob/1474022d7e19b30d931d43364fe814c478b9fb3a/csrc/kernels/placement.cu",
+      "git_blob": "67800e1575265bfdc15e60093cb66ff115bff413",
+      "characters": 77203
+    },
+    {
+      "file": "ultraep-placement-legacy.cpp",
+      "url": "https://github.com/Dots-Infra/UltraEP/blob/1474022d7e19b30d931d43364fe814c478b9fb3a/csrc/kernels/legacy/placement_cpu.cpp",
+      "git_blob": "649496f6f67052c7cbb41612d78fb21a92eb2498",
+      "characters": 11414
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "megamoe-balanced-source-guide",
+  "displayName": "MegaMoE Balanced 源码导览",
+  "description": "从 MegaMoE Balanced 泳道图打开当前仓库源码或框架参考快照，并定位调用点。",
+  "version": "0.1.0",
+  "publisher": "deepep-local",
+  "license": "BSD-2-Clause",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Other"],
+  "extensionKind": ["workspace"],
+  "main": "./extension.cjs",
+  "activationEvents": ["onCustomEditor:megamoeBalanced.sourceGuide", "onCommand:megamoeBalanced.openSourceGuide"],
+  "contributes": {
+    "commands": [{ "command": "megamoeBalanced.openSourceGuide", "title": "MegaMoE Balanced: 打开源码泳道图" }],
+    "customEditors": [{
+      "viewType": "megamoeBalanced.sourceGuide",
+      "displayName": "MegaMoE Balanced 源码泳道图",
+      "selector": [{ "filenamePattern": "**/docs/megamoe-balanced-visual/index.html" }],
+      "priority": "default"
+    }]
+  }
+}

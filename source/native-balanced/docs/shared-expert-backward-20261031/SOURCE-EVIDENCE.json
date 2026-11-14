@@ -1,0 +1,490 @@
+{
+  "pass_": true,
+  "utc": "2026-10-31T09:21:10.860970+00:00",
+  "scope": "static source and design audit only",
+  "repositories": {
+    "ascend_deepep_hkq": {
+      "head": "7c41ebf938363995838056677e73e5ea6a289d02",
+      "branch": "megamoe-balanced-shared-expert",
+      "remote_head": "6db276532a34e18b9c5c92720467e3a2cb6e7fa9",
+      "remote_only_documentation_delta": [
+        "docs/MegaMoe\u5171\u4eab\u4e13\u5bb6\u4e0e\u53cd\u5411\u91cd\u6d3e\u53d1\u878d\u5408\u8bbe\u8ba1-20261031.md"
+      ],
+      "worktree_clean": true,
+      "files": {
+        "ascend_deepep/fsdp2_bridge.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\ascend_deepep_hkq\\ascend_deepep\\fsdp2_bridge.py",
+          "bytes": 14560,
+          "sha256": "8d9e00346d6da949dd9d04c763088ced78eb4754e8fa62a8e16bdd42537917fd",
+          "git_blob": "a876231f204e9a49cca0f0aea9f77d12ca1cf5bd",
+          "remote_blob_equal": true,
+          "lines": 263,
+          "anchors": {
+            "ctx.save_for_backward": [
+              74
+            ],
+            "def backward": [
+              79,
+              235
+            ],
+            "def forward": [
+              51,
+              207
+            ]
+          }
+        },
+        "csrc/ops/mega_moe_bf16.cpp": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\ascend_deepep_hkq\\csrc\\ops\\mega_moe_bf16.cpp",
+          "bytes": 35049,
+          "sha256": "72c84679e39e964710b80d30f28c33c3b10868b8a0398966a49855ac81d8732e",
+          "git_blob": "b496be572456de9a1b28ee7b1a4954ed387469a5",
+          "remote_blob_equal": true,
+          "lines": 775,
+          "anchors": {}
+        },
+        "csrc/torch_classes.cpp": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\ascend_deepep_hkq\\csrc\\torch_classes.cpp",
+          "bytes": 39533,
+          "sha256": "38f0d24e2a4304c63645efcd012ab04868be1a786591518815f65f2951dee630",
+          "git_blob": "91cc30e839ae2452fadf6eb174ee8d2c18cce513",
+          "remote_blob_equal": true,
+          "lines": 945,
+          "anchors": {}
+        },
+        "csrc/launcher.cpp": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\ascend_deepep_hkq\\csrc\\launcher.cpp",
+          "bytes": 58430,
+          "sha256": "6c89a051eeaca945233cf075a08bcc413147068d9aa2a5fd32c4c9f4792a4f74",
+          "git_blob": "35785b99cff5e1d9dfbebc9fb3157dbcee8b5349",
+          "remote_blob_equal": true,
+          "lines": 1246,
+          "anchors": {}
+        },
+        "kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\ascend_deepep_hkq\\kernels\\mega_moe_bf16\\include\\mega_moe_bf16_backward.h",
+          "bytes": 106439,
+          "sha256": "e178b9822b5b618c17eeb5d9fc921b876f2f89763612dde1ddbde3b48014a7eb",
+          "git_blob": "eb17cbef9c159d339a44ebb44b07db17deb8698c",
+          "remote_blob_equal": true,
+          "lines": 2219,
+          "anchors": {
+            "GMM1GradReuseDOPhase()": [
+              294,
+              1304
+            ],
+            "UnpermuteBackward()": [
+              252,
+              1500,
+              2161
+            ],
+            "MegaMoeBF16Backward::Process()": [
+              1847
+            ],
+            "CrossRankSyncInWorldSize()": [
+              173,
+              257,
+              1135,
+              1873,
+              1885,
+              2155,
+              2173,
+              2190,
+              2211
+            ],
+            "CopyExpertsPanel": [
+              1901
+            ]
+          }
+        },
+        "kernels/mega_moe_bf16/include/mega_moe_bf16_backward_catlass_impl.h": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\ascend_deepep_hkq\\kernels\\mega_moe_bf16\\include\\mega_moe_bf16_backward_catlass_impl.h",
+          "bytes": 50241,
+          "sha256": "bdd59769ed2355a437b7993078adce901c5e058a06759a239a937a5dab522cca",
+          "git_blob": "66adbec9e7b41c8216a45264b3c580211a29651f",
+          "remote_blob_equal": true,
+          "lines": 1043,
+          "anchors": {}
+        },
+        "kernels/mega_moe_bf16/include/mega_moe_training_workspace.h": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\ascend_deepep_hkq\\kernels\\mega_moe_bf16\\include\\mega_moe_training_workspace.h",
+          "bytes": 24201,
+          "sha256": "306c4249c263958230560a19bc6d69328bcf009310a3e9be95826a1d2de4d215",
+          "git_blob": "06c6899cbc8f0334fa65ec201fa9d4154a045d57",
+          "remote_blob_equal": true,
+          "lines": 573,
+          "anchors": {
+            "struct DispatchOutputLayout": [
+              268
+            ],
+            "struct TrainingSavedStateLayout": [
+              289
+            ]
+          }
+        },
+        "kernels/mega_moe_bf16/include/mega_moe_workspace_info.h": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\ascend_deepep_hkq\\kernels\\mega_moe_bf16\\include\\mega_moe_workspace_info.h",
+          "bytes": 15534,
+          "sha256": "04321e78399315376989137975166d221c54250599bac94192831b1de6ce19d0",
+          "git_blob": "82c4abd05b89773694281cfe762beba24c23a96c",
+          "remote_blob_equal": true,
+          "lines": 323,
+          "anchors": {
+            "ptrDX =": [
+              298
+            ]
+          }
+        },
+        "kernels/mega_moe_bf16/include/mega_moe_base.h": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\ascend_deepep_hkq\\kernels\\mega_moe_bf16\\include\\mega_moe_base.h",
+          "bytes": 5595,
+          "sha256": "3e899ac3e4a65452f1376c1bde707e47c9071d6e64a9f8af38a9ace19d8a0305",
+          "git_blob": "a363760b23aec0e09bc187f8793154b78a7bce0d",
+          "remote_blob_equal": true,
+          "lines": 163,
+          "anchors": {}
+        },
+        "kernels/mega_moe_bf16/include/mega_moe_backward_restore.h": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\ascend_deepep_hkq\\kernels\\mega_moe_bf16\\include\\mega_moe_backward_restore.h",
+          "bytes": 8131,
+          "sha256": "5ef21acba2655906be531167396146c75c92a39ba9988665e706818214600e31",
+          "git_blob": "e6c6ac31267279f2236903d2aa1d7d60475249e3",
+          "remote_blob_equal": true,
+          "lines": 156,
+          "anchors": {
+            "CopyExpertsPanel": [
+              94
+            ],
+            "GetBlockIdx()/GetTaskRation()": [
+              21,
+              98
+            ]
+          }
+        }
+      }
+    },
+    "MindSpeed-LLM": {
+      "head": "111aa86a2deb2f5697ae7ed1eed8e9532ce6ce8d",
+      "branch": "megamoe-balanced-shared-expert",
+      "remote_head": "111aa86a2deb2f5697ae7ed1eed8e9532ce6ce8d",
+      "remote_only_documentation_delta": [],
+      "worktree_clean": true,
+      "files": {
+        "mindspeed_llm/fsdp2/models/deepseek_v4/modeling_deepseek_v4.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\MindSpeed-LLM\\mindspeed_llm\\fsdp2\\models\\deepseek_v4\\modeling_deepseek_v4.py",
+          "bytes": 128772,
+          "sha256": "c14e6306310a196c9228c0db17a55ef20027c7aabb4c0458c622cf6766fe943b",
+          "git_blob": "57ab0457751d9cfd87881a780dc0cec7a908215c",
+          "remote_blob_equal": true,
+          "lines": 2516,
+          "anchors": {
+            "class DeepseekV4MLP": [
+              1826
+            ],
+            "class DeepseekV4SparseMoeBlock": [
+              1999
+            ],
+            "def forward": [
+              146,
+              168,
+              256,
+              432,
+              512,
+              549,
+              605,
+              677,
+              784,
+              896,
+              1008,
+              1105,
+              1204,
+              1450,
+              1723,
+              1788,
+              1818,
+              1839,
+              1871,
+              1947,
+              1985,
+              2008,
+              2064,
+              2216,
+              2370
+            ],
+            "shared_experts": [
+              2006,
+              2017
+            ]
+          }
+        },
+        "mindspeed_llm/fsdp2/ops/triton_swiglu_with_limit.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\MindSpeed-LLM\\mindspeed_llm\\fsdp2\\ops\\triton_swiglu_with_limit.py",
+          "bytes": 6515,
+          "sha256": "4c9fb2b9015108e4b9348e8aced2f7b1f9e83df1cba9c2c4d2b4047096ff49e3",
+          "git_blob": "cccb8d42e6a076fa6c2e29d478a063a19e737edc",
+          "remote_blob_equal": true,
+          "lines": 185,
+          "anchors": {
+            "class SwiGLUWithLimitFunction": [
+              146
+            ],
+            "ctx.save_for_backward": [
+              155
+            ],
+            "def backward": [
+              160
+            ],
+            "def forward": [
+              150
+            ]
+          }
+        },
+        "mindspeed_llm/fsdp2/models/model_factory.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\MindSpeed-LLM\\mindspeed_llm\\fsdp2\\models\\model_factory.py",
+          "bytes": 16089,
+          "sha256": "96409cc546eebc685985173eb8f21b8518e6c557d528fd862b1de2409e85cb19",
+          "git_blob": "8dcbc8187e8397956e50ab2b6b21dfac91dab4f2",
+          "remote_blob_equal": true,
+          "lines": 348,
+          "anchors": {
+            "hook_modules": [
+              220
+            ]
+          }
+        },
+        "mindspeed_llm/fsdp2/distributed/mindspeed_parallel_engine.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\MindSpeed-LLM\\mindspeed_llm\\fsdp2\\distributed\\mindspeed_parallel_engine.py",
+          "bytes": 12157,
+          "sha256": "7cba1869225f992b119ca87558b836769a5a3b519b73b15eead0f2839545ae5d",
+          "git_blob": "d388a70cc87b388bfb30d974ecce28cf44756830",
+          "remote_blob_equal": true,
+          "lines": 266,
+          "anchors": {
+            "def forward": [
+              265
+            ]
+          }
+        },
+        "examples/fsdp2/deepseek4/pretrain_deepseek4_flash_284b_4k_fsdp2_A3.yaml": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\MindSpeed-LLM\\examples\\fsdp2\\deepseek4\\pretrain_deepseek4_flash_284b_4k_fsdp2_A3.yaml",
+          "bytes": 2995,
+          "sha256": "f54e781707e162efbf85e995ff6ccf42169062ef2811e6776ddce34768a49e77",
+          "git_blob": "781f13ad9f44adf52abdb369b7e61a23284d2b48",
+          "remote_blob_equal": true,
+          "lines": 119,
+          "anchors": {
+            "shared_experts": [
+              43,
+              52
+            ],
+            "hook_modules": [
+              53
+            ]
+          }
+        },
+        "examples/fsdp2/deepseek4/uam_config_megamoe_tuned.yaml": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\MindSpeed-LLM\\examples\\fsdp2\\deepseek4\\uam_config_megamoe_tuned.yaml",
+          "bytes": 6201,
+          "sha256": "ba77dcf5b3c8db639ce3c4410e94ff9df71ecd50e3df2c3396d31437269e08f9",
+          "git_blob": "7093886f4dd4b08571bf6d2c8dd4ef2ec4894265",
+          "remote_blob_equal": true,
+          "lines": 238,
+          "anchors": {
+            "shared_experts": [
+              192,
+              219
+            ]
+          }
+        }
+      }
+    },
+    "FSDPTurbo": {
+      "head": "da8df1f7c48297a7ab1cf5fdbf493ecead1dce69",
+      "branch": "megamoe-balanced-shared-expert",
+      "remote_head": "da8df1f7c48297a7ab1cf5fdbf493ecead1dce69",
+      "remote_only_documentation_delta": [],
+      "worktree_clean": true,
+      "files": {
+        "fsdp_turbo/distributed/expert_parallel/dispatcher_megamoe_balanced.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\distributed\\expert_parallel\\dispatcher_megamoe_balanced.py",
+          "bytes": 6161,
+          "sha256": "cfa5071cd5debdc224f45154f9a185bac10ba885b2f0cb48890afdf71c5edc94",
+          "git_blob": "ef22afe7fa5f3ab7ecf683551647ec37c6b87887",
+          "remote_blob_equal": true,
+          "lines": 109,
+          "anchors": {}
+        },
+        "fsdp_turbo/distributed/expert_parallel/mega_moe_redispatch.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\distributed\\expert_parallel\\mega_moe_redispatch.py",
+          "bytes": 21205,
+          "sha256": "e1894790efd32ac4c085af8d0254e6f3ca1119a19159472dfa31f96b27bad317",
+          "git_blob": "2aa97721a52c37d7ed3146f87216c56633e9ccdf",
+          "remote_blob_equal": true,
+          "lines": 436,
+          "anchors": {
+            "ctx.save_for_backward": [
+              315,
+              392
+            ],
+            "def backward": [
+              320,
+              402
+            ],
+            "def forward": [
+              285,
+              367,
+              388
+            ]
+          }
+        },
+        "fsdp_turbo/distributed/fully_shard_parallel/fully_shard_parallel.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\distributed\\fully_shard_parallel\\fully_shard_parallel.py",
+          "bytes": 7109,
+          "sha256": "e868dbd8e850e072e6b600b733e45f61c81d596b7c7d07a806b6dd12a16c82d2",
+          "git_blob": "0e31da20098736fd99ee72c07a9665329881fc73",
+          "remote_blob_equal": true,
+          "lines": 164,
+          "anchors": {
+            "hook_modules": [
+              24,
+              40,
+              125,
+              126,
+              128,
+              131,
+              134,
+              137,
+              139,
+              140,
+              142
+            ]
+          }
+        },
+        "fsdp_turbo/distributed/expert_parallel/expert_fully_shard_parallel.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\distributed\\expert_parallel\\expert_fully_shard_parallel.py",
+          "bytes": 4792,
+          "sha256": "895cace05aee7d9c1156bf500e40acfafca37bd9a63ca338a3ddd8d27c19b389",
+          "git_blob": "237defe51b07cf5b6c1e3c37d6d1e1a639f04e1c",
+          "remote_blob_equal": true,
+          "lines": 111,
+          "anchors": {
+            "hook_modules": [
+              8,
+              58,
+              80
+            ]
+          }
+        },
+        "fsdp_turbo/distributed/fine_grained_fully_shard/strategy.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\distributed\\fine_grained_fully_shard\\strategy.py",
+          "bytes": 2840,
+          "sha256": "ec230b47bca08859aa647817e332f3e7d3d8a4464c8f183a5be80bc464ef4407",
+          "git_blob": "ca8d8f1d745c0be1dd4bad5335fbe15b35ceb0be",
+          "remote_blob_equal": true,
+          "lines": 101,
+          "anchors": {}
+        },
+        "fsdp_turbo/distributed/fine_grained_fully_shard/state.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\distributed\\fine_grained_fully_shard\\state.py",
+          "bytes": 9685,
+          "sha256": "40297a36bea019a57a0a6a8a4d332965abd7c25a507e0f01147fed9b38c32944",
+          "git_blob": "49442771ca00da19e720fd4d34c568b69cb1c003",
+          "remote_blob_equal": true,
+          "lines": 224,
+          "anchors": {}
+        },
+        "fsdp_turbo/memory/recompute/recompute.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\memory\\recompute\\recompute.py",
+          "bytes": 1570,
+          "sha256": "1ceaab00868b6d685ba034de3509c3fd35177c9be96ea564b4273d4f230789c3",
+          "git_blob": "725733343966728b94a418d435d074f52c364849",
+          "remote_blob_equal": true,
+          "lines": 47,
+          "anchors": {
+            "use_reentrant=False": [
+              45
+            ]
+          }
+        },
+        "fsdp_turbo/memory/unified_activation_memory/core/capture/saved_tensor.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\memory\\unified_activation_memory\\core\\capture\\saved_tensor.py",
+          "bytes": 58467,
+          "sha256": "a757a6212b7312b253a66f5f7161056cf25a7b3bfc93907c43c2e01b9a29ce7a",
+          "git_blob": "7dd1570bdc9de437969c1656250a5bcbd4addbf1",
+          "remote_blob_equal": true,
+          "lines": 1453,
+          "anchors": {
+            "module_scope": [
+              579
+            ],
+            "active_region": [
+              555
+            ]
+          }
+        },
+        "fsdp_turbo/memory/unified_activation_memory/core/capture/module_tracker.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\memory\\unified_activation_memory\\core\\capture\\module_tracker.py",
+          "bytes": 8695,
+          "sha256": "7c8e7dba0011a1102415be4a7af34a0bed0b739baaf7317f96cff2aa9c4a62ca",
+          "git_blob": "ca8d600b0fe6897858bd9ae2aebb8261c8de61aa",
+          "remote_blob_equal": true,
+          "lines": 237,
+          "anchors": {
+            "module_scope": [
+              145,
+              204
+            ]
+          }
+        },
+        "fsdp_turbo/memory/unified_activation_memory/core/recompute/region.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\memory\\unified_activation_memory\\core\\recompute\\region.py",
+          "bytes": 23380,
+          "sha256": "c8d22fab5009df34e29053a1d899de8033c307e74bd94af2c66c6f294353e370",
+          "git_blob": "d3d23b960710d52fc9a9446c9dd79ce4e7cfaca5",
+          "remote_blob_equal": true,
+          "lines": 615,
+          "anchors": {
+            "active_region": [
+              496,
+              607,
+              608
+            ]
+          }
+        },
+        "fsdp_turbo/memory/unified_activation_memory/core/recompute/executor.py": {
+          "path": "D:\\megamoe_train\\shared-expert-branch-20261031\\source\\wuhan\\code\\FSDPTurbo\\fsdp_turbo\\memory\\unified_activation_memory\\core\\recompute\\executor.py",
+          "bytes": 21909,
+          "sha256": "e78f0c5563bd6b709006c6434459b157b8fb5221b265f6954cf43c7188c35f8a",
+          "git_blob": "ebb897ae507ece54845f1f9c6d689ff78000030b",
+          "remote_blob_equal": true,
+          "lines": 523,
+          "anchors": {
+            "active_region": [
+              182
+            ]
+          }
+        }
+      }
+    }
+  },
+  "root_head": "b10827b1e9a4bcc7a23d5a2efd6c3f3d5856f81d",
+  "external_sources": [
+    {
+      "path": "D:\\shared-expert-redispatch-fusion-design-20261031.md",
+      "bytes": 26252,
+      "sha256": "43e05eff3e9e04d8e49fdee94051c70259f0470745dcadedea6c78844e1894a8"
+    },
+    {
+      "path": "D:\\megamoe_train\\rho6-kernel-trace-20261029-rack7-a1\\evidence\\actual-main-capture-a1\\launch.json",
+      "bytes": 3624,
+      "sha256": "08e9770f3a346ad4762c6c59c963f57a21a0ef56e95a8baba3b1a9f13a50331b"
+    },
+    {
+      "path": "D:\\megamoe_train\\backward-dw1-early-20261029\\analysis\\routing-planner-20261030\\routing-facts.json",
+      "bytes": 5131,
+      "sha256": "b71dc5886230180b213fbc7d82ea9f34798941b50da42e797d3b3716c6615c42"
+    }
+  ],
+  "code_modified": false,
+  "build_started": false,
+  "device_experiment_started": false
+}

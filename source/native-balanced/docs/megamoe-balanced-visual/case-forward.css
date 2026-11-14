@@ -1,0 +1,60 @@
+.case-diagram { margin: 18px 0 26px; }
+.case-diagram figcaption { margin: 8px 0; color: #51657b; font-size: 14px; }
+.case-scroll { overflow-x: auto; max-width: 100%; background: white; border: 1px solid #d5dee8; }
+.case-svg { display: block; width: 100%; min-width: 780px; max-height: 410px; }
+.case-svg text { fill: #15283f; font-size: 14px; }
+.case-svg .diagram-head { font-weight: 700; }
+.fwd-node { stroke-width: 1.2; }
+.fwd-node.control { fill: #f1f4f8; stroke: #8494a8; }
+.fwd-node.activation { fill: #eaf4fc; stroke: #3a7092; }
+.fwd-node.weight { fill: #faf0e4; stroke: #946338; }
+.fwd-node.compute { fill: #fff6ea; stroke: #a4774b; }
+.fwd-dependency { fill: none; stroke-width: 1.7; }
+.fwd-dependency.control { stroke: #687b90; stroke-dasharray: 4 4; }
+.fwd-dependency.activation { stroke: #3a7092; }
+.fwd-dependency.weight { stroke: #946338; }
+.allocation-mark { fill: #34566c; }
+.allocation-home { fill: #527e99; fill-opacity: .7; }
+.allocation-replica { fill: #b76b29; fill-opacity: .67; }
+.case-svg path:hover { fill-opacity: 1; }
+.fwd-data { fill: none; stroke: #3a7092; stroke-width: 3; }
+.fwd-direction { fill: #3a7092; }
+.fwd-weight { fill: none; stroke: #7c6450; stroke-width: 2; stroke-dasharray: 5 4; }
+.fwd-port { fill: white; stroke: #3a7092; stroke-width: 2; }
+.case-matrices { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
+.case-dispatch-matrix h5 { font-size: 14px; margin: 2px 0 6px; }
+.dispatch-matrix { margin: 0; table-layout: fixed; font-variant-numeric: tabular-nums; }
+.dispatch-matrix td { background: rgb(75 133 168 / var(--intensity)); }
+.dispatch-matrix th:first-child, .dispatch-matrix th:nth-child(2) { width: auto; }
+.dispatch-matrix th, .dispatch-matrix td { padding: 6px 8px; }
+.dispatch-focus th { border-inline-start: 3px solid #275589; }
+.case-inline-note { border-left: 3px solid #527a9d; padding-inline-start: 10px; color: #51657b; }
+.step-lanes { min-width: 760px; table-layout: fixed; margin: 0; }
+.step-lanes th, .step-lanes td { border-color: #e1e8ef; padding: 8px 11px; }
+.step-lanes th:first-child { width: 108px; }
+.step-lanes th:nth-child(2) { width: auto; }
+.step-lanes td a { font-weight: 650; color: inherit; }
+.step-lanes td small { display: block; color: #15283f; font-size: 13px; }
+.step-ms { background: var(--case-mindspeed-bg); color: var(--case-mindspeed-ink); }
+.step-fsdp { background: var(--case-fsdp-bg); color: var(--case-fsdp-ink); }
+.step-native { background: var(--case-kernel-bg); color: var(--case-kernel-ink); }
+.scope-key { display: flex; gap: 16px; margin-bottom: 6px; }
+.scope-key span::before { content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 5px; background: var(--scope); }
+.scope-forward { --scope: #39739c; fill: var(--scope); }
+.scope-recompute { --scope: #56836d; fill: var(--scope); }
+.scope-backward { --scope: #b76b29; fill: var(--scope); }
+.case-timing { padding-block: 10px; border-block-start: 1px solid #d5dee8; }
+.timing-key { font-size: 13px; color: #51657b; margin-bottom: 10px; }
+.timing-row { display: grid; grid-template-columns: minmax(100px, 270px) 1fr 145px; align-items: center; gap: 15px; margin: 12px 0; }
+.timing-row small, .timing-values span { display: block; color: #51657b; }
+.timing-track { position: relative; height: 20px; background: linear-gradient(#c7d2df,#c7d2df) center / 100% 1px no-repeat; }
+.timing-median, .timing-p90 { position: absolute; width: 9px; height: 9px; top: 50%; background: #275589; left: var(--p50); border-radius: 50%; transform: translate(-50%,-50%); }
+.timing-p90 { left: var(--p90); background: #fff; border: 1px solid #90521d; border-radius: 0; transform: translate(-50%,40%) rotate(45deg); }
+.timing-axis { display: flex; justify-content: space-between; font-size: 12px; color: #51657b; }
+.timing-values { font-variant-numeric: tabular-nums; }
+@media (max-width: 760px) {
+    .case-matrices { grid-template-columns: 1fr; gap: 12px; }
+    .dispatch-matrix th, .dispatch-matrix td { padding: 5px 3px; font-size: 12px; }
+    .timing-row { grid-template-columns: 1fr 112px; gap: 7px; }
+    .timing-row > div:first-child { grid-column: 1 / -1; }
+}

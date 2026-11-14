@@ -1,0 +1,19 @@
+{
+  "targets": [
+    0.2,
+    20
+  ],
+  "steps": 25,
+  "warmup": 5,
+  "repeats": 1,
+  "receive_capacity": 131072,
+  "interfaces": [
+    "legacy",
+    "unified"
+  ],
+  "purpose": "isolate interface/replay changes from receive-capacity changes",
+  "original_policy_calls_per_process": {
+    "legacy": 100,
+    "unified": 50
+  }
+}

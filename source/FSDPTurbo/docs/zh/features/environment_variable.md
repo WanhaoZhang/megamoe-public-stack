@@ -1,0 +1,97 @@
+# 环境变量说明
+
+本文档介绍FSDPTurbo训练过程中涉及的环境变量，包括集群配置、运行环境与NPU性能调优相关变量。
+
+## 集群配置环境变量
+
+训练启动脚本`run.sh`支持通过环境变量覆盖集群配置：
+
+| 环境变量 | 默认值 | 说明 |
+|---|---|---|
+| `NNODES` | `1` | 节点数，单机为1 |
+| `GPUS_PER_NODE` | `16` | 单节点卡数 |
+| `MASTER_ADDR` | `127.0.0.1` | 主节点IP，多机时所有节点配置为主节点IP |
+| `MASTER_PORT` | `29500` | 主节点端口 |
+| `CONFIG_FILE` | `config.yaml` | 训练配置文件路径 |
+
+多机训练示例：
+
+```bash
+# 所有节点执行（MASTER_ADDR 为主节点 IP）
+NNODES=2 GPUS_PER_NODE=16 MASTER_ADDR=10.0.0.1 MASTER_PORT=29500 bash run.sh
+```
+
+## 运行环境变量
+
+| 环境变量 | 说明 |
+|---|---|
+| `LOCAL_RANK` | torchrun设置的本机进程序号，启动时由utils.env.get_local_rank()读取；未设置时返回-1 |
+| `HCCL_NPU_SOCKET_SOCKET_PORT_RANGE` / `HCCL_NPU_SOCKET_PORT_RANGE` | NPU通信socket端口范围（示例脚本中设置为`auto`） |
+| `ASCEND_LAUNCH_BLOCKING` | NPU同步执行开关（示例脚本中设置为`1`，便于调试定位） |
+| `ASCEND_SLOG_PRINT_TO_STDOUT` | NPU日志输出到标准输出（调试用，默认关闭） |
+
+Kimi 路由诊断已迁到 `ep_plan.router_debug`（`apply_custom_router`、`target_max_vio`、`router_mode`、`record_load_balance`），默认关闭。见[专家并行](./expert_parallel.md)。
+
+> [!NOTE]
+>
+> NPU环境下，训练前需正确加载昇腾环境：
+>
+> ```bash
+> source /usr/local/Ascend/cann/set_env.sh
+> ```
+
+## NPU性能调优环境变量
+
+以下环境变量用于昇腾NPU训练性能调优，可根据实际情况在启动脚本中设置：
+
+| 环境变量 | 推荐值 | 说明 |
+|---|---|---|
+| `HCCL_CONNECT_TIMEOUT` | `1800` | HCCL通信连接超时时间（秒），多机大集群时建议增大 |
+| `TASK_QUEUE_ENABLE` | `2` | 任务队列模式，提升通信与计算重叠效率 |
+| `CPU_AFFINITY_CONF` | `1` | CPU亲和性配置，减少进程调度开销 |
+| `MULTI_STREAM_MEMORY_REUSE` | `2` | 多流内存复用，降低显存占用 |
+| `PYTORCH_NPU_ALLOC_CONF` | `expandable_segments:True` | NPU显存分配器配置，减少显存碎片 |
+| `CUBLAS_WORKSPACE_CONFIG` | `:4096:8` | 矩阵运算workspace配置 |
+
+示例`run.sh`中的环境变量配置：
+
+```bash
+export HCCL_NPU_SOCKET_PORT_RANGE="auto"
+export ASCEND_LAUNCH_BLOCKING=1
+# export ASCEND_SLOG_PRINT_TO_STDOUT=1   # 调试时开启
+```
+
+> [!NOTE]
+>
+> 以上NPU性能调优变量为推荐配置，实际效果因模型规模、硬件型号与并行策略而异，建议结合[性能数据采集](../tools/profiling.md)进行调优。
+
+## MoonEP调试
+
+`trace_enabled`、`trace_sync_enabled`、`vmm_probe_enabled`、`npu_async_comm` 已迁到 `ep_plan.moonep_config`，默认全部关闭。见[专家并行](./expert_parallel.md)。
+
+## Native 兼容接入
+
+以下保留的环境设置集中由 `utils.env` 读取。正式三路实验关闭诊断和额外同步；配置文件中的参数优先确定模型及路由。设置在对应运行时第一次构建时生效，调试开关只用于诊断运行。
+
+| 名称 | 默认值 | 影响 |
+|---|---|---|
+| `MEGAMOE_SAVE_GMM1_OUTPUT` | `bf16` | Native 兼容路径；正式实验保留默认值 |
+| `V4LAB_MEGAMOE_PEERMEM_LEGACY` | `0` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_SHMEM_WINDOW_POOL` | `未设置` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_SHMEM_IP_PORT` | `tcp://127.0.0.1:8899` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_SHMEM_TOTAL_BYTES` | `未设置` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_MAX_RECV_TOKENS` | `未设置` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_ROUTER_IMBALANCE` | `0` | Native 兼容路径；正式实验保留默认值 |
+| `V4LAB_MEGAMOE_DTYPE_DEBUG` | `0` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_TOKEN_CHUNK_M` | `1024` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_FWD_SYNC` | `0` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_FWD_PRE_STREAM_SYNC` | `0` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_FIXED_ROUTER_SPLIT_CACHE` | `0` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_MEGAMOE_REDISPATCH` | `0` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_MEGAMOE_REDISPATCH_VERIFY` | `0` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_MEGAMOE_REDISPATCH_OVERLAP` | `0` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_BWD_STREAM_SYNC` | `1` | Native 兼容路径；正式实验保留默认值 |
+| `ASCEND_DEEPEP_MEGAMOE_BALANCED_DIAG` | `0` | Native 兼容路径；正式实验保留默认值 |
+| `SHMEM_UID_SESSION_ID` | 从 Native bootstrap endpoint 派生 | 仅在未显式指定时填充，隔离 SHMEM 会话 |
+
+MoonEP 的 trace、VMM 探测、异步通信及额外设备同步使用 `moonep_config`，不依赖隐式 sitecustomize 或诊断环境变量。

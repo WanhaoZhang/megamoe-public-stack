@@ -1,0 +1,19 @@
+{
+  "FSDPTurbo": {
+    "base": "f2e56d80579c288c417f1c890df293aca4450d77",
+    "tip": "187b5ff79057c8e848f58eae7e99a73608178147",
+    "patch": "patches/FSDPTurbo.patch",
+    "additional_patches": [
+      "patches/FSDPTurbo-capacity.patch"
+    ]
+  },
+  "MindSpeed-LLM": {
+    "base": "9dfc5d8df5b1e7c0c2cb36cfb7bcdbe7d9da8c88",
+    "tip": "e43d65203f70c0432dc46dde54622537901a681b",
+    "patch": "patches/MindSpeed-LLM.patch",
+    "additional_patches": [
+      "patches/MindSpeed-LLM-step-recorder.patch",
+      "patches/MindSpeed-LLM-capacity.patch"
+    ]
+  }
+}

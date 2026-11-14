@@ -1,0 +1,13 @@
+.map-guide { max-width: 1320px; margin-inline: auto; }
+.map-figure { margin: 34px 0; padding-top: 16px; border-top: 1px solid #c7d2df; }
+.map-figure h3 { margin: 0 0 6px; font-size: 22px; scroll-margin-top: 135px; }
+.map-figure h3 small { display: block; font-size: 13px; color: #51657b; }
+.map-figure p { margin: 0 0 12px; }
+.map-canvas { overflow-x: auto; max-width: 100%; border: 1px solid #c7d2df; background: white; }
+.map-canvas img { display: block; height: auto; max-width: 100%; margin: 0 auto; }
+.map-figure figcaption { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 9px 0; }
+.map-figure .map-callpoints { font-size: 14px; color: #51657b; }
+@media (max-width: 760px) {
+    .map-guide, .map-figure h3 { scroll-margin-top: 220px; }
+    .map-canvas img { min-width: var(--map-min); }
+}

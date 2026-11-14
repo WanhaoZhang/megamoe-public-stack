@@ -1,0 +1,7 @@
+{
+  "pass_": true,
+  "disabled_header_tokens_identical": true,
+  "contributor_cases": 9000,
+  "partial_address_checks": 27274,
+  "scope": "CPU source fallback/order/ephemeral cache/address invariants only; no native build or numerical acceptance"
+}
