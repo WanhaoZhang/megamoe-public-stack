@@ -31,7 +31,7 @@ from mindspeed_llm.fsdp2.distributed.mindspeed_parallel_engine import MindSpeedP
 from mindspeed_llm.fsdp2.optim.optimizer import OptimizerFactory
 from mindspeed_llm.fsdp2.optim.clip_grad_norm import clip_grad_norm
 from mindspeed_llm.fsdp2.features.chunkloss import chunk_loss, calculate_lm_loss
-from mindspeed_llm.fsdp2.features.ep8_imbalance import RouteProvider, install_provider, set_step, replay_context
+from mindspeed_llm.fsdp2.features.ep8_imbalance import RouteProvider, install_provider, set_step, set_microbatch, replay_context
 from fsdp_turbo.fsdp_turbo_config import MegaMoeBalancedConfig
 from benchmark_backend import attach_moonep
 from run_audit import check_persistent, parameter_samples, loaded_libraries
@@ -89,10 +89,38 @@ def main():
     parser.add_argument('--layers', type=int, default=2)
     parser.add_argument('--steps', type=int, default=25)
     parser.add_argument('--tokens', type=int, default=16384)
+    parser.add_argument('--microbatches', type=int, default=1)
+    parser.add_argument('--forward-window', type=int, choices=(1, 2, 4), default=1)
+    parser.add_argument('--temporal-pattern', choices=('same', 'alternating', 'random'), default='random')
+    parser.add_argument('--hidden', type=int)
+    parser.add_argument('--ffn', type=int, default=2048)
+    parser.add_argument('--dump-final-state', action='store_true')
+    parser.add_argument('--dump-grad-step0', action='store_true')
+    parser.add_argument('--finite-diagnostics', action='store_true')
+    parser.add_argument('--temporal-policy', choices=('legacy','fixed_native','fixed_home','fifo_native','easy_home','easy_independent'))
+    parser.add_argument('--temporal-scheduler',choices=('cpu','ascendc'),default='cpu')
+    parser.add_argument('--temporal-scheduler-library',type=Path)
+    parser.add_argument('--temporal-schedule-replay',type=Path)
+    parser.add_argument('--diagnostic-only',action='store_true',help='Explicit offline task-order ablation, not an online score')
+    parser.add_argument('--grad-sync', action='store_true')
+    parser.add_argument('--hold-fsdp-forward',action='store_true',
+                        help='Diagnostic public FSDP lease: keep gathered compute parameters through forward')
     parser.add_argument('--skip-identity', action='store_true')
     parser.add_argument('--diagnose-memory', action='store_true')
     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
     args = parser.parse_args()
+    if bool(args.temporal_schedule_replay)!=args.diagnostic_only:
+        parser.error('offline task replay requires both --temporal-schedule-replay and --diagnostic-only')
+    if args.temporal_schedule_replay and (args.temporal_policy!='easy_home' or args.diagnostic_timer):
+        parser.error('task replay is a TimerOFF diagnostic for easy_home, never online performance')
+    if args.microbatches < 1 or args.microbatches % args.forward_window:
+        parser.error('microbatches must be positive and divisible by forward-window')
+    if args.interface != 'unified' and args.microbatches != 1:
+        parser.error('multi-microbatch validation requires the unified plan registry')
+    if args.ffn % 256 or (args.hidden is not None and args.hidden % 256):
+        parser.error('native worker requires hidden and ffn multiples of 256')
+    if args.temporal_policy and (args.interface!='unified' or args.tokens%2):
+        parser.error('temporal prototype requires unified plans and even token counts')
     os.environ['MEGAFLUX_PLANNER_INTERFACE']=args.interface
     set_accelerator_compatible()
     rank = int(os.environ['RANK'])
@@ -118,19 +146,38 @@ def main():
 
     values = json.loads((args.root / 'configs/model/config.json').read_text())
     values.update(num_hidden_layers=args.layers, n_routed_experts=256, num_experts_per_tok=8,
-                  moe_intermediate_size=2048, intermediate_size=2048, num_hash_layers=0, default_num_hash_layers=0,
+                  moe_intermediate_size=args.ffn, intermediate_size=args.ffn, num_hash_layers=0, default_num_hash_layers=0,
                   num_nextn_predict_layers=0, torch_dtype='float32', use_cache=False,
                   router_aux_loss_coef=0.0, output_router_logits=False)
-    values['compress_ratios'] = values['compress_ratios'][:args.layers]
+    if args.hidden is not None:
+        values['hidden_size'] = args.hidden
+    ratios = values['compress_ratios']
+    values['compress_ratios'] = (ratios * ((args.layers + len(ratios) - 1) // len(ratios)))[:args.layers]
     config = DeepseekV4Config(**values)
     config.mlp_layer_types = ['moe'] * args.layers
     if rank == 0:
-        (args.out / 'effective-config.json').write_text(json.dumps(dict(backend=args.backend, planner=args.planner, receive_capacity=args.recv_capacity, route_bank=str(args.route_bank or args.root/'routes'), layers=args.layers, tokens=args.tokens, steps=args.steps, maxvio=args.maxvio, whole_card_budget_gib=args.whole_card_budget_gib, model=config.to_dict()), indent=2))
+        (args.out / 'effective-config.json').write_text(json.dumps(dict(backend=args.backend, planner=args.planner, receive_capacity=args.recv_capacity, route_bank=str(args.route_bank or args.root/'routes'), layers=args.layers, tokens=args.tokens, steps=args.steps, maxvio=args.maxvio, whole_card_budget_gib=args.whole_card_budget_gib, microbatches=args.microbatches, forward_window=args.forward_window, temporal_pattern=args.temporal_pattern, sequence_tokens_per_update=8*args.microbatches*args.tokens, execution_mode='serial-retained-graphs', grad_sync=args.grad_sync, model=config.to_dict()), indent=2))
+    if rank == 0:
+        effective = json.loads((args.out/'effective-config.json').read_text())
+        effective.update(temporal_policy=args.temporal_policy,
+            hold_fsdp_forward=args.hold_fsdp_forward,
+            execution_mode=('offline-task-selection-replay-diagnostic' if args.temporal_schedule_replay else
+                f'online-{args.temporal_scheduler}-frontier' if args.temporal_policy and args.temporal_policy!='legacy' else 'serial-retained-graphs'),
+            routing_prepass_counted=bool(args.temporal_policy in ('easy_home','easy_independent') and not args.temporal_schedule_replay),
+            ascendc_scheduler_used=bool(args.temporal_scheduler=='ascendc' and args.temporal_policy and args.temporal_policy!='legacy' and not args.temporal_schedule_replay),
+            offline_diagnostic_only=args.diagnostic_only,
+            uses_future_derived_schedule=bool(args.temporal_schedule_replay),
+            dump_grad_step0=args.dump_grad_step0)
+        (args.out/'effective-config.json').write_text(json.dumps(effective,indent=2))
     model_args = ModelArguments(model_name_or_path=str(args.root / 'configs/model'),
                                 model_id='deepseek_v4', train_from_scratch=True,
                                 init_model_with_meta_device=True)
     loader = ModelLoader(model_args, init_device='meta', hf_config=config)
-    model, weights_path = loader.create_model(model_cls=DeepseekV4ForCausalLM)
+    model_class = DeepseekV4ForCausalLM
+    if args.temporal_policy:
+        from temporal_model import TemporalDeepseekV4ForCausalLM
+        model_class = TemporalDeepseekV4ForCausalLM
+    model, weights_path = loader.create_model(model_cls=model_class)
     balanced_config = MegaMoeBalancedConfig(planner=args.planner, replica_slots=32,
                     backward_restore='panel', recv_capacity=args.recv_capacity,
                     plan_validation='fused', routed_input_mode='redispatch',timer=args.diagnostic_timer,step_time_model=args.cost_model,
@@ -150,12 +197,16 @@ def main():
         ignored_modules=[],
         hook_modules=['model.layers.{*}'], param_dtype='bf16', reduce_dtype='fp32',
         fsdp_implementation='custom')
+    if args.hold_fsdp_forward:
+        for options in fsdp_plan.apply_modules.values():
+            options['reshard_after_forward']=False
     parallel = ParallelEngineConfig(fully_shard_parallel_size=8, expert_parallel_size=8,
                  expert_fully_shard_parallel_size=1, expert_data_parallel_size=1,
-                 fsdp_plan=fsdp_plan, ep_plan=ep_plan, recompute=True,
-                 recompute_plan=['model.layers.{*}'])
+                 fsdp_plan=fsdp_plan, ep_plan=ep_plan, recompute=not bool(args.temporal_policy),
+                 recompute_plan=[] if args.temporal_policy else ['model.layers.{*}'])
     provider = RouteProvider((args.route_bank or args.root / 'routes') / f'maxvio-{args.maxvio:g}.npy',
-                             rank, args.layers, args.steps, device)
+                             rank, args.layers, args.steps, device, microbatches=args.microbatches,
+                             temporal_pattern=args.temporal_pattern)
     install_provider(provider)
     register_replay_context(replay_context)
     from mindspeed_llm.fsdp2.features.ep8_imbalance import plan_invocation
@@ -177,6 +228,36 @@ def main():
         runtime = None
     optimizer = OptimizerFactory.create(engine, 8, 1e-5, 'fused_adamw', 0.01, (0.9, 0.95), 1e-8)
     engine.train()
+    temporal = None
+    if args.temporal_policy:
+        from temporal_model import TemporalRuntime
+        from mindspeed_llm.fsdp2.distributed.parallel_state import ParallelState
+        samples_before_warmup = parameter_samples(engine)
+        temporal = TemporalRuntime(engine.model,tokens=args.tokens,hidden=config.hidden_size,
+            ffn=args.ffn,topk=8,capacity=args.recv_capacity,policy=args.temporal_policy,
+            group=ParallelState().get_ep_group(),out=args.out,rank=rank,
+            scheduler_backend=args.temporal_scheduler,scheduler_library=args.temporal_scheduler_library or
+            args.root/'source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler.so',
+            task_schedule_replay=args.temporal_schedule_replay)
+        engine.model.temporal_runtime = temporal
+        samples_after_warmup = parameter_samples(engine)
+        if any(not torch.equal(value,samples_after_warmup[name]) for name,value in samples_before_warmup.items()):
+            raise RuntimeError('Explicit setup warmup modified owner Parameters')
+    if args.finite_diagnostics:
+        from torch.utils._pytree import tree_flatten
+        def finite_hook(name):
+            def hook(module, inputs, output):
+                for value in tree_flatten(output)[0]:
+                    if torch.is_tensor(value) and value.is_floating_point():
+                        tensor = local(value)
+                        if not bool(torch.isfinite(tensor).all()):
+                            record = dict(module=name, shape=list(tensor.shape), dtype=str(tensor.dtype))
+                            (args.out/f'nonfinite-rank{rank}.json').write_text(json.dumps(record))
+                            raise RuntimeError(f'First nonfinite module output: {record}')
+            return hook
+        for name, module in engine.named_modules():
+            if name.endswith(('self_attn','mlp','attn_hc','ffn_hc','hc_head','norm')):
+                module.register_forward_hook(finite_hook(name))
     persistent = check_persistent(engine, optimizer)
     (args.out / f'persistent-initial-rank{rank}.json').write_text(json.dumps(persistent, indent=2))
     (args.out / f'route-identity-rank{rank}.json').write_text(json.dumps(provider.hashes, indent=2))
@@ -186,11 +267,15 @@ def main():
     samples = []
     input_hashes = {}
     for step in range(args.steps):
-        rng = np.random.default_rng(42 + 1009 * rank + step * 100003)
-        array = rng.integers(2, config.vocab_size, (1, args.tokens + 1), dtype=np.int64)
-        input_hashes[str(step)] = hashlib.sha256(array.tobytes()).hexdigest()
-        stream = torch.from_numpy(array).to(device)
-        samples.append((stream[:, :-1].contiguous(), stream[:, 1:].contiguous()))
+        update_samples = []
+        for microbatch in range(args.microbatches):
+            rng = np.random.default_rng(42 + 1009 * rank + (step * args.microbatches + microbatch) * 100003)
+            array = rng.integers(2, config.vocab_size, (1, args.tokens + 1), dtype=np.int64)
+            key = str(step) if args.microbatches == 1 else f'{step}:{microbatch}'
+            input_hashes[key] = hashlib.sha256(array.tobytes()).hexdigest()
+            stream = torch.from_numpy(array).to(device)
+            update_samples.append((stream[:, :-1].contiguous(), stream[:, 1:].contiguous()))
+        samples.append(update_samples)
     (args.out / f'input-identity-rank{rank}.json').write_text(json.dumps(input_hashes, indent=2))
     optimizer.zero_grad()
     torch.accelerator.synchronize()
@@ -205,32 +290,99 @@ def main():
             handle.write(json.dumps(row) + '\n')
         torch.accelerator.reset_peak_memory_stats()
     memory_mark(-1, 'initialized')
-    for step, (inputs, labels) in enumerate(samples):
+    for step, update_samples in enumerate(samples):
         set_step(step)
         before = parameter_samples(engine) if step < 3 else None
-        alpha = torch.tensor(float(args.tokens), device=device)
-        chunks = [dict(shift_labels=chunk, alpha=alpha, reduction='sum') for chunk in labels.split(1024, dim=1)]
-        loss_context = partial(chunk_loss, loss_forward=calculate_lm_loss,
-                               loss_kwargs_chunks=chunks, chunk_size=1024)
         torch.accelerator.synchronize()
         start = time.perf_counter_ns()
-        result = engine(input_ids=inputs, use_cache=False, loss_ctx=loss_context)
-        loss = result.loss
-        memory_mark(step, 'forward')
-        loss.backward()
+        if temporal is not None:
+            temporal.begin_step(step)
+        loss = torch.zeros((), device=device)
+        for offset in range(0, args.microbatches, args.forward_window):
+            pending = []
+            if temporal is not None:
+                window_inputs,window_contexts,microbatch_ids = [],[],[]
+                for microbatch in range(offset,offset+args.forward_window):
+                    inputs,labels = update_samples[microbatch]
+                    alpha = torch.tensor(float(args.tokens),device=device)
+                    chunks = [dict(shift_labels=chunk,alpha=alpha,reduction='sum') for chunk in labels.split(1024,dim=1)]
+                    window_inputs.append(inputs)
+                    window_contexts.append(partial(chunk_loss,loss_forward=calculate_lm_loss,
+                                                   loss_kwargs_chunks=chunks,chunk_size=1024))
+                    microbatch_ids.append(microbatch)
+                result = engine(input_ids=window_inputs,use_cache=False,loss_ctx=window_contexts,
+                                microbatch_ids=microbatch_ids,loss_divisor=args.microbatches)
+                loss = loss+result.loss.detach()
+                memory_mark(step,'forward')
+                result.loss.backward()
+                del result
+                continue
+            for microbatch in range(offset, offset + args.forward_window):
+                set_microbatch(microbatch)
+                inputs, labels = update_samples[microbatch]
+                alpha = torch.tensor(float(args.tokens), device=device)
+                chunks = [dict(shift_labels=chunk, alpha=alpha, reduction='sum') for chunk in labels.split(1024, dim=1)]
+                loss_context = partial(chunk_loss, loss_forward=calculate_lm_loss,
+                                       loss_kwargs_chunks=chunks, chunk_size=1024)
+                result = engine(input_ids=inputs, use_cache=False, loss_ctx=loss_context)
+                weighted_loss = result.loss / args.microbatches
+                pending.append(weighted_loss)
+                loss = loss + weighted_loss.detach()
+            memory_mark(step, 'forward')
+            for weighted_loss in reversed(pending):
+                weighted_loss.backward()
+            del pending, weighted_loss, result
         memory_mark(step, 'backward')
         if args.backend != 'moonep':
             from fsdp_turbo.distributed.expert_parallel.dispatcher_megamoe_balanced import check_step_completions
             check_step_completions()
+        if temporal is not None:
+            temporal.validate_step(args.layers*args.microbatches)
+        if args.dump_grad_step0 and step == 0:
+            # Export from every stream only after native owner delivery and
+            # FSDP reductions finish; default-stream .cpu() alone is insufficient
+            # evidence of cross-stream completion in a diagnostic.
+            torch.accelerator.synchronize()
+            gradients = {name:local(parameter.grad).detach().cpu() for name,parameter in engine.named_parameters()
+                         if parameter.grad is not None}
+            torch.save(gradients,args.out/f'gradient-step0-rank{rank}.pt')
+        if args.finite_diagnostics:
+            from mindspeed_llm.fsdp2.optim.clip_grad_norm import _local_pth_sum
+            summary = []
+            for name, parameter in engine.named_parameters():
+                if parameter.grad is None:
+                    continue
+                gradient = local(parameter.grad).detach()
+                entry = dict(name=name, numel=int(gradient.numel()),
+                             finite=bool(torch.isfinite(gradient).all()))
+                if gradient.numel():
+                    entry['abs_max'] = float(gradient.abs().max())
+                summary.append(entry)
+            for group in ('ep', 'non_ep'):
+                params = [p for p in engine._ep_param_groups.get(group, []) if p.grad is not None]
+                empty = [list(p.shape) for p in params if local(p.grad).numel() == 0]
+                pth = _local_pth_sum(params, 2.0) if params else torch.zeros((), device=device)
+                summary.append(dict(group=group, params=len(params), empty=len(empty),
+                                    local_pth_sum=float(local(pth)), empty_shapes=empty[:4]))
+            (args.out/f'gradient-finite-step{step}-rank{rank}.json').write_text(json.dumps(summary,indent=2))
+        if args.grad_sync:
+            torch.accelerator.synchronize()
         norm = clip_grad_norm(engine, 1.0, error_if_nonfinite=True)
+        if not bool(torch.isfinite(loss)) or not bool(torch.isfinite(local(norm))):
+            record = dict(step=step, loss=float(loss.detach()), grad_norm=float(local(norm)))
+            (args.out/f'nonfinite-update-rank{rank}.json').write_text(json.dumps(record))
+            raise RuntimeError(f'Nonfinite update rejected before Adam: {record}')
         persistent = check_persistent(engine, optimizer, gradients=True) if step < 3 else None
         optimizer.step()
         memory_mark(step, 'optimizer')
         optimizer.zero_grad()
         from fsdp_turbo.distributed.expert_parallel.dispatcher_megamoe_balanced import _POOLS
-        retired=sum(pool.retire_training_step(step) for pool in _POOLS.values())
-        if retired!=(args.layers if args.interface=='unified' else 0):
-            raise RuntimeError(f'Wrong plan retirement count: {retired} != {args.layers}')
+        retired=(temporal.retire_step(step) if temporal is not None else
+                 sum(pool.retire_training_step(step) for pool in _POOLS.values()))
+        expected_retired = (temporal.expected_bodies if temporal is not None else
+                            args.layers * args.microbatches if args.interface == 'unified' else 0)
+        if retired != expected_retired:
+            raise RuntimeError(f'Wrong plan retirement count: {retired} != {expected_retired}')
         torch.accelerator.synchronize()
         milliseconds = (time.perf_counter_ns() - start) / 1e6
         row = dict(rank=rank, step=step, milliseconds=milliseconds, loss=float(loss.detach()),
@@ -239,6 +391,8 @@ def main():
                    peak_reserved_bytes=torch.accelerator.max_memory_reserved(),
                    allocated_bytes=torch.accelerator.memory_allocated(),
                    reserved_bytes=torch.accelerator.memory_reserved())
+        if temporal is not None:
+            temporal.write_step_metadata()
         if not np.isfinite(row['loss']) or not np.isfinite(row['grad_norm']):
             raise RuntimeError('Non-finite training loss or global gradient norm')
         if step < 3:
@@ -258,15 +412,16 @@ def main():
             else:
                 from fsdp_turbo.distributed.expert_parallel.dispatcher_megamoe_balanced import _POOLS
                 from fsdp_turbo.distributed.expert_parallel.dispatcher_mega_moe import _MEGA_MOE_STATE, _local_mem_bytes
-                windows = [_local_mem_bytes(pool.tokens,pool.hidden,pool.topk,8,pool.home+pool.slots,pool.capacity) for pool in _POOLS.values()]
-                workspaces = [int(pool.module.workspace.bytes()) for pool in _POOLS.values()]
+                active_pools = temporal.pools if temporal is not None else tuple(_POOLS.values())
+                windows = [_local_mem_bytes(pool.tokens,pool.hidden,pool.topk,8,pool.home+pool.slots,pool.capacity) for pool in active_pools]
+                workspaces = [int(pool.module.workspace.bytes()) for pool in active_pools]
                 memory_contract = dict(heap_bytes=_MEGA_MOE_STATE.get('total_bytes'), window_bytes=windows, workspace_bytes=workspaces, required_bytes=sum(windows)+sum(workspaces))
                 if memory_contract['required_bytes'] > memory_contract['heap_bytes']:
                     raise RuntimeError(f'Native symmetric allocation exceeds heap: {memory_contract}')
                 (args.out/f'native-symmetric-memory-rank{rank}.json').write_text(json.dumps(memory_contract,indent=2))
                 compute = [dict(role=name, dtype=str(getattr(pool.module,name).dtype),
                                 shape=list(getattr(pool.module,name).shape))
-                           for pool in _POOLS.values() for name in ('w1','w2','replica_w1','replica_w2')]
+                           for pool in active_pools for name in ('w1','w2','replica_w1','replica_w2')]
             if not compute or any(item['dtype'] != 'torch.bfloat16' for item in compute):
                 raise RuntimeError(f'Expert compute mirror dtype mismatch: {compute}')
             (args.out/f'compute-dtypes-rank{rank}.json').write_text(json.dumps(compute,indent=2))
@@ -274,21 +429,32 @@ def main():
         with (args.out / f'steps-rank{rank}.jsonl').open('a') as handle:
             handle.write(json.dumps(row) + '\n')
         print(json.dumps(row), flush=True)
-    if any(provider.calls.get((step, layer), 0) != 2 for step in range(args.steps) for layer in range(args.layers)):
+    expected_route_calls = 3 if args.temporal_policy in ('easy_home','easy_independent') and not args.temporal_schedule_replay else 2
+    if len(provider.calls) != args.steps * args.layers * args.microbatches or any(count != expected_route_calls for count in provider.calls.values()):
         raise RuntimeError(f'Unexpected checkpoint replay route calls: {provider.calls}')
-    (args.out / f'route-calls-rank{rank}.json').write_text(json.dumps({f'{step}:{layer}': count for (step, layer), count in provider.calls.items()}, indent=2))
+    (args.out / f'route-calls-rank{rank}.json').write_text(json.dumps({':'.join(map(str,key)): count for key, count in provider.calls.items()}, indent=2))
     from fsdp_turbo.distributed.expert_parallel.dispatcher_megamoe_balanced import _POOLS
     planning=[dict(planner=pool.planner_name,calls=pool.policy.calls,replay=pool.replay_audit,live=len(pool._plan_bodies),model_sha=getattr(pool.policy,'model_sha',None)) for pool in _POOLS.values()]
-    if sum(p['calls'] for p in planning)!=args.steps*args.layers*(1 if args.interface=='unified' else 2) or any(p['live'] for p in planning):
+    if temporal is None and (sum(p['calls'] for p in planning)!=args.steps*args.layers*args.microbatches*(1 if args.interface=='unified' else 2) or any(p['live'] for p in planning)):
         raise RuntimeError(f'Checkpoint reran policy or leaked plan bodies: {planning}')
     (args.out/f'planning-audit-rank{rank}.json').write_text(json.dumps(planning,indent=2))
+    if temporal is not None:
+        audit = temporal.audit()
+        if any(pool['live'] for pool in audit['pools']):
+            raise RuntimeError('Temporal runtime leaked a plan body')
+        (args.out/f'temporal-audit-rank{rank}.json').write_text(json.dumps(audit,indent=2))
     for pool in _POOLS.values():
         if getattr(pool.policy,'decisions',None):
             records=torch.stack(pool.policy.decisions).cpu().numpy()
             np.save(args.out/f'planner-decisions-rank{rank}.npy',records,allow_pickle=False)
+    if args.dump_final_state:
+        state = {name: local(parameter).detach().cpu() for name, parameter in engine.named_parameters()}
+        torch.save(state, args.out/f'final-state-rank{rank}.pt')
     if runtime is not None:
         runtime.close()
     else:
+        if temporal is not None:
+            temporal.close_extra()
         from fsdp_turbo.distributed.expert_parallel.dispatcher_megamoe_balanced import close_megamoe_balanced
         close_megamoe_balanced()
     dist.barrier()
@@ -297,4 +463,12 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except BaseException:
+        import sys
+        import traceback
+        traceback.print_exc()
+        sys.stdout.flush()
+        sys.stderr.flush()
+        os._exit(1)

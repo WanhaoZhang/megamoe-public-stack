@@ -17,7 +17,7 @@ def install(out:Path,rank:int):
     from ascend_deepep.fsdp2_bridge import NativeFSDP2Pool
     from ascend_deepep.unified_planner import CommonOnlinePlanner
     from ascend_deepep.megaflux_stage_layout import PREFIX,HEADER,LANES,WORDS
-    from mindspeed_llm.fsdp2.features.ep8_imbalance import plan_invocation
+    from ascend_deepep.plan_replay import invocation as plan_invocation
     original_forward=NativeFSDP2Pool.forward;original_backward=NativeFSDP2Pool.backward
     original_compile=CommonOnlinePlanner._compile;original_publish=NativeFSDP2Pool._publish
     pending=[];controls=[];contexts=[];counter=0;control_counter=0
@@ -27,7 +27,9 @@ def install(out:Path,rank:int):
 
     def control(phase,fn,args,kwargs):
         nonlocal control_counter
-        key,recompute=invocation();token=scopes['begin'](phase,key=key,recompute=recompute)
+        request=invocation()
+        if request is None:return fn(*args,**kwargs)
+        key,recompute=request;token=scopes['begin'](phase,key=key,recompute=recompute)
         start=time.monotonic_ns()
         try:return fn(*args,**kwargs)
         finally:
@@ -109,8 +111,10 @@ def install(out:Path,rank:int):
             controls.clear()
 
     def forward(pool,*args,**kwargs):
+        request=plan_invocation()
+        if request is None:return original_forward(pool,*args,**kwargs)
         if not isinstance(pool.module.op,OperatorScopes):pool.module.op=OperatorScopes(pool.module.op,pool)
-        key,recompute=plan_invocation();contexts.append((key,recompute))
+        key,recompute=request;contexts.append((key,recompute))
         token=scopes['begin']('MegaMoE.forward',key=key,recompute=recompute);start=time.monotonic_ns()
         try:
             result=original_forward(pool,*args,**kwargs);finish=time.monotonic_ns();scopes['end'](token)

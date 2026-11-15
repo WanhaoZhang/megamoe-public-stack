@@ -1,0 +1,7 @@
+{
+  "scope": "diagnostic_only; not performance binary",
+  "binaries": {
+    "source/native-balanced/worker-variants/temporal-ep8-cap64-timer/libascend_deepep_megaflux_worker_bf16.so": "6933b6470f5a9cdc821a48b25fd21310ef0c96d4f1c78534513b7fa7b44c020b",
+    "source/native-balanced/worker-variants/temporal-ep8-cap64-timer/libascend_deepep_megaflux_early_bf16.so": "6933b6470f5a9cdc821a48b25fd21310ef0c96d4f1c78534513b7fa7b44c020b"
+  }
+}

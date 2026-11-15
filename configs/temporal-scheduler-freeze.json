@@ -1,0 +1,7 @@
+{
+  "abi": 3,
+  "device_validation": "pending",
+  "binaries": {
+    "source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler.so": "f13c3eec86373e253d2281eda829eb6ba1dc3a72465288c933e4178c5047d667"
+  }
+}

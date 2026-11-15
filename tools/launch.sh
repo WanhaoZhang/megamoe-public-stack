@@ -48,6 +48,12 @@ fi
 if [ "$MODE" = links ]; then
  SCRIPT="$TASK/tools/calibrate_links.py"
  EXTRA=()
+elif [ "$MODE" = scheduler ]; then
+ SCRIPT="$TASK/tools/gate_temporal_scheduler.py"
+ EXTRA=()
+elif [ "$MODE" = temporal_math ]; then
+ SCRIPT="$TASK/tools/gate_runset_math.py"
+ EXTRA=()
 elif [ "$MODE" = plan ]; then
  SCRIPT="$TASK/tools/gate_unified_plan.py"
  EXTRA=()

@@ -54,6 +54,11 @@ def main():
     parser.add_argument('--semantic-cost-model',action='store_true')
     parser.add_argument('--restore', choices=('staged', 'expert', 'panel'), default='staged')
     parser.add_argument('--tokens', type=int, default=257)
+    parser.add_argument('--microbatches', type=int, default=1)
+    parser.add_argument('--reference', choices=('native','torch'), default='native')
+    parser.add_argument('--grouped-domains', action='store_true')
+    parser.add_argument('--reject-mismatch', action='store_true')
+    parser.add_argument('--home-only-proposal', action='store_true')
     parser.add_argument('--ffn', type=int, default=512)
     parser.add_argument('--experts',type=int,default=8)
     parser.add_argument('--slots',type=int)
@@ -101,6 +106,10 @@ def main():
                           routed_input_mode='redispatch', enable_diagnostics=True,cost_model=args.cost_model)
     pool.audit = []
     native = restore_native_identity(pool, args.expect_operand_ready, args.expect_delay_cycles)
+    if args.home_only_proposal:
+        from ascend_deepep.home_group_planner import FixedHomeGroupPlanner
+        pool.policy = FixedHomeGroupPlanner(pool.policy.validator)
+        pool.planner_name = 'fixed_home_group'
     if args.require_replicas:
         assert pool.audit is not None, 'require WUHAN_POOL_AUDIT=1 for active-replica evidence'
     base = MegaMoeBF16Train(shmem, base_window)
@@ -111,11 +120,71 @@ def main():
     weights = [[torch.nn.Parameter(dense(shape, .01).to(parameter_dtype)) for shape in
                 ((home, 2*f, h), (home, h, f))] for _ in range(2)]
     bridges = [FSDP2ExpertsBridge(pool, lambda layer=layer: tuple(weights[layer])) for layer in range(2)]
+    domains = []
+    if args.grouped_domains:
+        from grouped_experts import ExpertDomain, GroupedExpertsBridge
+        from ascend_deepep.home_group_planner import FixedHomeGroupPlanner
+        if slots or home % 2:
+            raise ValueError('Two-domain gate requires slots0 and even home count')
+        domains = [ExpertDomain((2*layer,2*layer+1),home//2,ep) for layer in range(2)]
+        pool.policy = FixedHomeGroupPlanner(pool.policy.validator)
+        pool.planner_name = 'fixed_home_group'
+        bridges = [GroupedExpertsBridge(domain,pool,{
+            logical_layer: (lambda layer=layer,offset=offset: tuple(
+                value[offset*home//2:(offset+1)*home//2] for value in weights[layer]))
+            for offset,logical_layer in enumerate(domain.layers)})
+            for layer,domain in enumerate(domains)]
+        if args.reject_mismatch:
+            bad_domain = ExpertDomain((100,101) if rank == 0 else (0,1),home//2,ep)
+            bad_bridge = GroupedExpertsBridge(bad_domain,pool,{
+                identity: (lambda offset=offset: tuple(value[offset*home//2:(offset+1)*home//2]
+                                                        for value in weights[0]))
+                for offset,identity in enumerate(bad_domain.layers)})
+            size = m//2
+            parts = (size,m-size)
+            tasks = tuple((identity,torch.zeros((rows,h),device=device,dtype=torch.bfloat16),
+                           torch.zeros((rows,k),device=device,dtype=torch.int32),
+                           torch.full((rows,k),.5,device=device,dtype=torch.float32))
+                          for identity,rows in zip(bad_domain.layers,parts))
+            try:
+                bad_bridge(tasks,(0,0,99,0))
+            except ValueError as error:
+                assert 'Collective group identity' in str(error)
+            else:
+                raise AssertionError('inconsistent domains were admitted')
+            assert not pool.failed and pool.policy.calls == 0
+            args.out.mkdir(parents=True,exist_ok=True)
+            (args.out/f'group-rejection-rank{rank}.json').write_text(json.dumps(
+                dict(rejected_collectively=True,native_not_entered=True,pool_healthy=True)))
     updates = []
     from ascend_deepep.plan_replay import install_replay_provider
     invocation_key=ContextVar('test_invocation',default=None)
     in_recompute=ContextVar('test_recompute',default=False)
     install_replay_provider(lambda: None if invocation_key.get() is None else (invocation_key.get(),in_recompute.get()))
+    def torch_reference(x, current_ids, probability, weight_gate_up, weight_down):
+        from torch.distributed.nn.functional import all_gather, all_reduce
+        import torch.nn.functional as functional
+        packed = torch.cat((x.float(),probability.to(torch.bfloat16).float()),dim=-1)
+        gathered = torch.cat(all_gather(packed),dim=0)
+        gathered_x, gathered_probability = gathered[:,:h], gathered[:,h:]
+        gathered_ids = [torch.empty_like(current_ids) for _ in range(ep)]
+        dist.all_gather(gathered_ids,current_ids)
+        gathered_ids = torch.cat(gathered_ids,dim=0).long()
+        output = torch.zeros((ep*m,h),device=device,dtype=torch.float32)
+        output = output + (weight_gate_up.sum()+weight_down.sum()+gathered.sum())*0
+        for expert in range(home):
+            rows, choices = torch.where(gathered_ids == rank*home+expert)
+            if rows.numel() == 0:
+                continue
+            raw = functional.linear(gathered_x[rows],weight_gate_up[expert].float()).to(torch.bfloat16).float()
+            gate, up = raw.chunk(2,dim=-1)
+            if args.limit:
+                gate, up = gate.clamp(max=args.limit), up.clamp(-args.limit,args.limit)
+            activation = (functional.silu(gate)*up).to(torch.bfloat16).float()
+            value = functional.linear(activation,weight_down[expert].float()).to(torch.bfloat16).float()
+            output = output.index_add(0,rows,value*gathered_probability[rows,choices,None])
+        combined = all_reduce(output)
+        return combined[rank*m:(rank+1)*m].to(torch.bfloat16)
     @contextmanager
     def replay_context():
         token=in_recompute.set(True)
@@ -126,6 +195,8 @@ def main():
             cpu_ids = np.arange(m*k).reshape(m, k) % e
         else:
             cpu_ids = np.tile(np.array([0, 1] if kind == 'hot' else [e-2, e-1]), (m, 1))
+            if args.grouped_domains:
+                cpu_ids[m//2:] = (cpu_ids[m//2:]+(ep//2)*home+home//2) % e
         ids = torch.tensor(cpu_ids, device=device, dtype=torch.int32)
         data = dense((m, h), .2 if args.limit == 0 else 2.)
         dy = dense((m, h), .1)
@@ -134,25 +205,43 @@ def main():
                              weights=[[digest(w) for w in pair] for pair in weights])
         audit_start = len(pool.audit) if pool.audit is not None else 0
         def run(use_bridge):
-            x = data.detach().clone().requires_grad_()
-            probs = [torch.full((m, k), .5, device=device, dtype=torch.float32, requires_grad=True) for _ in range(2)]
-            xs, ys = [], []
-            for layer in range(2):
-                z = x if layer == 0 else x + ys[0]
-                z.retain_grad()
-                xs.append(z)
-                if use_bridge:
-                    def fn(z,p,layer=layer):
-                        invocation_key.set((update,layer))
-                        return bridges[layer](z,ids,p,args.limit)
-                else:
-                    def fn(z, p, layer=layer):
-                        w1, w2 = references[layer]
-                        return base(z, ids, p.to(torch.bfloat16), w1.to(torch.bfloat16),
-                                    w2.to(torch.bfloat16), base_capacity, swiglu_limit=args.limit,
-                                    save_gmm1_output='bf16')[0]
-                y = checkpoint(fn, z, probs[layer], use_reentrant=False,context_fn=lambda:(nullcontext(),replay_context())) if args.checkpoint else fn(z, probs[layer])
-                ys.append(y)
+            pending = []
+            for microbatch in range(args.microbatches):
+                x = data.detach().clone().requires_grad_()
+                current_ids = (ids + microbatch * home) % e
+                probs = [torch.full((m, k), .5, device=device, dtype=torch.float32, requires_grad=True) for _ in range(2)]
+                xs, ys = [], []
+                for layer in range(2):
+                    z = x if layer == 0 else x + ys[0]
+                    z.retain_grad()
+                    xs.append(z)
+                    if use_bridge:
+                        def fn(z,p,layer=layer,microbatch=microbatch,current_ids=current_ids):
+                            invocation_key.set((update,microbatch,layer,0))
+                            if args.grouped_domains:
+                                task_layers,logical_ids = domains[layer].decode(current_ids)
+                                rows = [torch.where(task_layers[:,0]==identity)[0] for identity in domains[layer].layers]
+                                tasks = tuple((identity,z[index],logical_ids[index],p[index])
+                                              for identity,index in zip(domains[layer].layers,rows))
+                                outputs = bridges[layer](tasks,(update,microbatch,layer,0),
+                                    recompute=in_recompute.get(),limit=args.limit)
+                                result = torch.zeros_like(z)
+                                for index,output in zip(rows,outputs):
+                                    result = result.index_copy(0,index,output)
+                                return result
+                            return bridges[layer](z,current_ids,p,args.limit)
+                    else:
+                        def fn(z,p,layer=layer,current_ids=current_ids):
+                            w1, w2 = references[layer]
+                            if args.reference == 'torch':
+                                return torch_reference(z,current_ids,p,w1,w2)
+                            return base(z, current_ids, p.to(torch.bfloat16), w1.to(torch.bfloat16),
+                                        w2.to(torch.bfloat16), base_capacity, swiglu_limit=args.limit,
+                                        save_gmm1_output='bf16')[0]
+                    do_checkpoint = args.checkpoint and (use_bridge or args.reference == 'native')
+                    y = checkpoint(fn, z, probs[layer], use_reentrant=False,context_fn=lambda:(nullcontext(),replay_context())) if do_checkpoint else fn(z, probs[layer])
+                    ys.append(y)
+                pending.append((xs,ys,probs))
             if use_bridge:
                 # Emulate another layer's pool use after both forwards. Backward
                 # must read live Parameters and restore both homes and replicas.
@@ -161,23 +250,28 @@ def main():
                     pool.module.w2.fill_(11)
                     pool.module.replica_w1.fill_(-7)
                     pool.module.replica_w2.fill_(9)
-            ys[-1].backward(dy)
+            for _,ys,_ in reversed(pending):
+                ys[-1].backward(dy / args.microbatches)
             torch.npu.synchronize()
             params = weights if use_bridge else references
-            values = [[ys[layer].detach().clone(), xs[layer].grad.detach().clone(),
-                       probs[layer].grad.detach().clone(), params[layer][0].grad.detach().clone(),
+            values = [[torch.cat([ys[layer].detach() for _,ys,_ in pending]).clone(),
+                       torch.cat([xs[layer].grad.detach() for xs,_,_ in pending]).clone(),
+                       torch.cat([probs[layer].grad.detach() for _,_,probs in pending]).clone(), params[layer][0].grad.detach().clone(),
                        params[layer][1].grad.detach().clone()] for layer in range(2)]
             return values
         golden = run(False)
         actual = run(True)
-        assert pool.retire_training_step(update)==2
-        if args.require_replicas and kind == 'hot':
-            assert any(expert >= 0 for audit in pool.audit[audit_start:]
-                       for slots in audit['copies'] for expert in slots), \
-                'this hot update did not exercise replica restoration'
+        assert pool.retire_training_step(update)==2*args.microbatches
         comparisons = [[metrics(a, b, i == 0) for i, (a, b) in enumerate(zip(av, bv))]
                        for av, bv in zip(actual, golden)]
+        used_replicas = any(expert >= 0 for audit in pool.audit[audit_start:]
+                            for slots in audit['copies'] for expert in slots)
+        args.out.mkdir(parents=True,exist_ok=True)
+        (args.out/f'case-{kind}-rank{rank}.json').write_text(json.dumps(
+            dict(comparisons=comparisons,used_replicas=used_replicas),indent=2))
         assert all(item['pass_'] for row in comparisons for item in row), comparisons
+        if args.require_replicas and kind == 'hot':
+            assert used_replicas, 'this hot update did not exercise replica restoration'
         for av, bv in zip(actual, golden):
             for a, b in zip(av[3:], bv[3:]):
                 if not torch.count_nonzero(b).item():

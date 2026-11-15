@@ -594,6 +594,9 @@ ascend_deepep_add_kernel_library(ascend_deepep_link_calibration
     TIMER_WITHOUT_BLOCK_LOCAL_INIT
     SOURCES kernels/mega_moe_bf16/mega_moe_link_calibration.cpp
     INCLUDES include "${SHMEM_HOME_PATH}/shmem/include" "${SHMEM_HOME_PATH}/shmem/src")
+ascend_deepep_add_kernel_library(ascend_deepep_temporal_scheduler
+    TIMER_WITHOUT_BLOCK_LOCAL_INIT
+    SOURCES kernels/mega_moe_bf16/mega_moe_temporal_scheduler.cpp)
 ascend_deepep_add_kernel_library(ascend_deepep_step_time_planner
     TIMER_WITHOUT_BLOCK_LOCAL_INIT
     SOURCES kernels/mega_moe_bf16/mega_moe_step_time_planner.cpp

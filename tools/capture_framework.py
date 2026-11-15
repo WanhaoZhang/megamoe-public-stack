@@ -31,7 +31,9 @@ def attach_module_hooks(module,name,layer,begin,end):
             return result
         ins=grad_tensors((inputs,kwargs));outs=grad_tensors(output)
         has_inputs=bool(ins);state={'token':None,'handles':[]}
-        key=(token[0]['step'],layer)
+        captured_key = tuple(token[0]['invocation'])
+        key = (captured_key[:2] + (layer,) + captured_key[3:] if len(captured_key) == 4
+               else (captured_key[0],layer))
         def remove():
             for handle in state['handles']:handle.remove()
             state['handles'].clear()
@@ -57,16 +59,21 @@ def install(out:Path,rank:int):
     from fsdp_turbo.distributed.fine_grained_fully_shard.param_group import FSDPParamGroup
     from ascend_deepep.fsdp2_bridge import NativeFSDP2Pool
     origin=torch.npu.Event(enable_timing=True);origin.record();origin.synchronize()
-    pending=[];sequence=0;flushers=[]
+    pending=[];sequence=0;flushers=[];active_update=[None]
     def begin(name,stream=None,layer=None,key=None,recompute=None):
         nonlocal sequence
         stream=torch.npu.current_stream() if stream is None else stream
         event=torch.npu.Event(enable_timing=True);event.record(stream)
         current_key,current_recompute=plan_invocation()
         key=current_key if key is None else key
+        if layer is not None and layer>=0 and key==current_key:
+            key=(key[:2]+(layer,)+key[3:] if len(key)==4 else (key[0],layer))
         recompute=current_recompute if recompute is None else recompute
-        metadata=dict(rank=rank,sequence=sequence,name=name,step=key[0],layer=key[1] if layer is None else layer,
+        metadata=dict(rank=rank,sequence=sequence,name=name,step=key[0],
+            microbatch=key[1] if len(key)==4 else 0, invocation=list(key),
+            layer=(key[2] if len(key)==4 else key[1]) if layer is None else layer,
             recompute=recompute,stream=int(stream.npu_stream),host_begin_ns=time.monotonic_ns(),
+            initialization=active_update[0] is None,
             clock='single-device Event timeline; independent origin per rank',diagnostic_only=True,
             semantics='stream interval, includes dependencies and host supply gaps; nested scopes are not additive')
         sequence+=1
@@ -131,6 +138,11 @@ def install(out:Path,rank:int):
         return result
     FunctionalFusedAdamW.step=audited_adam
     main=sys.modules['__main__']
+    original_set_step=main.set_step
+    def start_update(step):
+        active_update[0]=step
+        return original_set_step(step)
+    main.set_step=start_update
     main.clip_grad_norm=wrapped(main.clip_grad_norm,'optimizer.global_clip')
     for method,streams in (
         ('unshard',('all_gather_copy_in_stream','all_gather_stream')),
@@ -164,4 +176,24 @@ def install(out:Path,rank:int):
     def retire(self,*args,**kwargs):
         result=original_retire(self,*args,**kwargs);flush();return result
     NativeFSDP2Pool.retire_training_step=retire
+    # Separate the stream-local selection interval from its host envelope,
+    # which may also wait for previously enqueued Attention/probe work.
+    from device_temporal_scheduler import DeviceTemporalScheduler
+    from temporal_model import TemporalRuntime
+    original_select=DeviceTemporalScheduler.select
+    def select_ready(self,keys,*args,**kwargs):
+        token=begin('ready_frontier.device_selection',layer=-1,
+                    key=(keys[0].step,-1,self.calls,2),recompute=False)
+        self.last_diagnostic_event_sequence=token[0]['sequence']
+        try:return original_select(self,keys,*args,**kwargs)
+        finally:end(token)
+    DeviceTemporalScheduler.select=select_ready
+    original_probe=TemporalRuntime._probe
+    def probe_ready(self,model,key,*args,**kwargs):
+        if not self.route_stats_required:return original_probe(self,model,key,*args,**kwargs)
+        token=begin('ready_frontier.prefix_probe',layer=key.layer,
+                    key=(key.step,key.microbatch,key.layer,key.invocation),recompute=False)
+        try:return original_probe(self,model,key,*args,**kwargs)
+        finally:end(token)
+    TemporalRuntime._probe=probe_ready
     return dict(begin=begin,end=end,flush=flush,register_flusher=flushers.append)

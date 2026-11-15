@@ -61,7 +61,7 @@ def loaded_libraries(out, rank):
         raise RuntimeError(f'Expected exactly one SHMEM runtime: {shmem}')
     records = {}
     for name in paths:
-        if '/planner-executor-ep8-lab/' in name or Path(name).name.startswith('libstdc++.so') or Path(name).name in ('libshmem.so', 'libprofapi.so', 'libprofimpl.so'):
+        if '/source/native-balanced/' in name or Path(name).name.startswith('libstdc++.so') or Path(name).name in ('libshmem.so', 'libprofapi.so', 'libprofimpl.so'):
             file = Path(name)
             records[name] = dict(size=file.stat().st_size, sha256=hashlib.sha256(file.read_bytes()).hexdigest())
     (out / f'libraries-rank{rank}.json').write_text(json.dumps(dict(shmem=shmem, libraries=records, python=platform.python_version(), torch=torch.__version__,

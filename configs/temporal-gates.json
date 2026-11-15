@@ -1,0 +1,48 @@
+{
+  "evidence_paths_relative_to": "project artifact root, parent of local stack",
+  "cpu_contract": {
+    "passed": true,
+    "evidence": "evidence/cpu-contract-current.log",
+    "tests": 9
+  },
+  "source_archive_integrity": {
+    "passed": true,
+    "evidence": "evidence/source-freeze-tests.log",
+    "tests": 3
+  },
+  "same_weight_full_gradient": {
+    "passed": true,
+    "evidence": "strong-baseline-qualification.json",
+    "other_policies": "ordered-w2-complete.json",
+    "threshold": 0.02
+  },
+  "legacy_w1_full_gradient": {
+    "passed": true,
+    "evidence": "observation-gates.json"
+  },
+  "device_scheduler_reference": {
+    "passed": true,
+    "evidence": "evidence/device-scheduler-reference-v3/status.json"
+  },
+  "primary_online_adam3": {
+    "passed": true,
+    "evidence": "pilot-results.json",
+    "actual_updates": 25
+  },
+  "common_memory_budget": {
+    "passed": true,
+    "evidence": "pilot-results.json",
+    "ceiling_gib": 90
+  },
+  "group_protocol_recovery": {
+    "passed": true,
+    "evidence": "evidence/grouped-domain-rejection/status.json"
+  },
+  "timer_v2_diagnostic": {
+    "passed": true,
+    "evidence": "timer-v2-matched-qualification.json"
+  },
+  "formal_matrix_enabled": false,
+  "afore_cache_implemented": false,
+  "joint_strategy_implemented": false
+}
