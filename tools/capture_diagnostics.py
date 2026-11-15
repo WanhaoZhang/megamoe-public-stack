@@ -20,7 +20,7 @@ def install(out:Path,rank:int):
     from ascend_deepep.plan_replay import invocation as plan_invocation
     original_forward=NativeFSDP2Pool.forward;original_backward=NativeFSDP2Pool.backward
     original_compile=CommonOnlinePlanner._compile;original_publish=NativeFSDP2Pool._publish
-    pending=[];controls=[];contexts=[];counter=0;control_counter=0
+    pending=[];controls=[];contexts=[];phases=[];counter=0;control_counter=0
 
     def invocation():
         return contexts[-1] if contexts else plan_invocation()
@@ -114,19 +114,19 @@ def install(out:Path,rank:int):
         request=plan_invocation()
         if request is None:return original_forward(pool,*args,**kwargs)
         if not isinstance(pool.module.op,OperatorScopes):pool.module.op=OperatorScopes(pool.module.op,pool)
-        key,recompute=request;contexts.append((key,recompute))
+        key,recompute=request;contexts.append((key,recompute));phases.append('forward')
         token=scopes['begin']('MegaMoE.forward',key=key,recompute=recompute);start=time.monotonic_ns()
         try:
             result=original_forward(pool,*args,**kwargs);finish=time.monotonic_ns();scopes['end'](token)
             snapshot(pool,'forward',key,recompute,token,start,finish,pool._plan_bodies[key].body)
             return result
-        finally:contexts.pop()
+        finally:contexts.pop();phases.pop()
 
     def backward(pool,*args,**kwargs):
         placement=args[5] if len(args)>5 else kwargs['placement']
         matches=[(key,ticket) for key,ticket in pool._plan_bodies.items() if placement[0].data_ptr()==ticket.logical_ids.data_ptr()]
         if len(matches)!=1:raise RuntimeError('saved backward placement has no unique diagnostic plan identity')
-        key,ticket=matches[0];contexts.append((key,False))
+        key,ticket=matches[0];contexts.append((key,False));phases.append('backward')
         token=scopes['begin']('MegaMoE.backward',key=key,recompute=False);start=time.monotonic_ns()
         original_descriptor=pool.module._descriptor
         def descriptor(plan):
@@ -145,8 +145,9 @@ def install(out:Path,rank:int):
         finally:
             pool.module._descriptor=original_descriptor
             contexts.pop()
+            phases.pop()
 
     scopes['register_flusher'](export)
     NativeFSDP2Pool.forward=forward;NativeFSDP2Pool.backward=backward
     NativeFSDP2Pool._publish=publish;CommonOnlinePlanner._compile=compile
-    return dict(scopes=scopes,invocation=invocation)
+    return dict(scopes=scopes,invocation=invocation,phase=lambda:phases[-1] if phases else 'framework')

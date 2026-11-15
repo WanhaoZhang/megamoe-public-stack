@@ -12,7 +12,7 @@ import torch
 import torch.distributed as dist
 
 
-def install(out,rank,scopes,invocation):
+def install(out,rank,scopes,invocation,phase):
     import lifetime_device as module
     cls=module.LifetimeDevice
     active=ContextVar('lifetime_diagnostic_context',default=None)
@@ -30,7 +30,7 @@ def install(out,rank,scopes,invocation):
         nonlocal sequence
         records.append(dict(rank=rank,sequence=sequence,name=name,mode=instance.mode,
             invocation=list(key),recompute=replay,version=instance.context.version,
-            logical_layer=instance.layer,host_begin_ns=start,host_end_ns=finish,
+            logical_layer=instance.layer,physical_phase=phase(),host_begin_ns=start,host_end_ns=finish,
             host_elapsed_ms=(finish-start)/1e6,diagnostic_only=True,
             nested_scopes_nonadditive=True,**extra))
         sequence+=1
@@ -44,13 +44,32 @@ def install(out,rank,scopes,invocation):
                 token=active.set((self,key,replay))
                 event=scopes['begin']('lifetime.'+name,key=key,recompute=replay)
                 before=dict(self.stats);pending_before=len(self.pending)
+                flight_before=len(self.flight)
+                pending_keys=list(self.pending) if name=='flush' else None
                 start=time.monotonic_ns();failed=False
-                try:return original(self,*args,**kwargs)
+                cache_uses=[]
+                try:
+                    result=original(self,*args,**kwargs)
+                    if name=='begin':self._diagnostic_cache_origins={}
+                    if name=='prepare':
+                        history=self._diagnostic_cache_origins
+                        for slot,lease in self._current[2]:
+                            old=history.get(lease.key)
+                            kind=('miss' if not lease.ready else
+                                  'same_invocation' if old and old[0]==tuple(key) else
+                                  'same_group_other_wave' if old and old[0][:3]==tuple(key)[:3] else
+                                  'cross_group' if old else 'unknown')
+                            cache_uses.append(dict(slot=slot,expert=lease.key.expert,layer=lease.key.layer,
+                                hit=lease.ready,kind=kind,previous=old))
+                            history[lease.key]=(tuple(key),phase(),replay)
+                    return result
                 except BaseException:failed=True;raise
                 finally:
                     finish=time.monotonic_ns();scopes['end'](event,failed)
                     record(self,name,key,replay,start,finish,event_sequence=event[0]['sequence'],
                         pending_before=pending_before,pending_after=len(self.pending),failed=failed,
+                        flight_before=flight_before,flight_after=len(self.flight),pending_keys=pending_keys,
+                        flush_reason=getattr(self,'_diagnostic_flush_reason',None),cache_uses=cache_uses,
                         payload_delta={k:self.stats[k]-v for k,v in before.items()})
                     active.reset(token)
             return call

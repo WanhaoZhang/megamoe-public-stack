@@ -172,6 +172,7 @@ class LifetimeDevice:
                 key = (source, layer, expert)
                 per_source = [item for item in self.pending if item[0] == source]
                 if key not in self.pending and len(per_source) == self.entries:
+                    self._diagnostic_flush_reason='capacity'
                     self.flush()
                     self._drain()
                     per_source = []
@@ -191,6 +192,7 @@ class LifetimeDevice:
                     self.gradients_buffer[0][index].add_(first[self.pool.home + slot].float())
                     self.gradients_buffer[1][index].add_(second[self.pool.home + slot].float())
         if self.mode in ('b0', 'b1'):
+            self._diagnostic_flush_reason='immediate'
             self.flush()
 
     def flush(self):
@@ -236,9 +238,11 @@ class LifetimeDevice:
 
     def window_boundary(self):
         if self.mode == 'b2':
+            self._diagnostic_flush_reason='window'
             self.flush()
 
     def finish(self):
+        self._diagnostic_flush_reason='update_end'
         self.flush()
         self._drain()
         self.context.finish()
