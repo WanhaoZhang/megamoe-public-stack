@@ -16,6 +16,7 @@ def install(out,rank,scopes,invocation):
     import lifetime_device as module
     cls=module.LifetimeDevice
     active=ContextVar('lifetime_diagnostic_context',default=None)
+    group_active=ContextVar('group_manifest_context',default=None)
     records=[];edges=[];sequence=0
 
     def identity(instance,method,args):
@@ -69,11 +70,45 @@ def install(out,rank,scopes,invocation):
     @functools.wraps(original_gather)
     def gather(*args,**kwargs):
         state=active.get()
-        if state is None:return original_gather(*args,**kwargs)
+        if state is None:
+            group=group_active.get()
+            if group is None:return original_gather(*args,**kwargs)
+            key,replay,layers=group;start=time.monotonic_ns()
+            try:return original_gather(*args,**kwargs)
+            finally:
+                records.append(dict(rank=rank,name='host_group_manifest_all_gather',mode='framework',
+                    invocation=list(key),recompute=replay,logical_layers=list(layers),
+                    host_begin_ns=start,host_end_ns=time.monotonic_ns(),diagnostic_only=True,
+                    semantics='common grouped-framework identity check, not lifecycle-specific'))
         instance,key,replay=state;start=time.monotonic_ns()
         try:return original_gather(*args,**kwargs)
         finally:record(instance,'host_object_all_gather',key,replay,start,time.monotonic_ns())
     dist.all_gather_object=gather
+
+    from grouped_experts import GroupedExpertsBridge
+    original_group=GroupedExpertsBridge.__call__
+    def grouped(self,tasks,key,*,recompute=False,limit=10.):
+        token=group_active.set((key,recompute,self.domain.layers))
+        try:return original_group(self,tasks,key,recompute=recompute,limit=limit)
+        finally:group_active.reset(token)
+    GroupedExpertsBridge.__call__=grouped
+    original_weights=GroupedExpertsBridge._weights
+    def weights(self):
+        group=group_active.get();request=invocation()
+        key,replay=(group[:2] if group is not None else request) if (group is not None or request is not None) else ((-1,-1,self.domain.layers[0],-2),False)
+        event=scopes['begin']('framework.owner_compute_materialization',key=key,recompute=replay)
+        start=time.monotonic_ns()
+        try:
+            result=original_weights(self)
+            records.append(dict(rank=rank,name='owner_compute_materialization_enqueue',mode='framework',
+                invocation=list(key),recompute=replay,logical_layers=list(self.domain.layers),
+                host_begin_ns=start,host_end_ns=time.monotonic_ns(),diagnostic_only=True,
+                output_dtypes=[str(value.dtype) for value in result],
+                output_bytes=sum(value.numel()*value.element_size() for value in result),
+                event_sequence=event[0]['sequence']))
+            return result
+        finally:scopes['end'](event)
+    GroupedExpertsBridge._weights=weights
 
     original_add=cls._add_owner
     def add_owner(self,layer,expert,first,second):

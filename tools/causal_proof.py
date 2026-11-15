@@ -3,7 +3,7 @@ import hashlib
 import json
 import os
 
-REQUIRED=('tools/train.py','tools/lifetime_device.py','tools/capture_diagnostics.py',
+REQUIRED=('tools/train.py','tools/lifetime_device.py','tools/step_lifetime.py','tools/causal_proof.py','tools/capture_diagnostics.py',
           'tools/capture_framework.py','tools/capture_lifetime.py','tools/grouped_experts.py',
           'tools/temporal_model.py','tools/temporal_prefix_reuse.py',
           'source/native-balanced/ascend_deepep/fsdp2_bridge.py',
