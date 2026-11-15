@@ -21,7 +21,7 @@ def job(tag,arm,small=False,steps=3,pattern='random'):
         '--hold-fsdp-forward','--temporal-prefix-reuse']
     if small:args+=['--route-bank',LANE+'/small-routes','--dump-grad-step0']
     if arm=='easy_home':args+=['--maxutil-rule','upstream_first']
-    code=subprocess.run([sys.executable,str(ROOT/'remote.py'),'gate','--metadata-only','--tag',tag,*args]).returncode
+    code=subprocess.run([sys.executable,str(Path(__file__).resolve().parent/'remote.py'),'gate','--metadata-only','--tag',tag,*args]).returncode
     folder=ROOT/'evidence'/tag
     receipt=json.loads((folder/'status.json').read_text()) if (folder/'status.json').exists() else {}
     passed=(code==0 and receipt.get('qualified') and receipt.get('source_unchanged') and
