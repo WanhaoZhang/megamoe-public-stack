@@ -24,7 +24,7 @@ index 1443886..d8bbafb 100644
 +        finally:
 +            pool.module._descriptor=original_descriptor
 +            contexts.pop()
- 
+
      scopes['register_flusher'](export)
      NativeFSDP2Pool.forward=forward;NativeFSDP2Pool.backward=backward
 diff --git a/tools/capture_plan_hashes.py b/tools/capture_plan_hashes.py
