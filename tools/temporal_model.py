@@ -87,7 +87,7 @@ class TemporalRuntime:
     """Own execution resources and observed ready metadata, never model Parameters."""
 
     def __init__(self,model,*,tokens,hidden,ffn,topk,capacity,policy,group,out,rank,
-                 scheduler_backend='cpu',scheduler_library=None,task_schedule_replay=None):
+                 scheduler_backend='cpu',scheduler_library=None,task_schedule_replay=None,maxutil_rule='work_tie'):
         from ascend_deepep.plan_replay import install_replay_provider
         from ascend_deepep.fsdp2_bridge import NativeFSDP2Pool
         from ascend_deepep.home_group_planner import FixedHomeGroupPlanner
@@ -97,6 +97,8 @@ class TemporalRuntime:
         if model.config.attention_dropout or getattr(model.config,'output_router_logits',False):
             raise ValueError('Temporal prototype requires dropout0 and disabled router auxiliary-loss collection')
         self.tokens,self.policy,self.group,self.out,self.rank = tokens,policy,group,out,rank
+        if maxutil_rule not in ('work_tie','upstream_first'):raise ValueError('Unknown MaxUtil rule')
+        self.maxutil_rule=maxutil_rule
         self.route_stats_required=policy in ('easy_home','easy_independent') and task_schedule_replay is None
         self.schedule_replay=None
         if task_schedule_replay is not None:
@@ -112,7 +114,7 @@ class TemporalRuntime:
             from device_temporal_scheduler import DeviceTemporalScheduler
             self.device_scheduler=DeviceTemporalScheduler(scheduler_library)
             (out/f'scheduler-so-rank{rank}.json').write_text(json.dumps(dict(
-                path=str(self.device_scheduler.path),sha256=self.device_scheduler.sha,abi=3),indent=2))
+                path=str(self.device_scheduler.path),sha256=self.device_scheduler.sha,abi=self.device_scheduler.abi),indent=2))
         self.window = _local_mem_bytes(tokens,hidden,topk,8,64,capacity)
         storage = (96+64)*3*ffn*hidden*2 + 64*1024**2
         heap = 2*self.window + storage + 512*1024**2
@@ -282,6 +284,7 @@ class TemporalRuntime:
         while ready:
             selection = 'easybalance' if self.policy in ('easy_home','easy_independent') else (
                         'fixed_group' if self.policy in ('fixed_native','fixed_home') else 'fifo')
+            if selection=='easybalance' and self.maxutil_rule=='upstream_first':selection='easybalance_upstream'
             begin = time.perf_counter_ns()
             if self.schedule_replay is not None:
                 plan=self.schedule_replay.select(tuple(task.key for task in ready),self.group_id)
@@ -370,7 +373,7 @@ class TemporalRuntime:
     def audit(self):
         """Report planner calls separately from explicit initialization warmup."""
         policies = (self.native_policy,*self.home_policies.values())
-        return dict(mode=self.policy,planning_calls=sum(policy.calls for policy in policies)-self.initial_policy_calls,
+        return dict(mode=self.policy,maxutil_rule=self.maxutil_rule,planning_calls=sum(policy.calls for policy in policies)-self.initial_policy_calls,
             selection_mode='offline_replay_diagnostic' if self.schedule_replay is not None else 'online',
             routing_loads_observed=self.route_stats_required,
             initialization_calls=self.initial_policy_calls,

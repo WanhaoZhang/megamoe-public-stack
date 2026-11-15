@@ -52,7 +52,7 @@ def select_window(tasks: tuple[ReadyTask, ...], policy: str, window_size: int) -
     and deterministic work/identity tie breaks. Scores are diagnostic linear
     compute estimates, not predicted end-to-end training durations.
     """
-    if policy not in ('fifo', 'fixed_group', 'easybalance') or window_size not in (1, 2, 4):
+    if policy not in ('fifo', 'fixed_group', 'easybalance', 'easybalance_upstream') or window_size not in (1, 2, 4):
         raise ValueError('Unsupported policy or window size')
     if not tasks:
         return WindowPlan((), (), 1.0, 0.0)
@@ -75,6 +75,21 @@ def select_window(tasks: tuple[ReadyTask, ...], policy: str, window_size: int) -
     elif policy == 'fixed_group':
         layer = next((task.key.layer for task in tasks if task.key in forced), tasks[0].key.layer)
         selected = tuple(task for task in tasks if task.key.layer == layer or task.key in forced)
+    elif policy=='easybalance_upstream':
+        minimum=min(len(tasks),ceil(window_size/2))
+        # Author code enumerates numeric masks in ready-arrival order, keeps
+        # the first maximizing mask, then appends forced tasks. Execution
+        # identity order remains canonical for the training collective graph.
+        candidates=[]
+        for mask in range(1,1<<len(arrival)):
+            subset=tuple(task for index,task in enumerate(arrival) if mask&(1<<index))
+            selected_keys={task.key for task in subset}|forced
+            if len(subset)>=minimum and len({task.key.layer for task in tasks if task.key in selected_keys})<=2:
+                candidates.append(subset)
+        if not candidates:raise ValueError('No legal upstream-style runset in the admitted layer domain')
+        subset=max(candidates,key=lambda value:_scores(value)[0])
+        selected_keys={task.key for task in subset}|forced
+        selected=tuple(task for task in tasks if task.key in selected_keys)
     else:
         minimum = min(len(tasks), ceil(window_size / 2))
         candidates = (subset for size in range(minimum, len(tasks)+1)

@@ -41,7 +41,8 @@ def main():
                 observed=torch.from_numpy(values).to(f'npu:{rank}')
                 order=tuple(int(value) for value in rng.permutation(count))
                 arrivals=tuple(order.index(index) for index in range(count))
-                for policy in ('fifo','fixed_group','easybalance'):
+                policies=('fifo','fixed_group','easybalance')+ (('easybalance_upstream',) if scheduler.abi>=4 else ())
+                for policy in policies:
                     try:
                         expected=select_window(tuple(ready[index] for index in order),policy,window)
                     except ValueError:

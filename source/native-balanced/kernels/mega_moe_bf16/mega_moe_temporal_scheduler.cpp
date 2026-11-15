@@ -27,7 +27,7 @@ void mega_moe_temporal_scheduler_kernel(GM_ADDR loads,GM_ADDR metadata,GM_ADDR o
     int values[32],layers[4],arrival[4],forced=0;
     int64_t taskWork[4];
     bool bad=tasks<1||tasks>4||ranks!=8||tasks>window||
-        (window!=1&&window!=2&&window!=4)||policy<0||policy>2;
+        (window!=1&&window!=2&&window!=4)||policy<0||policy>3;
     if(!bad)for(int task=0;task<tasks;++task) {
         layers[task]=ReadGmBypassDCache(meta+task*3);
         int age=ReadGmBypassDCache(meta+task*3+1);
@@ -59,19 +59,24 @@ void mega_moe_temporal_scheduler_kernel(GM_ADDR loads,GM_ADDR metadata,GM_ADDR o
         for(int task=0;task<tasks;++task)
             if(layers[task]==layers[first]||(forced&(1<<task)))selected|=1<<task;
     }
-    if(!bad && policy==2) {
+    if(!bad && (policy==2||policy==3)) {
         int minimum=(window+1)/2;if(minimum>tasks)minimum=tasks;
         int64_t bestNumerator=0,bestDenominator=1,bestWork=-1;
-        for(int mask=1;mask<(1<<tasks);++mask) {
-            if((mask&forced)!=forced)continue;
+        for(int ordinal=1;ordinal<(1<<tasks);++ordinal) {
+            int mask=ordinal;
+            if(policy==3) {
+                mask=0;
+                for(int task=0;task<tasks;++task)if(ordinal&(1<<arrival[task]))mask|=1<<task;
+            }
+            if(policy==2 && (mask&forced)!=forced)continue;
             int count=0;int64_t work=0;
             for(int task=0;task<tasks;++task)if(mask&(1<<task)){++count;work+=taskWork[task];}
             if(count<minimum)continue;
-            int unique=0;
-            for(int task=0;task<tasks;++task)if(mask&(1<<task)) {
+            int unique=0,eligible=policy==3?(mask|forced):mask;
+            for(int task=0;task<tasks;++task)if(eligible&(1<<task)) {
                 bool seen=false;
                 for(int previous=0;previous<task;++previous)
-                    if((mask&(1<<previous))&&layers[previous]==layers[task])seen=true;
+                    if((eligible&(1<<previous))&&layers[previous]==layers[task])seen=true;
                 if(!seen)++unique;
             }
             if(unique>2)continue;
@@ -83,11 +88,12 @@ void mega_moe_temporal_scheduler_kernel(GM_ADDR loads,GM_ADDR metadata,GM_ADDR o
             }
             int64_t numerator=peak?work:1,denominator=peak?peak*ranks:1;
             int64_t delta=numerator*bestDenominator-bestNumerator*denominator;
-            if(!selected||delta>0||(delta==0&&(work>bestWork||
+            if(!selected||delta>0||(policy==2&&delta==0&&(work>bestWork||
                 (work==bestWork&&LexBefore(mask,selected,tasks))))) {
                 selected=mask;bestNumerator=numerator;bestDenominator=denominator;bestWork=work;
             }
         }
+        if(policy==3 && selected)selected|=forced;
     }
     if(!selected)bad=true;
     int work=0,peak=0,serial=0;
@@ -115,4 +121,4 @@ extern "C" __attribute__((visibility("default"))) void mega_moe_temporal_schedul
     int tasks,int ranks,int window,int policy) {
     mega_moe_temporal_scheduler_kernel<<<1,nullptr,stream>>>(loads,metadata,output,tasks,ranks,window,policy);
 }
-extern "C" __attribute__((visibility("default"))) int megaflux_temporal_scheduler_abi(){return 3;}
+extern "C" __attribute__((visibility("default"))) int megaflux_temporal_scheduler_abi(){return 4;}

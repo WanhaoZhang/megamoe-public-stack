@@ -98,6 +98,8 @@ def main():
     parser.add_argument('--dump-grad-step0', action='store_true')
     parser.add_argument('--finite-diagnostics', action='store_true')
     parser.add_argument('--temporal-policy', choices=('legacy','fixed_native','fixed_home','fifo_native','easy_home','easy_independent'))
+    parser.add_argument('--maxutil-rule',choices=('work_tie','upstream_first'),default='work_tie',
+                        help='Separate author-style mask ordering; never relabel previous work-tie runs')
     parser.add_argument('--temporal-prefix-reuse',action='store_true',
                         help='Research runtime v2: prefix + FFN/shared checkpoints; requires new qualification')
     parser.add_argument('--prefix-diagnostic-sync',choices=('none','prefix_device','backward_global','stage_chain'),default='none',
@@ -114,6 +116,8 @@ def main():
     parser.add_argument('--diagnose-memory', action='store_true')
     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
     args = parser.parse_args()
+    if args.maxutil_rule=='upstream_first' and args.temporal_policy not in ('easy_home','easy_independent'):
+        parser.error('author-style MaxUtil applies only to EasyBalance selection policies')
     if bool(args.temporal_schedule_replay)!=args.diagnostic_only:
         parser.error('offline task replay requires both --temporal-schedule-replay and --diagnostic-only')
     if args.temporal_schedule_replay and (args.temporal_policy!='easy_home' or args.diagnostic_timer):
@@ -171,6 +175,7 @@ def main():
     if rank == 0:
         effective = json.loads((args.out/'effective-config.json').read_text())
         effective.update(temporal_policy=args.temporal_policy,
+            maxutil_rule=args.maxutil_rule,
             hold_fsdp_forward=args.hold_fsdp_forward,
             temporal_prefix_reuse=args.temporal_prefix_reuse,
             prefix_diagnostic_sync=args.prefix_diagnostic_sync,
@@ -262,6 +267,7 @@ def main():
             scheduler_backend=args.temporal_scheduler,scheduler_library=args.temporal_scheduler_library or
             args.root/'source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler.so',
             task_schedule_replay=args.temporal_schedule_replay,
+            maxutil_rule=args.maxutil_rule,
             **(dict(diagnostic_sync=args.prefix_diagnostic_sync,allow_diagnostic_schedule=args.diagnostic_only,
                     stage_audit=args.prefix_stage_audit)
                if args.temporal_prefix_reuse else {}))
