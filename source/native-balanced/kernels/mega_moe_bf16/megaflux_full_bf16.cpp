@@ -82,6 +82,7 @@ __global__ __aicore__ void megaflux_full_bf16(
     if(active) {
 #if defined(DEEPEP_BF16_WORKER_PIPELINE)
         op.EnableReplicaPipeline(pipeline.forward.ready,MegaFluxWorker::Trace(pipeline.forward.trace),descriptor.epoch);
+        op.EnableLifetimeCache(MegaFluxWorker::Field(pipeline.forward.trace,6));
 #if MEGAFLUX_WORKER_FORWARD
         op.EnableWorker(pipeline.forward.trace);
 #endif

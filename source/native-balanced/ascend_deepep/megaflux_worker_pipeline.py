@@ -60,6 +60,12 @@ class MegaFluxBF16WorkerPipelineTrain(MegaFluxBF16EarlyTrain):
                 self.worker_sidecar[4].fill_(trace)
             self._worker_trace_ptr=trace
         # Only the explicit candidate SO interprets this opaque envelope word.
+        lifetime=getattr(self,'lifetime',None)
+        if lifetime is not None:
+            self.worker_sidecar=self.worker_sidecar.detach().clone()
+            cache=lifetime.prepare(plan)
+            self.worker_sidecar[6].fill_(cache.data_ptr())
+            self.worker_sidecar[7].fill_(1)
         descriptor[20]=self.worker_sidecar.data_ptr()
         return descriptor
 

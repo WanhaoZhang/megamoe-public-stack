@@ -12,8 +12,8 @@ import hashlib
 import os
 from concurrent.futures import ThreadPoolExecutor
 
-TASK = pathlib.Path('/home/z00956592/megaflux/planner-executor-ep8-lab')
-CONTAINER = 'planner-executor-ep8-lab'
+TASK = pathlib.Path('/home/z00956592/megaflux/step-lifetime-study-20261115/stack')
+CONTAINER = 'step-lifetime-study-20261115'
 
 def source_identity(arguments=()):
     paths={}
@@ -132,6 +132,11 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
         subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
             str(TASK/'configs/temporal-scheduler-freeze.json'),'--out',
             str(snapshots/f'{tag}-temporal-runtime.json')],check=True)
+    if '--lifetime-mode' in arguments:
+        if worker!='ep8-cap64-lifetime-v1':raise RuntimeError('Lifetime ABI must use its own frozen worker')
+        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
+            str(TASK/'configs/lifetime-runtime-freeze.json'),'--out',
+            str(snapshots/f'{tag}-lifetime-runtime.json')],check=True)
     sources=source_identity(arguments)
     (out/'source-identity.json').write_text(json.dumps(sources,indent=2))
     # Cache only byte-identical, verified snapshots from unchanged prior runs.
@@ -184,7 +189,7 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
     return status
 
 def run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
-    with (TASK / 'evidence' / 'device-jobs.lock').open('a') as lock:
+    with pathlib.Path('/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock').open('a') as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
         return _run_job(backend, mode, tag, arguments, seconds, worker, capacity)
 

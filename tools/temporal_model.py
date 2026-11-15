@@ -283,7 +283,7 @@ class TemporalRuntime:
                 ready.append(self._probe(model,key,hidden,value,kwargs))
         while ready:
             selection = 'easybalance' if self.policy in ('easy_home','easy_independent') else (
-                        'fixed_group' if self.policy in ('fixed_native','fixed_home') else 'fifo')
+                        'fixed_group' if self.policy in ('fixed_native','fixed_home','serial_native','serial_home') else 'fifo')
             if selection=='easybalance' and self.maxutil_rule=='upstream_first':selection='easybalance_upstream'
             begin = time.perf_counter_ns()
             if self.schedule_replay is not None:
@@ -313,8 +313,8 @@ class TemporalRuntime:
                 routing_loads_observed=self.route_stats_required,
                 task_ready_boundary='observed_router_prefix' if self.route_stats_required else 'layer_input_available',
                 diagnostic_linear_score_only=self.route_stats_required))
-            outputs = self._execute(model,selected,self.group_id,independent=self.policy=='easy_independent',
-                                    home_only=self.policy in ('easy_home','fixed_home'))
+            outputs = self._execute(model,selected,self.group_id,independent=self.policy in ('easy_independent','serial_native','serial_home'),
+                                    home_only=self.policy in ('easy_home','fixed_home','serial_home','fifo_home'))
             self.group_id += 1
             ready = [task for task in ready if task.key not in plan.selected]
             for task in ready:

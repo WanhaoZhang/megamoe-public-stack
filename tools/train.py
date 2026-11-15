@@ -88,6 +88,7 @@ def main():
     parser.add_argument('--maxvio', type=float, required=True)
     parser.add_argument('--layers', type=int, default=2)
     parser.add_argument('--steps', type=int, default=25)
+    parser.add_argument('--lifetime-mode',choices=('anchor','b0','b1','b2','b3'))
     parser.add_argument('--tokens', type=int, default=16384)
     parser.add_argument('--microbatches', type=int, default=1)
     parser.add_argument('--forward-window', type=int, choices=(1, 2, 4), default=1)
@@ -97,7 +98,7 @@ def main():
     parser.add_argument('--dump-final-state', action='store_true')
     parser.add_argument('--dump-grad-step0', action='store_true')
     parser.add_argument('--finite-diagnostics', action='store_true')
-    parser.add_argument('--temporal-policy', choices=('legacy','fixed_native','fixed_home','fifo_native','easy_home','easy_independent'))
+    parser.add_argument('--temporal-policy', choices=('legacy','fixed_native','fixed_home','serial_home','serial_native','fifo_home','fifo_native','easy_home','easy_independent'))
     parser.add_argument('--maxutil-rule',choices=('work_tie','upstream_first'),default='work_tie',
                         help='Separate author-style mask ordering; never relabel previous work-tie runs')
     parser.add_argument('--temporal-prefix-reuse',action='store_true',
@@ -116,6 +117,8 @@ def main():
     parser.add_argument('--diagnose-memory', action='store_true')
     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
     args = parser.parse_args()
+    if args.lifetime_mode and (args.temporal_policy!='fixed_native' or not args.temporal_prefix_reuse or args.diagnostic_timer):
+        parser.error('Lifetime qualification requires fixed_native, prefix reuse and TimerOFF')
     if args.maxutil_rule=='upstream_first' and args.temporal_policy not in ('easy_home','easy_independent'):
         parser.error('author-style MaxUtil applies only to EasyBalance selection policies')
     if bool(args.temporal_schedule_replay)!=args.diagnostic_only:
@@ -275,6 +278,13 @@ def main():
         samples_after_warmup = parameter_samples(engine)
         if any(not torch.equal(value,samples_after_warmup[name]) for name,value in samples_before_warmup.items()):
             raise RuntimeError('Explicit setup warmup modified owner Parameters')
+    lifetime = None
+    if args.lifetime_mode:
+        from lifetime_device import LifetimeDevice
+        lifetime = LifetimeDevice(engine.model,temporal.legacy,args.lifetime_mode)
+        (args.out/f'lifetime-config-rank{rank}.json').write_text(json.dumps(dict(
+            mode=args.lifetime_mode,worker_capability=1,qualified_performance_path=False,
+            routing_gradient_scaling='explicit_ep_once' if args.lifetime_mode!='anchor' else 'parameter_hook')))
     if args.finite_diagnostics:
         from torch.utils._pytree import tree_flatten
         def finite_hook(name):
@@ -329,6 +339,7 @@ def main():
         start = time.perf_counter_ns()
         if temporal is not None:
             temporal.begin_step(step)
+        if lifetime is not None:lifetime.begin(step)
         loss = torch.zeros((), device=device)
         for offset in range(0, args.microbatches, args.forward_window):
             pending = []
@@ -347,6 +358,7 @@ def main():
                 loss = loss+result.loss.detach()
                 memory_mark(step,'forward')
                 result.loss.backward()
+                if lifetime is not None:lifetime.window_boundary()
                 del result
                 continue
             for microbatch in range(offset, offset + args.forward_window):
@@ -364,6 +376,7 @@ def main():
             for weighted_loss in reversed(pending):
                 weighted_loss.backward()
             del pending, weighted_loss, result
+        if lifetime is not None:lifetime.finish()
         memory_mark(step, 'backward')
         if args.backend != 'moonep':
             from fsdp_turbo.distributed.expert_parallel.dispatcher_megamoe_balanced import check_step_completions
@@ -467,6 +480,7 @@ def main():
         print(json.dumps(row), flush=True)
     expected_route_calls = (2 if args.temporal_prefix_reuse else
         3 if args.temporal_policy in ('easy_home','easy_independent') and not args.temporal_schedule_replay else 2)
+    if lifetime is not None:lifetime.write_audit(args.out/f'lifetime-audit-rank{rank}.json')
     if len(provider.calls) != args.steps * args.layers * args.microbatches or any(count != expected_route_calls for count in provider.calls.values()):
         raise RuntimeError(f'Unexpected checkpoint replay route calls: {provider.calls}')
     (args.out / f'route-calls-rank{rank}.json').write_text(json.dumps({':'.join(map(str,key)): count for key, count in provider.calls.items()}, indent=2))

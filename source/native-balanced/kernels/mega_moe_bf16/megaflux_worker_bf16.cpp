@@ -44,6 +44,7 @@ return 2;
 }
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_shared_expert_tile_pipeline_version(){return 1;}
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_worker_pipeline_version(){return 3;}
+extern "C" ASCEND_DEEPEP_EXPORT int megaflux_step_lifetime_version(){return 1;}
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_shared_expert_forward_abi(){
 #if defined(MEGAFLUX_SHARED_EXPERT_FORWARD) && MEGAFLUX_SHARED_EXPERT_FORWARD
     return MegaMoeSharedExpertLayout::kAbi;

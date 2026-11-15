@@ -112,7 +112,9 @@ struct Queue {
             const int64_t plane=p?d.hidden*d.ffn:2*d.ffn*d.hidden;
             const int64_t offset=((int64_t)stripe*256+(p?0:band*d.ffn))*width+inner;
             const uint64_t peer=(uint64_t)aclshmem_ptr((GM_ADDR)d.base,logical/d.home);
-            const uint64_t src=peer+(p?d.home2:d.home1)-d.base+((logical%d.home)*plane+offset)*2;
+            const uint64_t cache=Field(side,6);
+            const uint64_t cached=cache?Field(cache,slot*2+p):0;
+            const uint64_t src=cached?cached+offset*2:peer+(p?d.home2:d.home1)-d.base+((logical%d.home)*plane+offset)*2;
             const uint64_t dst=(p?d.replica2:d.replica1)+(slot*plane+offset)*2;
             // Raw asynchronous queue residence, not a pure device busy span.
             const auto copyTimer=MegaFluxStageTimer::BeginAsync(Trace(side),false,

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-TASK=/home/z00956592/megaflux/planner-executor-ep8-lab
+TASK=/home/z00956592/megaflux/step-lifetime-study-20261115/stack
 BACKEND=$1
 MODE=$2
 TAG=$3

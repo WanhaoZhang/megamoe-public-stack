@@ -17,7 +17,7 @@ __aicore__ inline __gm__ int32_t* Flag(uint64_t ready,int slot,int projection,in
 }
 
 __aicore__ inline void CopyExperts(const MegaMoeReplicaDescriptor& d,uint64_t ready,int epoch,
-        bool w1First=false) {
+        bool w1First=false,uint64_t cache=0) {
     if constexpr(g_coreType==AIV) {
         if(GetSubBlockIdx()!=1)return;
         const int worker=GetBlockIdx()/GetTaskRation(),workers=GetBlockNum();
@@ -49,7 +49,8 @@ __aicore__ inline void CopyExperts(const MegaMoeReplicaDescriptor& d,uint64_t re
                 for(int64_t chunk=worker;chunk<chunks;chunk+=workers) {
                     const int64_t begin=chunk*CHUNK;
                     const int n=plane-begin<CHUNK?plane-begin:CHUNK;
-                    copy.Push(peer+home-d.base+(logical%d.home*plane+begin)*2,
+                    const uint64_t cached=cache?MegaFluxWorker::Field(cache,slot*2+p):0;
+                    copy.Push(cached?cached+begin*2:peer+home-d.base+(logical%d.home*plane+begin)*2,
                               replica+(slot*plane+begin)*2,n);
                 }
                 copy.Drain();
@@ -94,7 +95,7 @@ __aicore__ inline void WaitPanel(uint64_t ready,int slot,int projection,int pane
 }
 
 __aicore__ inline void CopyExpertsPanel(const MegaMoeReplicaDescriptor& d,
-        uint64_t ready,int epoch,uint64_t trace=0,bool w1First=false) {
+        uint64_t ready,int epoch,uint64_t trace=0,bool w1First=false,uint64_t cache=0) {
     if constexpr(g_coreType==AIV) {
         if(GetSubBlockIdx()!=1)return;
         const int worker=GetBlockIdx()/GetTaskRation(),workers=GetBlockNum();
@@ -141,7 +142,8 @@ __aicore__ inline void CopyExpertsPanel(const MegaMoeReplicaDescriptor& d,
                             const int64_t offset=first*rowWidth+begin;
                             const int64_t srcOffset=(logical%d.home)*plane+offset;
                             const int64_t dstOffset=slot*plane+offset;
-                            copy.Push(peer+home-d.base+srcOffset*2,
+                            const uint64_t cached=cache?MegaFluxWorker::Field(cache,slot*2+projection):0;
+                            copy.Push(cached?cached+offset*2:peer+home-d.base+srcOffset*2,
                                 replica+dstOffset*2,n);
                         }
                     }

@@ -132,6 +132,8 @@ class _ExternalExperts(torch.autograd.Function):
                 w1, w2, header.detach().cpu().tolist(), placement, (dx, dp, dw1, dw2), ctx.limit)
         # BF16 native partial/owner rounding is preserved. Casting here only
         # satisfies the original Parameter/router dtype at the framework edge.
+        if dw1 is None:
+            return None, dx, None, dp.to(ctx.prob_dtype), None, None, None
         return (None, dx, None, dp.to(ctx.prob_dtype), dw1.to(ctx.weight_meta[0][1]),
                 dw2.to(ctx.weight_meta[1][1]), None)
 
@@ -332,6 +334,8 @@ class NativeFSDP2Pool:
             plan._consumed = True
             y, _, counts, state, dispatch = m._forward_device(
                 x, prob.to(torch.bfloat16).contiguous(), plan, limit)
+            lifetime=getattr(m,'lifetime',None)
+            if lifetime is not None:lifetime.commit(plan)
             # Freeze planner scratch on this stream before the next layer reuses it.
             placement = (tuple(getattr(body,n) for n in _PLAN_TENSORS) if request is not None else
                          tuple(getattr(plan, n).detach().clone() for n in _PLAN_TENSORS))
@@ -495,6 +499,10 @@ class NativeFSDP2Pool:
             # Native allocates fresh torch-owned dW outputs per call. A home view
             # retains that storage until its consumer retires; it never aliases
             # pool gradient scratch. The old clone remains an ablation switch.
+            lifetime=getattr(m,'lifetime',None)
+            if lifetime is not None:
+                lifetime.gradients(plan,dw1,dw2)
+                return dx,dp,None,None
             return dx, dp, _owner_gradient(dw1, self.home), _owner_gradient(dw2, self.home)
         except BaseException:
             self.failed = True
@@ -584,6 +592,10 @@ class NativeFSDP2Pool:
                 self.stats['backwards'] += 1
             # Native already performs owner SUM and shared dX addition. Shared
             # dW stays on the original ordinary-FSDP Parameters/mesh.
+            lifetime=getattr(m,'lifetime',None)
+            if lifetime is not None:
+                lifetime.gradients(plan,dw1,dw2)
+                return dx,dp,None,None
             return dx, dp, _owner_gradient(dw1, self.home), _owner_gradient(dw2, self.home), dwg, dwu, dwd
         except BaseException:
             self.failed = True

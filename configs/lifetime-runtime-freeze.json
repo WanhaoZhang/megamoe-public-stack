@@ -1,0 +1,6 @@
+{
+  "capability": 1,
+  "binaries": {
+    "source/native-balanced/worker-variants/ep8-cap64-lifetime-v1/libascend_deepep_megaflux_early_bf16.so": "7023c5d860ba49a7104d6d76502ea22e3eb30ad7a47c2fa422242d626556b88b"
+  }
+}

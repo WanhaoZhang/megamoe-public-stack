@@ -74,6 +74,7 @@ class GroupedExpertsBridge:
         from ascend_deepep.fsdp2_bridge import FSDP2ExpertsBridge
         if pool.home != domain.local_home or set(owners) != set(domain.layers):
             raise ValueError('Grouped pool/owner domain mismatch')
+        self.pool = pool
         self.domain = domain
         self.owners = owners
         self.bridge = FSDP2ExpertsBridge(pool,self._weights)
@@ -81,6 +82,10 @@ class GroupedExpertsBridge:
         self.ranks = pool.shmem.world_size()
 
     def _weights(self):
+        lifetime=getattr(self.pool.module,'lifetime',None)
+        if lifetime is not None:
+            if len(self.domain.layers)!=1:raise RuntimeError('Lifetime prototype accepts single-layer domains only')
+            lifetime.layer=self.domain.layers[0]
         weights = [self.owners[layer]() for layer in self.domain.layers]
         if len(weights) == 1:
             return weights[0]

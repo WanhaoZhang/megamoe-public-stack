@@ -218,6 +218,7 @@ __global__ __aicore__ void megaflux_worker_bf16_shared_backward_v3_kernel(
         timerAddr, routedOnly ? nullptr : &v2.base);
     op.EnableReplica(descriptor.replica);
     if (active) op.EnableGradientPipe(pipeline.grad_ready, pipeline.grad_trace, descriptor.epoch);
+    if(routedOnly)op.EnableLifetime(pipeline.forward.trace);
 #if MEGAFLUX_BACKWARD_RESTORE
     if (active) op.EnableBackwardRestore(pipeline.forward.stripes, descriptor.epoch,
         MEGAFLUX_BACKWARD_RESTORE);

@@ -144,7 +144,7 @@ struct ReadyCache {
 // Independent AIV1 producer after Dispatch retires. No Cube handshake here:
 // AIC and AIV0 may consume early stripes while later stripes are copied.
 __aicore__ inline void CopyW1Stripes(const MegaMoeReplicaDescriptor& d,
-        uint64_t ready,uint64_t trace,int epoch) {
+        uint64_t ready,uint64_t trace,int epoch,uint64_t cache=0) {
     if constexpr(g_coreType==AIV) {
         const int worker=GetBlockIdx()/GetTaskRation(),workers=GetBlockNum();
         const int stripes=(d.ffn+STRIPE_N-1)/STRIPE_N;
@@ -172,10 +172,12 @@ __aicore__ inline void CopyW1Stripes(const MegaMoeReplicaDescriptor& d,
                     const int64_t offset=(first+(task/chunks)*d.ffn)*d.hidden+begin;
                     const int n=elements-begin<MegaFluxMixed::CHUNK?elements-begin:MegaFluxMixed::CHUNK;
 #if MEGAFLUX_OPT_COPY
-                    copy.Push(peer+d.home1-d.base+(logical%d.home*plane+offset)*2,
+                    const uint64_t cached=cache?*((__gm__ uint64_t*)cache+slot*2):0;
+                    copy.Push(cached?cached+offset*2:peer+d.home1-d.base+(logical%d.home*plane+offset)*2,
                         d.replica1+(slot*plane+offset)*2,n);
 #else
-                    MegaFluxMixed::Load(b,(GM_ADDR)(peer+d.home1-d.base+(logical%d.home*plane+offset)*2),n);
+                    const uint64_t cached=cache?*((__gm__ uint64_t*)cache+slot*2):0;
+                    MegaFluxMixed::Load(b,(GM_ADDR)(cached?cached+offset*2:peer+d.home1-d.base+(logical%d.home*plane+offset)*2),n);
                     MegaFluxMixed::Store((GM_ADDR)(d.replica1+(slot*plane+offset)*2),b,n);
 #endif
                     copiedBytes+=n*2;
@@ -203,7 +205,7 @@ __aicore__ inline void CopyW1Stripes(const MegaMoeReplicaDescriptor& d,
 #if defined(DEEPEP_BF16_REPLICA_STREAM)
 // W2 is [H,F]: one GMM2 output-N stripe is contiguous 256 rows, full K=F.
 __aicore__ inline void CopyW2StripeRange(const MegaMoeReplicaDescriptor& d,
-        uint64_t ready,uint64_t trace,int epoch,int firstStripe,int endStripe) {
+        uint64_t ready,uint64_t trace,int epoch,int firstStripe,int endStripe,uint64_t cache=0) {
     if constexpr(g_coreType==AIV) {
         if(firstStripe>=endStripe)return;
         const int worker=GetBlockIdx()/GetTaskRation(),workers=GetBlockNum();
@@ -233,10 +235,12 @@ __aicore__ inline void CopyW2StripeRange(const MegaMoeReplicaDescriptor& d,
                     const int64_t position=first*d.ffn+begin;
                     const int n=elements-begin<MegaFluxMixed::CHUNK?elements-begin:MegaFluxMixed::CHUNK;
 #if MEGAFLUX_OPT_COPY
-                    copy.Push(peer+d.home2-d.base+(logical%d.home*plane+position)*2,
+                    const uint64_t cached=cache?*((__gm__ uint64_t*)cache+slot*2+1):0;
+                    copy.Push(cached?cached+position*2:peer+d.home2-d.base+(logical%d.home*plane+position)*2,
                         d.replica2+(slot*plane+position)*2,n);
 #else
-                    MegaFluxMixed::Load(b,(GM_ADDR)(peer+d.home2-d.base+(logical%d.home*plane+position)*2),n);
+                    const uint64_t cached=cache?*((__gm__ uint64_t*)cache+slot*2+1):0;
+                    MegaFluxMixed::Load(b,(GM_ADDR)(cached?cached+position*2:peer+d.home2-d.base+(logical%d.home*plane+position)*2),n);
                     MegaFluxMixed::Store((GM_ADDR)(d.replica2+(slot*plane+position)*2),b,n);
 #endif
                     copiedBytes+=n*2;
@@ -259,8 +263,8 @@ __aicore__ inline void CopyW2StripeRange(const MegaMoeReplicaDescriptor& d,
     }
 }
 __aicore__ inline void CopyW2Stripes(const MegaMoeReplicaDescriptor& d,
-        uint64_t ready,uint64_t trace,int epoch) {
-    CopyW2StripeRange(d,ready,trace,epoch,0,(d.hidden+STRIPE_N-1)/STRIPE_N);
+        uint64_t ready,uint64_t trace,int epoch,uint64_t cache=0) {
+    CopyW2StripeRange(d,ready,trace,epoch,0,(d.hidden+STRIPE_N-1)/STRIPE_N,cache);
 }
 #endif
 #endif

@@ -193,6 +193,11 @@ public:
     }
 #endif
 #if defined(DEEPEP_BF16_GRADIENT_PIPE)
+    __aicore__ inline void EnableLifetime(uint64_t side) {
+        if(!side)return;
+        lifetimeCache_=MegaFluxWorker::Field(side,6);
+        if(MegaFluxWorker::Field(side,7)==1)gradient_.ready=0;
+    }
     __aicore__ inline void EnableGradientPipe(uint64_t ready,uint64_t trace,int epoch) {
         gradient_.replica=replica_;gradient_.ready=ready;gradient_.trace=trace;gradient_.epoch=epoch;
         for(int e=0;e<expertPerRank_;++e)gradientOrder_[e]=e;
@@ -249,6 +254,7 @@ private:
 #endif
 #if defined(DEEPEP_BF16_REPLICA)
     MegaMoeReplicaDescriptor replica_{};
+    uint64_t lifetimeCache_=0;
 #if defined(DEEPEP_BF16_GRADIENT_PIPE)
     MegaFluxGradient::Context gradient_{};
 #if defined(DEEPEP_BF16_EARLY_REDUCE)
@@ -1201,9 +1207,9 @@ __aicore__ inline void MegaMoeBF16Backward::TransportXRedispatch()
             // the panel service borrows its own UB window on this same lane.
             if (restoreReady_) {
                 if (restoreMode_ == 2)
-                    MegaFluxBackwardRestore::CopyExpertsPanel(replica_, restoreReady_, restoreEpoch_, gradient_.trace, noneGmEnabled_);
+                    MegaFluxBackwardRestore::CopyExpertsPanel(replica_, restoreReady_, restoreEpoch_, gradient_.trace, noneGmEnabled_, lifetimeCache_);
                 else
-                    MegaFluxBackwardRestore::CopyExperts(replica_, restoreReady_, restoreEpoch_, noneGmEnabled_);
+                    MegaFluxBackwardRestore::CopyExperts(replica_, restoreReady_, restoreEpoch_, noneGmEnabled_, lifetimeCache_);
             }
 #endif
         }
@@ -2309,9 +2315,9 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
 #if MEGAFLUX_BACKWARD_RESTORE
         if(restoreReady_ && subBlockIdx_==1) {
             if(restoreMode_==2)
-                MegaFluxBackwardRestore::CopyExpertsPanel(replica_,restoreReady_,restoreEpoch_,gradient_.trace,noneGmEnabled_);
+                MegaFluxBackwardRestore::CopyExpertsPanel(replica_,restoreReady_,restoreEpoch_,gradient_.trace,noneGmEnabled_,lifetimeCache_);
             else
-                MegaFluxBackwardRestore::CopyExperts(replica_,restoreReady_,restoreEpoch_,noneGmEnabled_);
+                MegaFluxBackwardRestore::CopyExperts(replica_,restoreReady_,restoreEpoch_,noneGmEnabled_,lifetimeCache_);
         }
 #endif
         if (subBlockIdx_ == 0) {

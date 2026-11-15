@@ -84,6 +84,7 @@ public:
 #if defined(DEEPEP_BF16_REPLICA)
     __aicore__ inline void EnableReplica(const MegaMoeReplicaDescriptor& d) {replica_=d;}
 #if defined(DEEPEP_BF16_REPLICA_PIPELINE)
+    __aicore__ inline void EnableLifetimeCache(uint64_t cache) {lifetimeCache_=cache;}
     __aicore__ inline void EnableReplicaPipeline(uint64_t ready,uint64_t trace,int epoch) {
         pipelineReady_=ready;pipelineTrace_=trace;pipelineEpoch_=epoch;
     }
@@ -118,6 +119,7 @@ private:
     MegaMoeReplicaDescriptor replica_{};
 #if defined(DEEPEP_BF16_REPLICA_PIPELINE)
     uint64_t pipelineReady_=0,pipelineTrace_=0;
+    uint64_t lifetimeCache_=0;
 #if MEGAFLUX_WORKER_FORWARD
     uint64_t workerSide_=0;
     MegaFluxWorker::Queue workerQueue_;
@@ -1561,7 +1563,7 @@ __aicore__ inline void MegaMoeBF16::ProcessWithSaveMode()
                 // AIV0 has retired FirstBuff/SaveState. AIC writes only the
                 // <=192KiB BF16 input tiles; no SwiGLU has started on this lane.
                 // The bounded high-UB copy overlaps AIV1 Dispatch + first MMAD.
-                MegaFluxPipeline::CopyW2StripeRange(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,0,prefetchedW2Stripes);
+                MegaFluxPipeline::CopyW2StripeRange(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,0,prefetchedW2Stripes,lifetimeCache_);
                 MegaFluxPipeline::Stamp(pipelineTrace_,blockIdx_,332);
             }
         }
@@ -1710,9 +1712,9 @@ __aicore__ inline void MegaMoeBF16::ProcessWithSaveMode()
             workerQueue_.Service(replica_);
 #elif defined(DEEPEP_BF16_W2_PREFETCH)
             MegaFluxPipeline::CopyW2StripeRange(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,prefetchedW2Stripes,
-                (replica_.hidden+MegaFluxPipeline::STRIPE_N-1)/MegaFluxPipeline::STRIPE_N);
+                (replica_.hidden+MegaFluxPipeline::STRIPE_N-1)/MegaFluxPipeline::STRIPE_N,lifetimeCache_);
 #else
-            MegaFluxPipeline::CopyW2Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_);
+            MegaFluxPipeline::CopyW2Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,lifetimeCache_);
 #endif
         }
     }
@@ -1734,7 +1736,7 @@ __aicore__ inline void MegaMoeBF16::ProcessWithSaveMode()
 #if defined(DEEPEP_BF16_REPLICA_PIPELINE)
 #if defined(DEEPEP_BF16_REPLICA_STRIPES)
             if(pipelineReady_)
-                MegaFluxPipeline::CopyW1Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_);
+                MegaFluxPipeline::CopyW1Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,lifetimeCache_);
 #endif
             // Dispatch is retired; W2 can overlap remaining GMM1/SwiGLU.
 #if defined(DEEPEP_BF16_REPLICA_STREAM)
@@ -1744,7 +1746,7 @@ __aicore__ inline void MegaMoeBF16::ProcessWithSaveMode()
                 if(useSplitTrainingState_)NotifyCube(GMM2_UB_READY_FLAG);
                 MegaFluxPipeline::Stamp(pipelineTrace_,blockIdx_,331);
 #if !defined(DEEPEP_BF16_FULL_PIPELINE)
-                MegaFluxPipeline::CopyW2Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_);
+                MegaFluxPipeline::CopyW2Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,lifetimeCache_);
 #endif
             } else
 #endif

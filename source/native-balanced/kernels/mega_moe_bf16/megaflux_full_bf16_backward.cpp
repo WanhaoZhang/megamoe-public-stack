@@ -84,6 +84,9 @@ __global__ __aicore__ void megaflux_full_bf16_backward(
         timerAddr);
     op.EnableReplica(descriptor.replica);
     if(active)op.EnableGradientPipe(pipeline.grad_ready,pipeline.grad_trace,descriptor.epoch);
+#if defined(DEEPEP_BF16_WORKER_PIPELINE)
+    op.EnableLifetime(pipeline.forward.trace);
+#endif
 #if MEGAFLUX_BACKWARD_RESTORE
     if(active)op.EnableBackwardRestore(pipeline.forward.stripes,descriptor.epoch,
         MEGAFLUX_BACKWARD_RESTORE);
