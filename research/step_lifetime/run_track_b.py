@@ -64,6 +64,7 @@ def main():
     state['stage']='screening_complete';save(state)
 
 if __name__=='__main__':
+    if STATE.exists():raise SystemExit('Registration exists; choose a fresh prefix')
     try:main()
     except BaseException as error:
         if STATE.exists():

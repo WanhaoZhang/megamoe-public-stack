@@ -34,6 +34,8 @@ def deploy():
     call(['scp', str(archive), f'{HOST}:{REMOTE}/source.tar'])
     script = f'''set -euo pipefail
 task={REMOTE}
+exec 9>/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock
+flock -x 9
 base=/home/z00956592/megaflux/temporal-replica-frontier-20261115/stack
 mkdir -p "$task/stack" "$task/evidence"
 if [ ! -d "$task/stack/source" ]; then
@@ -68,8 +70,9 @@ docker start {CONTAINER} >/dev/null
     for name, contents in [('launch.sh',launcher), ('controller.py',controller)]:
         path = ROOT/name
         path.write_text(contents, encoding='utf-8', newline='\n')
+    call(['scp', str(ROOT/'launch.sh'), str(ROOT/'controller.py'), f'{HOST}:{REMOTE}/'])
+    script += '\ncp "$task/launch.sh" "$task/controller.py" "$task/stack/tools/"\n'
     call(['ssh', HOST, 'bash', '-s'], input=script.encode())
-    call(['scp', str(ROOT/'launch.sh'), str(ROOT/'controller.py'), f'{HOST}:{REMOTE}/stack/tools/'])
 
 
 def gate(tag, extra, *, metadata_only=False):

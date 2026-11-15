@@ -84,8 +84,12 @@ def analyze():
               '', '## 下一步', '',
               '完成两条门禁与小矩阵；按整步结果和真实搬运/交付记录选择主线。若B资格路径显示损失，先区分服务实现成本与生命周期策略，不据此断言该研究问题无收益。']
     (ROOT / 'REPORT.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+    follow_path=ROOT/'followup.json'
+    follow=json.loads(follow_path.read_text()) if follow_path.exists() else {}
+    if follow:lines += ['', '## 后续判定', '', f"状态：{follow.get('stage')}。{follow.get('conclusion','等待两条小矩阵完成；达到门槛才补独立重复。')}"]
+    (ROOT / 'REPORT.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
     (ROOT / 'STATUS.json').write_text(json.dumps(dict(stages={name: state['stage'] for name, state in states.items()},
-        completed_screen_points=len(rows), independent_expert_math=proof, new_joint_planner=False, stable_gain_established=False,
+        completed_screen_points=len(rows), independent_expert_math=proof, new_joint_planner=False, stable_gain_established=follow.get('stable_gain',False), followup=follow.get('stage'),
         formal_matrix_enabled=False), indent=2) + '\n')
     if rows:
         import matplotlib
