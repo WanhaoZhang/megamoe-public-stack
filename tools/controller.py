@@ -197,7 +197,7 @@ def run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=6
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--backend', choices=['balanced', 'shared', 'moonep'])
-    parser.add_argument('--mode', default='train', choices=['train', 'validate', 'activation', 'scaling', 'pool', 'norm', 'moonpool', 'sharedpool','plan','links','scheduler','temporal_math'])
+    parser.add_argument('--mode', default='train', choices=['train', 'validate', 'activation', 'scaling', 'pool', 'norm', 'moonpool', 'sharedpool','plan','links','scheduler','temporal_math','lifetime_math'])
     parser.add_argument('--tag')
     parser.add_argument('--worker-variant')
     parser.add_argument('--capacity', type=int, choices=[32,64], default=64)

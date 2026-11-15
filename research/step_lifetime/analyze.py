@@ -56,6 +56,19 @@ def analyze():
         lines.append(f"|{row['track']}|{row['pattern']}|{row['arm']}|{row['mean_s']:.6f}|{row['median_s']:.6f}|{row['peak_hbm_gib']:.3f}|")
     if not rows:
         lines += ['', '目前没有完成并通过门禁的25更新筛查点，尚不画性能曲线。']
+    proof_path=ROOT/'diagnostics/independent-lifetime-math.json'
+    proof=json.loads(proof_path.read_text()) if proof_path.exists() else {}
+    lines += ['', '## 独立执行器验证', '',
+        f"门禁标签：{proof.get('tag','pending')}；通过：{proof.get('passed',False)}；记录数：{proof.get('records',0)}；缓存命中字节：{proof.get('actual_cache_hit_bytes',0)}；梯度远端字节：{proof.get('actual_gradient_remote_bytes',0)}。"]
+    if proof.get('reason'):lines += ['',proof['reason']]
+    for pattern in ('same','alternating','random'):
+        points={row['arm']:row for row in rows if row['track']=='A' and row['pattern']==pattern}
+        required=('serial_home','serial_native','fixed_home','fixed_native')
+        if all(arm in points for arm in required):
+            serial=points['serial_home']['mean_s']-points['serial_native']['mean_s']
+            grouped=points['fixed_home']['mean_s']-points['fixed_native']['mean_s']
+            lines += ['',f"{pattern}单轮四格：复制收益（顺序/分组）={serial:.6f}/{grouped:.6f}s；交互差={serial-grouped:.6f}s。负收益表示复制更慢；单轮不构成因果或稳定性结论。"]
+    if rows:lines += ['', '[实测图PNG](figures/A.png) · [SVG](figures/A.svg) · [PDF](figures/A.pdf) · [CSV](results.csv)']
     lines += ['', '## 实现与限制', '',
               '- A：新增serial_home、serial_native、fifo_home；统一prefix/checkpoint条件。serial保留相同就绪前缀，FFN使用独立完整S调用，分组使用两波半S组合。',
               '- B：ABI1候选worker，版本化八条BF16权重缓存、八条FP32梯度累积项、独立owner服务流/HCCL组；复用缓冲与更新前等待交付。',
@@ -63,7 +76,7 @@ def analyze():
               '- routed原始dW走显式交付，返回None绕过原Parameter hook；向原FP32.grad布局只应用一次EP缩放。GA仍由loss归一化。',
               '- B当前为资格验证路径，CPU读取当前placement的开销全部计入；尚非AscendC联合planner。需NPU正确性与机制时间线通过后才能解释正式性能。',
               '- 两rank Gloo参考检查通过b0-b3、三次Adam及精确梯度求和/EP缩放；五项CPU生命周期契约检查通过。CPU通过不代替NPU验收。',
-              '- 新联合策略、匹配prefix的Timer诊断资格、稳定收益、独立银行与自然训练路由验证尚未完成；108矩阵关闭。',
+              '- 新联合策略、匹配prefix的Timer诊断资格、非法缓存集体拒绝、稳定收益、独立银行与自然训练路由验证尚未完成；108矩阵关闭。',
               '', '## 失败与恢复', '',
               '- 首次部署未完成时的提前启动：在设备初始化前失败，记录在track-a.json。',
               '- a2冻结检查发现漏复制扩展SO：在训练前拒绝；补齐冻结二进制后改用a3新标签。',
@@ -72,7 +85,7 @@ def analyze():
               '完成两条门禁与小矩阵；按整步结果和真实搬运/交付记录选择主线。若B资格路径显示损失，先区分服务实现成本与生命周期策略，不据此断言该研究问题无收益。']
     (ROOT / 'REPORT.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
     (ROOT / 'STATUS.json').write_text(json.dumps(dict(stages={name: state['stage'] for name, state in states.items()},
-        completed_screen_points=len(rows), new_joint_planner=False, stable_gain_established=False,
+        completed_screen_points=len(rows), independent_expert_math=proof, new_joint_planner=False, stable_gain_established=False,
         formal_matrix_enabled=False), indent=2) + '\n')
     if rows:
         import matplotlib
@@ -83,7 +96,8 @@ def analyze():
             fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
             labels = [row['pattern'] + '\n' + row['arm'] for row in selected]
             for axis, field, title in zip(axes, ('mean_s', 'peak_hbm_gib'), ('Complete update (s)', 'Whole-card sampled HBM (GiB)')):
-                axis.bar(range(len(selected)), [row[field] for row in selected])
+                bars=axis.bar(range(len(selected)), [row[field] for row in selected])
+                axis.bar_label(bars,fmt='%.3f',fontsize=8,padding=3)
                 axis.set_xticks(range(len(selected)), labels, rotation=45, ha='right', fontsize=8)
                 axis.set_title(title)
                 axis.set_ylim(bottom=0)

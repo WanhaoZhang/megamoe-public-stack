@@ -19,4 +19,14 @@ else:
     if not args.tag or not all(value.isalnum() or value in '-_.' for value in args.tag):parser.error('safe tag required')
     if any(not all(value.isalnum() or value in '-_./:' for value in item) for item in extra):parser.error('unexpected shell character')
     while (remote.ROOT/'HOLD-B').exists():time.sleep(1)
+    if '--steps' in extra and int(extra[extra.index('--steps')+1])==25:
+        proof=remote.ROOT/'diagnostics/independent-lifetime-math.json'
+        import json
+        if not proof.exists() or not json.loads(proof.read_text()).get('passed'):
+            raise RuntimeError('Independent lifetime output/dx/dp/dW gate is required before B timings')
+        import hashlib
+        checked=json.loads(proof.read_text())
+        if not checked.get('runtime_sources') or any(hashlib.sha256((remote.STACK/name).read_bytes()).hexdigest()!=value
+            for name,value in checked['runtime_sources'].items()):
+            raise RuntimeError('Lifetime math proof is stale for the local runtime sources')
     remote.gate(args.tag,extra,metadata_only=args.metadata_only)
