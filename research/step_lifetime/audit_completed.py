@@ -37,6 +37,9 @@ def order(folder):
 def audit():
     states = [read(ROOT, name) for name in ('lifetime-a3.json', 'lifetime-b2.json')]
     proof = read(ROOT, 'diagnostics/independent-lifetime-math.json')
+    proofs=[proof]+[json.loads(path.read_text()) for path in
+                   sorted((ROOT/'diagnostics').glob('lifetime-independent-ffn-v*.json'))]
+    proofs=[item for item in proofs if item.get('passed')]
     records, matched, payloads = [], [], []
     for state in states:
         for item in state['runs']:
@@ -55,10 +58,13 @@ def audit():
                 windows_with_unselected_ready_tasks=sum(len(row['keys'])<len(row['ready_keys']) for row in groups))
             if 'lifetime-mode' in ' '.join(item['receipt'].get('command', [])):
                 sources = read(folder, 'source-identity.json')
-                record['qualified_core_matches'] = all(sources.get(name) == digest for name,digest
-                                                      in proof['runtime_sources'].items())
+                matching=[item for item in proofs if all(sources.get(name)==digest
+                          for name,digest in item['runtime_sources'].items())]
+                record['qualified_core_matches'] = bool(matching)
+                certificate=matching[0] if matching else proof
+                record['qualification_tag']=certificate['tag']
                 record['qualified_worker_matches'] = all(any(
-                    value['sha256'] == proof['worker_sha256'] and name.endswith('early_bf16.so')
+                    value['sha256'] == certificate['worker_sha256'] and name.endswith('early_bf16.so')
                     for name,value in read(folder, f'libraries-rank{rank}.json')['libraries'].items())
                     for rank in range(8))
             records.append(record)

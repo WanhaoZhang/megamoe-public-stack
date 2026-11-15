@@ -128,6 +128,8 @@ class UpdateContext:
 
     def complete(self, identities: tuple[tuple, ...]) -> None:
         """Retire only transfers whose completion has actually been observed."""
+        if len(set(identities)) != len(identities):
+            raise ValueError('Duplicate completion identity')
         tickets = [self.tickets[key] for key in identities]
         if any(not ticket.submitted or ticket.complete for ticket in tickets):
             raise ValueError('Unsubmitted or already completed delivery')

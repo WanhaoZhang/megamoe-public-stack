@@ -3,6 +3,7 @@ from pathlib import Path
 import csv
 import json
 import statistics
+import hashlib
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -98,6 +99,9 @@ def analyze():
         lines += ['', '目前没有完成并通过门禁的25更新筛查点，尚不画性能曲线。']
     proof_path=ROOT/'diagnostics/independent-lifetime-math.json'
     proof=json.loads(proof_path.read_text()) if proof_path.exists() else {}
+    current_math_qualified=bool(proof.get('passed') and all(
+        hashlib.sha256((ROOT/'stack'/name).read_bytes()).hexdigest()==digest
+        for name,digest in proof.get('runtime_sources',{}).items()))
     def diagnostic(name):
         path=ROOT/'diagnostics'/name
         try:return json.loads(path.read_text()) if path.exists() else {}
@@ -105,9 +109,11 @@ def analyze():
     timer=diagnostic('prefix-timer-qualification.json')
     plans=diagnostic('lifetime-plan-equality.json')
     diagnostics=diagnostic('diagnostic-gates.json')
+    hardening=diagnostic('hardening.json')
     lines += ['', '## 独立执行器验证', '',
         f"门禁标签：{proof.get('tag','pending')}；通过：{proof.get('passed',False)}；记录数：{proof.get('records',0)}；缓存命中字节：{proof.get('actual_cache_hit_bytes',0)}；梯度远端字节：{proof.get('actual_gradient_remote_bytes',0)}。"]
     if proof.get('reason'):lines += ['',proof['reason']]
+    lines += ['',f"当前本地运行代码与最新数值证书匹配：{current_math_qualified}；接口加固状态：{hardening.get('stage','未启动')}。计时快照按自身历史证书核对，未覆盖改写旧数据。"]
     lines += ['',f"独立诊断lane状态：{diagnostics.get('stage','未启动')}。小形状prefix原Timer副本覆盖资格：{timer.get('passed',False)}；独立主形状实际copies/quota跨B方式一致性：{plans.get('passed',False)}。"]
     if plans.get('passed'):lines += ['',f"计划一致性范围：{plans['scope']}。它补充三次更新的诊断证据，不等于为全部25更新计时日志补出了逐调用哈希。"]
     if timer.get('reason'):lines += ['',f"Timer覆盖说明：{timer['reason']}。"]
@@ -139,7 +145,7 @@ def analyze():
               '- 缓存命中减少远端权重读取，仍需本地拷入执行槽；没有声称零搬运或自动降低HBM。原始route plan和optimizer owner保留。',
               '- routed原始dW走显式交付，返回None绕过原Parameter hook；向原FP32.grad布局只应用一次EP缩放。GA仍由loss归一化。',
               '- B当前为资格验证路径，CPU读取当前placement的开销全部计入；尚非AscendC联合planner。需NPU正确性与机制时间线通过后才能解释正式性能。',
-              '- 两rank Gloo参考检查通过b0-b3、三次Adam及精确梯度求和/EP缩放；五项CPU生命周期契约检查通过。CPU通过不代替NPU验收。',
+              '- 两rank Gloo参考检查通过b0-b3、三次Adam及精确梯度求和/EP缩放；初版五项CPU契约通过，加固后六项通过。CPU通过不代替NPU验收。',
               '- 新联合策略、主形状/B服务路径完整时间线、非法缓存集体拒绝、稳定收益、独立银行与自然训练路由验证尚未完成；108矩阵关闭。Timer和copies/quota的小形状诊断状态见上。',
               '', '## 失败与恢复', '',
               '- 首次部署未完成时的提前启动：在设备初始化前失败，记录在track-a.json。',
@@ -153,7 +159,8 @@ def analyze():
     if follow:lines += ['', '## 后续判定', '', f"状态：{follow.get('stage')}。{follow.get('conclusion','等待两条小矩阵完成；达到门槛才补独立重复。')}"]
     (ROOT / 'REPORT.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
     (ROOT / 'STATUS.json').write_text(json.dumps(dict(stages={name: state['stage'] for name, state in states.items()},
-        completed_screen_points=len(rows), independent_expert_math=proof, diagnostic_stage=diagnostics.get('stage'),
+        completed_screen_points=len(rows), independent_expert_math=proof, current_runtime_math_qualified=current_math_qualified,
+        hardening_stage=hardening.get('stage'),diagnostic_stage=diagnostics.get('stage'),
         small_prefix_timer_qualified=timer.get('passed',False), main_lifetime_plans_equal=plans.get('passed',False),
         new_joint_planner=False, stable_gain_established=follow.get('stable_gain',False), followup=follow.get('stage'),
         formal_matrix_enabled=False), indent=2) + '\n')
@@ -166,8 +173,10 @@ def analyze():
             fig, axes = plt.subplots(3, 2, figsize=(12, 10))
             for index,pattern in enumerate(('same','alternating','random')):
                 points=[row for row in selected if row['pattern']==pattern]
+                order=('serial_home','serial_native','fixed_home','fixed_native','fifo_home','easy_home') if track=='A' else ('anchor','b0','b1','b2','b3')
+                points.sort(key=lambda row:order.index(row['arm']))
                 for axis,field,title in zip(axes[index],('mean_s','peak_hbm_gib'),
-                    ('Complete update (s)','Whole-card sampled HBM (GiB)')):
+                    ('Mean complete update (s)','Whole-card sampled HBM (GiB)')):
                     bars=axis.barh(range(len(points)),[row[field] for row in points])
                     axis.bar_label(bars,fmt='%.3f',fontsize=8,padding=3)
                     axis.set_yticks(range(len(points)),[row['arm'] for row in points],fontsize=9)

@@ -35,7 +35,7 @@ def compare(tag):
 
 
 def publish():
-    files = ('tools/train.py', 'tools/capture_plan_hashes.py')
+    files = ('tools/train.py', 'tools/capture_plan_hashes.py', 'tools/capture_diagnostics.py')
     manifest = {name: hashlib.sha256((SOURCE / name).read_bytes()).hexdigest() for name in files}
     stage = LANE + '/staging/plan-hash-' + hashlib.sha256(json.dumps(manifest).encode()).hexdigest()[:12]
     subprocess.run(['ssh', remote.HOST, 'mkdir', '-p', stage], check=True)

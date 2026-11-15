@@ -67,5 +67,15 @@ class LifetimeTests(unittest.TestCase):
         self.assertFalse(self.context.tickets[('a',)].submitted)
 
 
+    def test_completion_batch_rejects_duplicates_atomically(self):
+        self.context.contribute(('a',), self.key, 0)
+        self.context.submit((('a',),))
+        with self.assertRaises(ValueError):
+            self.context.complete((('a',), ('a',)))
+        self.assertFalse(self.context.tickets[('a',)].complete)
+        self.context.complete((('a',),))
+        self.context.finish()
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -20,3 +20,27 @@ Formal108-run matrix and joint planner remain conditional on the registered gain
 Every external-path update initializes zero FP32 routed gradients even for an empty owner, so Adam/weight decay is not skipped. The Gloo oracle additionally checks an all-empty update. Raw tensors used on the owner stream are recorded there, and send/receive completion events are observed before bank reuse.
 
 Qualification status and live results are project artifacts in REPORT.md/STATUS.json, never inferred from this source snapshot.
+
+The first A18/B15 pilots completed without crossing the gain gate. The project
+report keeps all33processes as single-repeat qualification results, not a stable
+speedup claim. Main-shape three-version actual plan hashes match across the five
+B modes on all8ranks. Prefix Timer replica coverage is separately qualified on a
+small shape; main/B-service critical-path analysis is still outstanding.
+
+The final completion contract rejects duplicate identities atomically. Six CPU
+contracts and a new64record forced-replica NPU certificate qualify the hardened
+core. Original timed snapshots remain tied to their preceding v3certificate;
+the hardening is not presented as a measured performance optimization.
+
+Replay entrypoints are remote.py/remote_b.py, run_track_a.py/run_track_b.py and
+run_independent_gate.py. Use fresh campaign prefixes and evidence tags. The
+final checkout already contains the contract hardening; finish_hardening.py is
+a preserved one-time migration for the original frozen pilot, not a prerequisite
+to rerun on final sources. run_diagnostic_gates.py also preserves the historical
+small-shape attempt and shared utilities; current replica-plan coverage uses
+run_main_plan_gates.py. Diagnostic clone changes are in diagnostic-source/.
+
+Existing execution-pool and current-stream ordering remain required. These
+leases do not authorize arbitrary concurrent streams. Full-model W1,
+invalid-cache collective rejection/recovery, held-out/natural routes and a
+device-resident joint policy are not qualified by these results.
