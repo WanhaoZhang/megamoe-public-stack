@@ -1,0 +1,400 @@
+{
+  "passed": true,
+  "modes": [
+    "fixed_home",
+    "anchor",
+    "b0",
+    "b1",
+    "b3"
+  ],
+  "runtime_sources": {
+    "tools/train.py": "93f9c958e685bd0e349aaa944460b2c0970bafae9280a3fbd0e94f110a5e1008",
+    "tools/lifetime_device.py": "319840019768e8fe62fd8c3e2037e77f41668742ca1d8db1aa928482d51e351f",
+    "tools/step_lifetime.py": "c71e9345e050a864a0b9fc40379819b519bdf52ada3118c1fdfc92f56b2d1cfe",
+    "tools/causal_proof.py": "baa8046d8d3e9920382318d2a41981495290c7ca2a758ec2b6cde6af0a5acb1c",
+    "tools/capture_diagnostics.py": "3657305b8e013ffc9546ca9b612a539b653f6725b6d6406004cec5cbe077a043",
+    "tools/capture_framework.py": "797780b19221eeb6f52590bd05e3e0a67eb65ab6928624dd39b074ff4364df45",
+    "tools/capture_lifetime.py": "c384a4fafe5429da63c4c646e949ae7f50a1a902f50c789e74896e0d02470566",
+    "tools/grouped_experts.py": "e4e40ac75dd9e1b19bedb644a8887f4755235df6a058fc8ef08dfefb51922af5",
+    "tools/temporal_model.py": "02f63ade543503c81e8fa78f91fdf7f6930e46f341d1d51b81c6c54b89a12639",
+    "tools/temporal_prefix_reuse.py": "7636d45545195c791fef634e03c1fb58d10c652b0e29a6fb6b5dc8d788584029",
+    "source/native-balanced/ascend_deepep/fsdp2_bridge.py": "6e975d521b63727fbc3e2e14fe727eba5840be088866495e6ceb8dd41c6a4a2e",
+    "source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py": "6acfe7693078ab9800a49bdd967d61af3de210d60af24d346de8164f80502f56"
+  },
+  "worker_variant": "ep8-cap64-lifetime-timer-causal-v1",
+  "worker_sha256": "e0e18541b7faecb6a99d27a6e2ab3587bc8a93ed7d24768a40fbbbd7cf1fb49c",
+  "scope": "small complete model, all modes, full FP32 gradients and record coverage",
+  "performance": false,
+  "runs": [
+    {
+      "tag": "causal-v1-math-fixed_home",
+      "mode": "fixed_home",
+      "small": true,
+      "exit": 0,
+      "passed": true,
+      "gradient_comparison_exit": 0,
+      "coverage": [
+        {
+          "rank": 0,
+          "calls": 72,
+          "words": 845408,
+          "stage_records": 0,
+          "active_replicas": 0,
+          "passed": true
+        },
+        {
+          "rank": 1,
+          "calls": 72,
+          "words": 847296,
+          "stage_records": 0,
+          "active_replicas": 0,
+          "passed": true
+        },
+        {
+          "rank": 2,
+          "calls": 72,
+          "words": 845136,
+          "stage_records": 0,
+          "active_replicas": 0,
+          "passed": true
+        },
+        {
+          "rank": 3,
+          "calls": 72,
+          "words": 843344,
+          "stage_records": 0,
+          "active_replicas": 0,
+          "passed": true
+        },
+        {
+          "rank": 4,
+          "calls": 72,
+          "words": 841560,
+          "stage_records": 0,
+          "active_replicas": 0,
+          "passed": true
+        },
+        {
+          "rank": 5,
+          "calls": 72,
+          "words": 843304,
+          "stage_records": 0,
+          "active_replicas": 0,
+          "passed": true
+        },
+        {
+          "rank": 6,
+          "calls": 72,
+          "words": 849008,
+          "stage_records": 0,
+          "active_replicas": 0,
+          "passed": true
+        },
+        {
+          "rank": 7,
+          "calls": 72,
+          "words": 841632,
+          "stage_records": 0,
+          "active_replicas": 0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "tag": "causal-v1-math-anchor",
+      "mode": "anchor",
+      "small": true,
+      "exit": 0,
+      "passed": true,
+      "gradient_comparison_exit": 0,
+      "coverage": [
+        {
+          "rank": 0,
+          "calls": 72,
+          "words": 864232,
+          "stage_records": 31296,
+          "active_replicas": 60,
+          "passed": true
+        },
+        {
+          "rank": 1,
+          "calls": 72,
+          "words": 858656,
+          "stage_records": 31608,
+          "active_replicas": 60,
+          "passed": true
+        },
+        {
+          "rank": 2,
+          "calls": 72,
+          "words": 861688,
+          "stage_records": 31632,
+          "active_replicas": 66,
+          "passed": true
+        },
+        {
+          "rank": 3,
+          "calls": 72,
+          "words": 870136,
+          "stage_records": 31272,
+          "active_replicas": 96,
+          "passed": true
+        },
+        {
+          "rank": 4,
+          "calls": 72,
+          "words": 863096,
+          "stage_records": 31272,
+          "active_replicas": 78,
+          "passed": true
+        },
+        {
+          "rank": 5,
+          "calls": 72,
+          "words": 859440,
+          "stage_records": 31416,
+          "active_replicas": 54,
+          "passed": true
+        },
+        {
+          "rank": 6,
+          "calls": 72,
+          "words": 859688,
+          "stage_records": 31560,
+          "active_replicas": 72,
+          "passed": true
+        },
+        {
+          "rank": 7,
+          "calls": 72,
+          "words": 865520,
+          "stage_records": 31128,
+          "active_replicas": 78,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "tag": "causal-v1-math-b0",
+      "mode": "b0",
+      "small": true,
+      "exit": 0,
+      "passed": true,
+      "gradient_comparison_exit": 0,
+      "coverage": [
+        {
+          "rank": 0,
+          "calls": 72,
+          "words": 864232,
+          "stage_records": 16896,
+          "active_replicas": 60,
+          "passed": true
+        },
+        {
+          "rank": 1,
+          "calls": 72,
+          "words": 858656,
+          "stage_records": 16896,
+          "active_replicas": 60,
+          "passed": true
+        },
+        {
+          "rank": 2,
+          "calls": 72,
+          "words": 861688,
+          "stage_records": 16896,
+          "active_replicas": 66,
+          "passed": true
+        },
+        {
+          "rank": 3,
+          "calls": 72,
+          "words": 870136,
+          "stage_records": 16896,
+          "active_replicas": 96,
+          "passed": true
+        },
+        {
+          "rank": 4,
+          "calls": 72,
+          "words": 863096,
+          "stage_records": 16896,
+          "active_replicas": 78,
+          "passed": true
+        },
+        {
+          "rank": 5,
+          "calls": 72,
+          "words": 859440,
+          "stage_records": 16896,
+          "active_replicas": 54,
+          "passed": true
+        },
+        {
+          "rank": 6,
+          "calls": 72,
+          "words": 859688,
+          "stage_records": 16896,
+          "active_replicas": 72,
+          "passed": true
+        },
+        {
+          "rank": 7,
+          "calls": 72,
+          "words": 865520,
+          "stage_records": 16896,
+          "active_replicas": 78,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "tag": "causal-v1-math-b1",
+      "mode": "b1",
+      "small": true,
+      "exit": 0,
+      "passed": true,
+      "gradient_comparison_exit": 0,
+      "coverage": [
+        {
+          "rank": 0,
+          "calls": 72,
+          "words": 864232,
+          "stage_records": 16896,
+          "active_replicas": 60,
+          "passed": true
+        },
+        {
+          "rank": 1,
+          "calls": 72,
+          "words": 858656,
+          "stage_records": 16896,
+          "active_replicas": 60,
+          "passed": true
+        },
+        {
+          "rank": 2,
+          "calls": 72,
+          "words": 861688,
+          "stage_records": 16896,
+          "active_replicas": 66,
+          "passed": true
+        },
+        {
+          "rank": 3,
+          "calls": 72,
+          "words": 870136,
+          "stage_records": 16896,
+          "active_replicas": 96,
+          "passed": true
+        },
+        {
+          "rank": 4,
+          "calls": 72,
+          "words": 863096,
+          "stage_records": 16896,
+          "active_replicas": 78,
+          "passed": true
+        },
+        {
+          "rank": 5,
+          "calls": 72,
+          "words": 859440,
+          "stage_records": 16896,
+          "active_replicas": 54,
+          "passed": true
+        },
+        {
+          "rank": 6,
+          "calls": 72,
+          "words": 859688,
+          "stage_records": 16896,
+          "active_replicas": 72,
+          "passed": true
+        },
+        {
+          "rank": 7,
+          "calls": 72,
+          "words": 865520,
+          "stage_records": 16896,
+          "active_replicas": 78,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "tag": "causal-v1-math-b3",
+      "mode": "b3",
+      "small": true,
+      "exit": 0,
+      "passed": true,
+      "gradient_comparison_exit": 0,
+      "coverage": [
+        {
+          "rank": 0,
+          "calls": 72,
+          "words": 864232,
+          "stage_records": 16896,
+          "active_replicas": 60,
+          "passed": true
+        },
+        {
+          "rank": 1,
+          "calls": 72,
+          "words": 858656,
+          "stage_records": 16896,
+          "active_replicas": 60,
+          "passed": true
+        },
+        {
+          "rank": 2,
+          "calls": 72,
+          "words": 861688,
+          "stage_records": 16896,
+          "active_replicas": 66,
+          "passed": true
+        },
+        {
+          "rank": 3,
+          "calls": 72,
+          "words": 870136,
+          "stage_records": 16896,
+          "active_replicas": 96,
+          "passed": true
+        },
+        {
+          "rank": 4,
+          "calls": 72,
+          "words": 863096,
+          "stage_records": 16896,
+          "active_replicas": 78,
+          "passed": true
+        },
+        {
+          "rank": 5,
+          "calls": 72,
+          "words": 859440,
+          "stage_records": 16896,
+          "active_replicas": 54,
+          "passed": true
+        },
+        {
+          "rank": 6,
+          "calls": 72,
+          "words": 859688,
+          "stage_records": 16896,
+          "active_replicas": 72,
+          "passed": true
+        },
+        {
+          "rank": 7,
+          "calls": 72,
+          "words": 865520,
+          "stage_records": 16896,
+          "active_replicas": 78,
+          "passed": true
+        }
+      ]
+    }
+  ]
+}

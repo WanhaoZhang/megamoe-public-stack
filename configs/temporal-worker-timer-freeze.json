@@ -1,7 +1,7 @@
 {
-  "scope": "diagnostic_only; not performance binary",
+  "scope": "causal-diagnostic-only ABI1 original-Timer schema9",
   "binaries": {
-    "source/native-balanced/worker-variants/temporal-ep8-cap64-timer/libascend_deepep_megaflux_worker_bf16.so": "6933b6470f5a9cdc821a48b25fd21310ef0c96d4f1c78534513b7fa7b44c020b",
-    "source/native-balanced/worker-variants/temporal-ep8-cap64-timer/libascend_deepep_megaflux_early_bf16.so": "6933b6470f5a9cdc821a48b25fd21310ef0c96d4f1c78534513b7fa7b44c020b"
+    "source/native-balanced/worker-variants/ep8-cap64-lifetime-timer-causal-v1/libascend_deepep_megaflux_early_bf16.so": "e0e18541b7faecb6a99d27a6e2ab3587bc8a93ed7d24768a40fbbbd7cf1fb49c",
+    "source/native-balanced/worker-variants/ep8-cap64-lifetime-timer-causal-v1/libascend_deepep_megaflux_worker_bf16.so": "e0e18541b7faecb6a99d27a6e2ab3587bc8a93ed7d24768a40fbbbd7cf1fb49c"
   }
 }
