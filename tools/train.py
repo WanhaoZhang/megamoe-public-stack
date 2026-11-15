@@ -98,6 +98,11 @@ def main():
     parser.add_argument('--dump-grad-step0', action='store_true')
     parser.add_argument('--finite-diagnostics', action='store_true')
     parser.add_argument('--temporal-policy', choices=('legacy','fixed_native','fixed_home','fifo_native','easy_home','easy_independent'))
+    parser.add_argument('--temporal-prefix-reuse',action='store_true',
+                        help='Research runtime v2: prefix + FFN/shared checkpoints; requires new qualification')
+    parser.add_argument('--prefix-diagnostic-sync',choices=('none','prefix_device','backward_global','stage_chain'),default='none',
+                        help='Small-shape numerical isolation only; cannot produce performance scores')
+    parser.add_argument('--prefix-stage-audit',action='store_true',help='Read-only numerical stage-order audit, at most3 updates')
     parser.add_argument('--temporal-scheduler',choices=('cpu','ascendc'),default='cpu')
     parser.add_argument('--temporal-scheduler-library',type=Path)
     parser.add_argument('--temporal-schedule-replay',type=Path)
@@ -113,6 +118,12 @@ def main():
         parser.error('offline task replay requires both --temporal-schedule-replay and --diagnostic-only')
     if args.temporal_schedule_replay and (args.temporal_policy!='easy_home' or args.diagnostic_timer):
         parser.error('task replay is a TimerOFF diagnostic for easy_home, never online performance')
+    if args.temporal_prefix_reuse and (not args.temporal_policy or args.temporal_policy=='legacy' or
+            args.diagnostic_timer or args.forward_window!=2 or args.microbatches!=4):
+        parser.error('prefix reuse requires GA4/W2 online grouped policy; other windows, offline and Timer capture are not qualified')
+    if (args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or (args.temporal_prefix_reuse and args.temporal_schedule_replay)) and (
+            not args.temporal_prefix_reuse or not args.dump_grad_step0 or args.steps>3):
+        parser.error('prefix diagnostics require prefix reuse, a step0 gradient export and at most3 updates')
     if args.microbatches < 1 or args.microbatches % args.forward_window:
         parser.error('microbatches must be positive and divisible by forward-window')
     if args.interface != 'unified' and args.microbatches != 1:
@@ -161,9 +172,18 @@ def main():
         effective = json.loads((args.out/'effective-config.json').read_text())
         effective.update(temporal_policy=args.temporal_policy,
             hold_fsdp_forward=args.hold_fsdp_forward,
+            temporal_prefix_reuse=args.temporal_prefix_reuse,
+            prefix_diagnostic_sync=args.prefix_diagnostic_sync,
+            prefix_stage_audit=args.prefix_stage_audit,
+            numerical_diagnostic_only=bool(args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only),
+            rematerialization_partition=('prefix+ffn_shared_finish' if args.temporal_prefix_reuse else
+                'logical-layer-group' if args.temporal_policy and args.temporal_policy!='legacy' else 'layer'),
             execution_mode=('offline-task-selection-replay-diagnostic' if args.temporal_schedule_replay else
+                f'online-{args.temporal_scheduler}-prefix-reuse-frontier' if args.temporal_prefix_reuse else
                 f'online-{args.temporal_scheduler}-frontier' if args.temporal_policy and args.temporal_policy!='legacy' else 'serial-retained-graphs'),
-            routing_prepass_counted=bool(args.temporal_policy in ('easy_home','easy_independent') and not args.temporal_schedule_replay),
+            routing_prepass_counted=bool(args.temporal_policy in ('easy_home','easy_independent') and
+                not args.temporal_schedule_replay and not args.temporal_prefix_reuse),
+            routing_loads_observed=bool(args.temporal_policy in ('easy_home','easy_independent') and not args.temporal_schedule_replay),
             ascendc_scheduler_used=bool(args.temporal_scheduler=='ascendc' and args.temporal_policy and args.temporal_policy!='legacy' and not args.temporal_schedule_replay),
             offline_diagnostic_only=args.diagnostic_only,
             uses_future_derived_schedule=bool(args.temporal_schedule_replay),
@@ -231,6 +251,9 @@ def main():
     temporal = None
     if args.temporal_policy:
         from temporal_model import TemporalRuntime
+        if args.temporal_prefix_reuse:
+            from temporal_prefix_reuse import PrefixReuseRuntime
+            TemporalRuntime=PrefixReuseRuntime
         from mindspeed_llm.fsdp2.distributed.parallel_state import ParallelState
         samples_before_warmup = parameter_samples(engine)
         temporal = TemporalRuntime(engine.model,tokens=args.tokens,hidden=config.hidden_size,
@@ -238,7 +261,10 @@ def main():
             group=ParallelState().get_ep_group(),out=args.out,rank=rank,
             scheduler_backend=args.temporal_scheduler,scheduler_library=args.temporal_scheduler_library or
             args.root/'source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler.so',
-            task_schedule_replay=args.temporal_schedule_replay)
+            task_schedule_replay=args.temporal_schedule_replay,
+            **(dict(diagnostic_sync=args.prefix_diagnostic_sync,allow_diagnostic_schedule=args.diagnostic_only,
+                    stage_audit=args.prefix_stage_audit)
+               if args.temporal_prefix_reuse else {}))
         engine.model.temporal_runtime = temporal
         samples_after_warmup = parameter_samples(engine)
         if any(not torch.equal(value,samples_after_warmup[name]) for name,value in samples_before_warmup.items()):
@@ -338,6 +364,10 @@ def main():
             check_step_completions()
         if temporal is not None:
             temporal.validate_step(args.layers*args.microbatches)
+        if args.prefix_diagnostic_sync=='backward_global':
+            torch.accelerator.synchronize()
+            dist.barrier()
+            torch.accelerator.synchronize()
         if args.dump_grad_step0 and step == 0:
             # Export from every stream only after native owner delivery and
             # FSDP reductions finish; default-stream .cpu() alone is insufficient
@@ -429,7 +459,8 @@ def main():
         with (args.out / f'steps-rank{rank}.jsonl').open('a') as handle:
             handle.write(json.dumps(row) + '\n')
         print(json.dumps(row), flush=True)
-    expected_route_calls = 3 if args.temporal_policy in ('easy_home','easy_independent') and not args.temporal_schedule_replay else 2
+    expected_route_calls = (2 if args.temporal_prefix_reuse else
+        3 if args.temporal_policy in ('easy_home','easy_independent') and not args.temporal_schedule_replay else 2)
     if len(provider.calls) != args.steps * args.layers * args.microbatches or any(count != expected_route_calls for count in provider.calls.values()):
         raise RuntimeError(f'Unexpected checkpoint replay route calls: {provider.calls}')
     (args.out / f'route-calls-rank{rank}.json').write_text(json.dumps({':'.join(map(str,key)): count for key, count in provider.calls.items()}, indent=2))
