@@ -15,6 +15,11 @@ def _local(value):
     return value.to_local() if isinstance(value, DTensor) else value
 
 
+def observe_tensor(tensor, label):
+    """Explicit host observation; diagnostic wrapper records its blocking cost."""
+    return tensor.detach().cpu().tolist()
+
+
 class LifetimeDevice:
     """Own bounded replica storage and return complete gradients to fixed owners."""
 
@@ -69,7 +74,7 @@ class LifetimeDevice:
         """Observe this call's actual placement and bind a versioned cache source."""
         if self.layer is None:
             raise RuntimeError('Missing logical layer for replica cache')
-        copies = plan.copies.detach().cpu().tolist()
+        copies = observe_tensor(plan.copies, 'copies')
         self.sequence += 1
         reader = (self.context.version, self.sequence)
         leases = []
@@ -143,7 +148,7 @@ class LifetimeDevice:
         self._drain()
         self.commit(plan)
         reader, copies, _, layer = self._current
-        counts = self.module.last_exec_counts.detach().cpu().tolist()
+        counts = observe_tensor(self.module.last_exec_counts, 'execution_counts')
         # Actual counts, not copies alone, define gradient obligations.
         local = [int(counts[self.pool.home + slot]) > 0 if expert >= 0 else False
                  for slot, expert in enumerate(copies[self.rank])]
@@ -196,6 +201,7 @@ class LifetimeDevice:
         own_tickets=[]
         with self._delivery_scope():
             for (source, layer, expert), (index, tickets) in sorted(self.pending.items()):
+                self._diagnostic_packet=(source,layer,expert,index)
                 owner = expert // self.pool.home
                 if source == self.rank:
                     self.context.submit(tuple(tickets))

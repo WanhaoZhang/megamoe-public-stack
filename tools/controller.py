@@ -96,7 +96,7 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
     diagnostic='--diagnostic-timer' in arguments
     if '--temporal-schedule-replay' in arguments and '--diagnostic-only' not in arguments:
         raise RuntimeError('Offline task schedules cannot be submitted as online training performance')
-    if worker=='temporal-ep8-cap64-timer' and not diagnostic:
+    if worker in ('temporal-ep8-cap64-timer','ep8-cap64-lifetime-timer-causal-v1') and not diagnostic:
         raise RuntimeError('TimerON worker is diagnostic-only, never a performance backend')
     out = TASK / 'evidence' / tag
     out.mkdir(parents=True, exist_ok=False)
@@ -133,9 +133,11 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
             str(TASK/'configs/temporal-scheduler-freeze.json'),'--out',
             str(snapshots/f'{tag}-temporal-runtime.json')],check=True)
     if '--lifetime-mode' in arguments:
-        if worker!='ep8-cap64-lifetime-v1':raise RuntimeError('Lifetime ABI must use its own frozen worker')
+        expected='ep8-cap64-lifetime-timer-causal-v1' if diagnostic else 'ep8-cap64-lifetime-v1'
+        if worker!=expected:raise RuntimeError('Lifetime ABI must use its own frozen worker')
+        lifetime_manifest='lifetime-timer-runtime-freeze.json' if diagnostic else 'lifetime-runtime-freeze.json'
         subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
-            str(TASK/'configs/lifetime-runtime-freeze.json'),'--out',
+            str(TASK/'configs'/lifetime_manifest),'--out',
             str(snapshots/f'{tag}-lifetime-runtime.json')],check=True)
     sources=source_identity(arguments)
     (out/'source-identity.json').write_text(json.dumps(sources,indent=2))

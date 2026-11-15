@@ -88,6 +88,10 @@ def main():
     parser.add_argument('--maxvio', type=float, required=True)
     parser.add_argument('--layers', type=int, default=2)
     parser.add_argument('--steps', type=int, default=25)
+    parser.add_argument('--prefix-timer-qualification',action='store_true')
+    parser.add_argument('--plan-hash-qualification',action='store_true')
+    parser.add_argument('--causal-qualification',action='store_true')
+    parser.add_argument('--causal-capture-proof',type=Path)
     parser.add_argument('--lifetime-mode',choices=('anchor','b0','b1','b2','b3'))
     parser.add_argument('--tokens', type=int, default=16384)
     parser.add_argument('--microbatches', type=int, default=1)
@@ -117,7 +121,19 @@ def main():
     parser.add_argument('--diagnose-memory', action='store_true')
     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
     args = parser.parse_args()
-    if args.lifetime_mode and (args.temporal_policy!='fixed_native' or not args.temporal_prefix_reuse or args.diagnostic_timer):
+    causal=bool(args.causal_qualification or args.causal_capture_proof)
+    if causal and (not args.diagnostic_timer or args.steps>3):
+        parser.error('Causal captures require TimerON and at most3 updates; never performance')
+    if args.causal_qualification and (not args.dump_grad_step0 or args.tokens>512 or args.hidden is None or args.hidden>512):
+        parser.error('Small causal qualification requires gradients and a qualified small shape')
+    if args.causal_capture_proof:
+        from causal_proof import validate
+        validate(args)
+    if args.plan_hash_qualification and args.steps>3:
+        parser.error('Plan hash capture is diagnostic-only and limited to3 updates')
+    if args.prefix_timer_qualification and (not args.diagnostic_timer or not args.dump_grad_step0 or args.steps>3):
+        parser.error('Prefix Timer qualification requires TimerON, step0 gradients and at most3 updates')
+    if args.lifetime_mode and (args.temporal_policy!='fixed_native' or not args.temporal_prefix_reuse or (args.diagnostic_timer and not causal)):
         parser.error('Lifetime qualification requires fixed_native, prefix reuse and TimerOFF')
     if args.maxutil_rule=='upstream_first' and args.temporal_policy not in ('easy_home','easy_independent'):
         parser.error('author-style MaxUtil applies only to EasyBalance selection policies')
@@ -126,7 +142,7 @@ def main():
     if args.temporal_schedule_replay and (args.temporal_policy!='easy_home' or args.diagnostic_timer):
         parser.error('task replay is a TimerOFF diagnostic for easy_home, never online performance')
     if args.temporal_prefix_reuse and (not args.temporal_policy or args.temporal_policy=='legacy' or
-            args.diagnostic_timer or args.forward_window!=2 or args.microbatches!=4):
+            (args.diagnostic_timer and not (args.prefix_timer_qualification or causal)) or args.forward_window!=2 or args.microbatches!=4):
         parser.error('prefix reuse requires GA4/W2 online grouped policy; other windows, offline and Timer capture are not qualified')
     if (args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or (args.temporal_prefix_reuse and args.temporal_schedule_replay)) and (
             not args.temporal_prefix_reuse or not args.dump_grad_step0 or args.steps>3):
@@ -183,7 +199,7 @@ def main():
             temporal_prefix_reuse=args.temporal_prefix_reuse,
             prefix_diagnostic_sync=args.prefix_diagnostic_sync,
             prefix_stage_audit=args.prefix_stage_audit,
-            numerical_diagnostic_only=bool(args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only),
+            numerical_diagnostic_only=bool(causal or args.plan_hash_qualification or args.prefix_timer_qualification or args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only),
             rematerialization_partition=('prefix+ffn_shared_finish' if args.temporal_prefix_reuse else
                 'logical-layer-group' if args.temporal_policy and args.temporal_policy!='legacy' else 'layer'),
             execution_mode=('offline-task-selection-replay-diagnostic' if args.temporal_schedule_replay else
@@ -240,9 +256,15 @@ def main():
     from mindspeed_llm.fsdp2.features.ep8_imbalance import plan_invocation
     from ascend_deepep.plan_replay import install_replay_provider
     install_replay_provider(plan_invocation)
+    if args.plan_hash_qualification:
+        from capture_plan_hashes import install
+        install(args.out,rank)
     if args.diagnostic_timer:
         from capture_diagnostics import install
-        install(args.out,rank)
+        capture=install(args.out,rank)
+        if causal:
+            from capture_lifetime import install as install_lifetime_capture
+            install_lifetime_capture(args.out,rank,**capture)
     engine = MindSpeedParallelEngine(parallel, model, init_device='meta', weights_path=weights_path, hf_config=config)
     if not args.skip_identity:
         identity = parameter_identity(engine)

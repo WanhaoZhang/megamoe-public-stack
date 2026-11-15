@@ -128,12 +128,25 @@ def install(out:Path,rank:int):
         if len(matches)!=1:raise RuntimeError('saved backward placement has no unique diagnostic plan identity')
         key,ticket=matches[0];contexts.append((key,False))
         token=scopes['begin']('MegaMoE.backward',key=key,recompute=False);start=time.monotonic_ns()
+        original_descriptor=pool.module._descriptor
+        def descriptor(plan):
+            # Prefix checkpoints can replay two waves before either backward.
+            # Reset this backward's reusable coordinate slots on its consuming
+            # stream; forward-only reset otherwise merges the two invocations.
+            m=pool.module;trace=m.gradient_trace;offset=PREFIX['backward']
+            trace[:offset].zero_();trace[offset+HEADER:].zero_()
+            trace[offset+7].fill_(plan.epoch)
+            return original_descriptor(plan)
+        pool.module._descriptor=descriptor
         try:
             result=original_backward(pool,*args,**kwargs);finish=time.monotonic_ns();scopes['end'](token)
             snapshot(pool,'backward',key,False,token,start,finish,ticket.body)
             return result
-        finally:contexts.pop()
+        finally:
+            pool.module._descriptor=original_descriptor
+            contexts.pop()
 
     scopes['register_flusher'](export)
     NativeFSDP2Pool.forward=forward;NativeFSDP2Pool.backward=backward
     NativeFSDP2Pool._publish=publish;CommonOnlinePlanner._compile=compile
+    return dict(scopes=scopes,invocation=invocation)
