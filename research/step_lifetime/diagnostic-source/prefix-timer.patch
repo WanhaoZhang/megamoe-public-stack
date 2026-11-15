@@ -1,0 +1,88 @@
+diff --git a/tools/capture_plan_hashes.py b/tools/capture_plan_hashes.py
+new file mode 100644
+index 0000000..ecc7bb1
+--- /dev/null
++++ b/tools/capture_plan_hashes.py
+@@ -0,0 +1,30 @@
++"""Diagnostic-only synchronizing hashes; never enable in performance runs."""
++import hashlib
++import json
++from ascend_deepep.plan_replay import invocation
++from ascend_deepep.unified_planner import CommonOnlinePlanner
++
++
++def install(out, rank):
++    original = CommonOnlinePlanner._compile
++    sequence = 0
++
++    def compile(self, *args, **kwargs):
++        nonlocal sequence
++        plan = original(self, *args, **kwargs)
++        request = invocation()
++        key, replay = request if request is not None else (None, None)
++        hashes = {};replicas=0
++        for field in ('copies', 'source_quota', 'logical_ids', 'physical_ids', 'logical_counts'):
++            tensor = getattr(plan, field).detach().cpu().contiguous()
++            hashes[field] = hashlib.sha256(tensor.numpy().tobytes()).hexdigest()
++            if field=='copies':replicas=int((tensor>=0).sum())
++        row = dict(rank=rank, sequence=sequence, invocation=key, recompute=replay,
++                   hashes=hashes,replicas=replicas,diagnostic_only=True,
++                   semantics='synchronizing actual compiled plan, not timed online planner overhead')
++        with (out / f'actual-plan-hashes-rank{rank}.jsonl').open('a') as handle:
++            handle.write(json.dumps(row) + '\n')
++        sequence += 1
++        return plan
++
++    CommonOnlinePlanner._compile = compile
+diff --git a/tools/train.py b/tools/train.py
+index e648424..fa89078 100644
+--- a/tools/train.py
++++ b/tools/train.py
+@@ -88,6 +88,8 @@ def main():
+     parser.add_argument('--maxvio', type=float, required=True)
+     parser.add_argument('--layers', type=int, default=2)
+     parser.add_argument('--steps', type=int, default=25)
++    parser.add_argument('--prefix-timer-qualification',action='store_true')
++    parser.add_argument('--plan-hash-qualification',action='store_true')
+     parser.add_argument('--lifetime-mode',choices=('anchor','b0','b1','b2','b3'))
+     parser.add_argument('--tokens', type=int, default=16384)
+     parser.add_argument('--microbatches', type=int, default=1)
+@@ -117,6 +119,10 @@ def main():
+     parser.add_argument('--diagnose-memory', action='store_true')
+     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
+     args = parser.parse_args()
++    if args.plan_hash_qualification and args.steps>3:
++        parser.error('Plan hash capture is diagnostic-only and limited to3 updates')
++    if args.prefix_timer_qualification and (not args.diagnostic_timer or not args.dump_grad_step0 or args.steps>3):
++        parser.error('Prefix Timer qualification requires TimerON, step0 gradients and at most3 updates')
+     if args.lifetime_mode and (args.temporal_policy!='fixed_native' or not args.temporal_prefix_reuse or args.diagnostic_timer):
+         parser.error('Lifetime qualification requires fixed_native, prefix reuse and TimerOFF')
+     if args.maxutil_rule=='upstream_first' and args.temporal_policy not in ('easy_home','easy_independent'):
+@@ -126,7 +132,7 @@ def main():
+     if args.temporal_schedule_replay and (args.temporal_policy!='easy_home' or args.diagnostic_timer):
+         parser.error('task replay is a TimerOFF diagnostic for easy_home, never online performance')
+     if args.temporal_prefix_reuse and (not args.temporal_policy or args.temporal_policy=='legacy' or
+-            args.diagnostic_timer or args.forward_window!=2 or args.microbatches!=4):
++            (args.diagnostic_timer and not args.prefix_timer_qualification) or args.forward_window!=2 or args.microbatches!=4):
+         parser.error('prefix reuse requires GA4/W2 online grouped policy; other windows, offline and Timer capture are not qualified')
+     if (args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or (args.temporal_prefix_reuse and args.temporal_schedule_replay)) and (
+             not args.temporal_prefix_reuse or not args.dump_grad_step0 or args.steps>3):
+@@ -183,7 +189,7 @@ def main():
+             temporal_prefix_reuse=args.temporal_prefix_reuse,
+             prefix_diagnostic_sync=args.prefix_diagnostic_sync,
+             prefix_stage_audit=args.prefix_stage_audit,
+-            numerical_diagnostic_only=bool(args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only),
++            numerical_diagnostic_only=bool(args.plan_hash_qualification or args.prefix_timer_qualification or args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only),
+             rematerialization_partition=('prefix+ffn_shared_finish' if args.temporal_prefix_reuse else
+                 'logical-layer-group' if args.temporal_policy and args.temporal_policy!='legacy' else 'layer'),
+             execution_mode=('offline-task-selection-replay-diagnostic' if args.temporal_schedule_replay else
+@@ -240,6 +246,9 @@ def main():
+     from mindspeed_llm.fsdp2.features.ep8_imbalance import plan_invocation
+     from ascend_deepep.plan_replay import install_replay_provider
+     install_replay_provider(plan_invocation)
++    if args.plan_hash_qualification:
++        from capture_plan_hashes import install
++        install(args.out,rank)
+     if args.diagnostic_timer:
+         from capture_diagnostics import install
+         install(args.out,rank)

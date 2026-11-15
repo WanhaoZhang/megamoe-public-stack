@@ -11,9 +11,14 @@ for _ in range(1440):
     identities+=(('proof',proof.stat().st_mtime_ns),) if proof.exists() else ()
     follow=root/'followup.json'
     identities+=(('followup',follow.stat().st_mtime_ns),) if follow.exists() else ()
+    for name in ('diagnostic-gates.json','prefix-timer-qualification.json','lifetime-plan-equality.json'):
+        path=root/'diagnostics'/name
+        if path.exists():identities+=((name,path.stat().st_mtime_ns),)
     if identities!=last:
         states=analyze();last=identities
         active=[s for s in states.values() if s['stage'] not in ('screening_complete','stopped_at_gate')]
         follow_state=json.loads(follow.read_text()) if follow.exists() else {}
-        if states and not active and follow_state.get('stage') in ('complete','stopped_at_gate','waiting_deadline'):break
+        diagnostic=root/'diagnostics/diagnostic-gates.json'
+        diagnostic_done=not diagnostic.exists() or json.loads(diagnostic.read_text()).get('stage') in ('complete','failed')
+        if states and not active and diagnostic_done and follow_state.get('stage') in ('complete','stopped_at_gate','waiting_deadline'):break
     time.sleep(30)

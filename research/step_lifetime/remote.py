@@ -121,7 +121,10 @@ python3 tools/controller.py --backend balanced --tag {tag} --worker-variant ep8-
         (snapshots/f'{tag}-source-reference.json').write_text(json.dumps(dict(
             same_guarded_files_as=duplicate,archive=f'{duplicate}.tar.gz'),indent=2))
         receipt['source_snapshot_reused']=duplicate
-    for suffix in ('-runtime.json','-temporal-runtime.json'):
+    suffixes=['-runtime.json']
+    if '--temporal-scheduler' in extra or 'scheduler' in extra:suffixes.append('-temporal-runtime.json')
+    if '--lifetime-mode' in extra:suffixes.append('-lifetime-runtime.json')
+    for suffix in suffixes:
         if current.exists():
             subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}{suffix}',str(snapshots)])
     if '--diagnostic-timer' in extra and current.exists():
