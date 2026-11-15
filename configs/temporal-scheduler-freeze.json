@@ -1,12 +1,12 @@
 {
   "abi": 3,
-  "device_validation": "pending",
+  "device_validation": "ABI3:506/rank; ABI4:674/rank, all8 ranks passed",
   "binaries": {
     "source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler.so": "f13c3eec86373e253d2281eda829eb6ba1dc3a72465288c933e4178c5047d667",
     "source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so": "871c167357d1d6e1575d331b3e73c7b36bcc115fb41988e02d4d8a3bb029013e"
   },
   "variants": {
     "3": "Original work-tie selector remains unchanged",
-    "4": "Author-style numeric arrival-mask selection; requires separate gates"
+    "4": "Author-style selected sets, device and W2 numeric/memory gates passed; formal matrix disabled"
   }
 }

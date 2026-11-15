@@ -1,5 +1,5 @@
 {
-  "status": "qualification_in_progress",
+  "status": "w2_author_selected_set_screen_completed_no_selection_gain",
   "base_commit": "84a3363d95e11096de95332f9b691f736be752d1",
   "layers": 4,
   "ep": 8,
@@ -15,20 +15,48 @@
   "microbatch_sequences_per_rank": 1,
   "microbatches_per_update": 4,
   "sequence_tokens_per_update": 524288,
-  "windows": [1, 2, 4],
+  "windows": [
+    1,
+    2,
+    4
+  ],
   "common_admitted_window": 2,
   "window4_common_capacity_failure": "frontier-primary-easy-w4-r3: allocator budget OOM during backward; no completed three-update qualification",
-  "optimizer": {"type": "FunctionalFusedAdamW", "lr": 0.00001, "betas": [0.9,0.95], "eps": 1e-8, "weight_decay": 0.01, "clip": 1.0},
+  "optimizer": {
+    "type": "FunctionalFusedAdamW",
+    "lr": 1e-05,
+    "betas": [
+      0.9,
+      0.95
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0.01,
+    "clip": 1.0
+  },
   "parameter_gradient_adam_dtype": "float32",
   "expert_compute_dtype": "bfloat16",
   "max_whole_card_gib": 90,
   "warmup_updates": 5,
   "measured_updates": 20,
   "repeats": 3,
-  "maxvios": [0.2,1,5,10,15,20],
-  "temporal_patterns": ["same","alternating","random"],
+  "maxvios": [
+    0.2,
+    1,
+    5,
+    10,
+    15,
+    20
+  ],
+  "temporal_patterns": [
+    "same",
+    "alternating",
+    "random"
+  ],
   "shared_expert_backend": "framework",
-  "native_execution_mode_current": "serial-retained-graphs",
-  "group_execution_qualified": false,
-  "formal_matrix_enabled": false
+  "native_execution_mode_current": "legacy_or_ready_frontier_with_explicit_prefix_reuse",
+  "group_execution_qualified": true,
+  "formal_matrix_enabled": false,
+  "group_execution_qualification_scope": "GA4/W2 only, small owner gradients and main90GiB gates; see project upstream-maxutil-results.json",
+  "window4_full_model_qualified": false,
+  "actual_screen_repeats": 1
 }
