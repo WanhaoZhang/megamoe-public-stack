@@ -196,7 +196,10 @@ public:
     __aicore__ inline void EnableLifetime(uint64_t side) {
         if(!side)return;
         lifetimeCache_=MegaFluxWorker::Field(side,6);
+        // ABI2: exporting dW is independent from compute-order eligibility.
+        // Keep mode1 for a matched legacy control in the very same binary.
         if(MegaFluxWorker::Field(side,7)==1)gradient_.ready=0;
+        rawGradientOutput_=MegaFluxWorker::Field(side,7)==2;
     }
     __aicore__ inline void EnableGradientPipe(uint64_t ready,uint64_t trace,int epoch) {
         gradient_.replica=replica_;gradient_.ready=ready;gradient_.trace=trace;gradient_.epoch=epoch;
@@ -255,6 +258,7 @@ private:
 #if defined(DEEPEP_BF16_REPLICA)
     MegaMoeReplicaDescriptor replica_{};
     uint64_t lifetimeCache_=0;
+    bool rawGradientOutput_=false;
 #if defined(DEEPEP_BF16_GRADIENT_PIPE)
     MegaFluxGradient::Context gradient_{};
 #if defined(DEEPEP_BF16_EARLY_REDUCE)
@@ -1337,7 +1341,7 @@ __aicore__ inline void MegaMoeBF16Backward::ClearEmptyExpertGradWeights()
         if (effectiveRows == 0) {
 #if defined(DEEPEP_BF16_EARLY_REDUCE)
             // Do not overwrite a shared empty owner's early tile SUM.
-            if(gradient_.ready && expertIdx<replica_.home) {
+            if(gradient_.ready && !rawGradientOutput_ && expertIdx<replica_.home) {
                 bool shared=false;
                 for(int i=0;i<replica_.ranks*replica_.slots;++i)
                     if(MegaFluxMixed::Fresh((__gm__ int32_t*)replica_.plan+i)==replica_.rank*replica_.home+expertIdx)shared=true;
@@ -1393,7 +1397,8 @@ __aicore__ inline void MegaMoeBF16Backward::UpdateGlobalBuffer(
     const int64_t base = cumMRows_;
     const uint64_t bf16 = sizeof(bfloat16_t);
 #if defined(DEEPEP_BF16_GRADIENT_PIPE)
-    gmmAddrInfo.gradientReady=gradient_.ready;gmmAddrInfo.gradientEpoch=gradient_.epoch;
+    // A raw output does not publish a ready flag for an unwritten SHMEM partial.
+    gmmAddrInfo.gradientReady=rawGradientOutput_?0:gradient_.ready;gmmAddrInfo.gradientEpoch=gradient_.epoch;
     gmmAddrInfo.gradientTrace=gradient_.trace;
     gmmAddrInfo.gradientHidden=k_;gmmAddrInfo.gradientFfn=n_/2;
 #endif
@@ -1451,7 +1456,7 @@ __aicore__ inline void MegaMoeBF16Backward::UpdateGlobalBuffer(
         }
         gmmAddrInfo.cGlobal = gradWeight1GmAddr_ + static_cast<uint64_t>(expertIdx) * n_ * k_ * bf16;
 #if defined(DEEPEP_BF16_GRADIENT_PIPE)
-        if(gradient_.ready && expertIdx>=replica_.home)
+        if(gradient_.ready && !rawGradientOutput_ && expertIdx>=replica_.home)
             gmmAddrInfo.cGlobal=(GM_ADDR)replica_.partial1+(expertIdx-replica_.home)*(n_ * k_)*bf16;
 #endif
     } else if (phase == BW_PHASE_DW2) {
@@ -1466,7 +1471,7 @@ __aicore__ inline void MegaMoeBF16Backward::UpdateGlobalBuffer(
         }
         gmmAddrInfo.cGlobal = gradWeight2GmAddr_ + static_cast<uint64_t>(expertIdx) * k_ * (n_ / 2) * bf16;
 #if defined(DEEPEP_BF16_GRADIENT_PIPE)
-        if(gradient_.ready && expertIdx>=replica_.home)
+        if(gradient_.ready && !rawGradientOutput_ && expertIdx>=replica_.home)
             gmmAddrInfo.cGlobal=(GM_ADDR)replica_.partial2+(expertIdx-replica_.home)*(k_ * (n_ / 2))*bf16;
 #endif
     }
@@ -2392,7 +2397,7 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
     const bool aiv1TakesTail = gmOutput && savedGateUpMode_ == MegaMoeBF16Training::kSaveBf16;
 #endif
 #if MEGAFLUX_WORKER_BACKWARD
-    cooperativeBackward_=gmOutput && gradient_.ready;
+    cooperativeBackward_=gmOutput && gradient_.ready && !rawGradientOutput_;
     if(cooperativeBackward_) {
         if(params_.tilingData->transW)WorkerBackward<true>();else WorkerBackward<false>();
     } else {
@@ -2440,7 +2445,7 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
 
 #if defined(DEEPEP_BF16_EARLY_REDUCE)
     if constexpr(g_coreType==AscendC::AIV) {
-        if(gmOutput && gradient_.ready && subBlockIdx_==1) {
+        if(gmOutput && gradient_.ready && !rawGradientOutput_ && subBlockIdx_==1) {
             // P1 arrival counts are published. GM P2 needs only AIC/AIV0.
             int32_t localRows[32];
             for(int e=0;e<replica_.home;++e) {
@@ -2539,7 +2544,7 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
         ClearEmptyExpertGradWeights();
         MEGAFLUX_STAGE_END(stageEmptyClear);
 #if defined(DEEPEP_BF16_GRADIENT_PIPE)
-        if(gradient_.ready) {
+        if(gradient_.ready && !rawGradientOutput_) {
             PipeBarrier<PIPE_ALL>();
 #if defined(DEEPEP_BF16_EARLY_REDUCE)
             // In GM saved mode the odd workers already reduced their own

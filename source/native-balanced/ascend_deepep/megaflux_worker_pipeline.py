@@ -65,7 +65,7 @@ class MegaFluxBF16WorkerPipelineTrain(MegaFluxBF16EarlyTrain):
             self.worker_sidecar=self.worker_sidecar.detach().clone()
             cache=lifetime.prepare(plan)
             self.worker_sidecar[6].fill_(cache.data_ptr())
-            self.worker_sidecar[7].fill_(1)
+            self.worker_sidecar[7].fill_(lifetime.raw_dw_mode)
         descriptor[20]=self.worker_sidecar.data_ptr()
         return descriptor
 

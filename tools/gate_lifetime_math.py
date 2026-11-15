@@ -36,6 +36,7 @@ def main():
     parser.add_argument('--route-bank',type=Path,required=True)
     parser.add_argument('--serialized',action='store_true')
     parser.add_argument('--lifetime-mode',default='all')
+    parser.add_argument('--lifetime-raw-schedule',choices=('legacy','preserve'),default='legacy')
     args=parser.parse_args()
     from fsdp_turbo.utils.device import set_accelerator_compatible
     set_accelerator_compatible()
@@ -123,7 +124,7 @@ def main():
         pool.policy=forced
         experts=SimpleNamespace(gate_up_proj=weights[0],down_proj=weights[1])
         model=SimpleNamespace(model=SimpleNamespace(layers=[SimpleNamespace(mlp=SimpleNamespace(experts=experts))]))
-        lifetime=LifetimeDevice(model,pool,policy)
+        lifetime=LifetimeDevice(model,pool,policy,raw_schedule=args.lifetime_raw_schedule)
         for count in (1,2):
             lifetime.begin(case)
             values=[data((tokens,hidden)).to(torch.bfloat16) for _ in range(count)]

@@ -18,13 +18,22 @@ def _local(value):
 class LifetimeDevice:
     """Own bounded replica storage and return complete gradients to fixed owners."""
 
-    def __init__(self, model, pool, mode, entries=8):
+    def __init__(self, model, pool, mode, entries=8, *, raw_schedule='legacy'):
         if mode not in ('anchor', 'b0', 'b1', 'b2', 'b3'):
             raise ValueError('Unknown lifetime mode')
         module = pool.module
         abi = getattr(module._worker_native, 'megaflux_step_lifetime_version', None)
-        if abi is None or int(abi()) != 1:
-            raise RuntimeError('Lifetime mode requires a rebuilt ABI1 worker')
+        if raw_schedule not in ('legacy','preserve'):
+            raise ValueError('Unknown raw dW compute schedule')
+        capability=0 if abi is None else int(abi())
+        if capability not in (1,2) or (raw_schedule=='preserve' and capability<2):
+            raise RuntimeError('Requested lifetime schedule requires a matching private ABI worker')
+        flags=getattr(module._worker_native,'megaflux_worker_pipeline_flags',lambda:0)
+        if raw_schedule=='preserve' and int(flags())&2:
+            raise RuntimeError('Preserved raw dW does not yet qualify cooperative backward variants')
+        self.raw_schedule=raw_schedule
+        self.raw_dw_mode=2 if raw_schedule=='preserve' else 1
+        self.worker_capability=capability
         self.module, self.pool, self.mode = module, pool, mode
         self.rank, self.group = pool.shmem.rank(), pool.group
         self.ranks, self.entries = pool.shmem.world_size(), entries
@@ -239,6 +248,7 @@ class LifetimeDevice:
 
     def write_audit(self, path):
         path.write_text(json.dumps(dict(mode=self.mode, entries=self.entries, **self.stats,
+            raw_schedule=self.raw_schedule,worker_capability=self.worker_capability,
             pending=len(self.pending), qualified_performance_path=False,
             control='observed_current_plan_cpu_metadata',
             transport='bounded_owner_service_stream_drain_before_bank_reuse',

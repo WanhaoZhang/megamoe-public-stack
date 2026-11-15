@@ -133,7 +133,7 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
             str(TASK/'configs/temporal-scheduler-freeze.json'),'--out',
             str(snapshots/f'{tag}-temporal-runtime.json')],check=True)
     if '--lifetime-mode' in arguments:
-        if worker!='ep8-cap64-lifetime-v1':raise RuntimeError('Lifetime ABI must use its own frozen worker')
+        if worker!='ep8-cap64-lifetime-raw-control-v2':raise RuntimeError('Raw-control ABI2 must use its own frozen worker')
         subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
             str(TASK/'configs/lifetime-runtime-freeze.json'),'--out',
             str(snapshots/f'{tag}-lifetime-runtime.json')],check=True)
