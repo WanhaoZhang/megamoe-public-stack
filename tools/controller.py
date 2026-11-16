@@ -100,17 +100,25 @@ def probe_master_port(out):
     TCPStore must bind the port itself, so this is a preflight, not a reservation.
     A later EADDRINUSE remains an explicit failed run, never a silent restart.
     """
-    start = 40100 + int(time.time()) % 2000
+    # Stay below this host's ephemeral range; probe IPv6 as well as IPv4.
+    # A loopback IPv4-only bind misses an existing [::1] client socket.
+    start = 25100 + int(time.time()) % 2000
     for offset in range(2000):
-        port = 40100 + (start - 40100 + offset) % 2000
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
-            try:
-                probe.bind(('127.0.0.1', port))
-            except OSError:
-                continue
-            (out/'port-admission.json').write_text(json.dumps(dict(port=port,
-                checked_ns=time.monotonic_ns(), probe_only_not_reserved=True),indent=2))
-            return port
+        port = 25100 + (start - 25100 + offset) % 2000
+        available = True
+        for family, address in ((socket.AF_INET6, ('::', port)), (socket.AF_INET, ('0.0.0.0', port))):
+            with socket.socket(family, socket.SOCK_STREAM) as probe:
+                try:
+                    probe.bind(address)
+                except OSError:
+                    available = False
+                    break
+        if not available:
+            continue
+        (out/'port-admission.json').write_text(json.dumps(dict(port=port,
+            checked_ns=time.monotonic_ns(), probe_only_not_reserved=True,
+            probed=['IPv6 wildcard', 'IPv4 wildcard']),indent=2))
+        return port
     raise RuntimeError('No free TCPStore port in this diagnostic range')
 
 def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
