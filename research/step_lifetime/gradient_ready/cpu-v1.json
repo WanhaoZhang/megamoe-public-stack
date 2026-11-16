@@ -1,0 +1,64 @@
+{
+  "exit": 0,
+  "source_unchanged": true,
+  "admission": {
+    "timestamp": 1794800180.0573564,
+    "cards": [
+      {
+        "rank": 0,
+        "used_MiB": 4787,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 1,
+        "used_MiB": 4787,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 2,
+        "used_MiB": 4786,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 3,
+        "used_MiB": 4784,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 4,
+        "used_MiB": 4782,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 5,
+        "used_MiB": 4782,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 6,
+        "used_MiB": 4782,
+        "total_MiB": 98304,
+        "utilization": 0
+      },
+      {
+        "rank": 7,
+        "used_MiB": 4784,
+        "total_MiB": 98304,
+        "utilization": 0
+      }
+    ],
+    "no_process_cards": 8
+  },
+  "math_gate_patch": {
+    "before": "aa9c1183ad04d4aaa75de9e741d30ed7f1744051154dc868d82e9c12e9ecc98a",
+    "after": "bde612aac2975366e65c12cab90c1131515fb767d967c22f1a19007cf9f37e42"
+  },
+  "cpu_only": true,
+  "passed": true
+}
