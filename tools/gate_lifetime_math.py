@@ -38,6 +38,7 @@ def main():
     parser.add_argument('--lifetime-mode',default='all')
     parser.add_argument('--lifetime-raw-schedule',choices=('legacy','preserve'),default='legacy')
     parser.add_argument('--gradient-ready-scope',choices=('call_stream','bank_write'),default='call_stream')
+    parser.add_argument('--lifetime-entries',type=int,default=8)
     parser.add_argument('--route-case',choices=('bank','sparse_remote'),default='bank')
     args=parser.parse_args()
     from fsdp_turbo.utils.device import set_accelerator_compatible
@@ -126,7 +127,7 @@ def main():
         pool.policy=forced
         experts=SimpleNamespace(gate_up_proj=weights[0],down_proj=weights[1])
         model=SimpleNamespace(model=SimpleNamespace(layers=[SimpleNamespace(mlp=SimpleNamespace(experts=experts))]))
-        lifetime=LifetimeDevice(model,pool,policy,raw_schedule=args.lifetime_raw_schedule,
+        lifetime=LifetimeDevice(model,pool,policy,entries=args.lifetime_entries,raw_schedule=args.lifetime_raw_schedule,
                                 gradient_ready_scope=args.gradient_ready_scope)
         for count in (1,2):
             lifetime.begin(case)
@@ -189,7 +190,7 @@ def main():
             if args.route_case=='sparse_remote' and zero_home_count!=pool.home:
                 raise RuntimeError('Sparse qualification failed to exercise empty owners')
             record=dict(policy=policy,tasks=count,raw_schedule=args.lifetime_raw_schedule,
-                        gradient_ready_scope=args.gradient_ready_scope,route_case=args.route_case,
+                        gradient_ready_scope=args.gradient_ready_scope,lifetime_entries=args.lifetime_entries,route_case=args.route_case,
                         empty_home_experts=zero_home_count,forced_checked_replica_plan=True,comparisons=comparisons,plans=plans,lifetime_stats=dict(lifetime.stats),
                         passed=all(value['passed'] for value in comparisons.values()))
             records.append(record)
