@@ -119,13 +119,18 @@ class _ExternalExperts(torch.autograd.Function):
             saved, original_x = saved[:-1], saved[-1]
         prob, counts, state, dispatch, *placement_and_control = saved
         placement, header = placement_and_control[:-1], placement_and_control[-1]
-        w1, w2 = ctx.bridge.current_weights()
+        pool = ctx.bridge.pool
+        home_weight_proof = (pool.peek_checkpoint_home_weights(placement)
+                             if getattr(pool, 'checkpoint_home_reuse', False) else None)
+        w1, w2 = ((pool.module.w1, pool.module.w2) if home_weight_proof is not None
+                  else ctx.bridge.current_weights())
         for w, (shape, _) in zip((w1, w2), ctx.weight_meta):
             if tuple(w.shape) != shape:
                 raise RuntimeError('FSDP backward unshard did not restore the full home shape')
         dx, dp, dw1, dw2 = ctx.bridge.pool.backward(
             grad, prob, w1, w2, header, placement, counts, state, dispatch, ctx.limit,
             save_gmm1_output=ctx.save_gmm1_output,
+            **({'home_weight_proof': home_weight_proof} if home_weight_proof is not None else {}),
             **({'original_x': original_x} if original_x is not None else {}))
         if ctx.capture:
             ctx.bridge.pool.capture.save(ctx.bridge.pool, capture_x, capture_y, grad, prob,
@@ -166,7 +171,7 @@ class NativeFSDP2Pool:
     """One weight/window allocation per EP group and static expert shape."""
 
     def __init__(self, shmem, group, home, slots, hidden, ffn, tokens, topk,
-                 window_bytes, capacity, device, planner='moonep', backward_restore='staged', plan_validation='fused', direct_permille=0, timer=False, *, enable_diagnostics=False, save_gmm1_output='bf16', defer_completion_checks=False, routed_input_mode='saved',cost_model=None):
+                 window_bytes, capacity, device, planner='moonep', backward_restore='staged', plan_validation='fused', direct_permille=0, timer=False, *, enable_diagnostics=False, save_gmm1_output='bf16', defer_completion_checks=False, routed_input_mode='saved',cost_model=None,checkpoint_home_reuse=False):
         self.defer_completion_checks = bool(defer_completion_checks)
         if routed_input_mode not in ('saved', 'redispatch'):
             raise ValueError('unknown routed input save contract')
@@ -182,6 +187,12 @@ class NativeFSDP2Pool:
         from .execution_plan_device import normalize_validation
         checked_mode=normalize_validation(plan_validation)
         unified=(os.environ.get('MEGAFLUX_PLANNER_INTERFACE','unified')=='unified' and shmem.world_size() in (2,4,8))
+        self.checkpoint_home_reuse = bool(checkpoint_home_reuse)
+        if self.checkpoint_home_reuse and (not unified or routed_input_mode != 'redispatch' or self.save_gmm1_output != 'bf16'):
+            raise ValueError('checkpoint home reuse requires unified EP2/4/8, redispatch and BF16 saved operands')
+        from .replay_weight_lease import ReplayWeightLease
+        self._home_weight_lease = ReplayWeightLease() if self.checkpoint_home_reuse else None
+        self.home_reuse_audit = dict(enabled=self.checkpoint_home_reuse, hits=0, misses=0, skipped_refresh_bytes=0)
         if checked_mode == 'native' and planner != 'moonep' and not unified:
             raise ValueError('native plan validation requires the built-in MoonEP provider')
         self.plan_validation_implementation='common-fused-v2' if unified else (('native-moonep' if checked_mode=='native' else 'fused-v2') if planner=='moonep' else 'native')
@@ -204,7 +215,8 @@ class NativeFSDP2Pool:
                 raise ValueError('SHMEM/HCCL EP group topology mismatch')
         validate_layout(ep,home,slots,tokens,topk)
         require_gm_binary(ep)
-        if planner not in ('native','moonep','ultra_ep','echo','eplb_fixed','step_time') or (not unified and planner not in ('native','moonep')):
+        from .unified_planner import POLICIES
+        if (unified and planner not in POLICIES) or (not unified and planner not in ('native','moonep')):
             raise ValueError('unknown balanced planner')
         if direct_permille and (planner != 'moonep' or ep != 8 or gm_planner_requested(ep)):
             raise ValueError('direct routing policy is an opt-in small EP8 MoonEP experiment')
@@ -271,10 +283,50 @@ class NativeFSDP2Pool:
     def save_gmm1_output(self):
         return self._save_gmm1_output
 
-    def _enter(self):
+    def _enter(self, operation):
         if self.busy or self.failed:
             raise RuntimeError('failed or concurrently used FSDP2 executor pool')
         self.busy = True
+        if self._home_weight_lease is not None:
+            self._home_weight_lease.enter(operation)
+
+    def _home_payload_stamp(self):
+        # Only the two home mirrors are reused; replicas still take the normal
+        # backward restore. Native kernels must never write these home planes.
+        return tuple((name, id(value), value._version, value.data_ptr(),
+                      tuple(value.shape), str(value.dtype))
+                     for name, value in (('w1', self.module.w1), ('w2', self.module.w2)))
+
+    def _home_stream(self):
+        return int(torch.npu.current_stream(self.module.w1.device).npu_stream)
+
+    def _home_ticket(self, placement):
+        def same_operand(a, b):
+            return (a.data_ptr() == b.data_ptr() and a.shape == b.shape and a.dtype == b.dtype
+                    and a.device == b.device and a.stride() == b.stride())
+        matches = [(key, ticket) for key, ticket in self._plan_bodies.items()
+                   if not ticket.retired and ticket.replays == 1 and self._plan_backward[key] == 0
+                   and all(same_operand(a, b) for a, b in zip(placement, (getattr(ticket, n) for n in _PLAN_TENSORS)))]
+        if len(placement) != len(_PLAN_TENSORS) or len(matches) != 1:
+            return None
+        matches[0][1].check()
+        return matches[0]
+
+    def peek_checkpoint_home_weights(self, placement):
+        """No parameter references survive FSDP reshard; normal misses refresh.
+
+        Checkpoint guarantees unchanged model weights between recomputation
+        and its matching backward. The lease additionally enforces immediate
+        same-stream pool order and Torch-visible private-buffer versions.
+        """
+        if not self.checkpoint_home_reuse or self.busy or self.failed:
+            return None
+        match = self._home_ticket(placement)
+        proof = (self._home_weight_lease.peek(match[0], ticket_identity=id(match[1]),
+                 stream=self._home_stream(), payload_stamp=self._home_payload_stamp()) if match else None)
+        if proof is None:
+            self.home_reuse_audit['misses'] += 1
+        return proof
 
     def _record_native_inputs(self, *values):
         # Raw shared descriptor pointers are not ATen operands. Keep side-stream
@@ -302,7 +354,7 @@ class NativeFSDP2Pool:
             self.stats['home_refresh_bytes'] += (w1.numel() + w2.numel()) * 2
 
     def forward(self, x, ids, prob, w1, w2, limit):
-        self._enter()
+        self._enter('forward')
         try:
             if x.shape != (self.tokens, self.hidden) or ids.shape != (self.tokens, self.topk):
                 raise ValueError('FSDP2 pool requires its configured static input shape')
@@ -347,8 +399,14 @@ class NativeFSDP2Pool:
                     copies=placement[2].cpu().tolist(), execution_counts=counts.cpu().tolist()))
             if self.stats is not None:
                 self.stats['forwards'] += 1
+            if self._home_weight_lease is not None and request is not None:
+                self._home_weight_lease.record_recompute(key, recompute=recompute,
+                    ticket_identity=id(body), stream=self._home_stream(),
+                    payload_stamp=self._home_payload_stamp())
             return y, header, (counts, state, dispatch, *placement)
         except BaseException:
+            if self._home_weight_lease is not None:
+                self._home_weight_lease.invalidate()
             self.failed = True
             raise
         finally:
@@ -380,7 +438,7 @@ class NativeFSDP2Pool:
             if (capability is None or int(capability()) != SHARED_REDISPATCH_BACKWARD_ABI
                     or not callable(getattr(self.module.op, method, None))):
                 raise RuntimeError('kernel X redispatch requires matching rebuilt ABI3 Host and worker')
-        self._enter()
+        self._enter('shared_forward')
         try:
             if x.shape != (self.tokens, self.hidden) or ids.shape != (self.tokens, self.topk):
                 raise ValueError('FSDP2 pool requires its configured static input shape')
@@ -440,23 +498,38 @@ class NativeFSDP2Pool:
             return y, status, saved, shared_saved_state(
                 x, raw_gate, raw_up, activation, shared_save_mode, routed_input_mode)
         except BaseException:
+            if self._home_weight_lease is not None:
+                self._home_weight_lease.invalidate()
             self.failed = True
             raise
         finally:
             self.busy = False
 
     def backward(self, grad, prob, w1, w2, status, placement, counts, state, dispatch, limit,
-                 *, save_gmm1_output=None, original_x=None):
+                 *, save_gmm1_output=None, original_x=None, home_weight_proof=None):
         # The autograd context supplies its own resolved forward format.  Auto
         # may resolve differently for other layers sharing this serial pool.
         save_mode = resolve_save_gmm1_output(
             self.save_gmm1_output if save_gmm1_output is None else save_gmm1_output, limit)
-        self._enter()
+        self._enter('backward')
         try:
-            self._publish(w1, w2)
+            if home_weight_proof is None:
+                self._publish(w1, w2)
+            else:
+                match = self._home_ticket(placement)
+                if (self._home_weight_lease is None or match is None or original_x is None
+                        or save_mode != 'bf16' or w1 is not self.module.w1 or w2 is not self.module.w2):
+                    raise RuntimeError('checkpoint home proof requires matching live routed backward operands')
+                self._home_weight_lease.consume(home_weight_proof, match[0], ticket_identity=id(match[1]),
+                    stream=self._home_stream(), payload_stamp=self._home_payload_stamp())
             m = self.module
             replay = _SavedPlacementReplay(self.home, self.slots, self.capacity, status, placement)
             plan = m.create_plan(placement[0], replay, self.capacity)
+            if home_weight_proof is not None:
+                if home_weight_proof.payload_stamp != self._home_payload_stamp():
+                    raise RuntimeError('plan replay mutated leased home weights')
+                self.home_reuse_audit['hits'] += 1
+                self.home_reuse_audit['skipped_refresh_bytes'] += (w1.numel() + w2.numel()) * 2
             if self.backward_restore == 'staged':
                 m.workspace.restore_weights(self.shmem, plan.copies)
             if self.stats is not None:
@@ -497,6 +570,8 @@ class NativeFSDP2Pool:
             # pool gradient scratch. The old clone remains an ablation switch.
             return dx, dp, _owner_gradient(dw1, self.home), _owner_gradient(dw2, self.home)
         except BaseException:
+            if self._home_weight_lease is not None:
+                self._home_weight_lease.invalidate()
             self.failed = True
             raise
         finally:
@@ -540,7 +615,7 @@ class NativeFSDP2Pool:
             raise RuntimeError('shared backward requires a rebuilt shared-enabled S9 V2 worker and host')
         if routed_code and (dispatch.dtype != torch.uint8 or dispatch.numel() != 0):
             raise ValueError('kernel X redispatch must consume an empty dispatch tape slot')
-        self._enter()
+        self._enter('shared_backward')
         try:
             with control_timing_scope('backward.publish'):
                 self._publish(w1, w2)
@@ -586,12 +661,16 @@ class NativeFSDP2Pool:
             # dW stays on the original ordinary-FSDP Parameters/mesh.
             return dx, dp, _owner_gradient(dw1, self.home), _owner_gradient(dw2, self.home), dwg, dwu, dwd
         except BaseException:
+            if self._home_weight_lease is not None:
+                self._home_weight_lease.invalidate()
             self.failed = True
             raise
         finally:
             self.busy = False
 
     def retire_training_step(self,step):
+        if self._home_weight_lease is not None:
+            self._home_weight_lease.invalidate()
         keys=[k for k in self._plan_bodies if k[0]==step]
         for key in keys:
             if self._plan_backward[key]!=1:raise RuntimeError('cannot retire a plan before exactly one backward')
@@ -601,6 +680,8 @@ class NativeFSDP2Pool:
         return len(keys)
 
     def close(self):
+        if self._home_weight_lease is not None:
+            self._home_weight_lease.invalidate()
         if self.busy or self.failed:
             raise RuntimeError('cannot close an active/failed native pool as successful')
         if self._plan_bodies:raise RuntimeError('cannot close with live training plan bodies')

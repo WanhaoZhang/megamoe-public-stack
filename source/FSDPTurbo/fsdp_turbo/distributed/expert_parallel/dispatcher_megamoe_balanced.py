@@ -22,6 +22,17 @@ def _local(weight):
     return weight.to_local() if isinstance(weight, DTensor) else weight
 
 
+def _read_expert_parameters(module, convert):
+    """Read live Parameters once; shape inspection never needs a dtype cast."""
+    w1, w2 = _local(module.gate_up_proj), _local(module.down_proj)
+    if convert:
+        if w1.dtype != torch.bfloat16:
+            w1 = w1.to(torch.bfloat16)
+        if w2.dtype != torch.bfloat16:
+            w2 = w2.to(torch.bfloat16)
+    return w1, w2
+
+
 def get_megamoe_balanced_forward_fn(ep_group, fixed_router=False, config=None):
     from fsdp_turbo.fsdp_turbo_config import MegaMoeBalancedConfig
     config = config or MegaMoeBalancedConfig()
@@ -70,17 +81,13 @@ def get_megamoe_balanced_forward_fn(ep_group, fixed_router=False, config=None):
         # Read attributes every invocation, after FSDP unshard. Never capture
         # a pre-wrap Parameter or a pooled replica pointer in this closure.
         def weights():
-            w1 = _local(self.gate_up_proj)
-            w2 = _local(self.down_proj)
-            # v4lab: public parent FSDP2 may promote expert params to fp32;
-            # the native BF16 pool needs bf16 weights (grad casts back).
-            if w1.dtype != torch.bfloat16:
-                w1 = w1.to(torch.bfloat16)
-            if w2.dtype != torch.bfloat16:
-                w2 = w2.to(torch.bfloat16)
-            return w1, w2
+            return _read_expert_parameters(self, config.parameter_read_mode != 'fp32_to_home')
 
-        w1, w2 = weights()
+        # Preserve the old duplicate cast as an explicit causal control. The
+        # bridge calls weights() again for its actual autograd inputs. In the
+        # direct mode, the existing native home copy converts FP32 to BF16.
+        w1, w2 = (weights() if config.parameter_read_mode == 'legacy'
+                  else _read_expert_parameters(self, False))
         home, out, actual_hidden = w1.shape
         ffn = out // 2
         if actual_hidden != hidden or tuple(w2.shape) != (home, hidden, ffn):
@@ -137,7 +144,8 @@ def get_megamoe_balanced_forward_fn(ep_group, fixed_router=False, config=None):
         key = (id(ep_group), home, slots, hidden, ffn, tokens, topk,
                config.planner, config.backward_restore, capacity, config.plan_validation,
                config.shared_expert_mode, config.shared_expert_save_mode, config.routed_input_mode,
-               config.save_gmm1_output, config.shared_backward_schedule,config.timer,config.step_time_model)
+               config.save_gmm1_output, config.shared_backward_schedule,config.timer,config.step_time_model,
+               config.checkpoint_home_reuse,config.parameter_read_mode)
         with _LOCK:
             pool = _POOLS.get(key)
             if pool is None:
@@ -149,7 +157,7 @@ def get_megamoe_balanced_forward_fn(ep_group, fixed_router=False, config=None):
                 signature=(home,slots,hidden,ffn,tokens,topk,capacity,config.planner,config.timer,
                            config.backward_restore,config.plan_validation,
                            config.shared_expert_mode,config.shared_expert_save_mode,config.routed_input_mode,config.save_gmm1_output,
-                           config.shared_backward_schedule)
+                           config.shared_backward_schedule,config.checkpoint_home_reuse,config.parameter_read_mode)
                 peers=[None]*ep
                 torch.distributed.all_gather_object(peers,signature,group=ep_group)
                 if any(p!=signature for p in peers):
@@ -169,9 +177,13 @@ def get_megamoe_balanced_forward_fn(ep_group, fixed_router=False, config=None):
                     save_gmm1_output=config.save_gmm1_output,
                     defer_completion_checks=_STEP_COMPLETION_BOUNDARY,
                     routed_input_mode=config.routed_input_mode,
+                    **({'checkpoint_home_reuse': True} if config.checkpoint_home_reuse else {}),
                     **({'shared_backward_schedule': config.shared_backward_schedule}
                        if config.shared_expert_mode == 'fused' else {}))
                 _POOLS[key] = pool
+                pool.parameter_read_mode = config.parameter_read_mode
+                pool.master_parameter_dtypes = tuple(str(_local(w).dtype)
+                    for w in (self.gate_up_proj, self.down_proj))
                 if diagnostics:
                     print(f'[MegaMoeBalanced] planner={config.planner} slots={slots} '
                           f'restore={config.backward_restore} home={home} shape={tokens,hidden,ffn,topk} '

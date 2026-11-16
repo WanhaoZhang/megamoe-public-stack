@@ -1,0 +1,104 @@
+{
+  "rows": [
+    {
+      "tag": "redispatch-runahead-screen-vio20-native-0-v1",
+      "maxvio": 20,
+      "planner": "native",
+      "mode": 0,
+      "mean_ms": 1209.627186,
+      "peak_driver_MiB": 90346,
+      "source_unchanged": true,
+      "qualified": true
+    },
+    {
+      "tag": "redispatch-runahead-screen-vio20-ultra_ep-3-v1",
+      "maxvio": 20,
+      "planner": "ultra_ep",
+      "mode": 3,
+      "mean_ms": 1175.7998360000001,
+      "peak_driver_MiB": 90345,
+      "source_unchanged": true,
+      "qualified": true
+    },
+    {
+      "tag": "redispatch-runahead-screen-vio20-ultra_ep-0-v1",
+      "maxvio": 20,
+      "planner": "ultra_ep",
+      "mode": 0,
+      "mean_ms": 1193.663542,
+      "peak_driver_MiB": 90346,
+      "source_unchanged": true,
+      "qualified": true
+    },
+    {
+      "tag": "redispatch-runahead-screen-vio20-native-3-v1",
+      "maxvio": 20,
+      "planner": "native",
+      "mode": 3,
+      "mean_ms": 1188.9211895,
+      "peak_driver_MiB": 90349,
+      "source_unchanged": true,
+      "qualified": true
+    },
+    {
+      "tag": "redispatch-runahead-screen-vio0.2-native-3-v1",
+      "maxvio": 0.2,
+      "planner": "native",
+      "mode": 3,
+      "mean_ms": 1081.578327,
+      "peak_driver_MiB": 90348,
+      "source_unchanged": true,
+      "qualified": true
+    },
+    {
+      "tag": "redispatch-runahead-screen-vio0.2-ultra_ep-0-v1",
+      "maxvio": 0.2,
+      "planner": "ultra_ep",
+      "mode": 0,
+      "mean_ms": 1104.141857,
+      "peak_driver_MiB": 90345,
+      "source_unchanged": true,
+      "qualified": true
+    },
+    {
+      "tag": "redispatch-runahead-screen-vio0.2-ultra_ep-3-v1",
+      "maxvio": 0.2,
+      "planner": "ultra_ep",
+      "mode": 3,
+      "mean_ms": 1096.0520305,
+      "peak_driver_MiB": 90345,
+      "source_unchanged": true,
+      "qualified": true
+    },
+    {
+      "tag": "redispatch-runahead-screen-vio0.2-native-0-v1",
+      "maxvio": 0.2,
+      "planner": "native",
+      "mode": 0,
+      "mean_ms": 1081.0294115,
+      "peak_driver_MiB": 90345,
+      "source_unchanged": true,
+      "qualified": true
+    }
+  ],
+  "decision": {
+    "gains": {
+      "20/native": 0.01711766793905367,
+      "20/ultra_ep": 0.014965444927696248,
+      "0.2/native": -0.0005077711060963441,
+      "0.2/ultra_ep": 0.0073267999475904455
+    },
+    "expanded": false,
+    "threshold": 0.02,
+    "independent_repeats": 1,
+    "scope": "Engineering screen only; no new online planner or significance claim"
+  },
+  "initial_conditions_and_loaded_worker_verified": true,
+  "independent_repeats": 1,
+  "worker_source_commit": "a1722b6",
+  "limitations": [
+    "Below predeclared2% expansion threshold; no five-repeat or significance claim",
+    "Native at vio0.2 is an inactive-copy no-op control under this prototype predicate",
+    "Positive endpoints do not establish a new online planner or all-stage optimality"
+  ]
+}

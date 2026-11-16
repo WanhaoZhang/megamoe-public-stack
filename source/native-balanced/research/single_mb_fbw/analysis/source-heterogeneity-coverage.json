@@ -1,0 +1,276 @@
+{
+  "schema": 1,
+  "scope": "Controlled synthetic source heterogeneity, not natural routing or training quality",
+  "construction": "Capacity-constrained complete-token-row regrouping by fixed randomized expert-domain affinity",
+  "preserve": [
+    "global expert counts",
+    "per-rank token count",
+    "each token top-k expert identities and order",
+    "unique top-k"
+  ],
+  "change": [
+    "assignment of whole route rows to source ranks",
+    "per-source expert histogram"
+  ],
+  "caution": "Synthetic model inputs retain benchmark seeding; token provenance permutation supplied for any paired real-data application",
+  "records": [
+    {
+      "maxvio": 0.2,
+      "seed": 20261116,
+      "source_path": "D:\\megamoe_train\\planner-executor-ep8-lab\\routes\\maxvio-0.2.npy",
+      "source_sha256": "a711b49e6287a7e9badc8a6e58fb4b33eaa4d987b37ff066af7696ac965932e7",
+      "path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\regrouped\\maxvio-0.2.npy",
+      "sha256": "1fb3e8fa618e05c60fda0cbb3eb5a72e3992e91e6a51d5a50ebaaeba932f5358",
+      "permutation_path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\maxvio-0.2-token-permutation.npy",
+      "permutation_sha256": "cda60545cd323bced0b5bf4961772d03d9382ddb427f80cba23e149505e4ee3b",
+      "original": {
+        "mean_pair_source_l1": 0.048924037388392856,
+        "token_weighted_max_source_share": 0.13285064697265625,
+        "largest_expert_rows": 4919,
+        "largest_expert_source_shares": [
+          0.12888798536287863,
+          0.12095954462289084,
+          0.12400894490750153,
+          0.12604187843057532,
+          0.12116283797519821,
+          0.1213661313275056,
+          0.1213661313275056,
+          0.1362065460459443
+        ],
+        "global_counts_sha256": "dc552aa78a5e5eb87cce5386bf5b16924926bc7ef7324859441aa3e037397ead"
+      },
+      "regrouped": {
+        "mean_pair_source_l1": 0.48549979073660715,
+        "token_weighted_max_source_share": 0.3202171325683594,
+        "largest_expert_rows": 4919,
+        "largest_expert_source_shares": [
+          0.31246188249644236,
+          0.08619638137832893,
+          0.08477332791217727,
+          0.09798739581215694,
+          0.10469607643830046,
+          0.10124008944907502,
+          0.1073388900182964,
+          0.1053059564952226
+        ],
+        "global_counts_sha256": "dc552aa78a5e5eb87cce5386bf5b16924926bc7ef7324859441aa3e037397ead"
+      },
+      "verified_global_counts_and_complete_rows": true
+    },
+    {
+      "maxvio": 1,
+      "seed": 20261117,
+      "source_path": "D:\\megamoe_train\\planner-executor-ep8-lab\\routes\\maxvio-1.npy",
+      "source_sha256": "1ee814c43f45fa0283e873227779071c79c1e24ea5ab0c449b81014409234be5",
+      "path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\regrouped\\maxvio-1.npy",
+      "sha256": "6bb300f61e3c1ab07cfec5b53ee676a903d382b6e75463f56fc9639c1a54063a",
+      "permutation_path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\maxvio-1-token-permutation.npy",
+      "permutation_sha256": "5c84c7c28ead9aba2eedb778c453b05ad8a635a35e97fd20b5517d0b0cd72d07",
+      "original": {
+        "mean_pair_source_l1": 0.04891095842633929,
+        "token_weighted_max_source_share": 0.13283729553222656,
+        "largest_expert_rows": 8185,
+        "largest_expert_source_shares": [
+          0.1280390959071472,
+          0.12144166157605375,
+          0.12449602932193037,
+          0.12681734880879658,
+          0.12034208918753818,
+          0.12351863164324985,
+          0.12351863164324985,
+          0.1318265119120342
+        ],
+        "global_counts_sha256": "5b1bb4f3284e4e86e7f5dc7786dfeac375c4f6ed6d4e19cd5c0544b9d536b5fd"
+      },
+      "regrouped": {
+        "mean_pair_source_l1": 0.486443110874721,
+        "token_weighted_max_source_share": 0.3202352523803711,
+        "largest_expert_rows": 8185,
+        "largest_expert_source_shares": [
+          0.09492974954184484,
+          0.10397067806963958,
+          0.09321930360415394,
+          0.09969456322541234,
+          0.10397067806963958,
+          0.09896151496640196,
+          0.1053145998778253,
+          0.2999389126450825
+        ],
+        "global_counts_sha256": "5b1bb4f3284e4e86e7f5dc7786dfeac375c4f6ed6d4e19cd5c0544b9d536b5fd"
+      },
+      "verified_global_counts_and_complete_rows": true
+    },
+    {
+      "maxvio": 5,
+      "seed": 20261118,
+      "source_path": "D:\\megamoe_train\\planner-executor-ep8-lab\\routes\\maxvio-5.npy",
+      "source_sha256": "5d68cdde63202de75ecf3e30efe2df97ef92f19e8541ee92eeb0255624f1d5e2",
+      "path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\regrouped\\maxvio-5.npy",
+      "sha256": "4c4816362d48996a06cab09a75a929f6cb0c6c87b731dfcef89cd0cf96be1b5e",
+      "permutation_path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\maxvio-5-token-permutation.npy",
+      "permutation_sha256": "e28dadb84a01cf5d6e4fe706071d566ad029d2f7513419f79b51810752b8a781",
+      "original": {
+        "mean_pair_source_l1": 0.047160557338169644,
+        "token_weighted_max_source_share": 0.13245868682861328,
+        "largest_expert_rows": 24875,
+        "largest_expert_source_shares": [
+          0.12494472361809045,
+          0.12562814070351758,
+          0.12574874371859296,
+          0.12538693467336684,
+          0.12478391959798996,
+          0.12357788944723617,
+          0.12241206030150754,
+          0.1275175879396985
+        ],
+        "global_counts_sha256": "48f8497a2b47bfb16f98257f0fda37f5eca0a965c9413a9c8949dcaa9cf10ae0"
+      },
+      "regrouped": {
+        "mean_pair_source_l1": 0.4799025399344308,
+        "token_weighted_max_source_share": 0.3194160461425781,
+        "largest_expert_rows": 24875,
+        "largest_expert_source_shares": [
+          0.10516582914572864,
+          0.10826130653266332,
+          0.2661306532663317,
+          0.1021105527638191,
+          0.10335678391959799,
+          0.10074371859296483,
+          0.10685427135678392,
+          0.10737688442211055
+        ],
+        "global_counts_sha256": "48f8497a2b47bfb16f98257f0fda37f5eca0a965c9413a9c8949dcaa9cf10ae0"
+      },
+      "verified_global_counts_and_complete_rows": true
+    },
+    {
+      "maxvio": 10,
+      "seed": 20261119,
+      "source_path": "D:\\megamoe_train\\planner-executor-ep8-lab\\routes\\maxvio-10.npy",
+      "source_sha256": "ec4cf192e588f7f0a19b51aac593a83194834575b01f40082e4ba27e2737ecc8",
+      "path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\regrouped\\maxvio-10.npy",
+      "sha256": "4ba2cc6d784b9ae3b3c5c6523c10ebd802c1f35f2491526c56136d2471c17881",
+      "permutation_path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\maxvio-10-token-permutation.npy",
+      "permutation_sha256": "ea33acb4d76e1e9584c4d2ba0121772684f50f7e14d88b872c9dbcfadb7cef4d",
+      "original": {
+        "mean_pair_source_l1": 0.04467936924525669,
+        "token_weighted_max_source_share": 0.1319875717163086,
+        "largest_expert_rows": 44985,
+        "largest_expert_source_shares": [
+          0.12395242858730687,
+          0.12690896965655218,
+          0.12557519173057685,
+          0.1264643770145604,
+          0.1239079693231077,
+          0.12308547293542292,
+          0.12379682116260976,
+          0.12630876958986328
+        ],
+        "global_counts_sha256": "b2b95a6402fd71834c392506faf19d38f2756776e471132c7bf607e893a9f3c2"
+      },
+      "regrouped": {
+        "mean_pair_source_l1": 0.4798840114048549,
+        "token_weighted_max_source_share": 0.31475162506103516,
+        "largest_expert_rows": 44985,
+        "largest_expert_source_shares": [
+          0.11497165721907303,
+          0.10176725575191731,
+          0.11112593086584417,
+          0.22718684005779705,
+          0.1120595754140269,
+          0.10994776036456597,
+          0.11132599755474047,
+          0.11161498277203512
+        ],
+        "global_counts_sha256": "b2b95a6402fd71834c392506faf19d38f2756776e471132c7bf607e893a9f3c2"
+      },
+      "verified_global_counts_and_complete_rows": true
+    },
+    {
+      "maxvio": 15,
+      "seed": 20261120,
+      "source_path": "D:\\megamoe_train\\planner-executor-ep8-lab\\routes\\maxvio-15.npy",
+      "source_sha256": "6f6e8a8f048ad4ee06cef263a119c6674d560d564b9a5e1ef76eb4a7cea83bc3",
+      "path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\regrouped\\maxvio-15.npy",
+      "sha256": "0e3c0f813ff093d8bc3fc1daae06b5448da4f5178fb28e0687e340472f4f79c0",
+      "permutation_path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\maxvio-15-token-permutation.npy",
+      "permutation_sha256": "48ebd44211b793ebee762f45597d95771bf73a4cc1729555960e0f074ed91eef",
+      "original": {
+        "mean_pair_source_l1": 0.04208864484514509,
+        "token_weighted_max_source_share": 0.13167476654052734,
+        "largest_expert_rows": 66705,
+        "largest_expert_source_shares": [
+          0.12400869500037479,
+          0.12622741923394049,
+          0.12496814331759239,
+          0.12717187617120157,
+          0.1254628588561577,
+          0.12291432426354847,
+          0.12424855707967919,
+          0.12499812607750543
+        ],
+        "global_counts_sha256": "3232cc32a956ab1de3ef7f44fef971f650fcdd70de038b57db4b98b288f87f2a"
+      },
+      "regrouped": {
+        "mean_pair_source_l1": 0.46710096086774555,
+        "token_weighted_max_source_share": 0.31294727325439453,
+        "largest_expert_rows": 66705,
+        "largest_expert_source_shares": [
+          0.11424930664867701,
+          0.11522374634585114,
+          0.11523873772580766,
+          0.11667791020163407,
+          0.1126302376133723,
+          0.11813207405741699,
+          0.1936586462783899,
+          0.11418934112885092
+        ],
+        "global_counts_sha256": "3232cc32a956ab1de3ef7f44fef971f650fcdd70de038b57db4b98b288f87f2a"
+      },
+      "verified_global_counts_and_complete_rows": true
+    },
+    {
+      "maxvio": 20,
+      "seed": 20261121,
+      "source_path": "D:\\megamoe_train\\planner-executor-ep8-lab\\routes\\maxvio-20.npy",
+      "source_sha256": "653749278d026e616da7c95d30be996e1755459e08d82354af99a2dc494dd4d2",
+      "path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\regrouped\\maxvio-20.npy",
+      "sha256": "6ed15bf1d714b5522a1fa471536cf9be145b2a384a812f3bd5be2bb59cbcb8fa",
+      "permutation_path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\source-heterogeneity-bank-v1\\maxvio-20-token-permutation.npy",
+      "permutation_sha256": "17265c7b005be07777ab993a936da4361ef6af490561f34c30c5877738a60977",
+      "original": {
+        "mean_pair_source_l1": 0.03955023629324777,
+        "token_weighted_max_source_share": 0.1312694549560547,
+        "largest_expert_rows": 86257,
+        "largest_expert_source_shares": [
+          0.1244652607904286,
+          0.12658682773572,
+          0.1248362451743047,
+          0.1252188228201769,
+          0.12539272175011884,
+          0.12291176368294747,
+          0.12481305865031243,
+          0.12577529939599105
+        ],
+        "global_counts_sha256": "5005eb99598ae3e34d3921686493d771807751fdb6454fcca6bc51601358c705"
+      },
+      "regrouped": {
+        "mean_pair_source_l1": 0.4666780744280134,
+        "token_weighted_max_source_share": 0.30853843688964844,
+        "largest_expert_rows": 86257,
+        "largest_expert_source_shares": [
+          0.11960768401405103,
+          0.16847328332772993,
+          0.11275606617433948,
+          0.12004822796990389,
+          0.11870340957835306,
+          0.12341027394878097,
+          0.11728903161482547,
+          0.11971202337201618
+        ],
+        "global_counts_sha256": "5005eb99598ae3e34d3921686493d771807751fdb6454fcca6bc51601358c705"
+      },
+      "verified_global_counts_and_complete_rows": true
+    }
+  ]
+}

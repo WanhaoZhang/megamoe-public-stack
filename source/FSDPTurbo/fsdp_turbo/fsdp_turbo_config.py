@@ -339,7 +339,7 @@ class KimiRouterDebugConfig:
 
 @dataclass(frozen=True)
 class MegaMoeBalancedConfig:
-    planner: Literal["native", "moonep", "ultra_ep", "echo", "eplb_fixed", "step_time"] = "moonep"
+    planner: str = "moonep"
     replica_slots: Optional[int] = None
     backward_restore: Literal["staged", "expert", "panel"] = "panel"
     recv_capacity: Optional[int] = None
@@ -351,14 +351,21 @@ class MegaMoeBalancedConfig:
     step_time_model: Optional[str] = None
     save_gmm1_output: Literal["bf16", "none", "mxfp8", "auto"] = "bf16"
     routed_input_mode: Literal["saved", "redispatch"] = "redispatch"
+    checkpoint_home_reuse: bool = False
+    parameter_read_mode: Literal["legacy", "cast_once", "fp32_to_home"] = "legacy"
     shared_backward_schedule: Literal["s0", "head_tail"] = "s0"
 
     def __post_init__(self):
         if self.shared_expert_mode not in ("framework", "fused"):
             raise ValueError("unknown MegaMoE balanced shared expert mode")
+        if self.parameter_read_mode not in ("legacy", "cast_once", "fp32_to_home"):
+            raise ValueError("unknown expert parameter read mode")
+        if self.parameter_read_mode != "legacy" and self.shared_expert_mode != "framework":
+            raise ValueError("parameter read probes currently require framework shared experts")
         if self.shared_expert_save_mode not in ("recompute", "keep"):
             raise ValueError("unknown MegaMoE balanced shared expert save mode")
-        if self.planner not in ("native", "moonep", "ultra_ep", "echo", "eplb_fixed", "step_time"):
+        budget_planners = tuple(f"eplb_budget_{budget}" for budget in (0, 1, 2, 4, 8, 16, 32, 64, 128, 256))
+        if self.planner not in ("native", "moonep", "ultra_ep", "echo", "eplb_fixed", "step_time", *budget_planners):
             raise ValueError("unknown MegaMoE balanced planner")
         if self.save_gmm1_output not in ("bf16", "none", "mxfp8", "auto"):
             raise ValueError("save_gmm1_output must be bf16, none, mxfp8 or auto")
@@ -372,6 +379,9 @@ class MegaMoeBalancedConfig:
             raise ValueError("fused shared experts require backward_restore='panel'")
         if self.routed_input_mode not in ("saved", "redispatch"):
             raise ValueError("unknown MegaMoE balanced routed input mode")
+        if self.checkpoint_home_reuse and (self.shared_expert_mode != "framework" or
+                self.routed_input_mode != "redispatch" or self.save_gmm1_output != "bf16"):
+            raise ValueError("checkpoint home reuse requires framework shared experts, redispatch and BF16 operands")
         if self.shared_backward_schedule not in ("s0", "head_tail"):
             raise ValueError("unknown shared backward schedule")
         if self.shared_backward_schedule == "head_tail" and (

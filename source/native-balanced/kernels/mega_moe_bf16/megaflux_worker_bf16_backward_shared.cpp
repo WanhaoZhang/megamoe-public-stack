@@ -1,6 +1,6 @@
 /* Copyright (c) 2026 Huawei Technologies Co., Ltd. */
 #define DEEPEP_BF16_WORKER_PIPELINE 1
-#if defined(ENABLE_TIMER)
+#if defined(ENABLE_TIMER) && (!defined(MEGAFLUX_COORDINATE_TIMER) || MEGAFLUX_COORDINATE_TIMER)
 #define DEEPEP_BF16_STAGE_TIMER 1
 #endif
 #define DEEPEP_BF16_EARLY_REDUCE 1

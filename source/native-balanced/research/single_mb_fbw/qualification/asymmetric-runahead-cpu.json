@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "cases": 288,
+  "transport_layout_cases": 110,
+  "header_sha256": "f0a647a6b43326acd18ad0bbdede61ec5e13efb0643345b73420ee61395148d0",
+  "scope": "CPU GM tile ownership, asymmetric dependency acyclicity and supported-path predicates only",
+  "limitations": [
+    "Coordinate producer permutation assumed bijective per existing dispatch tests",
+    "No NPU numerical or liveness qualification; no performance claim"
+  ]
+}

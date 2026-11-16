@@ -31,6 +31,7 @@ class MegaFluxBF16WorkerPipelineTrain(MegaFluxBF16EarlyTrain):
         if self.dispatch_ready_largest and (shmem is None or shmem.world_size() not in (2,4,8)):
             raise ValueError('experimental largest-expert row readiness is gated to EP2/4/8')
         self.worker_flags=int(lib.megaflux_worker_pipeline_flags())
+        self.gradient_priority=int(lib.megaflux_gradient_priority()) if hasattr(lib,'megaflux_gradient_priority') else 0
         self.worker_shared_prefix=int(lib.megaflux_worker_shared_prefix()) if hasattr(lib,'megaflux_worker_shared_prefix') else 0
         self.worker_external_refresh=int(lib.megaflux_worker_external_refresh()) if hasattr(lib,'megaflux_worker_external_refresh') else 0
         self.worker_owner_rows=int(lib.megaflux_worker_owner_rows()) if hasattr(lib,'megaflux_worker_owner_rows') else 16

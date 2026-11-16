@@ -1,0 +1,10 @@
+{
+  "native-priority": {
+    "archive_sha256": "59c8ef36281b5088c79d5aaf35afbff1730f88f3c50636869ce23b145a421d93",
+    "git_commit": "dfbe3f40b4483e685cbe55de8fe78dffe3e491c9"
+  },
+  "native-wide": {
+    "archive_sha256": "eecc29479231269fc4253bbcb8f8fd501080089a227b669ced8c9dd0fca1288d",
+    "git_commit": "b4ae4d2b8de3ec82538a09a8548b7dc65508c90b"
+  }
+}

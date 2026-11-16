@@ -32,6 +32,10 @@ POLICIES = {x.name:x for x in (
     PolicyDefinition('eplb_fixed',4,'global_interval'),
     PolicyDefinition('step_time',5,'causal_cost_search'))}
 
+# Experimental total instance budgets; slot capacity and common compiler stay fixed.
+POLICIES.update({f'eplb_budget_{b}': PolicyDefinition(f'eplb_budget_{b}',100+b,'global_cyclic')
+                 for b in (0,1,2,4,8,16,32,64,128,256)})
+
 
 @dataclass(frozen=True)
 class DeviceProposal:
@@ -112,6 +116,12 @@ class CommonOnlinePlanner:
         v=self.validator
         if v.ep not in (2,4,8):raise ValueError('unified planner first version requires EP2/4/8')
         self.library=ctypes.CDLL('libascend_deepep_unified_planner.so')
+        if self.policy.code>=100:
+            if self.policy.code-100>v.ep*slots:
+                raise ValueError('instance budget exceeds physical capacity')
+            capability=getattr(self.library,'megaflux_unified_budget_abi',None)
+            if capability is None or int(capability())!=1:
+                raise RuntimeError('budget policy requires rebuilt budget-capable planner SO')
         if int(self.library.megaflux_unified_planner_abi())!=1 or int(self.library.megaflux_max_local_experts())!=LOCAL_EXPERT_CAPACITY:
             raise RuntimeError('actual planner SO capability/ABI mismatch')
         alloc=lambda shape:torch.empty(shape,dtype=torch.int32,device=device)

@@ -1,0 +1,17 @@
+{
+  "comparisons": 24,
+  "all_plans_identical": true,
+  "output_and_input_max": {
+    "y0": 0.0,
+    "y1": 0.0,
+    "dy1": 0.0,
+    "dp1": 0.0,
+    "dx1": 0.0,
+    "dy0": 0.00020166127999099012,
+    "dp0": 0.0008843388358132873,
+    "dx0": 0.0011892386519785454
+  },
+  "aggregate_gradient_max": 0.004004994745726968,
+  "critical_gradient_max": 0.0013747739511506996,
+  "scope": "same-weight Native self comparison; dy is already unequal entering layer0 expert backward; no claim that every numerical issue is resolved"
+}

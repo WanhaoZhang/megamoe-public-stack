@@ -1,0 +1,164 @@
+{
+  "passed": true,
+  "maxvio": 20,
+  "measured_source_commit": "cb4c5df",
+  "new_planner": false,
+  "repeats": 5,
+  "unit": "paired independent process; screening excluded",
+  "warmup": 5,
+  "updates_per_process": 25,
+  "scope": "fixed synthetic route bank and shape; no natural training quality inference",
+  "inference": "Unadjusted parametric paired t95 on log ratios; df4; no per-step pseudo-replication",
+  "summaries": [
+    {
+      "planner": "native",
+      "pairs": [
+        {
+          "repeat": 0,
+          "original_ms": 1209.962572,
+          "cache_ms": 1171.590824,
+          "gain": 0.03171316938884605
+        },
+        {
+          "repeat": 1,
+          "original_ms": 1210.3585485,
+          "cache_ms": 1171.5832345,
+          "gain": 0.03203622104214865
+        },
+        {
+          "repeat": 2,
+          "original_ms": 1208.8119105,
+          "cache_ms": 1170.894456,
+          "gain": 0.03136753879626841
+        },
+        {
+          "repeat": 3,
+          "original_ms": 1209.918439,
+          "cache_ms": 1171.2798725,
+          "gain": 0.03193485218056091
+        },
+        {
+          "repeat": 4,
+          "original_ms": 1209.4273014999999,
+          "cache_ms": 1172.1271005,
+          "gain": 0.030841209681423565
+        }
+      ],
+      "mean_original_ms": 1209.6957543,
+      "mean_cache_ms": 1171.4950975,
+      "paired_mean_difference_ms": 38.200656799999976,
+      "difference_t95_ms": [
+        37.45506569261031,
+        38.94624790738964
+      ],
+      "geometric_mean_step_reduction": 0.03157869554627479,
+      "reduction_log_t95": [
+        0.03097580272651368,
+        0.03218121326729939
+      ],
+      "all_five_faster": true,
+      "lower_t95_exceeds_2_percent": true,
+      "multiplicity_adjusted": false
+    },
+    {
+      "planner": "ultra_ep",
+      "pairs": [
+        {
+          "repeat": 0,
+          "original_ms": 1193.0767475,
+          "cache_ms": 1156.5819835,
+          "gain": 0.030588781548607002
+        },
+        {
+          "repeat": 1,
+          "original_ms": 1194.14653,
+          "cache_ms": 1155.435827,
+          "gain": 0.03241704600523354
+        },
+        {
+          "repeat": 2,
+          "original_ms": 1193.0112615,
+          "cache_ms": 1156.218905,
+          "gain": 0.030839907121865906
+        },
+        {
+          "repeat": 3,
+          "original_ms": 1193.550665,
+          "cache_ms": 1155.6058735,
+          "gain": 0.03179152139301944
+        },
+        {
+          "repeat": 4,
+          "original_ms": 1192.909991,
+          "cache_ms": 1156.850108,
+          "gain": 0.030228502797408408
+        }
+      ],
+      "mean_original_ms": 1193.339039,
+      "mean_cache_ms": 1156.1385394,
+      "paired_mean_difference_ms": 37.200499600000015,
+      "difference_t95_ms": [
+        35.8402774463225,
+        38.56072175367753
+      ],
+      "geometric_mean_step_reduction": 0.03117348984205892,
+      "reduction_log_t95": [
+        0.03004920531975841,
+        0.03229647118929746
+      ],
+      "all_five_faster": true,
+      "lower_t95_exceeds_2_percent": true,
+      "multiplicity_adjusted": false
+    },
+    {
+      "planner": "eplb_fixed",
+      "pairs": [
+        {
+          "repeat": 0,
+          "original_ms": 1639.8251989999999,
+          "cache_ms": 1307.849681,
+          "gain": 0.20244567421115722
+        },
+        {
+          "repeat": 1,
+          "original_ms": 1639.2003789999999,
+          "cache_ms": 1308.494298,
+          "gain": 0.20174841662844678
+        },
+        {
+          "repeat": 2,
+          "original_ms": 1639.527186,
+          "cache_ms": 1308.2688205,
+          "gain": 0.20204505806834483
+        },
+        {
+          "repeat": 3,
+          "original_ms": 1639.572813,
+          "cache_ms": 1309.2335215,
+          "gain": 0.20147887844978551
+        },
+        {
+          "repeat": 4,
+          "original_ms": 1639.2709585,
+          "cache_ms": 1308.427122,
+          "gain": 0.20182376487822096
+        }
+      ],
+      "mean_original_ms": 1639.4793071,
+      "mean_cache_ms": 1308.4546886,
+      "paired_mean_difference_ms": 331.0246185,
+      "difference_t95_ms": [
+        330.24853656220625,
+        331.8007004377937
+      ],
+      "geometric_mean_step_reduction": 0.20190842418490906,
+      "reduction_log_t95": [
+        0.20145859990337622,
+        0.2023579950770944
+      ],
+      "all_five_faster": true,
+      "lower_t95_exceeds_2_percent": true,
+      "multiplicity_adjusted": false
+    }
+  ]
+}

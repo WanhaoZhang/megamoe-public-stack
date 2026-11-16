@@ -1,0 +1,5 @@
+{
+  "pass_": true,
+  "cases": 80,
+  "scope": "static ownership only; no NPU numerics, liveness or performance claim"
+}

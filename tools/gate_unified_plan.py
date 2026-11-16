@@ -26,7 +26,7 @@ def main():
         window=max(256*1024**2,_local_mem_bytes(tokens,512,topk,ep,home+slots,capacity))
         pool=NativeFSDP2Pool(shmem,dist.group.WORLD,home,slots,512,512,tokens,topk,window,capacity,device,backward_restore='panel')
         m=pool.module
-        for name in ('moonep','native','ultra_ep','echo','eplb_fixed'):
+        for name in ('moonep','native','ultra_ep','echo','eplb_fixed','eplb_budget_0','eplb_budget_8','eplb_budget_32',f'eplb_budget_{ep*slots}'):
             policy=CommonOnlinePlanner(name=name,home=home,slots=slots,tokens=tokens,topk=topk,device=device,group=dist.group.WORLD)
             for scenario in range(5):
                 rng=np.random.default_rng(4231+rank+1000*scenario)
@@ -37,7 +37,7 @@ def main():
                 if scenario==4:cpu[:]=np.arange(tokens*topk,dtype=np.int32).reshape(tokens,topk)%e
                 peers=[None]*ep;dist.all_gather_object(peers,cpu);allids=np.stack(peers)
                 source=np.stack([np.bincount(ids.ravel(),minlength=e) for ids in allids]).astype(np.int32)
-                proposal=getattr(ref,name)(source,home,slots)
+                proposal=(ref.eplb_fixed(source,home,slots,int(name.rsplit('_',1)[1])) if name.startswith('eplb_budget_') else getattr(ref,name)(source,home,slots))
                 required=int(proposal.quota.sum(axis=(0,1)).max()+127)//128*128
                 # Native's tile penalty may deliberately keep >1.25x load.
                 # The normal-capacity case records infeasibility and the

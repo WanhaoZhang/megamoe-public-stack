@@ -1,0 +1,328 @@
+{
+  "diagnostic_only": true,
+  "online_score": false,
+  "complete_cells": 22,
+  "rows": [
+    {
+      "tag": "intervention-vio20-native-online-v2",
+      "maxvio": 20,
+      "planner": "native",
+      "kind": "online",
+      "proposal": "original",
+      "mean_ms": 1202.355772,
+      "median_ms": 1204.33707,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90404
+    },
+    {
+      "tag": "intervention-vio20-native-quota-v2",
+      "maxvio": 20,
+      "planner": "native",
+      "kind": "quota",
+      "proposal": "original",
+      "mean_ms": 1199.249632,
+      "median_ms": 1199.613065,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90404
+    },
+    {
+      "tag": "intervention-vio20-native-body-v2",
+      "maxvio": 20,
+      "planner": "native",
+      "kind": "body",
+      "proposal": "original",
+      "mean_ms": 1193.214551,
+      "median_ms": 1193.853985,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio20-eplb_budget_32-online-v2",
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "kind": "online",
+      "proposal": "original",
+      "mean_ms": 1238.68023,
+      "median_ms": 1237.006985,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio20-eplb_budget_32-quota-v2",
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "kind": "quota",
+      "proposal": "original",
+      "mean_ms": 1238.4167535,
+      "median_ms": 1235.749715,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90404
+    },
+    {
+      "tag": "intervention-vio20-eplb_budget_32-body-v2",
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "kind": "body",
+      "proposal": "original",
+      "mean_ms": 1232.2513885,
+      "median_ms": 1234.891345,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90403
+    },
+    {
+      "tag": "intervention-vio20-eplb_fixed-online-v2",
+      "maxvio": 20,
+      "planner": "eplb_fixed",
+      "kind": "online",
+      "proposal": "original",
+      "mean_ms": 1566.197989,
+      "median_ms": 1573.43111,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90407
+    },
+    {
+      "tag": "intervention-vio20-eplb_fixed-quota-v2",
+      "maxvio": 20,
+      "planner": "eplb_fixed",
+      "kind": "quota",
+      "proposal": "original",
+      "mean_ms": 1568.1126985,
+      "median_ms": 1571.54709,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90404
+    },
+    {
+      "tag": "intervention-vio20-eplb_fixed-body-v2",
+      "maxvio": 20,
+      "planner": "eplb_fixed",
+      "kind": "body",
+      "proposal": "original",
+      "mean_ms": 1579.176651,
+      "median_ms": 1571.838715,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio20-eplb_budget_32-body-local-source-v2",
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "kind": "body",
+      "proposal": "local-source",
+      "mean_ms": 1235.7628495,
+      "median_ms": 1238.3800099999999,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90407
+    },
+    {
+      "tag": "intervention-vio20-eplb_budget_32-body-reverse-slots-v2",
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "kind": "body",
+      "proposal": "reverse-slots",
+      "mean_ms": 1235.2265995,
+      "median_ms": 1238.9812849999998,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio0.2-native-online-v2",
+      "maxvio": 0.2,
+      "planner": "native",
+      "kind": "online",
+      "proposal": "original",
+      "mean_ms": 1082.318943,
+      "median_ms": 1082.2638499999998,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90402
+    },
+    {
+      "tag": "intervention-vio0.2-native-quota-v2",
+      "maxvio": 0.2,
+      "planner": "native",
+      "kind": "quota",
+      "proposal": "original",
+      "mean_ms": 1080.6622439999999,
+      "median_ms": 1080.499425,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90401
+    },
+    {
+      "tag": "intervention-vio0.2-native-body-v2",
+      "maxvio": 0.2,
+      "planner": "native",
+      "kind": "body",
+      "proposal": "original",
+      "mean_ms": 1072.7720125,
+      "median_ms": 1072.936285,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio0.2-eplb_budget_32-online-v2",
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "kind": "online",
+      "proposal": "original",
+      "mean_ms": 1202.9409865,
+      "median_ms": 1199.468075,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio0.2-eplb_budget_32-quota-v2",
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "kind": "quota",
+      "proposal": "original",
+      "mean_ms": 1198.2911785000001,
+      "median_ms": 1200.31581,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90404
+    },
+    {
+      "tag": "intervention-vio0.2-eplb_budget_32-body-v2",
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "kind": "body",
+      "proposal": "original",
+      "mean_ms": 1199.3885335,
+      "median_ms": 1201.4471549999998,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio0.2-eplb_fixed-online-v2",
+      "maxvio": 0.2,
+      "planner": "eplb_fixed",
+      "kind": "online",
+      "proposal": "original",
+      "mean_ms": 1612.764768,
+      "median_ms": 1594.505995,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio0.2-eplb_fixed-quota-v2",
+      "maxvio": 0.2,
+      "planner": "eplb_fixed",
+      "kind": "quota",
+      "proposal": "original",
+      "mean_ms": 1611.058793,
+      "median_ms": 1592.49008,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio0.2-eplb_fixed-body-v2",
+      "maxvio": 0.2,
+      "planner": "eplb_fixed",
+      "kind": "body",
+      "proposal": "original",
+      "mean_ms": 1640.2342745,
+      "median_ms": 1647.4092,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio0.2-eplb_budget_32-body-local-source-v2",
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "kind": "body",
+      "proposal": "local-source",
+      "mean_ms": 1197.592988,
+      "median_ms": 1198.343285,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "intervention-vio0.2-eplb_budget_32-body-reverse-slots-v2",
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "kind": "body",
+      "proposal": "reverse-slots",
+      "mean_ms": 1202.5548305,
+      "median_ms": 1203.60617,
+      "postwarmup_updates": 20,
+      "independent_repeats": 1,
+      "peak_driver_MiB": 90405
+    }
+  ],
+  "contrasts": [
+    {
+      "maxvio": 0.2,
+      "planner": "native",
+      "online_minus_quota_ms": 1.656699000000117,
+      "quota_minus_body_ms": 7.8902314999998,
+      "online_minus_body_ms": 9.546930499999917,
+      "online_minus_body_fraction": 0.008820810687778858
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "online_minus_quota_ms": 4.649807999999894,
+      "quota_minus_body_ms": -1.0973549999998795,
+      "online_minus_body_ms": 3.552453000000014,
+      "online_minus_body_fraction": 0.002953139879567994
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "eplb_fixed",
+      "online_minus_quota_ms": 1.7059750000000804,
+      "quota_minus_body_ms": -29.17548150000016,
+      "online_minus_body_ms": -27.46950650000008,
+      "online_minus_body_fraction": -0.0170325561700267
+    },
+    {
+      "maxvio": 20,
+      "planner": "native",
+      "online_minus_quota_ms": 3.1061399999998685,
+      "quota_minus_body_ms": 6.035080999999991,
+      "online_minus_body_ms": 9.14122099999986,
+      "online_minus_body_fraction": 0.007602758861293062
+    },
+    {
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "online_minus_quota_ms": 0.2634765000000243,
+      "quota_minus_body_ms": 6.165364999999838,
+      "online_minus_body_ms": 6.428841499999862,
+      "online_minus_body_fraction": 0.005190073551105165
+    },
+    {
+      "maxvio": 20,
+      "planner": "eplb_fixed",
+      "online_minus_quota_ms": -1.9147095000000718,
+      "quota_minus_body_ms": -11.063952499999914,
+      "online_minus_body_ms": -12.978661999999986,
+      "online_minus_body_fraction": -0.008286731365481267
+    }
+  ],
+  "limitations": [
+    "One process per cell, sequential execution; no significance claim",
+    "All arms retain prepared storage and synchronizing route-value checks",
+    "Body skips counts/common compilation/assignment/validation as well as policy generation",
+    "Contrasts include interactions; not isolated host/kernel timer durations",
+    "Reverse replica slots changes forward physical order, but shared-logical backward sorting may preserve backward order"
+  ]
+}

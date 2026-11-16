@@ -77,10 +77,13 @@ def configure_allocator_budget(args, rank, device):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--backend', choices=('balanced',), default='balanced')
-    parser.add_argument('--planner',choices=('moonep','native','ultra_ep','echo','eplb_fixed','step_time'),default='moonep')
+    parser.add_argument('--planner',choices=('moonep','native','ultra_ep','echo','eplb_fixed','step_time',*[f'eplb_budget_{b}' for b in (0,1,2,4,8,16,32,64,128,256)]),default='moonep')
     parser.add_argument('--recv-capacity',type=int,default=163840)
     parser.add_argument('--route-bank',type=Path)
     parser.add_argument('--diagnostic-timer',action='store_true')
+    parser.add_argument('--diagnostic-timer-light',action='store_true')
+    parser.add_argument('--checkpoint-home-reuse',action='store_true')
+    parser.add_argument('--parameter-read-mode',choices=('legacy','cast_once','fp32_to_home'),default='legacy')
     parser.add_argument('--interface',choices=('unified','legacy'),default='unified')
     parser.add_argument('--cost-model',type=str)
     parser.add_argument('--root', type=Path, required=True)
@@ -93,6 +96,8 @@ def main():
     parser.add_argument('--diagnose-memory', action='store_true')
     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
     args = parser.parse_args()
+    if args.diagnostic_timer_light and not args.diagnostic_timer:
+        parser.error('--diagnostic-timer-light requires --diagnostic-timer')
     os.environ['MEGAFLUX_PLANNER_INTERFACE']=args.interface
     set_accelerator_compatible()
     rank = int(os.environ['RANK'])
@@ -125,13 +130,15 @@ def main():
     config = DeepseekV4Config(**values)
     config.mlp_layer_types = ['moe'] * args.layers
     if rank == 0:
-        (args.out / 'effective-config.json').write_text(json.dumps(dict(backend=args.backend, planner=args.planner, receive_capacity=args.recv_capacity, route_bank=str(args.route_bank or args.root/'routes'), layers=args.layers, tokens=args.tokens, steps=args.steps, maxvio=args.maxvio, whole_card_budget_gib=args.whole_card_budget_gib, model=config.to_dict()), indent=2))
+        (args.out / 'effective-config.json').write_text(json.dumps(dict(backend=args.backend, planner=args.planner, checkpoint_home_reuse=args.checkpoint_home_reuse, parameter_read_mode=args.parameter_read_mode, receive_capacity=args.recv_capacity, route_bank=str(args.route_bank or args.root/'routes'), layers=args.layers, tokens=args.tokens, steps=args.steps, maxvio=args.maxvio, whole_card_budget_gib=args.whole_card_budget_gib, model=config.to_dict()), indent=2))
     model_args = ModelArguments(model_name_or_path=str(args.root / 'configs/model'),
                                 model_id='deepseek_v4', train_from_scratch=True,
                                 init_model_with_meta_device=True)
     loader = ModelLoader(model_args, init_device='meta', hf_config=config)
     model, weights_path = loader.create_model(model_cls=DeepseekV4ForCausalLM)
     balanced_config = MegaMoeBalancedConfig(planner=args.planner, replica_slots=32,
+                    checkpoint_home_reuse=args.checkpoint_home_reuse,
+                    parameter_read_mode=args.parameter_read_mode,
                     backward_restore='panel', recv_capacity=args.recv_capacity,
                     plan_validation='fused', routed_input_mode='redispatch',timer=args.diagnostic_timer,step_time_model=args.cost_model,
                     shared_expert_mode='fused' if args.backend == 'shared' else 'framework',
@@ -162,7 +169,10 @@ def main():
     from ascend_deepep.plan_replay import install_replay_provider
     install_replay_provider(plan_invocation)
     if args.diagnostic_timer:
-        from capture_diagnostics import install
+        if args.diagnostic_timer_light:
+            from capture_lite_timers import install
+        else:
+            from capture_diagnostics import install
         install(args.out,rank)
     engine = MindSpeedParallelEngine(parallel, model, init_device='meta', weights_path=weights_path, hf_config=config)
     if not args.skip_identity:
@@ -278,7 +288,14 @@ def main():
         raise RuntimeError(f'Unexpected checkpoint replay route calls: {provider.calls}')
     (args.out / f'route-calls-rank{rank}.json').write_text(json.dumps({f'{step}:{layer}': count for (step, layer), count in provider.calls.items()}, indent=2))
     from fsdp_turbo.distributed.expert_parallel.dispatcher_megamoe_balanced import _POOLS
-    planning=[dict(planner=pool.planner_name,calls=pool.policy.calls,replay=pool.replay_audit,live=len(pool._plan_bodies),model_sha=getattr(pool.policy,'model_sha',None)) for pool in _POOLS.values()]
+    planning=[dict(planner=pool.planner_name,calls=pool.policy.calls,replay=pool.replay_audit,
+              home_reuse=pool.home_reuse_audit,parameter_read_mode=pool.parameter_read_mode,
+              master_parameter_dtypes=pool.master_parameter_dtypes,
+              live=len(pool._plan_bodies),model_sha=getattr(pool.policy,'model_sha',None)) for pool in _POOLS.values()]
+    if any(p['parameter_read_mode'] != args.parameter_read_mode for p in planning):
+        raise RuntimeError('Dispatcher ignored requested parameter read mode')
+    if args.checkpoint_home_reuse and any(p['home_reuse']['hits'] != args.steps*args.layers for p in planning):
+        raise RuntimeError(f'Expected one immediate home-weight handoff per layer backward: {planning}')
     if sum(p['calls'] for p in planning)!=args.steps*args.layers*(1 if args.interface=='unified' else 2) or any(p['live'] for p in planning):
         raise RuntimeError(f'Checkpoint reran policy or leaked plan bodies: {planning}')
     (args.out/f'planning-audit-rank{rank}.json').write_text(json.dumps(planning,indent=2))

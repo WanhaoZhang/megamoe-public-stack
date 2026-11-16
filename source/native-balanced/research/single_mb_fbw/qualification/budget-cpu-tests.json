@@ -1,0 +1,5 @@
+{
+  "status": "pass",
+  "cases": 544,
+  "scope": "Portable C++ vs NumPy plus full assignment materialization; not NPU qualification"
+}

@@ -1,0 +1,41 @@
+{
+  "records": [
+    {
+      "tag": "forced-subset-gate-vio1-proxy_best-v1",
+      "physical_rank_call_digests_checked": 48,
+      "changed_global_invocations": 2,
+      "passed": true
+    },
+    {
+      "tag": "forced-subset-gate-vio1-sparse_best-v1",
+      "physical_rank_call_digests_checked": 48,
+      "changed_global_invocations": 3,
+      "passed": true
+    },
+    {
+      "tag": "forced-subset-gate-vio5-proxy_best-v1",
+      "physical_rank_call_digests_checked": 48,
+      "changed_global_invocations": 6,
+      "passed": true
+    },
+    {
+      "tag": "forced-subset-gate-vio5-sparse_best-v1",
+      "physical_rank_call_digests_checked": 48,
+      "changed_global_invocations": 6,
+      "passed": true
+    },
+    {
+      "tag": "forced-subset-gate-vio20-proxy_best-v1",
+      "physical_rank_call_digests_checked": 48,
+      "changed_global_invocations": 4,
+      "passed": true
+    },
+    {
+      "tag": "forced-subset-gate-vio20-sparse_best-v1",
+      "physical_rank_call_digests_checked": 48,
+      "changed_global_invocations": 6,
+      "passed": true
+    }
+  ],
+  "scope": "Captured prepared physical IDs match independent CPU assignment compiler; not a timing score"
+}

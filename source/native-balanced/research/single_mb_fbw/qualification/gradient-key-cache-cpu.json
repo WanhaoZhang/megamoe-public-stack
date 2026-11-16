@@ -1,0 +1,113 @@
+{
+  "passed": true,
+  "cases": 8572,
+  "records": [
+    {
+      "priority": 0,
+      "label": "0.2/eplb_fixed",
+      "cases": 400,
+      "active_cases": 400,
+      "old_source_reads_mean": 316477.93,
+      "cached_reads_mean": 256.0
+    },
+    {
+      "priority": 0,
+      "label": "0.2/native",
+      "cases": 400,
+      "active_cases": 0,
+      "old_source_reads_mean": 0.0,
+      "cached_reads_mean": 0.0
+    },
+    {
+      "priority": 0,
+      "label": "0.2/ultra_ep",
+      "cases": 400,
+      "active_cases": 272,
+      "old_source_reads_mean": 13783.37,
+      "cached_reads_mean": 174.08
+    },
+    {
+      "priority": 0,
+      "label": "20/eplb_fixed",
+      "cases": 400,
+      "active_cases": 400,
+      "old_source_reads_mean": 392766.695,
+      "cached_reads_mean": 256.0
+    },
+    {
+      "priority": 0,
+      "label": "20/native",
+      "cases": 400,
+      "active_cases": 400,
+      "old_source_reads_mean": 33439.185,
+      "cached_reads_mean": 256.0
+    },
+    {
+      "priority": 0,
+      "label": "20/ultra_ep",
+      "cases": 400,
+      "active_cases": 400,
+      "old_source_reads_mean": 32745.995,
+      "cached_reads_mean": 256.0
+    },
+    {
+      "priority": 1,
+      "label": "0.2/eplb_fixed",
+      "cases": 400,
+      "active_cases": 400,
+      "old_source_reads_mean": 316477.93,
+      "cached_reads_mean": 256.0
+    },
+    {
+      "priority": 1,
+      "label": "0.2/native",
+      "cases": 400,
+      "active_cases": 0,
+      "old_source_reads_mean": 0.0,
+      "cached_reads_mean": 0.0
+    },
+    {
+      "priority": 1,
+      "label": "0.2/ultra_ep",
+      "cases": 400,
+      "active_cases": 272,
+      "old_source_reads_mean": 13783.37,
+      "cached_reads_mean": 174.08
+    },
+    {
+      "priority": 1,
+      "label": "20/eplb_fixed",
+      "cases": 400,
+      "active_cases": 400,
+      "old_source_reads_mean": 472937.675,
+      "cached_reads_mean": 256.0
+    },
+    {
+      "priority": 1,
+      "label": "20/native",
+      "cases": 400,
+      "active_cases": 400,
+      "old_source_reads_mean": 33445.6,
+      "cached_reads_mean": 256.0
+    },
+    {
+      "priority": 1,
+      "label": "20/ultra_ep",
+      "cases": 400,
+      "active_cases": 400,
+      "old_source_reads_mean": 32756.265,
+      "cached_reads_mean": 256.0
+    }
+  ],
+  "source_sha256": {
+    "source\\native-balanced\\include\\mega_moe_gradient_order.h": "32e37c70778f1acb0ef40e2ed696eaa52433b732682adf03bb5f6b511a29ce92",
+    "source\\native-balanced\\include\\mega_moe_gradient_priority.h": "c332a9618d318a4b2f03230df1b1154e6c40722e7ff85a47e846d1f9f8186684",
+    "tools\\gradient_order_oracle.cpp": "5d2af955ae4086a6d631b0f53ade5d1175d09a49a1f2ef10d3831fb826bb551d"
+  },
+  "oracle_sha256": {
+    "0": "76a496629d0415693dbc51dcd5343ecb226a3ccfaf86b0ca16a6cefb6512041e",
+    "1": "2ca0a2475587ab4dc5093eb7e5e4d31b531a30a84e2ccf0169afed67d14d67d6"
+  },
+  "scope": "Cached header equals original ordering for actual endpoint fixtures and random EP2/4/8 placements; unsupported/malformed cases reject",
+  "limitation": "Read counts describe C++ source evaluation, not optimized instructions or NPU time; inactive-copy kernels skip initialization entirely"
+}

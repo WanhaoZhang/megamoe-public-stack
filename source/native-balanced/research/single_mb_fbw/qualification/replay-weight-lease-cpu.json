@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "cases": 16,
+  "source_sha256": "4912417debc70a3a79074ac6ef6c035dace782a78ebcba9ac2a39284954f3723",
+  "scope": "CPU immediate-recompute handoff state machine only",
+  "npu_qualified": false,
+  "caveats": [
+    "Model weight immutability is a framework precondition, not proven by private-buffer stamps",
+    "Pool integration is default off and has no NPU correctness or performance qualification"
+  ]
+}

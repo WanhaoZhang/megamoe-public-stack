@@ -303,12 +303,15 @@ def native(source, home, slots, beta=768, penalty=2, gain=4):
     return PlannerProposal(cp,interval_quota(source,dest))
 
 
-def eplb_fixed(source, home, slots):
+def eplb_fixed(source, home, slots, budget=None):
     p, e = source.shape
+    budget = p*slots if budget is None else budget
+    if not isinstance(budget, int) or not 0 <= budget <= p*slots:
+        raise ValueError('replica budget outside physical instance capacity')
     counts = source.sum(axis=0).astype(np.float32)
     multiplicity = np.ones(e, np.int32)
     replicas = []
-    for _ in range(p*slots):
+    for _ in range(budget):
         expert = int(np.argmax((counts/multiplicity).astype(np.float32)))
         replicas.append(expert)
         multiplicity[expert] += 1

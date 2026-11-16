@@ -290,7 +290,8 @@ public:
             sourceQuota.dim()==3 && sourceQuota.size(0)==ep && sourceQuota.size(1)==experts && sourceQuota.size(2)==ep,
             "unified proposal/output shape mismatch");
         TORCH_CHECK(epoch>0 && epoch<=2147483647 && capacity>0 && capacity<=2147483520LL &&
-            capacity%128==0 && policy>=0 && policy<=6,"invalid unified planner epoch/capacity/policy");
+            capacity%128==0 && ((policy>=0 && policy<=6) ||
+            (policy>=100 && policy<=100+ep*slots)),"invalid unified planner epoch/capacity/policy");
         static void* lib=dlopen("libascend_deepep_unified_planner.so",RTLD_NOW|RTLD_LOCAL);
         TORCH_CHECK(lib,"Cannot load unified planner: ",dlerror());
         using Get=int(*)();auto get=reinterpret_cast<Get>(dlsym(lib,"megaflux_max_local_experts"));

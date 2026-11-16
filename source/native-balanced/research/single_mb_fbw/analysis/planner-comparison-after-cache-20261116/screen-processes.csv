@@ -1,0 +1,17 @@
+tag,planner,maxvio,cache,repeat,mean_ms
+gradient-key-cache-screen-vio20-native-0-v1,native,20,0,0,1210.3402895
+gradient-key-cache-screen-vio20-eplb_fixed-1-v1,eplb_fixed,20,1,0,1308.7157585
+gradient-key-cache-screen-vio20-ultra_ep-1-v1,ultra_ep,20,1,0,1157.10552
+gradient-key-cache-screen-vio20-eplb_budget_32-0-v1,eplb_budget_32,20,0,0,1253.4135675
+gradient-key-cache-screen-vio20-eplb_budget_32-1-v1,eplb_budget_32,20,1,0,1169.7236625
+gradient-key-cache-screen-vio20-ultra_ep-0-v1,ultra_ep,20,0,0,1193.586267
+gradient-key-cache-screen-vio20-eplb_fixed-0-v1,eplb_fixed,20,0,0,1639.595894
+gradient-key-cache-screen-vio20-native-1-v1,native,20,1,0,1171.8248985
+gradient-key-cache-screen-vio0.2-native-1-v1,native,0.2,1,0,1081.776177
+gradient-key-cache-screen-vio0.2-eplb_fixed-0-v1,eplb_fixed,0.2,0,0,1717.99949
+gradient-key-cache-screen-vio0.2-ultra_ep-0-v1,ultra_ep,0.2,0,0,1104.7576095
+gradient-key-cache-screen-vio0.2-eplb_budget_32-1-v1,eplb_budget_32,0.2,1,0,1122.2868425
+gradient-key-cache-screen-vio0.2-eplb_budget_32-0-v1,eplb_budget_32,0.2,0,0,1222.722308
+gradient-key-cache-screen-vio0.2-ultra_ep-1-v1,ultra_ep,0.2,1,0,1087.6535245
+gradient-key-cache-screen-vio0.2-eplb_fixed-1-v1,eplb_fixed,0.2,1,0,1356.731236
+gradient-key-cache-screen-vio0.2-native-0-v1,native,0.2,0,0,1081.609459

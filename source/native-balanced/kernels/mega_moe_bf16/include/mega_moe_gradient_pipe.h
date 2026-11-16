@@ -4,6 +4,8 @@
 #include "mega_moe_detail_trace.h"
 #include "mega_moe_stage_timer.h"
 #include "mega_moe_owner_schedule.h"
+#define MEGAFLUX_PRIORITY_INLINE __aicore__ inline
+#include "mega_moe_gradient_priority.h"
 #ifndef DEEPEP_BF16_OWNER_RATIO
 #define DEEPEP_BF16_OWNER_RATIO 1
 #endif
@@ -79,9 +81,9 @@ __aicore__ inline void Stamp(const Context& c,int worker,int field) {
 // Readiness probe has no ownership side effects. The chosen tile still executes
 // the original acquire waits/fence before reading any partial payload.
 __aicore__ inline bool TaskReady(const Context& c,const int* copies,
-        const int32_t* localRows,int p,int64_t task,int tiles,int nc) {
+        const int32_t* localRows,int p,int64_t task,int tiles,int nc,const int* expertOrder) {
     const auto& d=c.replica;
-    const int e=task/tiles,tile=task%tiles,logical=d.rank*d.home+e;
+    const int e=expertOrder[task/tiles],tile=task%tiles,logical=d.rank*d.home+e;
     const int row=tile/nc*TM,col=tile%nc*TN;
     bool remote=false;
     for(int i=0;i<d.ranks*d.slots;++i)if(copies[i]==logical)remote=true;
@@ -138,6 +140,21 @@ __aicore__ inline void Reduce(const Context& c,GM_ADDR dw1,GM_ADDR dw2,const int
         auto b=bb.Get<bfloat16_t>();auto tmp=tb.Get<float>();auto acc=ab.Get<float>();
 #endif
         int copies[MegaMoeLargeEP::MaxCopies];for(int i=0;i<d.ranks*d.slots;++i)copies[i]=MegaFluxMixed::Fresh((__gm__ int32_t*)d.plan+i);
+        int expertOrder[32];for(int e=0;e<d.home;++e)expertOrder[e]=e;
+#if MEGAFLUX_GRADIENT_PRIORITY
+        int priority[32];
+        for(int e=0;e<d.home;++e) {
+            int count=0;for(int i=0;i<d.ranks*d.slots;++i)count+=copies[i]==d.rank*d.home+e;
+            priority[e]=MegaFluxPriority::Key(d.rank*d.home+e,count,d.ranks);
+        }
+        for(int i=1;i<d.home;++i) {
+            int value=expertOrder[i],j=i-1;
+            while(j>=0 && priority[expertOrder[j]]>priority[value]) {
+                expertOrder[j+1]=expertOrder[j];--j;
+            }
+            expertOrder[j+1]=value;
+        }
+#endif
 #if MEGAFLUX_OWNER_COMPACT
         // Scalar-only, per-call cache: retain ascending rank/slot order.
         // No UB allocation, global task counter or numeric atomic is added.
@@ -174,11 +191,11 @@ __aicore__ inline void Reduce(const Context& c,GM_ADDR dw1,GM_ADDR dw2,const int
                 int chosen=0;
 #if DEEPEP_BF16_OWNER_SCAN
                 const auto oldest=MegaFluxOwnerSchedule::Task<TakePairedTail>(head,worker,workers,DEEPEP_BF16_OWNER_RATIO);
-                if(!TaskReady(c,copies,localRows,p,oldest,tiles,nc)) {
+                if(!TaskReady(c,copies,localRows,p,oldest,tiles,nc,expertOrder)) {
                     for(int ahead=1;ahead<=DEEPEP_BF16_OWNER_SCAN;++ahead) {
                         const auto future=MegaFluxOwnerSchedule::Task<TakePairedTail>(head+ahead,worker,workers,DEEPEP_BF16_OWNER_RATIO);
                         if(future>=d.home*tiles || (TakePairedTail && future/tiles!=oldest/tiles))break;
-                        if(!(completed&(1u<<ahead)) && TaskReady(c,copies,localRows,p,future,tiles,nc)) {chosen=ahead;break;}
+                        if(!(completed&(1u<<ahead)) && TaskReady(c,copies,localRows,p,future,tiles,nc,expertOrder)) {chosen=ahead;break;}
                     }
                 }
 #endif
@@ -187,7 +204,7 @@ __aicore__ inline void Reduce(const Context& c,GM_ADDR dw1,GM_ADDR dw2,const int
                 // no-contributor continue; head advances only over executed work.
                 completed|=1u<<chosen;
                 while(completed&1u){++head;completed>>=1;}
-                const int expert=task/tiles,tile=task%tiles,logical=d.rank*d.home+expert;
+                const int expert=expertOrder[task/tiles],tile=task%tiles,logical=d.rank*d.home+expert;
                 int contributorBegin=0,contributorEnd=d.ranks*d.slots;
 #if MEGAFLUX_OWNER_COMPACT
                 contributorBegin=offsets[expert];contributorEnd=offsets[expert+1];
@@ -331,6 +348,16 @@ struct CooperativeOwner {
         }
         offsets[d.home]=count;
         for(int e=0;e<d.home;++e)if(offsets[e]!=offsets[e+1])active[activeCount++]=e;
+#if MEGAFLUX_GRADIENT_PRIORITY
+        for(int i=1;i<activeCount;++i) {
+            const int value=active[i];int j=i-1;
+            const int key=MegaFluxPriority::Key(d.rank*d.home+value,offsets[value+1]-offsets[value],d.ranks);
+            while(j>=0 && MegaFluxPriority::Key(d.rank*d.home+active[j],offsets[active[j]+1]-offsets[active[j]],d.ranks)>key) {
+                active[j+1]=active[j];--j;
+            }
+            active[j+1]=value;
+        }
+#endif
         initialized=true;
     }
     __aicore__ inline bool Ready(int e,int p,int row,int col) {

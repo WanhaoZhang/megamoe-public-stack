@@ -1,0 +1,436 @@
+{
+  "scope": "Existing diagnostic per-parameter energies only; no changed acceptance gate",
+  "records": [
+    {
+      "tag": "diagnostic-native-native-pair-vio5-v1",
+      "groups": [
+        {
+          "group": "HC",
+          "comparisons": 360,
+          "above_relative_002": 13,
+          "max_relative": 0.08434042179448158,
+          "reference_energy": 0.22365704372250506,
+          "difference_energy": 4.148833326905514e-06
+        },
+        {
+          "group": "other",
+          "comparisons": 1032,
+          "above_relative_002": 0,
+          "max_relative": 0.007117227698587883,
+          "reference_energy": 8.689396606055043,
+          "difference_energy": 0.00012537049394709842
+        }
+      ],
+      "worst": [
+        {
+          "rank": 1,
+          "step": 1,
+          "parameter": "model.model.layers.0.ffn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.08434042179448158,
+          "difference_energy": 4.105492115145772e-12,
+          "reference_energy": 5.771566249449609e-10,
+          "reference_norm": 2.4024084268603474e-05,
+          "difference_norm": 2.0262014004401863e-06
+        },
+        {
+          "rank": 0,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.scale",
+          "group": "HC",
+          "relative_l2": 0.08028289195703926,
+          "difference_energy": 1.3207671699791217e-09,
+          "reference_energy": 2.0491806612244585e-07,
+          "reference_norm": 0.0004526787670329213,
+          "difference_norm": 3.634236054494977e-05
+        },
+        {
+          "rank": 0,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.05874163605298305,
+          "difference_energy": 3.0448553228946656e-11,
+          "reference_energy": 8.824184612221788e-09,
+          "reference_norm": 9.393713116878644e-05,
+          "difference_norm": 5.5180207709781826e-06
+        },
+        {
+          "rank": 2,
+          "step": 2,
+          "parameter": "model.model.layers.0.attn_hc.scale",
+          "group": "HC",
+          "relative_l2": 0.038585789792298424,
+          "difference_energy": 2.074251432187062e-25,
+          "reference_energy": 1.3931780089368585e-22,
+          "reference_norm": 1.1803296187662404e-11,
+          "difference_norm": 4.554395055533789e-13
+        },
+        {
+          "rank": 4,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.02958250614214404,
+          "difference_energy": 2.728145940726019e-27,
+          "reference_energy": 3.1174369039523854e-24,
+          "reference_norm": 1.7656264904991614e-12,
+          "difference_norm": 5.2231656499923673e-14
+        },
+        {
+          "rank": 5,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.029582327373482403,
+          "difference_energy": 2.7281119630265436e-27,
+          "reference_energy": 3.117435755374845e-24,
+          "reference_norm": 1.7656261652385097e-12,
+          "difference_norm": 5.223133123927193e-14
+        },
+        {
+          "rank": 2,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.scale",
+          "group": "HC",
+          "relative_l2": 0.029356698492000437,
+          "difference_energy": 2.5561635105297543e-27,
+          "reference_energy": 2.9660208940891086e-24,
+          "reference_norm": 1.7222139513106693e-12,
+          "difference_norm": 5.055851570734404e-14
+        },
+        {
+          "rank": 1,
+          "step": 0,
+          "parameter": "model.model.layers.0.attn_hc.scale",
+          "group": "HC",
+          "relative_l2": 0.02763221172763186,
+          "difference_energy": 3.383638324090882e-10,
+          "reference_energy": 4.431519241748284e-07,
+          "reference_norm": 0.0006656965706497431,
+          "difference_norm": 1.8394668586552143e-05
+        },
+        {
+          "rank": 7,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.024630091410364673,
+          "difference_energy": 1.358200110120256e-27,
+          "reference_energy": 2.2388846255229724e-24,
+          "reference_norm": 1.4962902878529194e-12,
+          "difference_norm": 3.685376656625827e-14
+        },
+        {
+          "rank": 6,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.024630018951017626,
+          "difference_energy": 1.358192118745256e-27,
+          "reference_energy": 2.2388846255229724e-24,
+          "reference_norm": 1.4962902878529194e-12,
+          "difference_norm": 3.6853658146041024e-14
+        }
+      ]
+    },
+    {
+      "tag": "diagnostic-moonep-native-pair-vio5-v1",
+      "groups": [
+        {
+          "group": "HC",
+          "comparisons": 360,
+          "above_relative_002": 9,
+          "max_relative": 0.5933109906153256,
+          "reference_energy": 0.22377191580094707,
+          "difference_energy": 4.015377184306338e-06
+        },
+        {
+          "group": "other",
+          "comparisons": 1032,
+          "above_relative_002": 0,
+          "max_relative": 0.005802395073857905,
+          "reference_energy": 8.689709396531649,
+          "difference_energy": 0.00012490989859076322
+        }
+      ],
+      "worst": [
+        {
+          "rank": 2,
+          "step": 0,
+          "parameter": "model.model.layers.0.attn_hc.scale",
+          "group": "HC",
+          "relative_l2": 0.5933109906153256,
+          "difference_energy": 3.5201793158493892e-25,
+          "reference_energy": 2.9290108428321004e-25,
+          "reference_norm": 5.412033668439342e-13,
+          "difference_norm": 5.933109906153256e-13
+        },
+        {
+          "rank": 2,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.scale",
+          "group": "HC",
+          "relative_l2": 0.10269708587053278,
+          "difference_energy": 1.419411004690645e-25,
+          "reference_energy": 1.3458353379520362e-23,
+          "reference_norm": 3.668562849334922e-12,
+          "difference_norm": 3.767507139595949e-13
+        },
+        {
+          "rank": 7,
+          "step": 0,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.04091995839394791,
+          "difference_energy": 1.674442994962428e-27,
+          "reference_energy": 6.368566989311875e-26,
+          "reference_norm": 2.52360198710333e-13,
+          "difference_norm": 4.091995839394791e-14
+        },
+        {
+          "rank": 6,
+          "step": 0,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.04091982286867635,
+          "difference_energy": 1.6744319036038478e-27,
+          "reference_energy": 6.368577933695605e-26,
+          "reference_norm": 2.523604155507675e-13,
+          "difference_norm": 4.091982286867635e-14
+        },
+        {
+          "rank": 2,
+          "step": 2,
+          "parameter": "model.model.layers.0.attn_hc.scale",
+          "group": "HC",
+          "relative_l2": 0.03747180443792293,
+          "difference_energy": 1.1097979193019494e-25,
+          "reference_energy": 7.903777257080867e-23,
+          "reference_norm": 8.890319036503058e-12,
+          "difference_norm": 3.3313629632658603e-13
+        },
+        {
+          "rank": 0,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.scale",
+          "group": "HC",
+          "relative_l2": 0.03466984525837577,
+          "difference_energy": 3.5686568327495034e-10,
+          "reference_energy": 2.9689369926726153e-07,
+          "reference_norm": 0.000544879527296871,
+          "difference_norm": 1.8890888895839453e-05
+        },
+        {
+          "rank": 1,
+          "step": 1,
+          "parameter": "model.model.layers.0.ffn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.028254029287643645,
+          "difference_energy": 1.1663360404110418e-12,
+          "reference_energy": 1.4610427170473067e-09,
+          "reference_norm": 3.822358848992735e-05,
+          "difference_norm": 1.079970388673246e-06
+        },
+        {
+          "rank": 7,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.022611333213714724,
+          "difference_energy": 2.381857413694061e-27,
+          "reference_energy": 4.658685784076925e-24,
+          "reference_norm": 2.1583988936424436e-12,
+          "difference_norm": 4.8804276592262497e-14
+        },
+        {
+          "rank": 6,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.02261123047855108,
+          "difference_energy": 2.3818362482599977e-27,
+          "reference_energy": 4.6586867201332796e-24,
+          "reference_norm": 2.158399110482878e-12,
+          "difference_norm": 4.8804059751828e-14
+        },
+        {
+          "rank": 3,
+          "step": 2,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.01921082523579499,
+          "difference_energy": 3.1381668911461896e-11,
+          "reference_energy": 8.503231321886382e-08,
+          "reference_norm": 0.00029160300618968904,
+          "difference_norm": 5.60193439014256e-06
+        }
+      ]
+    },
+    {
+      "tag": "diagnostic-incoming-native-self-vio5-v1",
+      "groups": [
+        {
+          "group": "HC",
+          "comparisons": 360,
+          "above_relative_002": 19,
+          "max_relative": 0.12837560875444964,
+          "reference_energy": 0.2235707004617087,
+          "difference_energy": 4.009341092915654e-06
+        },
+        {
+          "group": "other",
+          "comparisons": 1032,
+          "above_relative_002": 0,
+          "max_relative": 0.0053592276787082695,
+          "reference_energy": 8.686687990263433,
+          "difference_energy": 0.00012449925431597526
+        }
+      ],
+      "worst": [
+        {
+          "rank": 2,
+          "step": 0,
+          "parameter": "model.model.layers.0.attn_hc.scale",
+          "group": "HC",
+          "relative_l2": 0.12837560875444964,
+          "difference_energy": 1.6480296923075528e-26,
+          "reference_energy": 3.721295049973046e-25,
+          "reference_norm": 6.100241839446241e-13,
+          "difference_norm": 1.2837560875444964e-13
+        },
+        {
+          "rank": 0,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.12553343303236328,
+          "difference_energy": 1.028891125590373e-10,
+          "reference_energy": 6.529059247474566e-09,
+          "reference_norm": 8.080259431153536e-05,
+          "difference_norm": 1.0143427061848342e-05
+        },
+        {
+          "rank": 5,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.08165049282835346,
+          "difference_energy": 1.1369513885927834e-26,
+          "reference_energy": 1.705392212961499e-24,
+          "reference_norm": 1.305906663189027e-12,
+          "difference_norm": 1.0662792263721466e-13
+        },
+        {
+          "rank": 4,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.08165029288822426,
+          "difference_energy": 1.1369467643484705e-26,
+          "reference_energy": 1.705393628828634e-24,
+          "reference_norm": 1.3059072052901133e-12,
+          "difference_norm": 1.0662770579678016e-13
+        },
+        {
+          "rank": 6,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.0492775835786593,
+          "difference_energy": 1.3451795764684803e-26,
+          "reference_energy": 5.539638928214192e-24,
+          "reference_norm": 2.3536437555871093e-12,
+          "difference_norm": 1.1598187688033335e-13
+        },
+        {
+          "rank": 7,
+          "step": 1,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.049277399319309106,
+          "difference_energy": 1.3451695166630576e-26,
+          "reference_energy": 5.539638928214192e-24,
+          "reference_norm": 2.3536437555871093e-12,
+          "difference_norm": 1.1598144319946435e-13
+        },
+        {
+          "rank": 0,
+          "step": 2,
+          "parameter": "model.model.layers.0.attn_hc.scale",
+          "group": "HC",
+          "relative_l2": 0.04894262363356303,
+          "difference_energy": 1.344279952991364e-09,
+          "reference_energy": 5.611968555913407e-07,
+          "reference_norm": 0.0007491307333111763,
+          "difference_norm": 3.6664423532783985e-05
+        },
+        {
+          "rank": 1,
+          "step": 1,
+          "parameter": "model.model.layers.0.ffn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.03397678201657361,
+          "difference_energy": 2.280060014255191e-12,
+          "reference_energy": 1.975066808130541e-09,
+          "reference_norm": 4.4441723730415106e-05,
+          "difference_norm": 1.5099867596291006e-06
+        },
+        {
+          "rank": 0,
+          "step": 2,
+          "parameter": "model.model.layers.1.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.02707838543427795,
+          "difference_energy": 3.3820819575210626e-16,
+          "reference_energy": 4.612523546217279e-13,
+          "reference_norm": 6.791556188545655e-07,
+          "difference_norm": 1.8390437617199495e-08
+        },
+        {
+          "rank": 1,
+          "step": 0,
+          "parameter": "model.model.layers.0.attn_hc.base",
+          "group": "HC",
+          "relative_l2": 0.02683434046356314,
+          "difference_energy": 1.0147843698161962e-10,
+          "reference_energy": 1.4092625729404543e-07,
+          "reference_norm": 0.0003754014614969492,
+          "difference_norm": 1.0073650628328323e-05
+        }
+      ]
+    }
+  ],
+  "input_sha256": {
+    "evidence\\diagnostic-native-native-pair-vio5-v1\\paired-rank0.jsonl": "34a1acd6f9021ccde81180a89a18d389fdc3f8356c130d585f5a0559c0ffd0bf",
+    "evidence\\diagnostic-native-native-pair-vio5-v1\\paired-rank1.jsonl": "e6c5703fbd333dbf94e74fa9db0218a20b4ff3f59e5f4f7c33a9c6dd0423541a",
+    "evidence\\diagnostic-native-native-pair-vio5-v1\\paired-rank2.jsonl": "612972fd1055f064e4322c752468fe0ff6f586ab4b43856e27c599a04dd4314d",
+    "evidence\\diagnostic-native-native-pair-vio5-v1\\paired-rank3.jsonl": "f4aacf0360bcd3d911735bbbd5d6ad300bc7b5ffcf9145174feb81d28dfec12d",
+    "evidence\\diagnostic-native-native-pair-vio5-v1\\paired-rank4.jsonl": "5cfb7b6e7611046fb98aa2bc9ba81426ac1f2e5865d08a763a10b66ac7722815",
+    "evidence\\diagnostic-native-native-pair-vio5-v1\\paired-rank5.jsonl": "af3afe9aa75f4725363340023568a3965692d14dd96699787693c6568f38aad5",
+    "evidence\\diagnostic-native-native-pair-vio5-v1\\paired-rank6.jsonl": "02da399edd057851098c94781022f272c52c2bbba32f183630d6a39fc49da390",
+    "evidence\\diagnostic-native-native-pair-vio5-v1\\paired-rank7.jsonl": "8af95b413f5309ccb6df458a3cb8086373761018674bee2867cd9fb6bae49ba8",
+    "evidence\\diagnostic-moonep-native-pair-vio5-v1\\paired-rank0.jsonl": "9c93488625462b1a8ea8418afd27d7179115bddb604504af844dae3843d23037",
+    "evidence\\diagnostic-moonep-native-pair-vio5-v1\\paired-rank1.jsonl": "21bf4bf7c7db48ab572214e6f7d13306968171a63afc8c5fa591ac2a35a5dc1d",
+    "evidence\\diagnostic-moonep-native-pair-vio5-v1\\paired-rank2.jsonl": "d169769e981257e9a53ef4d71c2c5be561c589ecde35e03de146862f14666c72",
+    "evidence\\diagnostic-moonep-native-pair-vio5-v1\\paired-rank3.jsonl": "da105818613841ab1d8d470ac7cad297a25697151a66fcb82c690132102ff60e",
+    "evidence\\diagnostic-moonep-native-pair-vio5-v1\\paired-rank4.jsonl": "58550a36208960e2fe5e4af47cc4e4c350711a1487775b678d20d867d80cf90e",
+    "evidence\\diagnostic-moonep-native-pair-vio5-v1\\paired-rank5.jsonl": "0651008ae2a7bbace44f196eda167a442a6a2be4c98dfa98588f520fa308c99c",
+    "evidence\\diagnostic-moonep-native-pair-vio5-v1\\paired-rank6.jsonl": "62e644fd7e9b0cdcc429649c9137a8e106498676beca312fdda5efa652b9d7c7",
+    "evidence\\diagnostic-moonep-native-pair-vio5-v1\\paired-rank7.jsonl": "a4bc33e3e23a3e0a86ceba23532469458b675ee13614111224362583960e751f",
+    "evidence\\diagnostic-incoming-native-self-vio5-v1\\paired-rank0.jsonl": "fd300cae8946ec40d31d08ba0ab3cb784703b41eebda2c5a92088fd385d71ad9",
+    "evidence\\diagnostic-incoming-native-self-vio5-v1\\paired-rank1.jsonl": "24962442b1aa19a69b28a06e18d4e2ea954acc3bd5ed8bc269d8b42e83dba654",
+    "evidence\\diagnostic-incoming-native-self-vio5-v1\\paired-rank2.jsonl": "3f9b2cb6b7a63772fdb6574f9a7059f414d93a134950e45c662bd3c39a92bbe1",
+    "evidence\\diagnostic-incoming-native-self-vio5-v1\\paired-rank3.jsonl": "ad41b0a2b18a5ca07edf682b4bdcce0ed31cc9fa677e160a67574923619ad22b",
+    "evidence\\diagnostic-incoming-native-self-vio5-v1\\paired-rank4.jsonl": "b9136541d14d2328917488c1e311e41db25fc874bd4e50c691094db912330c3a",
+    "evidence\\diagnostic-incoming-native-self-vio5-v1\\paired-rank5.jsonl": "9dc1e4b5ccc78034c3f007d1808f84f41d13d18571655ab4fc36eaeae041470b",
+    "evidence\\diagnostic-incoming-native-self-vio5-v1\\paired-rank6.jsonl": "87e7dd52182aca8732e9fe570f5cee16a7083e7bce9251e4eddf1ce622b621d7",
+    "evidence\\diagnostic-incoming-native-self-vio5-v1\\paired-rank7.jsonl": "535c1db2c52ce7b377c9e483a55fda7e586f037b3ebe55eff66b3010dba4cf8d"
+  },
+  "caveats": [
+    "Relative errors of near-zero gradients can be ill-conditioned",
+    "Small absolute gradients do not establish small Adam update error",
+    "Nonzero incoming dY before earlier MoE excludes an entirely local MoE explanation, not every MoE contribution",
+    "Source-level attention nondeterminism is a hypothesis pending controlled NPU diagnostics"
+  ]
+}

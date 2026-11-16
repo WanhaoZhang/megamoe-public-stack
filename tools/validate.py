@@ -100,9 +100,10 @@ def main():
     parser.add_argument('--backend', choices=('moonep', 'balanced', 'shared'), required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--experts', type=int, default=256)
-    parser.add_argument('--planner',choices=('moonep','native','ultra_ep','echo','eplb_fixed','step_time'),default='moonep')
+    parser.add_argument('--planner',choices=('moonep','native','ultra_ep','echo','eplb_fixed','step_time',*[f'eplb_budget_{b}' for b in (0,1,2,4,8,16,32,64,128,256)]),default='moonep')
     parser.add_argument('--cost-model')
     parser.add_argument('--semantic-cost-model',action='store_true')
+    parser.add_argument('--timer',action='store_true',help='Original TimerV2 numerical qualification only')
     parser.add_argument('--recv-capacity',type=int)
     parser.add_argument('--tokens', type=int, default=128)
     parser.add_argument('--routed-input-mode', choices=['saved', 'redispatch'], default='redispatch')
@@ -160,7 +161,7 @@ def main():
         pool = NativeFSDP2Pool(shmem, dist.group.WORLD, home, slots, hidden, ffn,
                 tokens, topk, window, capacity, device, args.planner, 'panel', 'fused',
                 save_gmm1_output='bf16', routed_input_mode=args.routed_input_mode,
-                cost_model=args.cost_model,
+                cost_model=args.cost_model,timer=args.timer,
                 **({'shared_backward_schedule': 's0'} if args.backend == 'shared' else {}))
         pool.audit = []
         bridge = FSDP2ExpertsBridge(pool, lambda: (w1, w2))
@@ -266,7 +267,15 @@ def main():
 
 if __name__ == '__main__':
     import sys
-    if '--fixed-state-pair' in sys.argv:
+    if '--incoming-gradient-diagnostic' in sys.argv:
+        sys.argv.remove('--incoming-gradient-diagnostic')
+        from gradient_incoming import main as incoming_main
+        incoming_main()
+    elif '--gradient-diagnostic' in sys.argv:
+        sys.argv.remove('--gradient-diagnostic')
+        from gradient_diagnostic import main as diagnostic_main
+        diagnostic_main()
+    elif '--fixed-state-pair' in sys.argv:
         sys.argv.remove('--fixed-state-pair')
         from fixed_state_pair import main as paired_main
         paired_main()

@@ -10,7 +10,7 @@ struct Memory {
     int quota(int s,int e,int d){return flow[(s*256+e)*8+d];}
     void set_quota(int s,int e,int d,int v){flow[(s*256+e)*8+d]=v;}
 };
-extern "C" int search_reference(const int* source,const int* model,int* copies,int* flow,float* stats){
+extern "C" __declspec(dllexport) int search_reference(const int* source,const int* model,int* copies,int* flow,float* stats){
     UnifiedPlanner::State a{};a.p=8;a.e=256;a.h=a.s=32;
     int total=0;for(int e=0;e<256;++e)for(int s=0;s<8;++s){a.c[e]+=source[s*256+e];total+=source[s*256+e];}
     a.home();Memory m(model,source,flow);StepTime::Engine<Memory> engine{a,m,model[9]};
@@ -20,7 +20,7 @@ extern "C" int search_reference(const int* source,const int* model,int* copies,i
     stats[4]=a.predicted_before;stats[5]=a.predicted_after;stats[6]=float(a.model_flags);stats[7]=float(model[9]);
     return 0;
 }
-extern "C" int score_reference(const int* source,const int* model,const int* copies,const int* quota,int64_t* answer){
+extern "C" __declspec(dllexport) int score_reference(const int* source,const int* model,const int* copies,const int* quota,int64_t* answer){
     UnifiedPlanner::State a{};a.p=8;a.e=256;a.h=a.s=32;
     for(int i=0;i<256;++i)a.cp[i]=copies[i];
     std::vector<int> flow(quota,quota+16384);Memory m(model,source,flow.data());
@@ -28,7 +28,7 @@ extern "C" int score_reference(const int* source,const int* model,const int* cop
     StepTime::Engine<Memory> engine{a,m,model[9]};for(int d=0;d<8;++d)for(int k=0;k<64;++k)engine.cache_slot(d,k);
     *answer=engine.score();return 0;
 }
-extern "C" int phase_reference(const int* source,const int* model,const int* copies,const int* quota,int64_t* answer){
+extern "C" __declspec(dllexport) int phase_reference(const int* source,const int* model,const int* copies,const int* quota,int64_t* answer){
     UnifiedPlanner::State a{};a.p=8;a.e=256;a.h=a.s=32;
     for(int i=0;i<256;++i)a.cp[i]=copies[i];
     std::vector<int> flow(quota,quota+16384);Memory m(model,source,flow.data());

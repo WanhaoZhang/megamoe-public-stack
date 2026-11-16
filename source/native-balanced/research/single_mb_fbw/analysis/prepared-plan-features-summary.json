@@ -1,0 +1,105 @@
+{
+  "scope": "Every CPU copy/quota hash checked against all eight ranks of actual timed preparations; structural features only",
+  "summary": [
+    {
+      "maxvio": 20,
+      "planner": "native",
+      "proposal": "original",
+      "active_remote_total": 6.6,
+      "gradient_partial_MiB_total": 554.4,
+      "source_remote_rows": 899064.625,
+      "dW_output_tile_tasks_total": 351926.4,
+      "home_dHp_rows_min_rank_mean": 77367.9
+    },
+    {
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "proposal": "original",
+      "active_remote_total": 27.925,
+      "gradient_partial_MiB_total": 2345.7,
+      "source_remote_rows": 917516.45,
+      "dW_output_tile_tasks_total": 381595.2,
+      "home_dHp_rows_min_rank_mean": 70080.2
+    },
+    {
+      "maxvio": 20,
+      "planner": "eplb_fixed",
+      "proposal": "original",
+      "active_remote_total": 179.2,
+      "gradient_partial_MiB_total": 15052.8,
+      "source_remote_rows": 917489.825,
+      "dW_output_tile_tasks_total": 584908.8,
+      "home_dHp_rows_min_rank_mean": 46032.725
+    },
+    {
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "proposal": "local-source",
+      "active_remote_total": 27.925,
+      "gradient_partial_MiB_total": 2345.7,
+      "source_remote_rows": 759477.95,
+      "dW_output_tile_tasks_total": 381595.2,
+      "home_dHp_rows_min_rank_mean": 70080.2
+    },
+    {
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "proposal": "reverse-slots",
+      "active_remote_total": 27.925,
+      "gradient_partial_MiB_total": 2345.7,
+      "source_remote_rows": 917516.45,
+      "dW_output_tile_tasks_total": 381595.2,
+      "home_dHp_rows_min_rank_mean": 70080.2
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "native",
+      "proposal": "original",
+      "active_remote_total": 0.0,
+      "gradient_partial_MiB_total": 0.0,
+      "source_remote_rows": 917563.6,
+      "dW_output_tile_tasks_total": 344064.0,
+      "home_dHp_rows_min_rank_mean": 129395.8
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "proposal": "original",
+      "active_remote_total": 27.325,
+      "gradient_partial_MiB_total": 2295.3,
+      "source_remote_rows": 917545.275,
+      "dW_output_tile_tasks_total": 380788.8,
+      "home_dHp_rows_min_rank_mean": 118870.875
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "eplb_fixed",
+      "proposal": "original",
+      "active_remote_total": 224.9,
+      "gradient_partial_MiB_total": 18891.6,
+      "source_remote_rows": 917547.375,
+      "dW_output_tile_tasks_total": 646329.6,
+      "home_dHp_rows_min_rank_mean": 68579.0
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "proposal": "local-source",
+      "active_remote_total": 27.325,
+      "gradient_partial_MiB_total": 2295.3,
+      "source_remote_rows": 902354.425,
+      "dW_output_tile_tasks_total": 380788.8,
+      "home_dHp_rows_min_rank_mean": 118870.875
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "proposal": "reverse-slots",
+      "active_remote_total": 27.325,
+      "gradient_partial_MiB_total": 2295.3,
+      "source_remote_rows": 917545.275,
+      "dW_output_tile_tasks_total": 380788.8,
+      "home_dHp_rows_min_rank_mean": 118870.875
+    }
+  ]
+}

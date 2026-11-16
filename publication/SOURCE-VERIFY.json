@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "branch": "research/single-mb-fbw-planner",
+  "input_commit": "86de0218ff48f032e35e7a7eda3ae60b9d6444d5",
+  "original_source_repository": "D:\\megamoe_train\\megamoe-public-stack",
+  "original_project": "D:\\megamoe_train\\single-mb-fbw-planner-study",
+  "source_files_exact": 7635,
+  "full_source_files": 7635,
+  "all_tracked_files": 8081,
+  "syntax_checked": 2078,
+  "syntax_warnings": 266,
+  "gitlinks": 0,
+  "raw_artifacts_published": false,
+  "new_device_runs": false,
+  "original_research_source_unchanged": true,
+  "manifest_sha256": "e68a13ea92301047b9d54054d1a74522307b68c817c0b0206d6f8f0ef0770bfa",
+  "preserved_whitespace_warnings": true
+}

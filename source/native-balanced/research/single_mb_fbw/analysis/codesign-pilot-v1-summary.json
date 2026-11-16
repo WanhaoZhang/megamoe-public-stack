@@ -1,0 +1,222 @@
+[
+  {
+    "tag": "codesign-pilot-vio20-native-legacy-v1",
+    "maxvio": 20,
+    "planner": "native",
+    "worker": null,
+    "mean_ms": 1209.5726865,
+    "median_ms": 1209.0251050000002,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio20-ultra_ep-wide-priority1-v1",
+    "maxvio": 20,
+    "planner": "ultra_ep",
+    "worker": "wide-priority1",
+    "mean_ms": 1196.2728135,
+    "median_ms": 1197.596795,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90348
+  },
+  {
+    "tag": "codesign-pilot-vio20-native-matched-priority0-v1",
+    "maxvio": 20,
+    "planner": "native",
+    "worker": "matched-priority0",
+    "mean_ms": 1210.5963179999999,
+    "median_ms": 1209.59296,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio20-ultra_ep-matched-priority1-v1",
+    "maxvio": 20,
+    "planner": "ultra_ep",
+    "worker": "matched-priority1",
+    "mean_ms": 1193.0543815,
+    "median_ms": 1193.76798,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio20-native-wide-priority0-v1",
+    "maxvio": 20,
+    "planner": "native",
+    "worker": "wide-priority0",
+    "mean_ms": 1213.472307,
+    "median_ms": 1212.8531699999999,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90348
+  },
+  {
+    "tag": "codesign-pilot-vio20-ultra_ep-legacy-v1",
+    "maxvio": 20,
+    "planner": "ultra_ep",
+    "worker": null,
+    "mean_ms": 1193.002924,
+    "median_ms": 1193.607375,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio20-native-matched-priority1-v1",
+    "maxvio": 20,
+    "planner": "native",
+    "worker": "matched-priority1",
+    "mean_ms": 1210.0301695,
+    "median_ms": 1209.036235,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio20-ultra_ep-wide-priority0-v1",
+    "maxvio": 20,
+    "planner": "ultra_ep",
+    "worker": "wide-priority0",
+    "mean_ms": 1196.200579,
+    "median_ms": 1197.4939650000001,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio20-native-wide-priority1-v1",
+    "maxvio": 20,
+    "planner": "native",
+    "worker": "wide-priority1",
+    "mean_ms": 1213.488794,
+    "median_ms": 1212.46123,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio20-ultra_ep-matched-priority0-v1",
+    "maxvio": 20,
+    "planner": "ultra_ep",
+    "worker": "matched-priority0",
+    "mean_ms": 1193.935398,
+    "median_ms": 1194.566785,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio0.2-native-legacy-v1",
+    "maxvio": 0.2,
+    "planner": "native",
+    "worker": null,
+    "mean_ms": 1080.767133,
+    "median_ms": 1080.7716300000002,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio0.2-ultra_ep-wide-priority1-v1",
+    "maxvio": 0.2,
+    "planner": "ultra_ep",
+    "worker": "wide-priority1",
+    "mean_ms": 1108.4449445,
+    "median_ms": 1102.53699,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio0.2-native-matched-priority0-v1",
+    "maxvio": 0.2,
+    "planner": "native",
+    "worker": "matched-priority0",
+    "mean_ms": 1080.645078,
+    "median_ms": 1080.680225,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio0.2-ultra_ep-matched-priority1-v1",
+    "maxvio": 0.2,
+    "planner": "ultra_ep",
+    "worker": "matched-priority1",
+    "mean_ms": 1104.19993,
+    "median_ms": 1098.901105,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio0.2-native-wide-priority0-v1",
+    "maxvio": 0.2,
+    "planner": "native",
+    "worker": "wide-priority0",
+    "mean_ms": 1080.36749,
+    "median_ms": 1080.43903,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio0.2-ultra_ep-legacy-v1",
+    "maxvio": 0.2,
+    "planner": "ultra_ep",
+    "worker": null,
+    "mean_ms": 1104.6497625,
+    "median_ms": 1099.91634,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio0.2-native-matched-priority1-v1",
+    "maxvio": 0.2,
+    "planner": "native",
+    "worker": "matched-priority1",
+    "mean_ms": 1081.5442075,
+    "median_ms": 1081.656235,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio0.2-ultra_ep-wide-priority0-v1",
+    "maxvio": 0.2,
+    "planner": "ultra_ep",
+    "worker": "wide-priority0",
+    "mean_ms": 1107.4971205,
+    "median_ms": 1101.31027,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio0.2-native-wide-priority1-v1",
+    "maxvio": 0.2,
+    "planner": "native",
+    "worker": "wide-priority1",
+    "mean_ms": 1081.877993,
+    "median_ms": 1081.928545,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90344
+  },
+  {
+    "tag": "codesign-pilot-vio0.2-ultra_ep-matched-priority0-v1",
+    "maxvio": 0.2,
+    "planner": "ultra_ep",
+    "worker": "matched-priority0",
+    "mean_ms": 1104.8528055,
+    "median_ms": 1099.3474099999999,
+    "steps": 20,
+    "independent_repeats": 1,
+    "peak_driver_MiB": 90345
+  }
+]

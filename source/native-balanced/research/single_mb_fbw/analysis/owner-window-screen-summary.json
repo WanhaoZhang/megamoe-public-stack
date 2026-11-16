@@ -1,0 +1,60 @@
+{
+  "rows": [
+    {
+      "tag": "owner-window-screen-vio20-native-0-v1",
+      "planner": "native",
+      "mode": 0,
+      "maxvio": 20,
+      "mean_ms": 1210.2478565,
+      "peak_driver_MiB": 90348,
+      "qualified": true,
+      "source_unchanged": true
+    },
+    {
+      "tag": "owner-window-screen-vio20-eplb_fixed-1-v1",
+      "planner": "eplb_fixed",
+      "mode": 1,
+      "maxvio": 20,
+      "mean_ms": 1642.3414395,
+      "peak_driver_MiB": 90349,
+      "qualified": true,
+      "source_unchanged": true
+    },
+    {
+      "tag": "owner-window-screen-vio20-eplb_fixed-0-v1",
+      "planner": "eplb_fixed",
+      "mode": 0,
+      "maxvio": 20,
+      "mean_ms": 1638.5766425,
+      "peak_driver_MiB": 90348,
+      "qualified": true,
+      "source_unchanged": true
+    },
+    {
+      "tag": "owner-window-screen-vio20-native-1-v1",
+      "planner": "native",
+      "mode": 1,
+      "maxvio": 20,
+      "mean_ms": 1210.1420685,
+      "peak_driver_MiB": 90345,
+      "qualified": true,
+      "source_unchanged": true
+    }
+  ],
+  "decision": {
+    "gains": {
+      "native": 8.741019406199868e-05,
+      "eplb_fixed": -0.002297602017721889
+    },
+    "expanded": false,
+    "threshold": 0.02,
+    "independent_repeats": 1,
+    "scope": "engineering screen only; an EPLB-only win is not a competitive planner claim"
+  },
+  "initial_conditions_verified_all_eight_ranks": true,
+  "loaded_worker_SHA_and_path_verified": true,
+  "limitations": [
+    "One independent process per cell",
+    "Late-only also changes owner service parallelism; not an isolated contention test"
+  ]
+}

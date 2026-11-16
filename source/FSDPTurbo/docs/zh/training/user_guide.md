@@ -73,3 +73,8 @@ Kimi K3的Hybrid P2P通过`distributed.cp_plan.kda_backend: hybrid_p2p`开启，
 开启 `memory.recompute` 后，可在 `memory.recompute_plan` 中使用模块列表或结构化配置。
 使用算子重放时，通过 `op_replay_scopes` 指定缓存范围和可选的 `quantizer`，并通过 `memory.swap_plan` 配置交换容量和预取。详见 [激活重计算](../features/recompute.md)。
 设置`memory.recompute_plan.swap_inputs: true`可交换`apply_modules`指定的checkpoint边界输入。输入交换和算子重放共用`memory.swap_plan`。详见 [激活重计算](../features/recompute.md)。
+# 研究分支中的MegaMoE规划配置
+
+单microbatch实验可设置`MegaMoeBalancedConfig.planner="eplb_budget_8"`。预算定义、支持值和配套动态库要求见[MegaMoE单microbatch规划实验](../features/megamoe_planner_study.md)。这属于实验分支能力，设备资格以实验回执为准。
+
+研究分支还提供`MegaMoeBalancedConfig.parameter_read_mode`，合法值为`legacy`、`cast_once`和`fp32_to_home`，默认`legacy`；非默认方式仅支持框架shared专家。`checkpoint_home_reuse`默认`False`。两项均为需配套native实现的执行器探针，不能将CPU控制检查当作NPU训练或性能验收；具体语义和限制见上述特性文档。

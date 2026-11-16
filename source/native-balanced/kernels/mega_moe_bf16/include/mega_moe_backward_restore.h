@@ -93,6 +93,7 @@ __aicore__ inline void WaitPanel(uint64_t ready,int slot,int projection,int pane
     }
 }
 
+template<int OnlyProjection = -1>
 __aicore__ inline void CopyExpertsPanel(const MegaMoeReplicaDescriptor& d,
         uint64_t ready,int epoch,uint64_t trace=0,bool w1First=false) {
     if constexpr(g_coreType==AIV) {
@@ -107,6 +108,9 @@ __aicore__ inline void CopyExpertsPanel(const MegaMoeReplicaDescriptor& d,
         // for a completed payload on a later invocation.
         for(int stage=0;stage<2;++stage) {
             const int projection=MegaMoeBF16Training::BackwardRestoreProjection(stage,w1First);
+            if constexpr (OnlyProjection >= 0) {
+                if (projection != OnlyProjection) continue;
+            }
             const auto phaseTimer=MegaFluxStageTimer::BeginAsync(trace,true,MegaFluxStageTimer::BWD_RESTORE_PHASE,-1,projection);
             const int panels=projection?w2Panels:w1Panels;
             const int64_t width=projection?d.hidden:2*d.ffn;

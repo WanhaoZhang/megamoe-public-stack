@@ -118,19 +118,21 @@ UP_INLINE bool echo(State& a) {
         dstart=dend;
     }return a.canonical();
 }
-UP_INLINE bool eplb(State& a) {
+UP_INLINE bool eplb(State& a,int budget=-1) {
+    const int count=budget<0?a.p*a.s:budget;
+    if(count<0||count>a.p*a.s)return false;
     a.home();int mult[EMAX],replica[CMAX],order[CMAX],used[PMAX];float instance[EMAX],load[PMAX];
     for(int x=0;x<a.e;++x)mult[x]=1;
-    for(int j=0;j<a.p*a.s;++j){int best=0;float value=(float)a.c[0]/mult[0];
+    for(int j=0;j<count;++j){int best=0;float value=(float)a.c[0]/mult[0];
         for(int x=1;x<a.e;++x){float v=(float)a.c[x]/mult[x];if(v>value){best=x;value=v;}}
         replica[j]=best;++mult[best];order[j]=j;
     }
     for(int x=0;x<a.e;++x)instance[x]=(float)a.c[x]/mult[x];
     for(int r=0;r<a.p;++r){load[r]=0;used[r]=0;for(int j=0;j<a.h;++j)load[r]+=instance[r*a.h+j];}
-    for(int i=1;i<a.p*a.s;++i){int v=order[i],j=i-1;
+    for(int i=1;i<count;++i){int v=order[i],j=i-1;
         while(j>=0&&instance[replica[order[j]]]<instance[replica[v]]){order[j+1]=order[j];--j;}order[j+1]=v;}
     for(int x=0;x<a.e;++x)for(int d=0;d<a.p;++d)a.instances[x*a.p+d]=d==x/a.h?1:0;
-    for(int i=0;i<a.p*a.s;++i){int x=replica[order[i]],d=-1;
+    for(int i=0;i<count;++i){int x=replica[order[i]],d=-1;
         for(int r=0;r<a.p;++r)if(used[r]<a.s&&(d<0||load[r]<load[d]))d=r;
         if(d<0)return false;++a.instances[x*a.p+d];
         ++used[d];load[d]+=instance[x];
@@ -208,6 +210,7 @@ UP_INLINE bool source_quota(const int* source,const int* dest,int p,int owner,in
 }
 UP_INLINE bool run(State& a,int policy,int target) {
     if(a.p<1||a.p>PMAX||a.e>EMAX||a.p*a.s>CMAX||a.h<1||a.s<0)return false;
+    if(policy>=100&&policy<=100+a.p*a.s){a.source_policy=4;return eplb(a,policy-100);}
     if(policy==0)return moon(a,target);
     if(policy==1)return native(a);
     if(policy==2)return ultra(a);

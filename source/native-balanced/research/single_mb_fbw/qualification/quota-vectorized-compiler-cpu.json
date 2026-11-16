@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "cases": 90,
+  "oracle": "Independent stable-sort ordinal vectorization versus scalar searchsorted assignment compiler",
+  "source_sha256": "de93da14a5c8155d0565a2babca7a651284d83493dc06d85134ed42ef97d864e"
+}

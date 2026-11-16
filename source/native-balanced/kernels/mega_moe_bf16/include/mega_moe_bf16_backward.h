@@ -35,6 +35,18 @@
 #ifndef MEGAFLUX_BACKWARD_REPLICATED_DW1_EARLY
 #define MEGAFLUX_BACKWARD_REPLICATED_DW1_EARLY 0
 #endif
+#ifndef MEGAFLUX_OWNER_LATE_ONLY
+#define MEGAFLUX_OWNER_LATE_ONLY 0
+#endif
+#ifndef MEGAFLUX_REDISPATCH_P1_RUNAHEAD
+#define MEGAFLUX_REDISPATCH_P1_RUNAHEAD 0
+#endif
+#ifndef MEGAFLUX_REDISPATCH_TRANSPORT_BATCH
+#define MEGAFLUX_REDISPATCH_TRANSPORT_BATCH 0
+#endif
+#ifndef MEGAFLUX_GRADIENT_KEY_CACHE
+#define MEGAFLUX_GRADIENT_KEY_CACHE 0
+#endif
 #ifndef MEGAFLUX_BACKWARD_NONE_GM
 #define MEGAFLUX_BACKWARD_NONE_GM 0
 #endif
@@ -56,6 +68,12 @@
 #include "mega_moe_combine_send.h"
 #include "block_epilogue_swiglu_backward_bf16.h"
 #include "mega_moe_bf16_backward_catlass_impl.h"
+#define MEGAFLUX_RUNAHEAD_INLINE __aicore__ inline
+#include "mega_moe_runahead_order.h"
+#if MEGAFLUX_GRADIENT_KEY_CACHE
+#define MEGAFLUX_ORDER_INLINE __aicore__ inline
+#include "mega_moe_gradient_order.h"
+#endif
 #if MEGAFLUX_SHARED_EXPERT_BACKWARD
 #include "mega_moe_shared_expert_backward.h"
 #include "mega_moe_topk_weight_gather.h"
@@ -195,6 +213,11 @@ public:
 #if defined(DEEPEP_BF16_GRADIENT_PIPE)
     __aicore__ inline void EnableGradientPipe(uint64_t ready,uint64_t trace,int epoch) {
         gradient_.replica=replica_;gradient_.ready=ready;gradient_.trace=trace;gradient_.epoch=epoch;
+#if MEGAFLUX_GRADIENT_KEY_CACHE
+        GradientOrderReader reader{(__gm__ int32_t*)replica_.plan};
+        if(MegaFluxGradientOrder::Build(reader,replica_.ranks,replica_.rank,
+                replica_.home,replica_.slots,expertPerRank_,gradientOrder_))return;
+#endif
         for(int e=0;e<expertPerRank_;++e)gradientOrder_[e]=e;
         // Same global logical-expert priority on every participating rank.
         for(int i=1;i<expertPerRank_;++i) {
@@ -218,7 +241,14 @@ public:
 
 
 private:
+#if MEGAFLUX_GRADIENT_KEY_CACHE
+    struct GradientOrderReader {
+        __gm__ int32_t* plan;
+        __aicore__ inline int Read(int i) {return MegaFluxMixed::Fresh(plan+i);}
+    };
+#endif
     bool sharedSavedSourcesPrepared_ = false;
+    bool redispatchP1Runahead_ = false;
     __aicore__ inline bool XRedispatchEnabled() const {
 #if MEGAFLUX_SHARED_EXPERT_BACKWARD
         return sharedXRedispatchEnabled_;
@@ -259,7 +289,8 @@ private:
 #if MEGAFLUX_BACKWARD_REPLICATED_DW1_EARLY
     bool earlyDW1Enabled_ = false;
     uint32_t earlyDW1Cursor_ = 0;
-    uint32_t earlyDW1Done_ = 0;
+    using EarlyDW1Mask = MegaFluxPriority::CompletionMask;
+    EarlyDW1Mask earlyDW1Done_ = 0;
     template<bool TransW, class Params>
     __aicore__ inline void GMM1DWExpert(Params& params, uint32_t expertIdx,
         int64_t rows, uint32_t& cursor);
@@ -286,8 +317,8 @@ private:
         const auto& d=replica_;
         const int logical=e<d.home?d.rank*d.home+e:MegaFluxMixed::Fresh((__gm__ int32_t*)d.plan+d.rank*d.slots+e-d.home);
         if(logical<0)return 100000+e;
-        bool shared=false;for(int i=0;i<d.ranks*d.slots;++i)if(MegaFluxMixed::Fresh((__gm__ int32_t*)d.plan+i)==logical)shared=true;
-        return (shared?0:10000)+logical;
+        int contributors=0;for(int i=0;i<d.ranks*d.slots;++i)contributors+=MegaFluxMixed::Fresh((__gm__ int32_t*)d.plan+i)==logical;
+        return MegaFluxPriority::Key(logical,contributors,d.ranks);
     }
     __aicore__ inline int ExpertAt(int pos) {return gradient_.ready?gradientOrder_[pos]:pos;}
 #else
@@ -297,7 +328,20 @@ private:
 #if !defined(DEEPEP_BF16_REPLICA)
     __aicore__ inline int ExpertAt(int pos) {return pos;}
 #endif
+    __aicore__ inline int P1ProducerExpertAt(int pos) {
+        if(MegaFluxRunahead::HomeFirst(MEGAFLUX_REDISPATCH_P1_RUNAHEAD,redispatchP1Runahead_,true))return pos;
+        return ExpertAt(pos);
+    }
+    __aicore__ inline int P1ExpertAt(int pos) {
+        // GM dHp has a whole-expert producer fence. AIV may consume experts
+        // in another order, preserving its own unique tile/parity coverage.
+        // Direct-UB and unsupported saved modes never enable this choice.
+        const bool producer=g_coreType==AscendC::AIC;
+        if(MegaFluxRunahead::HomeFirst(MEGAFLUX_REDISPATCH_P1_RUNAHEAD,redispatchP1Runahead_,producer))return pos;
+        return ExpertAt(pos);
+    }
     __aicore__ inline void InitStageLayout();
+    __aicore__ inline void InitRedispatchTransportLayout();
     __aicore__ inline AscendC::LocalTensor<QuantOutType> StageUb(uint32_t bytes);
     __aicore__ inline void UnpermuteBuffInit(TPipe *tPipe);
     __aicore__ inline void TopkGradBuffInit(TPipe *tPipe);
@@ -470,6 +514,7 @@ private:
     // Per-ping row count of the static dispatch ring: tiling's dispatchRows_
     // clamped to the staging budget (see InitStageLayout).
     uint32_t dispatchPingRows_ = 0;
+    uint32_t dispatchStageBaseBytes_ = BW_STAGE_BASE_BYTES;
     __aicore__ inline uint32_t DispatchOrdinal(uint32_t expert, uint32_t traversalOrdinal) const {
 #if defined(DEEPEP_BF16_GRADIENT_PIPE)
         return dispatchOrdinal_[expert];
@@ -661,12 +706,13 @@ __aicore__ inline AscendC::LocalTensor<bfloat16_t>
 MegaMoeBF16Backward::StageUb(uint32_t bytes)
 {
     return AscendC::LocalTensor<bfloat16_t>(
-        AscendC::TPosition::VECIN, BW_STAGE_BASE_BYTES,
+        AscendC::TPosition::VECIN, dispatchStageBaseBytes_,
         bytes / sizeof(bfloat16_t));
 }
 
 __aicore__ inline void MegaMoeBF16Backward::InitStageLayout()
 {
+    dispatchStageBaseBytes_ = BW_STAGE_BASE_BYTES;
     // The two-slot dispatch ring must fit the static staging budget
     // [BW_STAGE_BASE_BYTES, UB_SIZE).  Tiling's dispatchRows_ was sized for
     // the old whole-UB firstPipe layout, so clamp the per-ping row count;
@@ -685,6 +731,24 @@ __aicore__ inline void MegaMoeBF16Backward::InitStageLayout()
         dispatchPingRows_ = 1; // Preserve the measured saved-mode single-row path, including k=0.
     dispatchCopyElementsPerPing_ = Ops::Base::CeilAlign(
         dispatchPingRows_ * k_, static_cast<uint32_t>(ALIGN_32));
+}
+
+__aicore__ inline void MegaMoeBF16Backward::InitRedispatchTransportLayout()
+{
+#if MEGAFLUX_REDISPATCH_TRANSPORT_BATCH
+    // Called only AFTER all gathers/TPipes drain in routed-only BF16 GM.
+    // AIC dHp stores GM; AIV epilogues still wait the XP lease, so no P1
+    // vector payload can coexist with this temporary transport ring.
+    if (!redispatchP1Runahead_ || savedGateUpMode_ != MegaMoeBF16Training::kSaveBf16) return;
+    constexpr uint32_t base = MEGAFLUX_REDISPATCH_TRANSPORT_BATCH == 2 ? 0 : BW_STAGE_BASE_BYTES;
+    constexpr uint32_t bytes = MegaMoeBF16BackwardCatlassImpl::ArchTag::UB_SIZE - base;
+    const int rows=MegaFluxRunahead::TransportRows(bytes,k_,dispatchRows_);
+    if(rows<=0)return;
+    dispatchStageBaseBytes_=base;
+    dispatchPingRows_=rows;
+    dispatchCopyElementsPerPing_=Ops::Base::CeilAlign(
+        dispatchPingRows_*k_,static_cast<uint32_t>(ALIGN_32));
+#endif
 }
 
 __aicore__ inline void MegaMoeBF16Backward::UnpermuteBuffInit(TPipe *tPipe)
@@ -1174,6 +1238,14 @@ __aicore__ inline void MegaMoeBF16Backward::TransportXRedispatch()
         cumMRows_ = 0;
         preOffset_ = 0;
         uint32_t ordinal = 0;
+#if MEGAFLUX_REDISPATCH_P1_RUNAHEAD >= 3 && MEGAFLUX_BACKWARD_RESTORE
+        if (subBlockIdx_ == 1 && redispatchP1Runahead_ && restoreReady_) {
+            // Expose W2 panels to the independent AIC dHp producer before
+            // spending this lane on X/P. Same payload/epoch protocol; W1 is
+            // copied once, after XP. No wait here depends on an AIC consumer.
+            MegaFluxBackwardRestore::CopyExpertsPanel<1>(replica_, restoreReady_, restoreEpoch_, gradient_.trace);
+        }
+#endif
         if (subBlockIdx_ == 1) XRedispatchStamp(2, 0);
 #if MEGAFLUX_X_REDISPATCH_DELAY_PULL_CYCLES > 0
         if (rankId_ == 0 && subBlockIdx_ == 1 && blockIdx_ == 0) {
@@ -1183,7 +1255,7 @@ __aicore__ inline void MegaMoeBF16Backward::TransportXRedispatch()
         }
 #endif
         for (uint32_t position = 0; position < expertPerRank_; ++position) {
-            const uint32_t expert = ExpertAt(position);
+            const uint32_t expert = subBlockIdx_ == 0 ? P1ProducerExpertAt(position) : ExpertAt(position);
             if (!UpdateGroupParams(expert)) continue;
             if (subBlockIdx_ == 0) {
                 DispatchTokensBackward(bwWs_.ptrDO + cumMRows_ * k_ * sizeof(bfloat16_t),
@@ -1200,9 +1272,14 @@ __aicore__ inline void MegaMoeBF16Backward::TransportXRedispatch()
             // XP's ring and probability buffers are already drained before
             // the panel service borrows its own UB window on this same lane.
             if (restoreReady_) {
-                if (restoreMode_ == 2)
+                if (restoreMode_ == 2) {
+#if MEGAFLUX_REDISPATCH_P1_RUNAHEAD >= 3
+                    if (redispatchP1Runahead_)
+                        MegaFluxBackwardRestore::CopyExpertsPanel<0>(replica_, restoreReady_, restoreEpoch_, gradient_.trace);
+                    else
+#endif
                     MegaFluxBackwardRestore::CopyExpertsPanel(replica_, restoreReady_, restoreEpoch_, gradient_.trace, noneGmEnabled_);
-                else
+                } else
                     MegaFluxBackwardRestore::CopyExperts(replica_, restoreReady_, restoreEpoch_, noneGmEnabled_);
             }
 #endif
@@ -1548,7 +1625,7 @@ __aicore__ inline void MegaMoeBF16Backward::GMM2GradPhase()
     uint32_t nonemptyOrdinal = 0;
     bool metadataKnown=false;
     for (uint32_t expertPos = 0; expertPos < expertPerRank_; ++expertPos) {
-        const uint32_t expertIdx=ExpertAt(expertPos);
+        const uint32_t expertIdx=P1ExpertAt(expertPos);
 #if MEGAFLUX_WORKER_BACKWARD
         if(workerExpert_>=0 && expertIdx!=workerExpert_)continue;
 #if MEGAFLUX_WORKER_SHARED_PREFIX
@@ -1704,7 +1781,7 @@ __aicore__ inline void MegaMoeBF16Backward::GMM1GradReuseDOPhase()
                     PipeBarrier<PIPE_ALL>();
                 }
                 // Per AIC: even a core assigned zero tiles completed its part.
-                earlyDW1Done_ |= uint32_t(1) << expertIdx;
+                earlyDW1Done_ |= EarlyDW1Mask(1) << expertIdx;
             }
 #endif
         }
@@ -1772,7 +1849,7 @@ __aicore__ inline void MegaMoeBF16Backward::GMM1DWPhase()
         const int64_t me = Get<M_VALUE>(problemShape_);
 #if MEGAFLUX_BACKWARD_REPLICATED_DW1_EARLY
         if (earlyDW1Enabled_) {
-            if (!(earlyDW1Done_ & (uint32_t(1) << expertIdx))) {
+            if (!(earlyDW1Done_ & (EarlyDW1Mask(1) << expertIdx))) {
                 GMM1DWExpert<TransW>(gmm1Params, expertIdx, me, startBlockIdx);
             }
             cumMRows_ += me;
@@ -2205,20 +2282,39 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
     if (!backwardPolicyValid_) return;
 #if MEGAFLUX_SHARED_EXPERT_BACKWARD
     if (sharedXRedispatchEnabled_ && !sharedEnabled_) {
+#if MEGAFLUX_REDISPATCH_P1_RUNAHEAD && defined(DEEPEP_BF16_GRADIENT_PIPE)
+        // dHp=dO@W2 does not consume X/P or write the ptrD source bank.
+        // Saved BF16 + GM has per-expert dHp completion, so AIC can produce
+        // it while AIV still transports X/P. Keep every AIV behind the full
+        // transport fence: its SwiGLU epilogue DOES consume P. No fallback
+        // GU recompute, shared S0 or UB-output path is enabled here.
+        redispatchP1Runahead_ = MegaFluxRunahead::Enabled(MEGAFLUX_REDISPATCH_P1_RUNAHEAD,
+            savedGateUpMode_ == MegaMoeBF16Training::kSaveBf16,
+            gradient_.ready,restoreMode_,expertPerRank_,replica_.home);
+#endif
         InitStageLayout();
         if constexpr (g_coreType == AscendC::AIV)
             MEGA_MOE_BF16_TIMER_BLOCK(timer_.template Tok<Overwrite>(AIV_INIT));
         PrepareXRedispatchSources();
+        InitRedispatchTransportLayout();
         TransportXRedispatch();
+        // Per-expert dY/X rings and probability DMA are drained. Panel
+        // restore also drains its[224,240)KiB window before returning.
+        // Restore the disjoint static P1/P2 layout before any epilogue.
+        InitStageLayout();
         RetireXRedispatchSources();
-        // All source readers across ranks have retired before an AIC may
-        // consume reconstructed P or reuse ptrD in routed backward. Shared
-        // V3 obtains the equivalent fence at the end of RunBackwardS0V3.
+        // Every AIV still acquires after all source readers have retired.
+        // The optional AIC dHp-only runahead reacquires the same lease at
+        // P1 exit, before any dW or dX. Shared V3 keeps its original fence.
         if constexpr (g_coreType == AscendC::AIV)
             MegaMoeSharedExpert::Publish(sharedArgsV2_.base, 0, aivCoreIdx_);
-        MegaMoeSharedExpert::AcquireAll(sharedArgsV2_.base, 0, blockAivNum_);
-        // On routed-only AIC, INIT includes this necessary transport wait.
-        // AIV transport retains the separate bounded four-phase V3 pairs.
+        if constexpr (g_coreType == AscendC::AIV) {
+            MegaMoeSharedExpert::AcquireAll(sharedArgsV2_.base, 0, blockAivNum_);
+        } else if (!redispatchP1Runahead_) {
+            MegaMoeSharedExpert::AcquireAll(sharedArgsV2_.base, 0, blockAivNum_);
+        }
+        // Legacy AIC INIT includes transport wait. Runahead moves that wait
+        // to operand-ready dHp or P1 exit. AIV's four-phase pairs are intact.
         if constexpr (g_coreType == AscendC::AIC)
             MEGA_MOE_BF16_TIMER_BLOCK(timer_.template Tok<Overwrite>(AIC_INIT));
     }
@@ -2258,7 +2354,7 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
     earlyDW1Cursor_ = 0;
     earlyDW1Done_ = 0;
     earlyDW1Enabled_ = (savedGateUpMode_ == MegaMoeBF16Training::kSaveBf16 || noneGmEnabled_) &&
-        gradient_.ready && restoreMode_ == 2 && expertPerRank_ <= 32 &&
+        gradient_.ready && restoreMode_ == 2 && expertPerRank_ <= MegaFluxPriority::CompletionExperts &&
         (replica_.ranks == 2 || replica_.ranks == 4 || replica_.ranks == 8);
 #endif
     if (!XRedispatchEnabled()) {
@@ -2398,6 +2494,17 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
         if (params_.tilingData->transW) { GMM2GradPhase<true, false>(); }
         else { GMM2GradPhase<false, false>(); }
     }
+#if MEGAFLUX_SHARED_EXPERT_BACKWARD && MEGAFLUX_REDISPATCH_P1_RUNAHEAD
+    if constexpr (g_coreType == AscendC::AIC) {
+        if (redispatchP1Runahead_) {
+            // Restore the exact original all-reader lease before any dW2,
+            // dX or dW1. In particular Combine writes source ptrD, which is
+            // borrowed by XP pulls. This fence must never be elided merely
+            // because this rank's last X pull has completed.
+            MegaMoeSharedExpert::AcquireAll(sharedArgsV2_.base, 0, blockAivNum_);
+        }
+    }
+#endif
     if (!gmOutput) {
         const int32_t p1OutstandingMask = vecSetSyncCom_;
         if constexpr(g_coreType == AscendC::AIC) {
@@ -2436,6 +2543,7 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
     if constexpr(g_coreType==AscendC::AIV) {
         if(gmOutput && gradient_.ready && subBlockIdx_==1) {
             // P1 arrival counts are published. GM P2 needs only AIC/AIV0.
+#if !MEGAFLUX_OWNER_LATE_ONLY
             int32_t localRows[32];
             for(int e=0;e<replica_.home;++e) {
                 const auto end=groupList_.GetValue(e);
@@ -2449,6 +2557,9 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
             {
                 MegaFluxGradient::Reduce(gradient_,gradWeight1GmAddr_,gradWeight2GmAddr_,localRows);
             }
+#endif
+            // The late-only diagnostic retires this odd AIV's P2 role without
+            // reducing here. Its paired even AIV owns both static shares at P5.
             gradientReducedEarly_=true;
         }
     }
@@ -2556,6 +2667,16 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
 #if MEGAFLUX_WORKER_BACKWARD
             if(cooperativeBackward_)ownerService_.Drain();else
 #endif
+#if MEGAFLUX_OWNER_LATE_ONLY
+            {
+                if(gmOutput) {
+                    if(subBlockIdx_==0)
+                        MegaFluxGradient::Reduce<true>(gradient_,gradWeight1GmAddr_,gradWeight2GmAddr_,localRows);
+                } else {
+                    MegaFluxGradient::Reduce(gradient_,gradWeight1GmAddr_,gradWeight2GmAddr_,localRows);
+                }
+            }
+#else
 #if defined(DEEPEP_BF16_EARLY_REDUCE)
             if(!gradientReducedEarly_
 #if defined(MEGAFLUX_OWNER_AIV1_TAIL) && MEGAFLUX_OWNER_AIV1_TAIL
@@ -2564,6 +2685,7 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
             )
 #endif
             MegaFluxGradient::Reduce(gradient_,gradWeight1GmAddr_,gradWeight2GmAddr_,localRows);
+#endif
         }
 #endif
         // Every AIV0 may still be sending dX tiles into a peer's ptrD while

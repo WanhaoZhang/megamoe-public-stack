@@ -13,7 +13,7 @@ from ascend_deepep.fsdp2_bridge import NativeFSDP2Pool
 from run_audit import loaded_libraries
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--backend');p.add_argument('--out',type=Path,required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--backend');p.add_argument('--clock-only',action='store_true');p.add_argument('--out',type=Path,required=True);a=p.parse_args()
     rank=int(os.environ['RANK']);torch.npu.set_device(rank);dist.init_process_group('hccl')
     shmem=ShmemInstance(rank,8,f"tcp://127.0.0.1:{int(os.environ['MASTER_PORT'])+1}")
     shmem.set_data_op_engine_type(0x08);shmem.init(2*1024**3)
@@ -46,6 +46,17 @@ def main():
         a.out.mkdir(exist_ok=True,parents=True)
         (a.out/f'clock-invalid-rank{rank}.json').write_text(json.dumps(frequencies,indent=2))
         raise RuntimeError('invalid original Timer/Event clock ratio')
+    if a.clock_only:
+        import hashlib
+        a.out.mkdir(exist_ok=True,parents=True)
+        loaded_libraries(a.out,rank)
+        (a.out/f'clock-rank{rank}.json').write_text(json.dumps(dict(rank=rank,clock=frequencies,
+            ticks_per_ms=ticks_per_ms,diagnostic_only=True,clock_only=True,
+            library_sha256=hashlib.sha256(Path('/home/z00956592/megaflux/single-mb-fbw-planner-study/source/native-balanced/ascend_deepep/lib/libascend_deepep_link_calibration.so').read_bytes()).hexdigest(),
+            scope='Rank-local Event/GetSystemCycle conversion; no clock synchronization'),indent=2))
+        dist.barrier();pool.close();del pool;torch.npu.synchronize();shmem.destroy();dist.destroy_process_group()
+        print('CLOCK_ONLY_CALIBRATION_COMPLETE',rank,ticks_per_ms,flush=True)
+        return
     timing=torch.zeros((6,32,16),device=device,dtype=torch.int64);rows=[]
     for source in range(8):
         for dest in [d for d in range(8) if d!=source]+[-1]:

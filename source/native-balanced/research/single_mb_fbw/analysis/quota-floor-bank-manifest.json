@@ -1,0 +1,49 @@
+{
+  "records": [
+    {
+      "path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\quota-floor-vio20-original-native.npz",
+      "metadata": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\quota-floor-vio20-original-native.json",
+      "regime": "original",
+      "planner": "native",
+      "changed_calls": 50,
+      "source_destination_marginals_unchanged": true,
+      "grad_contributor_and_gemm_shapes_unchanged": true,
+      "online_score": false,
+      "device_qualified": false
+    },
+    {
+      "path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\quota-floor-vio20-original-ultra_ep.npz",
+      "metadata": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\quota-floor-vio20-original-ultra_ep.json",
+      "regime": "original",
+      "planner": "ultra_ep",
+      "changed_calls": 50,
+      "source_destination_marginals_unchanged": true,
+      "grad_contributor_and_gemm_shapes_unchanged": true,
+      "online_score": false,
+      "device_qualified": false
+    },
+    {
+      "path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\quota-floor-vio20-regrouped-native.npz",
+      "metadata": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\quota-floor-vio20-regrouped-native.json",
+      "regime": "regrouped",
+      "planner": "native",
+      "changed_calls": 50,
+      "source_destination_marginals_unchanged": true,
+      "grad_contributor_and_gemm_shapes_unchanged": true,
+      "online_score": false,
+      "device_qualified": false
+    },
+    {
+      "path": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\quota-floor-vio20-regrouped-ultra_ep.npz",
+      "metadata": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\quota-floor-vio20-regrouped-ultra_ep.json",
+      "regime": "regrouped",
+      "planner": "ultra_ep",
+      "changed_calls": 50,
+      "source_destination_marginals_unchanged": true,
+      "grad_contributor_and_gemm_shapes_unchanged": true,
+      "online_score": false,
+      "device_qualified": false
+    }
+  ],
+  "scope": "Native numerical/physical-plan gates required before any replay headroom scores"
+}

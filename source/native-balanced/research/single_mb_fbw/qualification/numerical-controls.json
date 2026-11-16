@@ -1,0 +1,45 @@
+{
+  "scope": "Same-weight diagnostic; original aggregate/critical gate is not an all-parameter or quality gate",
+  "policy_effect_isolated": false,
+  "records": [
+    {
+      "tag": "diagnostic-fixed-state-pair-vio5-restored-v2",
+      "rank_count": 8,
+      "steps_per_rank": 25,
+      "original_gate_passed": true,
+      "source_unchanged": true,
+      "strict_all_parameter_l2_002": false,
+      "complete_parameter_gradient_relative_l2": 0.004066751706397876,
+      "critical_max_gradient_relative_l2": 0.00150739274204988,
+      "all_parameter_max_gradient_relative_l2": 6.495786002198607,
+      "fixed_weight_global_norm_relative": 8.13327193061042e-06,
+      "loss_relative": 0.0
+    },
+    {
+      "tag": "diagnostic-native-native-pair-vio5-v1",
+      "rank_count": 8,
+      "steps_per_rank": 3,
+      "original_gate_passed": true,
+      "source_unchanged": true,
+      "strict_all_parameter_l2_002": false,
+      "complete_parameter_gradient_relative_l2": 0.004016886692260667,
+      "critical_max_gradient_relative_l2": 0.001385646347248825,
+      "all_parameter_max_gradient_relative_l2": 0.08434042179448158,
+      "fixed_weight_global_norm_relative": 7.3365269817049494e-06,
+      "loss_relative": 0.0
+    },
+    {
+      "tag": "diagnostic-moonep-native-pair-vio5-v1",
+      "rank_count": 8,
+      "steps_per_rank": 3,
+      "original_gate_passed": true,
+      "source_unchanged": true,
+      "strict_all_parameter_l2_002": false,
+      "complete_parameter_gradient_relative_l2": 0.003979325007688736,
+      "critical_max_gradient_relative_l2": 0.002038975516044967,
+      "all_parameter_max_gradient_relative_l2": 0.5933109906153256,
+      "fixed_weight_global_norm_relative": 4.821610542382615e-06,
+      "loss_relative": 0.0
+    }
+  ]
+}

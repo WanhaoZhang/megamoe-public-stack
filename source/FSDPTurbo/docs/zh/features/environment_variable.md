@@ -68,30 +68,3 @@ export ASCEND_LAUNCH_BLOCKING=1
 ## MoonEP调试
 
 `trace_enabled`、`trace_sync_enabled`、`vmm_probe_enabled`、`npu_async_comm` 已迁到 `ep_plan.moonep_config`，默认全部关闭。见[专家并行](./expert_parallel.md)。
-
-## Native 兼容接入
-
-以下保留的环境设置集中由 `utils.env` 读取。正式三路实验关闭诊断和额外同步；配置文件中的参数优先确定模型及路由。设置在对应运行时第一次构建时生效，调试开关只用于诊断运行。
-
-| 名称 | 默认值 | 影响 |
-|---|---|---|
-| `MEGAMOE_SAVE_GMM1_OUTPUT` | `bf16` | Native 兼容路径；正式实验保留默认值 |
-| `V4LAB_MEGAMOE_PEERMEM_LEGACY` | `0` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_SHMEM_WINDOW_POOL` | `未设置` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_SHMEM_IP_PORT` | `tcp://127.0.0.1:8899` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_SHMEM_TOTAL_BYTES` | `未设置` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_MAX_RECV_TOKENS` | `未设置` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_ROUTER_IMBALANCE` | `0` | Native 兼容路径；正式实验保留默认值 |
-| `V4LAB_MEGAMOE_DTYPE_DEBUG` | `0` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_TOKEN_CHUNK_M` | `1024` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_FWD_SYNC` | `0` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_FWD_PRE_STREAM_SYNC` | `0` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_FIXED_ROUTER_SPLIT_CACHE` | `0` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_MEGAMOE_REDISPATCH` | `0` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_MEGAMOE_REDISPATCH_VERIFY` | `0` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_MEGAMOE_REDISPATCH_OVERLAP` | `0` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_BWD_STREAM_SYNC` | `1` | Native 兼容路径；正式实验保留默认值 |
-| `ASCEND_DEEPEP_MEGAMOE_BALANCED_DIAG` | `0` | Native 兼容路径；正式实验保留默认值 |
-| `SHMEM_UID_SESSION_ID` | 从 Native bootstrap endpoint 派生 | 仅在未显式指定时填充，隔离 SHMEM 会话 |
-
-MoonEP 的 trace、VMM 探测、异步通信及额外设备同步使用 `moonep_config`，不依赖隐式 sitecustomize 或诊断环境变量。

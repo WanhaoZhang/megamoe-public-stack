@@ -1,0 +1,1141 @@
+{
+  "scope": "Structural feasibility of actual per-step permutations, not performance",
+  "receive_capacity": 163840,
+  "steps": 25,
+  "layers": 2,
+  "records": [
+    {
+      "maxvio": 0.2,
+      "budget": 0,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 0.0,
+      "rank_maxvio_mean": 0.012374114990234376
+    },
+    {
+      "maxvio": 0.2,
+      "budget": 8,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 6.56,
+      "rank_maxvio_mean": 0.007993927001953125
+    },
+    {
+      "maxvio": 0.2,
+      "budget": 16,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 13.44,
+      "rank_maxvio_mean": 0.007608642578125
+    },
+    {
+      "maxvio": 0.2,
+      "budget": 32,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 27.48,
+      "rank_maxvio_mean": 0.00730133056640625
+    },
+    {
+      "maxvio": 0.2,
+      "budget": 64,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 55.08,
+      "rank_maxvio_mean": 0.00723419189453125
+    },
+    {
+      "maxvio": 0.2,
+      "budget": 128,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 112.08,
+      "rank_maxvio_mean": 0.006803131103515625
+    },
+    {
+      "maxvio": 0.2,
+      "budget": 256,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 224.54,
+      "rank_maxvio_mean": 0.004205322265625
+    },
+    {
+      "maxvio": 1,
+      "budget": 0,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 0.0,
+      "rank_maxvio_mean": 0.054645843505859375
+    },
+    {
+      "maxvio": 1,
+      "budget": 8,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 7.22,
+      "rank_maxvio_mean": 0.0239984130859375
+    },
+    {
+      "maxvio": 1,
+      "budget": 16,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 14.04,
+      "rank_maxvio_mean": 0.01094818115234375
+    },
+    {
+      "maxvio": 1,
+      "budget": 32,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 28.04,
+      "rank_maxvio_mean": 0.00830474853515625
+    },
+    {
+      "maxvio": 1,
+      "budget": 64,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 56.1,
+      "rank_maxvio_mean": 0.007694244384765625
+    },
+    {
+      "maxvio": 1,
+      "budget": 128,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 112.66,
+      "rank_maxvio_mean": 0.006294403076171875
+    },
+    {
+      "maxvio": 1,
+      "budget": 256,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 223.74,
+      "rank_maxvio_mean": 0.0108905029296875
+    },
+    {
+      "maxvio": 5,
+      "budget": 0,
+      "fixtures": 50,
+      "all_capacity_legal": false,
+      "illegal": [
+        {
+          "step": 0,
+          "layer": 0,
+          "required": 168064
+        },
+        {
+          "step": 7,
+          "layer": 0,
+          "required": 173824
+        },
+        {
+          "step": 11,
+          "layer": 1,
+          "required": 168576
+        },
+        {
+          "step": 16,
+          "layer": 0,
+          "required": 183296
+        },
+        {
+          "step": 16,
+          "layer": 1,
+          "required": 179200
+        },
+        {
+          "step": 19,
+          "layer": 0,
+          "required": 168320
+        },
+        {
+          "step": 21,
+          "layer": 0,
+          "required": 171904
+        },
+        {
+          "step": 23,
+          "layer": 1,
+          "required": 176896
+        }
+      ],
+      "active_remote_mean": 0.0,
+      "rank_maxvio_mean": 0.18651260375976564
+    },
+    {
+      "maxvio": 5,
+      "budget": 8,
+      "fixtures": 50,
+      "all_capacity_legal": false,
+      "illegal": [
+        {
+          "step": 16,
+          "layer": 1,
+          "required": 169472
+        }
+      ],
+      "active_remote_mean": 7.06,
+      "rank_maxvio_mean": 0.0851373291015625
+    },
+    {
+      "maxvio": 5,
+      "budget": 16,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 14.32,
+      "rank_maxvio_mean": 0.03632049560546875
+    },
+    {
+      "maxvio": 5,
+      "budget": 32,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 27.92,
+      "rank_maxvio_mean": 0.011620635986328126
+    },
+    {
+      "maxvio": 5,
+      "budget": 64,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 56.52,
+      "rank_maxvio_mean": 0.009073333740234375
+    },
+    {
+      "maxvio": 5,
+      "budget": 128,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 111.64,
+      "rank_maxvio_mean": 0.0067633056640625
+    },
+    {
+      "maxvio": 5,
+      "budget": 256,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 222.68,
+      "rank_maxvio_mean": 0.0140106201171875
+    },
+    {
+      "maxvio": 10,
+      "budget": 0,
+      "fixtures": 50,
+      "all_capacity_legal": false,
+      "illegal": [
+        {
+          "step": 0,
+          "layer": 0,
+          "required": 195584
+        },
+        {
+          "step": 0,
+          "layer": 1,
+          "required": 173568
+        },
+        {
+          "step": 1,
+          "layer": 1,
+          "required": 164608
+        },
+        {
+          "step": 2,
+          "layer": 1,
+          "required": 168320
+        },
+        {
+          "step": 3,
+          "layer": 1,
+          "required": 170752
+        },
+        {
+          "step": 5,
+          "layer": 0,
+          "required": 170752
+        },
+        {
+          "step": 6,
+          "layer": 0,
+          "required": 177024
+        },
+        {
+          "step": 6,
+          "layer": 1,
+          "required": 168448
+        },
+        {
+          "step": 7,
+          "layer": 0,
+          "required": 195200
+        },
+        {
+          "step": 7,
+          "layer": 1,
+          "required": 175872
+        },
+        {
+          "step": 8,
+          "layer": 1,
+          "required": 170496
+        },
+        {
+          "step": 9,
+          "layer": 0,
+          "required": 192384
+        },
+        {
+          "step": 9,
+          "layer": 1,
+          "required": 173184
+        },
+        {
+          "step": 11,
+          "layer": 0,
+          "required": 177280
+        },
+        {
+          "step": 11,
+          "layer": 1,
+          "required": 187392
+        },
+        {
+          "step": 12,
+          "layer": 1,
+          "required": 168448
+        },
+        {
+          "step": 13,
+          "layer": 0,
+          "required": 168320
+        },
+        {
+          "step": 13,
+          "layer": 1,
+          "required": 169856
+        },
+        {
+          "step": 14,
+          "layer": 1,
+          "required": 176640
+        },
+        {
+          "step": 15,
+          "layer": 1,
+          "required": 176256
+        },
+        {
+          "step": 16,
+          "layer": 0,
+          "required": 218496
+        },
+        {
+          "step": 16,
+          "layer": 1,
+          "required": 201344
+        },
+        {
+          "step": 18,
+          "layer": 0,
+          "required": 174208
+        },
+        {
+          "step": 19,
+          "layer": 0,
+          "required": 193664
+        },
+        {
+          "step": 19,
+          "layer": 1,
+          "required": 175232
+        },
+        {
+          "step": 20,
+          "layer": 0,
+          "required": 172800
+        },
+        {
+          "step": 20,
+          "layer": 1,
+          "required": 174336
+        },
+        {
+          "step": 21,
+          "layer": 0,
+          "required": 205312
+        },
+        {
+          "step": 21,
+          "layer": 1,
+          "required": 172160
+        },
+        {
+          "step": 23,
+          "layer": 0,
+          "required": 165888
+        },
+        {
+          "step": 23,
+          "layer": 1,
+          "required": 213888
+        },
+        {
+          "step": 24,
+          "layer": 0,
+          "required": 191744
+        },
+        {
+          "step": 24,
+          "layer": 1,
+          "required": 171392
+        }
+      ],
+      "active_remote_mean": 0.0,
+      "rank_maxvio_mean": 0.3137469482421875
+    },
+    {
+      "maxvio": 10,
+      "budget": 8,
+      "fixtures": 50,
+      "all_capacity_legal": false,
+      "illegal": [
+        {
+          "step": 7,
+          "layer": 0,
+          "required": 174336
+        },
+        {
+          "step": 16,
+          "layer": 0,
+          "required": 173184
+        },
+        {
+          "step": 16,
+          "layer": 1,
+          "required": 179200
+        }
+      ],
+      "active_remote_mean": 7.28,
+      "rank_maxvio_mean": 0.11206802368164062
+    },
+    {
+      "maxvio": 10,
+      "budget": 16,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 13.82,
+      "rank_maxvio_mean": 0.048671722412109375
+    },
+    {
+      "maxvio": 10,
+      "budget": 32,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 27.76,
+      "rank_maxvio_mean": 0.01580902099609375
+    },
+    {
+      "maxvio": 10,
+      "budget": 64,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 54.7,
+      "rank_maxvio_mean": 0.01150177001953125
+    },
+    {
+      "maxvio": 10,
+      "budget": 128,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 109.56,
+      "rank_maxvio_mean": 0.00812591552734375
+    },
+    {
+      "maxvio": 10,
+      "budget": 256,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 211.14,
+      "rank_maxvio_mean": 0.02053802490234375
+    },
+    {
+      "maxvio": 15,
+      "budget": 0,
+      "fixtures": 50,
+      "all_capacity_legal": false,
+      "illegal": [
+        {
+          "step": 0,
+          "layer": 0,
+          "required": 224000
+        },
+        {
+          "step": 0,
+          "layer": 1,
+          "required": 194688
+        },
+        {
+          "step": 1,
+          "layer": 0,
+          "required": 180224
+        },
+        {
+          "step": 1,
+          "layer": 1,
+          "required": 194688
+        },
+        {
+          "step": 2,
+          "layer": 1,
+          "required": 186368
+        },
+        {
+          "step": 3,
+          "layer": 0,
+          "required": 180096
+        },
+        {
+          "step": 3,
+          "layer": 1,
+          "required": 187648
+        },
+        {
+          "step": 4,
+          "layer": 0,
+          "required": 179200
+        },
+        {
+          "step": 4,
+          "layer": 1,
+          "required": 171776
+        },
+        {
+          "step": 5,
+          "layer": 0,
+          "required": 187648
+        },
+        {
+          "step": 5,
+          "layer": 1,
+          "required": 180352
+        },
+        {
+          "step": 6,
+          "layer": 0,
+          "required": 199424
+        },
+        {
+          "step": 6,
+          "layer": 1,
+          "required": 185216
+        },
+        {
+          "step": 7,
+          "layer": 0,
+          "required": 211840
+        },
+        {
+          "step": 7,
+          "layer": 1,
+          "required": 194688
+        },
+        {
+          "step": 8,
+          "layer": 1,
+          "required": 187904
+        },
+        {
+          "step": 9,
+          "layer": 0,
+          "required": 228608
+        },
+        {
+          "step": 9,
+          "layer": 1,
+          "required": 192384
+        },
+        {
+          "step": 11,
+          "layer": 0,
+          "required": 192640
+        },
+        {
+          "step": 11,
+          "layer": 1,
+          "required": 203520
+        },
+        {
+          "step": 12,
+          "layer": 0,
+          "required": 183552
+        },
+        {
+          "step": 12,
+          "layer": 1,
+          "required": 186240
+        },
+        {
+          "step": 13,
+          "layer": 0,
+          "required": 187008
+        },
+        {
+          "step": 13,
+          "layer": 1,
+          "required": 185728
+        },
+        {
+          "step": 14,
+          "layer": 0,
+          "required": 175488
+        },
+        {
+          "step": 14,
+          "layer": 1,
+          "required": 189696
+        },
+        {
+          "step": 15,
+          "layer": 1,
+          "required": 188544
+        },
+        {
+          "step": 16,
+          "layer": 0,
+          "required": 251904
+        },
+        {
+          "step": 16,
+          "layer": 1,
+          "required": 218752
+        },
+        {
+          "step": 17,
+          "layer": 0,
+          "required": 175488
+        },
+        {
+          "step": 17,
+          "layer": 1,
+          "required": 172032
+        },
+        {
+          "step": 18,
+          "layer": 0,
+          "required": 190976
+        },
+        {
+          "step": 18,
+          "layer": 1,
+          "required": 166656
+        },
+        {
+          "step": 19,
+          "layer": 0,
+          "required": 217472
+        },
+        {
+          "step": 19,
+          "layer": 1,
+          "required": 194688
+        },
+        {
+          "step": 20,
+          "layer": 0,
+          "required": 194688
+        },
+        {
+          "step": 20,
+          "layer": 1,
+          "required": 188416
+        },
+        {
+          "step": 21,
+          "layer": 0,
+          "required": 240128
+        },
+        {
+          "step": 21,
+          "layer": 1,
+          "required": 195968
+        },
+        {
+          "step": 22,
+          "layer": 0,
+          "required": 168960
+        },
+        {
+          "step": 23,
+          "layer": 0,
+          "required": 178176
+        },
+        {
+          "step": 23,
+          "layer": 1,
+          "required": 251392
+        },
+        {
+          "step": 24,
+          "layer": 0,
+          "required": 226176
+        },
+        {
+          "step": 24,
+          "layer": 1,
+          "required": 190592
+        }
+      ],
+      "active_remote_mean": 0.0,
+      "rank_maxvio_mean": 0.45347869873046875
+    },
+    {
+      "maxvio": 15,
+      "budget": 8,
+      "fixtures": 50,
+      "all_capacity_legal": false,
+      "illegal": [
+        {
+          "step": 7,
+          "layer": 0,
+          "required": 184448
+        },
+        {
+          "step": 16,
+          "layer": 0,
+          "required": 180224
+        },
+        {
+          "step": 16,
+          "layer": 1,
+          "required": 186880
+        },
+        {
+          "step": 21,
+          "layer": 0,
+          "required": 165120
+        }
+      ],
+      "active_remote_mean": 7.18,
+      "rank_maxvio_mean": 0.12611419677734376
+    },
+    {
+      "maxvio": 15,
+      "budget": 16,
+      "fixtures": 50,
+      "all_capacity_legal": false,
+      "illegal": [
+        {
+          "step": 7,
+          "layer": 0,
+          "required": 168448
+        }
+      ],
+      "active_remote_mean": 14.22,
+      "rank_maxvio_mean": 0.058359375
+    },
+    {
+      "maxvio": 15,
+      "budget": 32,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 28.04,
+      "rank_maxvio_mean": 0.018836822509765625
+    },
+    {
+      "maxvio": 15,
+      "budget": 64,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 52.32,
+      "rank_maxvio_mean": 0.01229248046875
+    },
+    {
+      "maxvio": 15,
+      "budget": 128,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 103.98,
+      "rank_maxvio_mean": 0.0069061279296875
+    },
+    {
+      "maxvio": 15,
+      "budget": 256,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 194.74,
+      "rank_maxvio_mean": 0.02535491943359375
+    },
+    {
+      "maxvio": 20,
+      "budget": 0,
+      "fixtures": 50,
+      "all_capacity_legal": false,
+      "illegal": [
+        {
+          "step": 0,
+          "layer": 0,
+          "required": 249728
+        },
+        {
+          "step": 0,
+          "layer": 1,
+          "required": 213376
+        },
+        {
+          "step": 1,
+          "layer": 0,
+          "required": 201600
+        },
+        {
+          "step": 1,
+          "layer": 1,
+          "required": 224128
+        },
+        {
+          "step": 2,
+          "layer": 0,
+          "required": 165248
+        },
+        {
+          "step": 2,
+          "layer": 1,
+          "required": 202752
+        },
+        {
+          "step": 3,
+          "layer": 0,
+          "required": 197248
+        },
+        {
+          "step": 3,
+          "layer": 1,
+          "required": 201984
+        },
+        {
+          "step": 4,
+          "layer": 0,
+          "required": 192768
+        },
+        {
+          "step": 4,
+          "layer": 1,
+          "required": 184704
+        },
+        {
+          "step": 5,
+          "layer": 0,
+          "required": 202880
+        },
+        {
+          "step": 5,
+          "layer": 1,
+          "required": 194560
+        },
+        {
+          "step": 6,
+          "layer": 0,
+          "required": 218880
+        },
+        {
+          "step": 6,
+          "layer": 1,
+          "required": 199808
+        },
+        {
+          "step": 7,
+          "layer": 0,
+          "required": 224768
+        },
+        {
+          "step": 7,
+          "layer": 1,
+          "required": 210816
+        },
+        {
+          "step": 8,
+          "layer": 0,
+          "required": 168320
+        },
+        {
+          "step": 8,
+          "layer": 1,
+          "required": 202368
+        },
+        {
+          "step": 9,
+          "layer": 0,
+          "required": 263552
+        },
+        {
+          "step": 9,
+          "layer": 1,
+          "required": 212352
+        },
+        {
+          "step": 10,
+          "layer": 1,
+          "required": 167040
+        },
+        {
+          "step": 11,
+          "layer": 0,
+          "required": 204800
+        },
+        {
+          "step": 11,
+          "layer": 1,
+          "required": 215936
+        },
+        {
+          "step": 12,
+          "layer": 0,
+          "required": 207616
+        },
+        {
+          "step": 12,
+          "layer": 1,
+          "required": 201216
+        },
+        {
+          "step": 13,
+          "layer": 0,
+          "required": 204032
+        },
+        {
+          "step": 13,
+          "layer": 1,
+          "required": 199168
+        },
+        {
+          "step": 14,
+          "layer": 0,
+          "required": 192128
+        },
+        {
+          "step": 14,
+          "layer": 1,
+          "required": 200960
+        },
+        {
+          "step": 15,
+          "layer": 0,
+          "required": 171904
+        },
+        {
+          "step": 15,
+          "layer": 1,
+          "required": 198400
+        },
+        {
+          "step": 16,
+          "layer": 0,
+          "required": 280704
+        },
+        {
+          "step": 16,
+          "layer": 1,
+          "required": 232448
+        },
+        {
+          "step": 17,
+          "layer": 0,
+          "required": 186624
+        },
+        {
+          "step": 17,
+          "layer": 1,
+          "required": 179968
+        },
+        {
+          "step": 18,
+          "layer": 0,
+          "required": 205824
+        },
+        {
+          "step": 18,
+          "layer": 1,
+          "required": 178560
+        },
+        {
+          "step": 19,
+          "layer": 0,
+          "required": 237568
+        },
+        {
+          "step": 19,
+          "layer": 1,
+          "required": 213248
+        },
+        {
+          "step": 20,
+          "layer": 0,
+          "required": 216064
+        },
+        {
+          "step": 20,
+          "layer": 1,
+          "required": 199680
+        },
+        {
+          "step": 21,
+          "layer": 0,
+          "required": 271872
+        },
+        {
+          "step": 21,
+          "layer": 1,
+          "required": 218624
+        },
+        {
+          "step": 22,
+          "layer": 0,
+          "required": 183296
+        },
+        {
+          "step": 22,
+          "layer": 1,
+          "required": 174080
+        },
+        {
+          "step": 23,
+          "layer": 0,
+          "required": 189440
+        },
+        {
+          "step": 23,
+          "layer": 1,
+          "required": 284672
+        },
+        {
+          "step": 24,
+          "layer": 0,
+          "required": 258048
+        },
+        {
+          "step": 24,
+          "layer": 1,
+          "required": 207232
+        }
+      ],
+      "active_remote_mean": 0.0,
+      "rank_maxvio_mean": 0.5820034790039063
+    },
+    {
+      "maxvio": 20,
+      "budget": 8,
+      "fixtures": 50,
+      "all_capacity_legal": false,
+      "illegal": [
+        {
+          "step": 7,
+          "layer": 0,
+          "required": 191232
+        },
+        {
+          "step": 16,
+          "layer": 0,
+          "required": 188160
+        },
+        {
+          "step": 16,
+          "layer": 1,
+          "required": 191232
+        },
+        {
+          "step": 21,
+          "layer": 0,
+          "required": 171008
+        }
+      ],
+      "active_remote_mean": 7.28,
+      "rank_maxvio_mean": 0.1325189208984375
+    },
+    {
+      "maxvio": 20,
+      "budget": 16,
+      "fixtures": 50,
+      "all_capacity_legal": false,
+      "illegal": [
+        {
+          "step": 7,
+          "layer": 0,
+          "required": 173312
+        },
+        {
+          "step": 16,
+          "layer": 1,
+          "required": 168320
+        }
+      ],
+      "active_remote_mean": 13.34,
+      "rank_maxvio_mean": 0.060511932373046876
+    },
+    {
+      "maxvio": 20,
+      "budget": 32,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 28.0,
+      "rank_maxvio_mean": 0.019313201904296876
+    },
+    {
+      "maxvio": 20,
+      "budget": 64,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 50.98,
+      "rank_maxvio_mean": 0.01321441650390625
+    },
+    {
+      "maxvio": 20,
+      "budget": 128,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 96.18,
+      "rank_maxvio_mean": 0.00894744873046875
+    },
+    {
+      "maxvio": 20,
+      "budget": 256,
+      "fixtures": 50,
+      "all_capacity_legal": true,
+      "illegal": [],
+      "active_remote_mean": 179.08,
+      "rank_maxvio_mean": 0.028833770751953126
+    }
+  ]
+}

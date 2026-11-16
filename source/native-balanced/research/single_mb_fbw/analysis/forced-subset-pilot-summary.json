@@ -1,0 +1,331 @@
+{
+  "passed": true,
+  "cells": 24,
+  "records": [
+    {
+      "tag": "forced-subset-pilot-vio1-native-cache0-v1",
+      "maxvio": 1,
+      "planner": "native",
+      "mode": 0,
+      "mean_ms": 1106.2722545,
+      "peak_driver_MiB": 90406
+    },
+    {
+      "tag": "forced-subset-pilot-vio1-sparse_best-cache0-v1",
+      "maxvio": 1,
+      "planner": "sparse_best",
+      "mode": 0,
+      "mean_ms": 1082.47952,
+      "peak_driver_MiB": 90401
+    },
+    {
+      "tag": "forced-subset-pilot-vio1-ultra_ep-cache0-v1",
+      "maxvio": 1,
+      "planner": "ultra_ep",
+      "mode": 0,
+      "mean_ms": 1117.7015955,
+      "peak_driver_MiB": 90406
+    },
+    {
+      "tag": "forced-subset-pilot-vio1-proxy_best-cache0-v1",
+      "maxvio": 1,
+      "planner": "proxy_best",
+      "mode": 0,
+      "mean_ms": 1105.323012,
+      "peak_driver_MiB": 90401
+    },
+    {
+      "tag": "forced-subset-pilot-vio1-proxy_best-cache1-v1",
+      "maxvio": 1,
+      "planner": "proxy_best",
+      "mode": 1,
+      "mean_ms": 1088.165049,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio1-ultra_ep-cache1-v1",
+      "maxvio": 1,
+      "planner": "ultra_ep",
+      "mode": 1,
+      "mean_ms": 1091.859326,
+      "peak_driver_MiB": 90407
+    },
+    {
+      "tag": "forced-subset-pilot-vio1-sparse_best-cache1-v1",
+      "maxvio": 1,
+      "planner": "sparse_best",
+      "mode": 1,
+      "mean_ms": 1082.983252,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio1-native-cache1-v1",
+      "maxvio": 1,
+      "planner": "native",
+      "mode": 1,
+      "mean_ms": 1089.3799635,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio5-native-cache0-v1",
+      "maxvio": 5,
+      "planner": "native",
+      "mode": 0,
+      "mean_ms": 1143.908451,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio5-sparse_best-cache0-v1",
+      "maxvio": 5,
+      "planner": "sparse_best",
+      "mode": 0,
+      "mean_ms": 1118.6756565,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio5-ultra_ep-cache0-v1",
+      "maxvio": 5,
+      "planner": "ultra_ep",
+      "mode": 0,
+      "mean_ms": 1140.9712285,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio5-proxy_best-cache0-v1",
+      "maxvio": 5,
+      "planner": "proxy_best",
+      "mode": 0,
+      "mean_ms": 1138.08656,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio5-proxy_best-cache1-v1",
+      "maxvio": 5,
+      "planner": "proxy_best",
+      "mode": 1,
+      "mean_ms": 1110.762056,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio5-ultra_ep-cache1-v1",
+      "maxvio": 5,
+      "planner": "ultra_ep",
+      "mode": 1,
+      "mean_ms": 1110.8460595,
+      "peak_driver_MiB": 90406
+    },
+    {
+      "tag": "forced-subset-pilot-vio5-sparse_best-cache1-v1",
+      "maxvio": 5,
+      "planner": "sparse_best",
+      "mode": 1,
+      "mean_ms": 1115.7931235,
+      "peak_driver_MiB": 90404
+    },
+    {
+      "tag": "forced-subset-pilot-vio5-native-cache1-v1",
+      "maxvio": 5,
+      "planner": "native",
+      "mode": 1,
+      "mean_ms": 1112.634803,
+      "peak_driver_MiB": 90406
+    },
+    {
+      "tag": "forced-subset-pilot-vio20-native-cache0-v1",
+      "maxvio": 20,
+      "planner": "native",
+      "mode": 0,
+      "mean_ms": 1193.7330005,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio20-sparse_best-cache0-v1",
+      "maxvio": 20,
+      "planner": "sparse_best",
+      "mode": 0,
+      "mean_ms": 1184.5512575,
+      "peak_driver_MiB": 90406
+    },
+    {
+      "tag": "forced-subset-pilot-vio20-ultra_ep-cache0-v1",
+      "maxvio": 20,
+      "planner": "ultra_ep",
+      "mode": 0,
+      "mean_ms": 1178.0183735,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio20-proxy_best-cache0-v1",
+      "maxvio": 20,
+      "planner": "proxy_best",
+      "mode": 0,
+      "mean_ms": 1186.2922895,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio20-proxy_best-cache1-v1",
+      "maxvio": 20,
+      "planner": "proxy_best",
+      "mode": 1,
+      "mean_ms": 1161.6491125,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio20-ultra_ep-cache1-v1",
+      "maxvio": 20,
+      "planner": "ultra_ep",
+      "mode": 1,
+      "mean_ms": 1148.718172,
+      "peak_driver_MiB": 90404
+    },
+    {
+      "tag": "forced-subset-pilot-vio20-sparse_best-cache1-v1",
+      "maxvio": 20,
+      "planner": "sparse_best",
+      "mode": 1,
+      "mean_ms": 1169.9644819999999,
+      "peak_driver_MiB": 90405
+    },
+    {
+      "tag": "forced-subset-pilot-vio20-native-cache1-v1",
+      "maxvio": 20,
+      "planner": "native",
+      "mode": 1,
+      "mean_ms": 1163.4737835,
+      "peak_driver_MiB": 90404
+    }
+  ],
+  "comparisons": [
+    {
+      "maxvio": 1,
+      "mode": 0,
+      "candidate": "proxy_best",
+      "mean_ms": 1105.323012,
+      "gain_over_native": 0.000858055054837159,
+      "gain_over_ultra": 0.011075034293444252,
+      "gain_over_best_existing_in_cell": 0.000858055054837159,
+      "engineering_2_percent_gate": false
+    },
+    {
+      "maxvio": 1,
+      "mode": 0,
+      "candidate": "sparse_best",
+      "mean_ms": 1082.47952,
+      "gain_over_native": 0.02150712395002019,
+      "gain_over_ultra": 0.03151295090014017,
+      "gain_over_best_existing_in_cell": 0.02150712395002019,
+      "engineering_2_percent_gate": true
+    },
+    {
+      "maxvio": 1,
+      "mode": 1,
+      "candidate": "proxy_best",
+      "mean_ms": 1088.165049,
+      "gain_over_native": 0.0011152348498284503,
+      "gain_over_ultra": 0.0033834734127645705,
+      "gain_over_best_existing_in_cell": 0.0011152348498284503,
+      "engineering_2_percent_gate": false
+    },
+    {
+      "maxvio": 1,
+      "mode": 1,
+      "candidate": "sparse_best",
+      "mean_ms": 1082.983252,
+      "gain_over_native": 0.005871882827226282,
+      "gain_over_ultra": 0.008129320131850082,
+      "gain_over_best_existing_in_cell": 0.005871882827226282,
+      "engineering_2_percent_gate": false
+    },
+    {
+      "maxvio": 5,
+      "mode": 0,
+      "candidate": "proxy_best",
+      "mean_ms": 1138.08656,
+      "gain_over_native": 0.005089472846284693,
+      "gain_over_ultra": 0.0025282570041599284,
+      "gain_over_best_existing_in_cell": 0.0025282570041599284,
+      "engineering_2_percent_gate": false
+    },
+    {
+      "maxvio": 5,
+      "mode": 0,
+      "candidate": "sparse_best",
+      "mean_ms": 1118.6756565,
+      "gain_over_native": 0.022058403780426228,
+      "gain_over_ultra": 0.019540871358615486,
+      "gain_over_best_existing_in_cell": 0.019540871358615486,
+      "engineering_2_percent_gate": false
+    },
+    {
+      "maxvio": 5,
+      "mode": 1,
+      "candidate": "proxy_best",
+      "mean_ms": 1110.762056,
+      "gain_over_native": 0.001683164138808535,
+      "gain_over_ultra": 7.56211891661529e-05,
+      "gain_over_best_existing_in_cell": 7.56211891661529e-05,
+      "engineering_2_percent_gate": false
+    },
+    {
+      "maxvio": 5,
+      "mode": 1,
+      "candidate": "sparse_best",
+      "mean_ms": 1115.7931235,
+      "gain_over_native": -0.0028385958191172733,
+      "gain_over_ultra": -0.004453419947519022,
+      "gain_over_best_existing_in_cell": -0.004453419947519022,
+      "engineering_2_percent_gate": false
+    },
+    {
+      "maxvio": 20,
+      "mode": 0,
+      "candidate": "proxy_best",
+      "mean_ms": 1186.2922895,
+      "gain_over_native": 0.006233145097675474,
+      "gain_over_ultra": -0.0070235882445681685,
+      "gain_over_best_existing_in_cell": -0.0070235882445681685,
+      "engineering_2_percent_gate": false
+    },
+    {
+      "maxvio": 20,
+      "mode": 0,
+      "candidate": "sparse_best",
+      "mean_ms": 1184.5512575,
+      "gain_over_native": 0.00769162199265172,
+      "gain_over_ultra": -0.005545655438794261,
+      "gain_over_best_existing_in_cell": -0.005545655438794261,
+      "engineering_2_percent_gate": false
+    },
+    {
+      "maxvio": 20,
+      "mode": 1,
+      "candidate": "proxy_best",
+      "mean_ms": 1161.6491125,
+      "gain_over_native": 0.0015682957586814483,
+      "gain_over_ultra": -0.011256843336504563,
+      "gain_over_best_existing_in_cell": -0.011256843336504563,
+      "engineering_2_percent_gate": false
+    },
+    {
+      "maxvio": 20,
+      "mode": 1,
+      "candidate": "sparse_best",
+      "mean_ms": 1169.9644819999999,
+      "gain_over_native": -0.005578723467643876,
+      "gain_over_ultra": -0.018495668056690118,
+      "gain_over_best_existing_in_cell": -0.018495668056690118,
+      "engineering_2_percent_gate": false
+    }
+  ],
+  "scope": "Identical prepared-body full-update replay diagnostic; not online planner performance",
+  "independent_processes_per_cell": 1,
+  "model": "Inherited unqualified proxy; forced proposals, no model-guard fallback",
+  "candidate_domain": "Delete Native copies and return their complete source quotas to fixed owner",
+  "numerical_and_physical_gate": "6 original plus2 cache1 composition gates; captured physical hashes independently audited",
+  "caveats": [
+    "Not exhaustive placement, quota or pipeline optimization",
+    "Sparse-best at MaxVio1 equals the known no-replication baseline",
+    "No repeat uncertainty from this single-process screen",
+    "Prepared guard/storage overhead paid by all arms"
+  ]
+}

@@ -8,7 +8,6 @@
     - [全分片数据并行](./features/fully_shard_parallel.md)
     - [张量并行](./features/tensor_parallel.md)
     - [专家并行](./features/expert_parallel.md)
-    - [EP8负载不均比较接入](./features/ep8_imbalance_benchmark.md)
     - [上下文并行](./features/context_parallel.md)
     - [词表并行](./features/vocab_parallel.md)
   - [内存优化特性]()
@@ -27,3 +26,6 @@
 - [性能调优](./training/tuning/performance_tuning.md)
 - [特性开发](./develop/feature_development.md)
 - [FAQ](FAQ.md)
+# 研究分支补充
+
+- [MegaMoE单microbatch规划实验](features/megamoe_planner_study.md)

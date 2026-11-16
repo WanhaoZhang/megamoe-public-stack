@@ -1,0 +1,26 @@
+{
+  "repository": "NVIDIA/Megatron-LM",
+  "commit": "0be53c791ffb70fe746bc0cdeaedb1409b1e23d9",
+  "files": [
+    {
+      "path": "megatron/core/transformer/moe/README.md",
+      "url": "https://raw.githubusercontent.com/NVIDIA/Megatron-LM/0be53c791ffb70fe746bc0cdeaedb1409b1e23d9/megatron/core/transformer/moe/README.md",
+      "sha256": "18c620439ddb0c7ceb8fdf26b26176776d8c13615882c5f0eae27e1faa4792fa",
+      "local": "artifacts\\related-work-20261116\\README.md"
+    },
+    {
+      "path": "megatron/core/transformer/moe/virtual_expert_load_balancer.py",
+      "url": "https://raw.githubusercontent.com/NVIDIA/Megatron-LM/0be53c791ffb70fe746bc0cdeaedb1409b1e23d9/megatron/core/transformer/moe/virtual_expert_load_balancer.py",
+      "sha256": "d4ea965c28c26e37386a76a1c1453386abef2e1dab8bbb4947594fc7be67dd91",
+      "local": "artifacts\\related-work-20261116\\virtual_expert_load_balancer.py"
+    },
+    {
+      "path": "megatron/core/transformer/moe/ops/virtual_expert_triton.py",
+      "url": "https://raw.githubusercontent.com/NVIDIA/Megatron-LM/0be53c791ffb70fe746bc0cdeaedb1409b1e23d9/megatron/core/transformer/moe/ops/virtual_expert_triton.py",
+      "sha256": "5dbbe83ddc4445f182aa5c2eb9ea04f5cd26c893f8175bb5f4929e2d656eb9fd",
+      "local": "artifacts\\related-work-20261116\\virtual_expert_triton.py"
+    }
+  ],
+  "executed": false,
+  "scope": "Primary-source inspection only; MoonEP-derived VE implementation, not native NPU baseline scores"
+}

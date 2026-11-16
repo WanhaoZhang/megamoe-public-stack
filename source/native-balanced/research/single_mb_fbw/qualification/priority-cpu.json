@@ -1,0 +1,6 @@
+{
+  "status": "pass",
+  "global_scenarios": 120,
+  "wide_mask_subsets": 65,
+  "scope": "CPU scheduling/ownership invariants, not NPU qualification"
+}

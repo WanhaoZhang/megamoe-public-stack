@@ -1,0 +1,146 @@
+[
+  {
+    "maxvio": 20,
+    "planner": "native",
+    "intervention": "priority",
+    "control": "matched-priority0",
+    "worker": "matched-priority1",
+    "latency_change_percent": -0.04676608474534216,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 20,
+    "planner": "native",
+    "intervention": "early DW1",
+    "control": "matched-priority0",
+    "worker": "wide-priority0",
+    "latency_change_percent": 0.23756796194056573,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 20,
+    "planner": "native",
+    "intervention": "priority with early",
+    "control": "wide-priority0",
+    "worker": "wide-priority1",
+    "latency_change_percent": 0.0013586630617679063,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 20,
+    "planner": "native",
+    "intervention": "combined",
+    "control": "matched-priority0",
+    "worker": "wide-priority1",
+    "latency_change_percent": 0.23892985275049128,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 20,
+    "planner": "ultra_ep",
+    "intervention": "priority",
+    "control": "matched-priority0",
+    "worker": "matched-priority1",
+    "latency_change_percent": -0.07379096904872595,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 20,
+    "planner": "ultra_ep",
+    "intervention": "early DW1",
+    "control": "matched-priority0",
+    "worker": "wide-priority0",
+    "latency_change_percent": 0.18972391670390998,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 20,
+    "planner": "ultra_ep",
+    "intervention": "priority with early",
+    "control": "wide-priority0",
+    "worker": "wide-priority1",
+    "latency_change_percent": 0.006038661180074456,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 20,
+    "planner": "ultra_ep",
+    "intervention": "combined",
+    "control": "matched-priority0",
+    "worker": "wide-priority1",
+    "latency_change_percent": 0.1957740346684833,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 0.2,
+    "planner": "native",
+    "intervention": "priority",
+    "control": "matched-priority0",
+    "worker": "matched-priority1",
+    "latency_change_percent": 0.08320303477105107,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 0.2,
+    "planner": "native",
+    "intervention": "early DW1",
+    "control": "matched-priority0",
+    "worker": "wide-priority0",
+    "latency_change_percent": -0.02568724974102432,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 0.2,
+    "planner": "native",
+    "intervention": "priority with early",
+    "control": "wide-priority0",
+    "worker": "wide-priority1",
+    "latency_change_percent": 0.13981381464931442,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 0.2,
+    "planner": "native",
+    "intervention": "combined",
+    "control": "matched-priority0",
+    "worker": "wide-priority1",
+    "latency_change_percent": 0.11409065058454182,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 0.2,
+    "planner": "ultra_ep",
+    "intervention": "priority",
+    "control": "matched-priority0",
+    "worker": "matched-priority1",
+    "latency_change_percent": -0.05909162711538185,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 0.2,
+    "planner": "ultra_ep",
+    "intervention": "early DW1",
+    "control": "matched-priority0",
+    "worker": "wide-priority0",
+    "latency_change_percent": 0.23933640633724274,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 0.2,
+    "planner": "ultra_ep",
+    "intervention": "priority with early",
+    "control": "wide-priority0",
+    "worker": "wide-priority1",
+    "latency_change_percent": 0.08558252499764052,
+    "independent_repeats": 1
+  },
+  {
+    "maxvio": 0.2,
+    "planner": "ultra_ep",
+    "intervention": "combined",
+    "control": "matched-priority0",
+    "worker": "wide-priority1",
+    "latency_change_percent": 0.32512376147466604,
+    "independent_repeats": 1
+  }
+]

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-TASK=/home/z00956592/megaflux/planner-executor-ep8-lab
+TASK=/home/z00956592/megaflux/single-mb-fbw-planner-study
 BACKEND=$1
 MODE=$2
 TAG=$3
@@ -72,6 +72,9 @@ elif [ "$MODE" = scaling ]; then
 elif [ "$MODE" = validate ]; then
  SCRIPT="$TASK/tools/validate.py"
  EXTRA=()
+elif [ "$MODE" = prepared ] || [ "$MODE" = prepared_validate ]; then
+ SCRIPT="$TASK/tools/prepared_plan_train.py"
+ EXTRA=(--root "$TASK")
 else
  SCRIPT="$TASK/tools/train.py"
  EXTRA=(--root "$TASK")

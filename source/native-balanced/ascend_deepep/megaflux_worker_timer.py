@@ -12,9 +12,13 @@ class MegaFluxBF16WorkerTimerTrain(MegaFluxBF16WorkerPipelineTrain,MegaFluxBF16S
         super().__init__(*args,**kwargs)
         getter=getattr(self._worker_native,'megaflux_dispatch_stage_schema',None)
         version=int(getter()) if getter is not None else 0
-        if version not in (6,7,8,9):
+        if version not in (6,7,8,9,10):
             raise RuntimeError('worker Timer capture requires a supported TimerON SO')
 
         if version in (7,8,9):
             from .megaflux_stage_layout import summary_layout
             self._stage_spec=partial(summary_layout,version=version)
+        if version==10:
+            # No coordinate writers exist in this explicitly identified SO.
+            # Keep only original trace prefixes and a small inert header.
+            self._stage_spec=lambda *a,**k:dict(total=0,version=10)

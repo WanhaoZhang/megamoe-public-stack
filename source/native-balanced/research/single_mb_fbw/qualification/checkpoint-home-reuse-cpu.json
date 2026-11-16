@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "cases": 23,
+  "npu_qualified": false,
+  "source_sha256": "2cac6f9e336927a7c18494a25b62767da13eea0dff818050700950ee28e41055",
+  "scope": "Actual bridge control methods via AST with fake buffers/streams, including callback skip/fallback and original gradient dtypes",
+  "caveats": [
+    "No FSDP hooks, real Torch storage, native kernels, tensor numerical math or stream device execution tested"
+  ]
+}

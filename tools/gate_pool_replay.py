@@ -49,9 +49,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--backend', choices=['balanced','shared'], required=True)
     parser.add_argument('--out', type=Path, required=True)
-    parser.add_argument('--planner', choices=('native','moonep','ultra_ep','echo','eplb_fixed','step_time'), default='moonep')
+    parser.add_argument('--planner', choices=('native','moonep','ultra_ep','echo','eplb_fixed','step_time',*[f'eplb_budget_{b}' for b in (0,1,2,4,8,16,32,64,128,256)]), default='moonep')
     parser.add_argument('--cost-model')
     parser.add_argument('--semantic-cost-model',action='store_true')
+    parser.add_argument('--timer',action='store_true',help='Original TimerV2 numerical qualification only')
     parser.add_argument('--restore', choices=('staged', 'expert', 'panel'), default='staged')
     parser.add_argument('--tokens', type=int, default=257)
     parser.add_argument('--ffn', type=int, default=512)
@@ -60,11 +61,16 @@ def main():
     parser.add_argument('--capacity',type=int)
     parser.add_argument('--limit', type=float, default=0.)
     parser.add_argument('--checkpoint', action='store_true')
+    parser.add_argument('--checkpoint-home-reuse', action='store_true')
+    parser.add_argument('--poison-recompute-home', action='store_true')
     parser.add_argument('--parameter-fp32', action='store_true')
+    parser.add_argument('--parameter-read-mode',choices=('legacy','cast_once','fp32_to_home'),default='fp32_to_home')
     parser.add_argument('--require-replicas', action='store_true')
     parser.add_argument('--expect-operand-ready', type=int, choices=(0, 1))
     parser.add_argument('--expect-delay-cycles', type=int)
     args = parser.parse_args()
+    if args.poison_recompute_home and not (args.checkpoint and args.checkpoint_home_reuse):
+        raise ValueError('recompute poison diagnostic requires checkpoint home reuse')
     if args.semantic_cost_model:os.environ['MEGAMOE_SEMANTIC_QUALIFICATION']='1'
     rank, ep = int(os.environ['RANK']), int(os.environ['WORLD_SIZE'])
     assert args.experts>=ep and args.experts%ep==0,'experts must be divisible by the actual EP world'
@@ -98,7 +104,8 @@ def main():
         raise ValueError('functional golden plus executor exceeds the fixed 8GiB test heap budget')
     pool = NativeFSDP2Pool(shmem, dist.group.WORLD, home, slots, h, f, m, k,
                           window, capacity, device, args.planner, args.restore,
-                          routed_input_mode='redispatch', enable_diagnostics=True,cost_model=args.cost_model)
+                          routed_input_mode='redispatch', enable_diagnostics=True,cost_model=args.cost_model,timer=args.timer,
+                          checkpoint_home_reuse=args.checkpoint_home_reuse)
     pool.audit = []
     native = restore_native_identity(pool, args.expect_operand_ready, args.expect_delay_cycles)
     if args.require_replicas:
@@ -110,12 +117,25 @@ def main():
     parameter_dtype = torch.float32 if args.parameter_fp32 else torch.bfloat16
     weights = [[torch.nn.Parameter(dense(shape, .01).to(parameter_dtype)) for shape in
                 ((home, 2*f, h), (home, h, f))] for _ in range(2)]
-    bridges = [FSDP2ExpertsBridge(pool, lambda layer=layer: tuple(weights[layer])) for layer in range(2)]
+    def live_weights(layer):
+        return tuple(w.to(torch.bfloat16) if args.parameter_read_mode != 'fp32_to_home'
+                     and w.dtype != torch.bfloat16 else w for w in weights[layer])
+    bridges = [FSDP2ExpertsBridge(pool, lambda layer=layer: live_weights(layer)) for layer in range(2)]
     updates = []
     from ascend_deepep.plan_replay import install_replay_provider
     invocation_key=ContextVar('test_invocation',default=None)
     in_recompute=ContextVar('test_recompute',default=False)
     install_replay_provider(lambda: None if invocation_key.get() is None else (invocation_key.get(),in_recompute.get()))
+    if args.poison_recompute_home:
+        original_forward = pool.forward
+        def poison_after_recompute(*values, **kwargs):
+            result = original_forward(*values, **kwargs)
+            if in_recompute.get():
+                with torch.no_grad():
+                    pool.module.w1.fill_(-31)
+                    pool.module.w2.fill_(29)
+            return result
+        pool.forward = poison_after_recompute
     @contextmanager
     def replay_context():
         token=in_recompute.set(True)
@@ -201,10 +221,15 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out/f'rank{rank}.json').write_text(json.dumps(dict(pass_=True, rank=rank, ep=ep,
         args={k:str(v) if isinstance(v, Path) else v for k,v in vars(args).items()},
-        updates=updates, plan_audit=pool.audit, replay_audit=pool.replay_audit,planning_calls=pool.policy.calls, native=native,local_rank=local_rank,
+        updates=updates, plan_audit=pool.audit, replay_audit=pool.replay_audit,
+        home_reuse_audit=pool.home_reuse_audit,planning_calls=pool.policy.calls, native=native,local_rank=local_rank,
         shmem_endpoint=endpoint,capacity=capacity,base_capacity=base_capacity,window_bytes=window,base_window_bytes=base_window,
         planner_libraries=sorted({line.split()[-1] for line in Path('/proc/self/maps').read_text().splitlines()
             if 'libascend_deepep_large_ep_planner.so' in line})), indent=2))
+    if args.checkpoint_home_reuse:
+        expected = 6 if args.checkpoint and not args.poison_recompute_home else 0
+        assert pool.home_reuse_audit['hits'] == expected, pool.home_reuse_audit
+        assert pool.home_reuse_audit['misses'] == 6-expected, pool.home_reuse_audit
     dist.barrier()
     pool.close()
     base.close()

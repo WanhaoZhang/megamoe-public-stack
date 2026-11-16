@@ -1,0 +1,54 @@
+[
+  {
+    "priority": 0,
+    "capabilities": {
+      "megaflux_worker_pipeline_flags": 0,
+      "megaflux_worker_shared_prefix": 0,
+      "megaflux_worker_owner_rows": 16,
+      "megaflux_worker_owner_compact": 0,
+      "megaflux_worker_owner_early_ratio": 1,
+      "megaflux_worker_owner_aiv1_tail": 0,
+      "megaflux_backward_restore_mode": 2,
+      "megaflux_restore_operand_ready": 1,
+      "megaflux_worker_swiglu_decoupling_mode": 2,
+      "megaflux_worker_gm_swiglu_tile_ready": 0,
+      "megaflux_restore_panel_acquire_cache": 0,
+      "megaflux_restore_p1_panel_acquire_cache": 0,
+      "megaflux_worker_external_refresh": 0,
+      "megaflux_dispatch_ready_largest": 0,
+      "megaflux_backward_replicated_dw1_early": 1,
+      "megaflux_shared_expert_forward_abi": 1,
+      "megaflux_shared_expert_backward_version": 1,
+      "megaflux_shared_expert_backward_v2_version": 2,
+      "megaflux_shared_expert_backward_v3_version": 3,
+      "megaflux_routed_redispatch_version": 2
+    },
+    "so_sha256": "ce5a8a7f2d017a4d7e422747340fa9e60947ba94a75132db8bf77dfe0cddf0bf"
+  },
+  {
+    "priority": 1,
+    "capabilities": {
+      "megaflux_worker_pipeline_flags": 0,
+      "megaflux_worker_shared_prefix": 0,
+      "megaflux_worker_owner_rows": 16,
+      "megaflux_worker_owner_compact": 0,
+      "megaflux_worker_owner_early_ratio": 1,
+      "megaflux_worker_owner_aiv1_tail": 0,
+      "megaflux_backward_restore_mode": 2,
+      "megaflux_restore_operand_ready": 1,
+      "megaflux_worker_swiglu_decoupling_mode": 2,
+      "megaflux_worker_gm_swiglu_tile_ready": 0,
+      "megaflux_restore_panel_acquire_cache": 0,
+      "megaflux_restore_p1_panel_acquire_cache": 0,
+      "megaflux_worker_external_refresh": 0,
+      "megaflux_dispatch_ready_largest": 0,
+      "megaflux_backward_replicated_dw1_early": 1,
+      "megaflux_shared_expert_forward_abi": 1,
+      "megaflux_shared_expert_backward_version": 1,
+      "megaflux_shared_expert_backward_v2_version": 2,
+      "megaflux_shared_expert_backward_v3_version": 3,
+      "megaflux_routed_redispatch_version": 2
+    },
+    "so_sha256": "99000bff7080609e1e6d4b2b183eb4440f00016f831c87fbf87eebd83b8ed4cc"
+  }
+]

@@ -10,10 +10,10 @@ import subprocess
 import time
 import hashlib
 
-TASK = pathlib.Path('/home/z00956592/megaflux/planner-executor-ep8-lab')
-CONTAINER = 'planner-executor-ep8-lab'
+TASK = pathlib.Path('/home/z00956592/megaflux/single-mb-fbw-planner-study')
+CONTAINER = 'single-mb-fbw-planner-study'
 
-def source_identity():
+def source_identity(worker=None):
     files={}
     for component in ('native-balanced','FSDPTurbo','MindSpeed-LLM'):
         root=TASK/'source'/component
@@ -22,11 +22,25 @@ def source_identity():
             if not path.is_file() or path.is_symlink() or any(p in ('.git','__pycache__','3rdparty','worker-variants') or p.startswith('build') for p in relative.parts[:-1]):continue
             if path.suffix in ('.py','.cpp','.h','.hpp','.cmake') or path.name in ('CMakeLists.txt',):
                 files[str(relative)]=hashlib.sha256(path.read_bytes()).hexdigest()
-    for name in ('train.py','launch.sh','run_audit.py','benchmark_backend.py','controller.py','campaign_planners.py'):
-        path=TASK/'tools'/name
-        if path.exists():files[str(path.relative_to(TASK))]=hashlib.sha256(path.read_bytes()).hexdigest()
-    for path in [TASK/'configs/model/config.json',*sorted((TASK/'routes').glob('*.npy')),*sorted((TASK/'routes').glob('*.json'))]:
+    for path in sorted((TASK/'tools').iterdir()):
+        if path.is_file() and path.suffix in ('.py','.sh','.cpp'):
+            files[str(path.relative_to(TASK))]=hashlib.sha256(path.read_bytes()).hexdigest()
+    for path in [*sorted((TASK/'configs').rglob('*.json')),
+                 *sorted((TASK/'routes').rglob('*.npy')),*sorted((TASK/'routes').rglob('*.json'))]:
         if path.is_file():files[str(path.relative_to(TASK))]=hashlib.sha256(path.read_bytes()).hexdigest()
+    native=TASK/'source/native-balanced'
+    binary_paths=list((native/'ascend_deepep/lib').glob('*.so'))+list((native/'ascend_deepep').glob('_C*.so'))
+    if not worker:
+        binary_paths+=list((native/'worker-variants/ep8-cap64-aligned').glob('*.so'))
+    for path in sorted(binary_paths):
+        if path.is_file():files[str(path.relative_to(TASK))]=hashlib.sha256(path.read_bytes()).hexdigest()
+    if worker:
+        variant=TASK/'source/native-balanced/worker-variants'/worker
+        if variant.parent.resolve()!=(TASK/'source/native-balanced/worker-variants').resolve():
+            raise ValueError('worker must name a task-local variant')
+        for path in sorted(variant.glob('*')):
+            if path.is_file() and path.suffix in ('.so','.json'):
+                files[str(path.relative_to(TASK))]=hashlib.sha256(path.read_bytes()).hexdigest()
     return files
 
 def hbm_sample():
@@ -71,7 +85,7 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
                 raise
             time.sleep(1)
     (out / 'admission.json').write_text(json.dumps(admission, indent=2))
-    sources=source_identity()
+    sources=source_identity(worker)
     (out/'source-identity.json').write_text(json.dumps(sources,indent=2))
     command = ['docker', 'exec', '-w', str(TASK), '-e', f'EP8_MASTER_PORT={29200 + int(time.time()) % 2000}',
                CONTAINER, 'timeout', '-k', '30', str(seconds), 'bash', 'tools/launch.sh',
@@ -97,12 +111,12 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
             time.sleep(1)
         status = dict(command=command, exit=process.returncode, start=started,
                       finish=time.time(), peak_driver_MiB=max_hbm)
-    if mode == 'train':
+    if mode in ('train','prepared'):
         status['rank_completions'] = len(list(out.glob('complete-rank*.json')))
         status['qualified'] = status['exit'] == 0 and status['rank_completions'] == 8
     else:
         status['qualified'] = status['exit'] == 0
-    status['source_unchanged']=sources==source_identity()
+    status['source_unchanged']=sources==source_identity(worker)
     if not status['source_unchanged']:status['qualified']=False
     (out / 'status.json').write_text(json.dumps(status, indent=2))
     print(json.dumps(dict(tag=tag, **status)), flush=True)
@@ -117,7 +131,7 @@ def run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=6
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--backend', choices=['balanced', 'shared', 'moonep'])
-    parser.add_argument('--mode', default='train', choices=['train', 'validate', 'activation', 'scaling', 'pool', 'norm', 'moonpool', 'sharedpool','plan','links'])
+    parser.add_argument('--mode', default='train', choices=['train','prepared','prepared_validate','validate', 'activation', 'scaling', 'pool', 'norm', 'moonpool', 'sharedpool','plan','links'])
     parser.add_argument('--tag')
     parser.add_argument('--worker-variant')
     parser.add_argument('--capacity', type=int, choices=[32,64], default=64)
@@ -126,7 +140,7 @@ def main():
     parser.add_argument('--seconds', type=int, default=1800)
     args, extra = parser.parse_known_args()
     if not args.campaign:
-        if args.mode == 'train':
+        if args.mode in ('train','prepared'):
             extra += ['--layers', str(args.layers)]
         status = run_job(args.backend, args.mode, args.tag, extra, args.seconds, args.worker_variant, args.capacity)
         raise SystemExit(0 if status['qualified'] else 1)

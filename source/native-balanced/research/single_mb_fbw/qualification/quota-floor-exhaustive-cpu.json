@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "cases": 100,
+  "seed": 74011,
+  "source_sha256": "30b2bd1d43e60c7bb08d50c5265baf24210aced3d9f7244153135eeaa17d02c9",
+  "scope": "Analytic and relaxed row bounds plus feasible rounding checked against exact integer optima; not latency"
+}

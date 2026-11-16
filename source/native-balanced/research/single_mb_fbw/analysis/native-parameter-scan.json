@@ -1,0 +1,882 @@
+{
+  "passed": true,
+  "checked_cases": 2100,
+  "records": [
+    {
+      "maxvio": 0.2,
+      "name": "native",
+      "parameters": [
+        768,
+        2,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 0,
+      "max_rows": 132693.9,
+      "tile128_total": 8320,
+      "tile192_total": 5582,
+      "gradient_remote_mib": 0,
+      "owner_fanin_max": 0
+    },
+    {
+      "maxvio": 0.2,
+      "name": "tile384",
+      "parameters": [
+        384,
+        4,
+        8
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 0,
+      "max_rows": 132693.9,
+      "tile128_total": 8320,
+      "tile192_total": 5582,
+      "gradient_remote_mib": 0,
+      "owner_fanin_max": 0
+    },
+    {
+      "maxvio": 0.2,
+      "name": "tile1536",
+      "parameters": [
+        1536,
+        1,
+        2
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 0,
+      "max_rows": 132693.9,
+      "tile128_total": 8320,
+      "tile192_total": 5582,
+      "gradient_remote_mib": 0,
+      "owner_fanin_max": 0
+    },
+    {
+      "maxvio": 0.2,
+      "name": "penalty0",
+      "parameters": [
+        768,
+        0,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 0,
+      "max_rows": 132693.9,
+      "tile128_total": 8320,
+      "tile192_total": 5582,
+      "gradient_remote_mib": 0,
+      "owner_fanin_max": 0
+    },
+    {
+      "maxvio": 0.2,
+      "name": "penalty1",
+      "parameters": [
+        768,
+        1,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 0,
+      "max_rows": 132693.9,
+      "tile128_total": 8320,
+      "tile192_total": 5582,
+      "gradient_remote_mib": 0,
+      "owner_fanin_max": 0
+    },
+    {
+      "maxvio": 0.2,
+      "name": "penalty4",
+      "parameters": [
+        768,
+        4,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 0,
+      "max_rows": 132693.9,
+      "tile128_total": 8320,
+      "tile192_total": 5582,
+      "gradient_remote_mib": 0,
+      "owner_fanin_max": 0
+    },
+    {
+      "maxvio": 0.2,
+      "name": "penalty8",
+      "parameters": [
+        768,
+        8,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 0,
+      "max_rows": 132693.9,
+      "tile128_total": 8320,
+      "tile192_total": 5582,
+      "gradient_remote_mib": 0,
+      "owner_fanin_max": 0
+    },
+    {
+      "maxvio": 1,
+      "name": "native",
+      "parameters": [
+        768,
+        2,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 2.68,
+      "max_rows": 134255.8,
+      "tile128_total": 8314,
+      "tile192_total": 5589,
+      "gradient_remote_mib": 225.12,
+      "owner_fanin_max": 0.84
+    },
+    {
+      "maxvio": 1,
+      "name": "tile384",
+      "parameters": [
+        384,
+        4,
+        8
+      ],
+      "calls": 50,
+      "changed_calls": 34,
+      "capacity_legal_calls": 50,
+      "active_remote": 3.18,
+      "max_rows": 133888.92,
+      "tile128_total": 8314,
+      "tile192_total": 5589,
+      "gradient_remote_mib": 267.12,
+      "owner_fanin_max": 1.04
+    },
+    {
+      "maxvio": 1,
+      "name": "tile1536",
+      "parameters": [
+        1536,
+        1,
+        2
+      ],
+      "calls": 50,
+      "changed_calls": 43,
+      "capacity_legal_calls": 50,
+      "active_remote": 3.66,
+      "max_rows": 135001.58,
+      "tile128_total": 8314,
+      "tile192_total": 5589,
+      "gradient_remote_mib": 307.44,
+      "owner_fanin_max": 1.28
+    },
+    {
+      "maxvio": 1,
+      "name": "penalty0",
+      "parameters": [
+        768,
+        0,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 30,
+      "capacity_legal_calls": 50,
+      "active_remote": 4.04,
+      "max_rows": 133252.44,
+      "tile128_total": 8314,
+      "tile192_total": 5589,
+      "gradient_remote_mib": 339.36,
+      "owner_fanin_max": 1.32
+    },
+    {
+      "maxvio": 1,
+      "name": "penalty1",
+      "parameters": [
+        768,
+        1,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 25,
+      "capacity_legal_calls": 50,
+      "active_remote": 3.72,
+      "max_rows": 133529.84,
+      "tile128_total": 8314,
+      "tile192_total": 5589,
+      "gradient_remote_mib": 312.48,
+      "owner_fanin_max": 1.22
+    },
+    {
+      "maxvio": 1,
+      "name": "penalty4",
+      "parameters": [
+        768,
+        4,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 24,
+      "capacity_legal_calls": 50,
+      "active_remote": 1.16,
+      "max_rows": 135919.8,
+      "tile128_total": 8314,
+      "tile192_total": 5589,
+      "gradient_remote_mib": 97.44,
+      "owner_fanin_max": 0.32
+    },
+    {
+      "maxvio": 1,
+      "name": "penalty8",
+      "parameters": [
+        768,
+        8,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 33,
+      "capacity_legal_calls": 50,
+      "active_remote": 0,
+      "max_rows": 138234.54,
+      "tile128_total": 8314,
+      "tile192_total": 5589,
+      "gradient_remote_mib": 0,
+      "owner_fanin_max": 0
+    },
+    {
+      "maxvio": 5,
+      "name": "native",
+      "parameters": [
+        768,
+        2,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 6,
+      "max_rows": 133280.54,
+      "tile128_total": 8324,
+      "tile192_total": 5591,
+      "gradient_remote_mib": 504,
+      "owner_fanin_max": 1.88
+    },
+    {
+      "maxvio": 5,
+      "name": "tile384",
+      "parameters": [
+        384,
+        4,
+        8
+      ],
+      "calls": 50,
+      "changed_calls": 50,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.6,
+      "max_rows": 132316.08,
+      "tile128_total": 8324,
+      "tile192_total": 5591,
+      "gradient_remote_mib": 554.4,
+      "owner_fanin_max": 2.08
+    },
+    {
+      "maxvio": 5,
+      "name": "tile1536",
+      "parameters": [
+        1536,
+        1,
+        2
+      ],
+      "calls": 50,
+      "changed_calls": 50,
+      "capacity_legal_calls": 50,
+      "active_remote": 5.02,
+      "max_rows": 135297.82,
+      "tile128_total": 8324,
+      "tile192_total": 5591,
+      "gradient_remote_mib": 421.68,
+      "owner_fanin_max": 1.68
+    },
+    {
+      "maxvio": 5,
+      "name": "penalty0",
+      "parameters": [
+        768,
+        0,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 15,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.36,
+      "max_rows": 133259.44,
+      "tile128_total": 8324,
+      "tile192_total": 5591,
+      "gradient_remote_mib": 534.24,
+      "owner_fanin_max": 2.04
+    },
+    {
+      "maxvio": 5,
+      "name": "penalty1",
+      "parameters": [
+        768,
+        1,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 15,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.36,
+      "max_rows": 133259.44,
+      "tile128_total": 8324,
+      "tile192_total": 5591,
+      "gradient_remote_mib": 534.24,
+      "owner_fanin_max": 2.04
+    },
+    {
+      "maxvio": 5,
+      "name": "penalty4",
+      "parameters": [
+        768,
+        4,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 13,
+      "capacity_legal_calls": 50,
+      "active_remote": 5.62,
+      "max_rows": 133492.34,
+      "tile128_total": 8324,
+      "tile192_total": 5591,
+      "gradient_remote_mib": 472.08,
+      "owner_fanin_max": 1.74
+    },
+    {
+      "maxvio": 5,
+      "name": "penalty8",
+      "parameters": [
+        768,
+        8,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 31,
+      "capacity_legal_calls": 50,
+      "active_remote": 4.68,
+      "max_rows": 135458.7,
+      "tile128_total": 8324,
+      "tile192_total": 5591,
+      "gradient_remote_mib": 393.12,
+      "owner_fanin_max": 1.4
+    },
+    {
+      "maxvio": 10,
+      "name": "native",
+      "parameters": [
+        768,
+        2,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 7.34,
+      "max_rows": 132832.4,
+      "tile128_total": 8323,
+      "tile192_total": 5596,
+      "gradient_remote_mib": 616.56,
+      "owner_fanin_max": 2.68
+    },
+    {
+      "maxvio": 10,
+      "name": "tile384",
+      "parameters": [
+        384,
+        4,
+        8
+      ],
+      "calls": 50,
+      "changed_calls": 50,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.92,
+      "max_rows": 132341.64,
+      "tile128_total": 8323,
+      "tile192_total": 5596,
+      "gradient_remote_mib": 581.28,
+      "owner_fanin_max": 2.48
+    },
+    {
+      "maxvio": 10,
+      "name": "tile1536",
+      "parameters": [
+        1536,
+        1,
+        2
+      ],
+      "calls": 50,
+      "changed_calls": 50,
+      "capacity_legal_calls": 50,
+      "active_remote": 7.06,
+      "max_rows": 134726.1,
+      "tile128_total": 8323,
+      "tile192_total": 5596,
+      "gradient_remote_mib": 593.04,
+      "owner_fanin_max": 2.64
+    },
+    {
+      "maxvio": 10,
+      "name": "penalty0",
+      "parameters": [
+        768,
+        0,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 8,
+      "capacity_legal_calls": 50,
+      "active_remote": 7.52,
+      "max_rows": 132807.82,
+      "tile128_total": 8323,
+      "tile192_total": 5596,
+      "gradient_remote_mib": 631.68,
+      "owner_fanin_max": 2.78
+    },
+    {
+      "maxvio": 10,
+      "name": "penalty1",
+      "parameters": [
+        768,
+        1,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 8,
+      "capacity_legal_calls": 50,
+      "active_remote": 7.52,
+      "max_rows": 132807.82,
+      "tile128_total": 8323,
+      "tile192_total": 5596,
+      "gradient_remote_mib": 631.68,
+      "owner_fanin_max": 2.78
+    },
+    {
+      "maxvio": 10,
+      "name": "penalty4",
+      "parameters": [
+        768,
+        4,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 23,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.8,
+      "max_rows": 133322.44,
+      "tile128_total": 8323,
+      "tile192_total": 5596,
+      "gradient_remote_mib": 571.2,
+      "owner_fanin_max": 2.38
+    },
+    {
+      "maxvio": 10,
+      "name": "penalty8",
+      "parameters": [
+        768,
+        8,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 36,
+      "capacity_legal_calls": 50,
+      "active_remote": 5.9,
+      "max_rows": 135588.62,
+      "tile128_total": 8323,
+      "tile192_total": 5596,
+      "gradient_remote_mib": 495.6,
+      "owner_fanin_max": 1.98
+    },
+    {
+      "maxvio": 15,
+      "name": "native",
+      "parameters": [
+        768,
+        2,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 7.08,
+      "max_rows": 133125.5,
+      "tile128_total": 8317,
+      "tile192_total": 5586,
+      "gradient_remote_mib": 594.72,
+      "owner_fanin_max": 2.7
+    },
+    {
+      "maxvio": 15,
+      "name": "tile384",
+      "parameters": [
+        384,
+        4,
+        8
+      ],
+      "calls": 50,
+      "changed_calls": 50,
+      "capacity_legal_calls": 50,
+      "active_remote": 7.16,
+      "max_rows": 132047.96,
+      "tile128_total": 8317,
+      "tile192_total": 5586,
+      "gradient_remote_mib": 601.44,
+      "owner_fanin_max": 2.7
+    },
+    {
+      "maxvio": 15,
+      "name": "tile1536",
+      "parameters": [
+        1536,
+        1,
+        2
+      ],
+      "calls": 50,
+      "changed_calls": 50,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.64,
+      "max_rows": 135080.02,
+      "tile128_total": 8317,
+      "tile192_total": 5586,
+      "gradient_remote_mib": 557.76,
+      "owner_fanin_max": 2.58
+    },
+    {
+      "maxvio": 15,
+      "name": "penalty0",
+      "parameters": [
+        768,
+        0,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 9,
+      "capacity_legal_calls": 50,
+      "active_remote": 7.26,
+      "max_rows": 133125.46,
+      "tile128_total": 8317,
+      "tile192_total": 5586,
+      "gradient_remote_mib": 609.84,
+      "owner_fanin_max": 2.84
+    },
+    {
+      "maxvio": 15,
+      "name": "penalty1",
+      "parameters": [
+        768,
+        1,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 9,
+      "capacity_legal_calls": 50,
+      "active_remote": 7.26,
+      "max_rows": 133125.46,
+      "tile128_total": 8317,
+      "tile192_total": 5586,
+      "gradient_remote_mib": 609.84,
+      "owner_fanin_max": 2.84
+    },
+    {
+      "maxvio": 15,
+      "name": "penalty4",
+      "parameters": [
+        768,
+        4,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 13,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.78,
+      "max_rows": 133355.9,
+      "tile128_total": 8317,
+      "tile192_total": 5586,
+      "gradient_remote_mib": 569.52,
+      "owner_fanin_max": 2.56
+    },
+    {
+      "maxvio": 15,
+      "name": "penalty8",
+      "parameters": [
+        768,
+        8,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 28,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.26,
+      "max_rows": 134772.66,
+      "tile128_total": 8317,
+      "tile192_total": 5586,
+      "gradient_remote_mib": 525.84,
+      "owner_fanin_max": 2.36
+    },
+    {
+      "maxvio": 20,
+      "name": "native",
+      "parameters": [
+        768,
+        2,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 0,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.54,
+      "max_rows": 133454.98,
+      "tile128_total": 8312,
+      "tile192_total": 5590,
+      "gradient_remote_mib": 549.36,
+      "owner_fanin_max": 2.56
+    },
+    {
+      "maxvio": 20,
+      "name": "tile384",
+      "parameters": [
+        384,
+        4,
+        8
+      ],
+      "calls": 50,
+      "changed_calls": 50,
+      "capacity_legal_calls": 50,
+      "active_remote": 7,
+      "max_rows": 132324.62,
+      "tile128_total": 8312,
+      "tile192_total": 5590,
+      "gradient_remote_mib": 588,
+      "owner_fanin_max": 2.64
+    },
+    {
+      "maxvio": 20,
+      "name": "tile1536",
+      "parameters": [
+        1536,
+        1,
+        2
+      ],
+      "calls": 50,
+      "changed_calls": 50,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.54,
+      "max_rows": 135065.38,
+      "tile128_total": 8312,
+      "tile192_total": 5590,
+      "gradient_remote_mib": 549.36,
+      "owner_fanin_max": 2.62
+    },
+    {
+      "maxvio": 20,
+      "name": "penalty0",
+      "parameters": [
+        768,
+        0,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 3,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.6,
+      "max_rows": 133454.98,
+      "tile128_total": 8312,
+      "tile192_total": 5590,
+      "gradient_remote_mib": 554.4,
+      "owner_fanin_max": 2.58
+    },
+    {
+      "maxvio": 20,
+      "name": "penalty1",
+      "parameters": [
+        768,
+        1,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 3,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.6,
+      "max_rows": 133454.98,
+      "tile128_total": 8312,
+      "tile192_total": 5590,
+      "gradient_remote_mib": 554.4,
+      "owner_fanin_max": 2.58
+    },
+    {
+      "maxvio": 20,
+      "name": "penalty4",
+      "parameters": [
+        768,
+        4,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 3,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.46,
+      "max_rows": 133557.58,
+      "tile128_total": 8312,
+      "tile192_total": 5590,
+      "gradient_remote_mib": 542.64,
+      "owner_fanin_max": 2.52
+    },
+    {
+      "maxvio": 20,
+      "name": "penalty8",
+      "parameters": [
+        768,
+        8,
+        4
+      ],
+      "calls": 50,
+      "changed_calls": 20,
+      "capacity_legal_calls": 50,
+      "active_remote": 6.04,
+      "max_rows": 134707.84,
+      "tile128_total": 8312,
+      "tile192_total": 5590,
+      "gradient_remote_mib": 507.36,
+      "owner_fanin_max": 2.38
+    }
+  ],
+  "banks": [
+    {
+      "maxvio": 0.2,
+      "name": "tile384",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio0.2-tile384.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 0.2,
+      "name": "tile1536",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio0.2-tile1536.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 0.2,
+      "name": "penalty4",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio0.2-penalty4.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 1,
+      "name": "tile384",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio1-tile384.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 1,
+      "name": "tile1536",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio1-tile1536.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 1,
+      "name": "penalty4",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio1-penalty4.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 5,
+      "name": "tile384",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio5-tile384.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 5,
+      "name": "tile1536",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio5-tile1536.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 5,
+      "name": "penalty4",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio5-penalty4.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 10,
+      "name": "tile384",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio10-tile384.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 10,
+      "name": "tile1536",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio10-tile1536.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 10,
+      "name": "penalty4",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio10-penalty4.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 15,
+      "name": "tile384",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio15-tile384.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 15,
+      "name": "tile1536",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio15-tile1536.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 15,
+      "name": "penalty4",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio15-penalty4.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 20,
+      "name": "tile384",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio20-tile384.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 20,
+      "name": "tile1536",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio20-tile1536.npz",
+      "device_qualified": false
+    },
+    {
+      "maxvio": 20,
+      "name": "penalty4",
+      "npz": "D:\\megamoe_train\\single-mb-fbw-planner-study\\artifacts\\native-tune-vio20-penalty4.npz",
+      "device_qualified": false
+    }
+  ],
+  "oracle_sha256": "48f569f72d551314bf2ea66bd91561924bce72b09970a72c2da6e70d19dafd15",
+  "policy_sha256": "f32632889c8255bc75bb8f71404e0036a5affe70b622e0630e991e6c80a386c6",
+  "scope": "Existing Native parameter ablations, exact Python/C++ equality; synthetic route structure only",
+  "caveats": [
+    "Not new planner",
+    "No native timings or online score",
+    "No model-quality experiment",
+    "Beta384/1536 change block size while retaining1536-row copy penalty and3072-row fallback threshold",
+    "Penalty-only choices change fixed penalty in old rule; they do not model dependency timing"
+  ]
+}

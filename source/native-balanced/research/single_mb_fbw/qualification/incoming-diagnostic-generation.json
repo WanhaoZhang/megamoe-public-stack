@@ -1,0 +1,7 @@
+{
+  "parent_sha256": "1939fa87875f91122a05e6000df21d80fe824ae85a7c7ebfdde7e0ea0f2af83a",
+  "generated_sha256": "cc1a1d1073377a933692a2a5dbe059b083f9af0bd56b4f237ac1c87cbccc1ac4",
+  "observation": "incoming dY hook returns None; plan hashes captured; Native-self identical assignment asserted",
+  "numerical_thresholds_unchanged": true,
+  "performance_score": false
+}

@@ -1,0 +1,197 @@
+{
+  "passed": true,
+  "independent_processes_per_cell": 1,
+  "warmup": 5,
+  "updates": 25,
+  "comparisons": [
+    {
+      "maxvio": 20,
+      "planner": "native",
+      "old_ms": 1210.3402895,
+      "cache_ms": 1171.8248985,
+      "gain": 0.03182195233367868
+    },
+    {
+      "maxvio": 20,
+      "planner": "ultra_ep",
+      "old_ms": 1193.586267,
+      "cache_ms": 1157.10552,
+      "gain": 0.030563980173541894
+    },
+    {
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "old_ms": 1253.4135675,
+      "cache_ms": 1169.7236625,
+      "gain": 0.06676958600896898
+    },
+    {
+      "maxvio": 20,
+      "planner": "eplb_fixed",
+      "old_ms": 1639.595894,
+      "cache_ms": 1308.7157585,
+      "gain": 0.20180590638878482
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "native",
+      "old_ms": 1081.609459,
+      "cache_ms": 1081.776177,
+      "gain": -0.00015413881471970647
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "ultra_ep",
+      "old_ms": 1104.7576095,
+      "cache_ms": 1087.6535245,
+      "gain": 0.015482206099255658
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "old_ms": 1222.722308,
+      "cache_ms": 1122.2868425,
+      "gain": 0.08214086292764378
+    },
+    {
+      "maxvio": 0.2,
+      "planner": "eplb_fixed",
+      "old_ms": 1717.99949,
+      "cache_ms": 1356.731236,
+      "gain": 0.2102842614929995
+    }
+  ],
+  "records": [
+    {
+      "tag": "gradient-key-cache-screen-vio20-native-0-v1",
+      "maxvio": 20,
+      "planner": "native",
+      "mode": 0,
+      "mean_ms": 1210.3402895,
+      "peak_driver_MiB": 90345
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio20-eplb_fixed-1-v1",
+      "maxvio": 20,
+      "planner": "eplb_fixed",
+      "mode": 1,
+      "mean_ms": 1308.7157585,
+      "peak_driver_MiB": 90347
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio20-ultra_ep-1-v1",
+      "maxvio": 20,
+      "planner": "ultra_ep",
+      "mode": 1,
+      "mean_ms": 1157.10552,
+      "peak_driver_MiB": 90347
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio20-eplb_budget_32-0-v1",
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "mode": 0,
+      "mean_ms": 1253.4135675,
+      "peak_driver_MiB": 90346
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio20-eplb_budget_32-1-v1",
+      "maxvio": 20,
+      "planner": "eplb_budget_32",
+      "mode": 1,
+      "mean_ms": 1169.7236625,
+      "peak_driver_MiB": 90347
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio20-ultra_ep-0-v1",
+      "maxvio": 20,
+      "planner": "ultra_ep",
+      "mode": 0,
+      "mean_ms": 1193.586267,
+      "peak_driver_MiB": 90345
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio20-eplb_fixed-0-v1",
+      "maxvio": 20,
+      "planner": "eplb_fixed",
+      "mode": 0,
+      "mean_ms": 1639.595894,
+      "peak_driver_MiB": 90345
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio20-native-1-v1",
+      "maxvio": 20,
+      "planner": "native",
+      "mode": 1,
+      "mean_ms": 1171.8248985,
+      "peak_driver_MiB": 90347
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio0.2-native-1-v1",
+      "maxvio": 0.2,
+      "planner": "native",
+      "mode": 1,
+      "mean_ms": 1081.776177,
+      "peak_driver_MiB": 90347
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio0.2-eplb_fixed-0-v1",
+      "maxvio": 0.2,
+      "planner": "eplb_fixed",
+      "mode": 0,
+      "mean_ms": 1717.99949,
+      "peak_driver_MiB": 90345
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio0.2-ultra_ep-0-v1",
+      "maxvio": 0.2,
+      "planner": "ultra_ep",
+      "mode": 0,
+      "mean_ms": 1104.7576095,
+      "peak_driver_MiB": 90346
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio0.2-eplb_budget_32-1-v1",
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "mode": 1,
+      "mean_ms": 1122.2868425,
+      "peak_driver_MiB": 90348
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio0.2-eplb_budget_32-0-v1",
+      "maxvio": 0.2,
+      "planner": "eplb_budget_32",
+      "mode": 0,
+      "mean_ms": 1222.722308,
+      "peak_driver_MiB": 90345
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio0.2-ultra_ep-1-v1",
+      "maxvio": 0.2,
+      "planner": "ultra_ep",
+      "mode": 1,
+      "mean_ms": 1087.6535245,
+      "peak_driver_MiB": 90347
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio0.2-eplb_fixed-1-v1",
+      "maxvio": 0.2,
+      "planner": "eplb_fixed",
+      "mode": 1,
+      "mean_ms": 1356.731236,
+      "peak_driver_MiB": 90348
+    },
+    {
+      "tag": "gradient-key-cache-screen-vio0.2-native-0-v1",
+      "maxvio": 0.2,
+      "planner": "native",
+      "mode": 0,
+      "mean_ms": 1081.609459,
+      "peak_driver_MiB": 90345
+    }
+  ],
+  "measured_source_commit": "cb4c5df",
+  "new_planner": false,
+  "limitation": "Screening only; five fresh paired process repetitions pending"
+}

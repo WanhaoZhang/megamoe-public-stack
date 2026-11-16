@@ -1,6 +1,6 @@
 #include "mega_moe_capacity.h"
 #define DEEPEP_BF16_WORKER_PIPELINE 1
-#if defined(ENABLE_TIMER)
+#if defined(ENABLE_TIMER) && (!defined(MEGAFLUX_COORDINATE_TIMER) || MEGAFLUX_COORDINATE_TIMER)
 #define DEEPEP_BF16_STAGE_TIMER 1
 #endif
 #define megaflux_full_bf16 megaflux_early_bf16
@@ -55,6 +55,24 @@ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_backward_replicated_dw1_early(){ret
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_restore_panel_acquire_cache(){return MEGAFLUX_RESTORE_PANEL_ACQUIRE_CACHE;}
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_restore_p1_panel_acquire_cache(){return MEGAFLUX_RESTORE_P1_PANEL_ACQUIRE_CACHE;}
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_worker_pipeline_flags(){return MEGAFLUX_WORKER_FORWARD|(MEGAFLUX_WORKER_BACKWARD<<1);}
+extern "C" ASCEND_DEEPEP_EXPORT int megaflux_gradient_priority(){return MEGAFLUX_GRADIENT_PRIORITY;}
+extern "C" ASCEND_DEEPEP_EXPORT int megaflux_early_dw1_wide(){return MEGAFLUX_EARLY_DW1_WIDE;}
+#ifndef MEGAFLUX_OWNER_LATE_ONLY
+#define MEGAFLUX_OWNER_LATE_ONLY 0
+#endif
+extern "C" ASCEND_DEEPEP_EXPORT int megaflux_owner_late_only(){return MEGAFLUX_OWNER_LATE_ONLY;}
+#ifndef MEGAFLUX_REDISPATCH_P1_RUNAHEAD
+#define MEGAFLUX_REDISPATCH_P1_RUNAHEAD 0
+#endif
+extern "C" ASCEND_DEEPEP_EXPORT int megaflux_redispatch_p1_runahead(){return MEGAFLUX_REDISPATCH_P1_RUNAHEAD;}
+#ifndef MEGAFLUX_GRADIENT_KEY_CACHE
+#define MEGAFLUX_GRADIENT_KEY_CACHE 0
+#endif
+extern "C" ASCEND_DEEPEP_EXPORT int megaflux_gradient_key_cache(){return MEGAFLUX_GRADIENT_KEY_CACHE;}
+#ifndef MEGAFLUX_REDISPATCH_TRANSPORT_BATCH
+#define MEGAFLUX_REDISPATCH_TRANSPORT_BATCH 0
+#endif
+extern "C" ASCEND_DEEPEP_EXPORT int megaflux_redispatch_transport_batch(){return MEGAFLUX_REDISPATCH_TRANSPORT_BATCH;}
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_worker_shared_prefix(){return MEGAFLUX_WORKER_SHARED_PREFIX;}
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_worker_external_refresh(){return MEGAFLUX_WORKER_EXTERNAL_REFRESH;}
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_worker_owner_rows(){return MEGAFLUX_OWNER_ROWS;}
@@ -72,6 +90,9 @@ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_max_copy_slots(){return MegaMoeLarg
 
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_dispatch_ready_largest(){return MEGAFLUX_DISPATCH_READY_LARGEST;}
 extern "C" ASCEND_DEEPEP_EXPORT int megaflux_dispatch_stage_schema(){
+#if defined(ENABLE_TIMER) && defined(MEGAFLUX_COORDINATE_TIMER) && !MEGAFLUX_COORDINATE_TIMER
+    return 10; // Original per-expert TimerV2 only; no coordinate records.
+#else
 #if defined(DEEPEP_BF16_STAGE_TIMER)
 #if defined(MEGAFLUX_SUMMARY_TIMER)
 #if defined(MEGAFLUX_CALIBRATION_TIMER)
@@ -84,6 +105,7 @@ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_dispatch_stage_schema(){
 #endif
 #else
     return 0;
+#endif
 #endif
 }
 

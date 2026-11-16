@@ -1,0 +1,82 @@
+{
+  "diagnostic_only": true,
+  "online_score": false,
+  "domain": "All subsets of each actual Native copy set; removed source quotas return to fixed owner; placement/remaining quota otherwise fixed",
+  "model_sha256": "ac66dfb82a49cf0bb453a9ebca8b8b43fd824077de546d96e96fb20881dc92a4",
+  "oracle_sha256": "0a1987b26f70bcd4d6f40e502f72b4b56fe877387ef443bf3e27fdf90a9e5cf4",
+  "limitations": [
+    "Not exhaustive placement, source transportation or pipeline search",
+    "Inherited proxy has unqualified ranking and does not encode redispatch fence correctly",
+    "Token-load lower bound is not a latency lower bound",
+    "Proxy minima are exact only in this stated finite subspace, not native execution optima"
+  ],
+  "actual_fixture_hash_checks": 800,
+  "records": [
+    {
+      "maxvio": 0.2,
+      "fixtures": 50,
+      "subsets": 50,
+      "capacity_legal": 50,
+      "changed": {
+        "proxy_best": 0,
+        "sparse_best": 0
+      },
+      "mean_proxy_predicted_saving_ms": 0.0
+    },
+    {
+      "maxvio": 1,
+      "fixtures": 50,
+      "subsets": 707,
+      "capacity_legal": 707,
+      "changed": {
+        "proxy_best": 20,
+        "sparse_best": 33
+      },
+      "mean_proxy_predicted_saving_ms": 0.119048
+    },
+    {
+      "maxvio": 5,
+      "fixtures": 50,
+      "subsets": 5008,
+      "capacity_legal": 4642,
+      "changed": {
+        "proxy_best": 43,
+        "sparse_best": 50
+      },
+      "mean_proxy_predicted_saving_ms": 1.20796736
+    },
+    {
+      "maxvio": 10,
+      "fixtures": 50,
+      "subsets": 11936,
+      "capacity_legal": 7132,
+      "changed": {
+        "proxy_best": 43,
+        "sparse_best": 50
+      },
+      "mean_proxy_predicted_saving_ms": 1.85661952
+    },
+    {
+      "maxvio": 15,
+      "fixtures": 50,
+      "subsets": 9568,
+      "capacity_legal": 3471,
+      "changed": {
+        "proxy_best": 47,
+        "sparse_best": 50
+      },
+      "mean_proxy_predicted_saving_ms": 1.5363072
+    },
+    {
+      "maxvio": 20,
+      "fixtures": 50,
+      "subsets": 6656,
+      "capacity_legal": 1611,
+      "changed": {
+        "proxy_best": 41,
+        "sparse_best": 50
+      },
+      "mean_proxy_predicted_saving_ms": 1.76394688
+    }
+  ]
+}

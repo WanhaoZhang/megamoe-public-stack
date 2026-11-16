@@ -244,6 +244,7 @@ void mega_moe_unified_planner_kernel(uint64_t ffts,GM_ADDR base,GM_ADDR ids,
 #if !defined(UP_PLUGIN_BUILD)
 using PolicyExtension=void(*)(void*,uint64_t,uint8_t*,uint8_t*,uint8_t*,uint8_t*,uint8_t*,uint8_t*,uint8_t*,uint8_t*,uint8_t*,uint64_t,uint64_t,uint64_t,int,int,int,int,int,int,int,int,int);
 static PolicyExtension extensionPolicy=nullptr;
+extern "C" __attribute__((visibility("default"))) int megaflux_unified_budget_abi(){return 1;}
 extern "C" __attribute__((visibility("default"))) void megaflux_install_policy_extension(void* entry){extensionPolicy=reinterpret_cast<PolicyExtension>(entry);}
 #endif
 extern "C" __attribute__((visibility("default"))) void mega_moe_unified_planner_do(

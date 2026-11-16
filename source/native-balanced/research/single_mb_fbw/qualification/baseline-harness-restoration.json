@@ -1,0 +1,20 @@
+[
+  {
+    "source": "D:\\megamoe_train\\planner-executor-ep8-lab\\tools\\benchmark_backend.py",
+    "provenance": "full source freeze",
+    "source_sha256": "bac6db80b9ed624af6221690592d13255320e653f60488412484f6af92b2255a",
+    "adapted_sha256": "bac6db80b9ed624af6221690592d13255320e653f60488412484f6af92b2255a"
+  },
+  {
+    "source": "D:\\megamoe_train\\planner-executor-ep8-lab\\evidence\\calibration-timer-vio7-native\\diagnostic-sources\\capture_diagnostics.py",
+    "provenance": "actual native Timer run source snapshot",
+    "source_sha256": "1425a00c49c342aeceff6ab5659fadd2664dd6b40954f4f70d6dad992f3de20a",
+    "adapted_sha256": "1425a00c49c342aeceff6ab5659fadd2664dd6b40954f4f70d6dad992f3de20a"
+  },
+  {
+    "source": "D:\\megamoe_train\\planner-executor-ep8-lab\\evidence\\calibration-timer-vio7-native\\diagnostic-sources\\capture_framework.py",
+    "provenance": "actual native Timer run source snapshot",
+    "source_sha256": "a68cb1e79bd89c0ae991a34bda349bb580b4d1d28c0137548b913571caad112f",
+    "adapted_sha256": "a68cb1e79bd89c0ae991a34bda349bb580b4d1d28c0137548b913571caad112f"
+  }
+]
