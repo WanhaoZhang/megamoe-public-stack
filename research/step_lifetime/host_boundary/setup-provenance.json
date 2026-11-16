@@ -1,0 +1,5 @@
+{
+  "base_head": "b77bb06c55f40f4490ac34d72f81d1447e35c01d",
+  "copied_freeze": "configs/lifetime-runtime-freeze.json",
+  "isolated_branch": "research/step-lifetime-host-boundary"
+}

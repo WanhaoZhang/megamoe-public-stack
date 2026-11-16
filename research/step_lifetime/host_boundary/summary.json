@@ -1,0 +1,85 @@
+{
+  "diagnostic_only": true,
+  "runs": [
+    {
+      "name": "b1_legacy",
+      "prewarm": {
+        "calls": 80,
+        "median_ms": 0.22402499999999997,
+        "max_ms": 749.87799,
+        "over10ms": 9,
+        "over100ms": 9
+      },
+      "warmed": {
+        "calls": 96,
+        "median_ms": 0.26963,
+        "max_ms": 1.8708,
+        "over10ms": 0,
+        "over100ms": 0
+      },
+      "median_warmed_finish_host_ms": 0.051445,
+      "finish_samples": 48
+    },
+    {
+      "name": "b3_legacy",
+      "prewarm": {
+        "calls": 80,
+        "median_ms": 0.24081999999999998,
+        "max_ms": 19.36395,
+        "over10ms": 2,
+        "over100ms": 0
+      },
+      "warmed": {
+        "calls": 96,
+        "median_ms": 0.24461,
+        "max_ms": 19.01844,
+        "over10ms": 1,
+        "over100ms": 0
+      },
+      "median_warmed_finish_host_ms": 163.079125,
+      "finish_samples": 48
+    },
+    {
+      "name": "b1_cached",
+      "prewarm": {
+        "calls": 80,
+        "median_ms": 0.25802499999999995,
+        "max_ms": 672.08306,
+        "over10ms": 9,
+        "over100ms": 9
+      },
+      "warmed": {
+        "calls": 96,
+        "median_ms": 0.28015999999999996,
+        "max_ms": 1.93607,
+        "over10ms": 0,
+        "over100ms": 0
+      },
+      "median_warmed_finish_host_ms": 0.052385,
+      "finish_samples": 48
+    },
+    {
+      "name": "b3_cached",
+      "prewarm": {
+        "calls": 80,
+        "median_ms": 0.25843,
+        "max_ms": 64.39258,
+        "over10ms": 3,
+        "over100ms": 0
+      },
+      "warmed": {
+        "calls": 96,
+        "median_ms": 0.24126999999999998,
+        "max_ms": 19.18692,
+        "over10ms": 1,
+        "over100ms": 0
+      },
+      "median_warmed_finish_host_ms": 160.5469,
+      "finish_samples": 48
+    }
+  ],
+  "new_planner": false,
+  "identity_audit_passed": true,
+  "observation_scope": "4 independent modes, one admitted11-update process each; updates0\u20134 vs5\u201310; each matched call contains8 ranks",
+  "next_control": "Tensor-specific gradient bank readiness versus blanket current-stream fence; not implemented in this lane."
+}
