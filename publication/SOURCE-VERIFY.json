@@ -2,11 +2,11 @@
   "passed": true,
   "branch": "research/single-mb-fbw-planner",
   "input_commit": "86de0218ff48f032e35e7a7eda3ae60b9d6444d5",
-  "original_source_repository": "D:\\megamoe_train\\megamoe-public-stack",
+  "original_source_repository": "D:\\megamoe_train\\single-mb-fbw-planner-study\\source\\native-balanced",
   "original_project": "D:\\megamoe_train\\single-mb-fbw-planner-study",
   "source_files_exact": 7635,
   "full_source_files": 7635,
-  "all_tracked_files": 8081,
+  "all_tracked_files": 8085,
   "syntax_checked": 2078,
   "syntax_warnings": 266,
   "gitlinks": 0,
@@ -14,5 +14,29 @@
   "new_device_runs": false,
   "original_research_source_unchanged": true,
   "manifest_sha256": "e68a13ea92301047b9d54054d1a74522307b68c817c0b0206d6f8f0ef0770bfa",
-  "preserved_whitespace_warnings": true
+  "preserved_whitespace_warnings": true,
+  "component_repositories": [
+    {
+      "name": "native-balanced",
+      "repo": "D:\\megamoe_train\\single-mb-fbw-planner-study\\source\\native-balanced",
+      "branch": "research/single-mb-fbw-planner",
+      "commit": "86de0218ff48f032e35e7a7eda3ae60b9d6444d5",
+      "tree": "ec4790d5483923329ef6cc843ae2f7cfdba4fe68"
+    },
+    {
+      "name": "FSDPTurbo",
+      "repo": "D:\\megamoe_train\\single-mb-fbw-planner-study\\source\\FSDPTurbo",
+      "branch": "research/single-mb-fbw-planner",
+      "commit": "b2fba24f674e56fb629fb94ade1599f5aad66957",
+      "tree": "1cf0f43e3664a4d208d7f1a4451772e826d974ff"
+    },
+    {
+      "name": "MindSpeed-LLM",
+      "repo": "D:\\megamoe_train\\single-mb-fbw-planner-study\\source\\MindSpeed-LLM",
+      "branch": "research/single-mb-fbw-planner",
+      "commit": "adb0f91bb8d407ed75c5effa68c4a2844d72922f",
+      "tree": "0c0aeb3cb7103cdb11f8ee9f5381b37093efdbd2"
+    }
+  ],
+  "supplementary_local_build_checkouts_excluded": true
 }

@@ -5,7 +5,7 @@
       "component": "native-balanced",
       "commit": "86de0218ff48f032e35e7a7eda3ae60b9d6444d5",
       "upstream": "https://github.com/WanhaoZhang/megaflux",
-      "files": 788,
+      "files": 1027,
       "dependencies": [
         {
           "path": "3rdparty/catccos",
@@ -20,7 +20,8 @@
           "commit": "f281664309cc09bf9b134ba4fe6803fa2ebc10e4"
         }
       ],
-      "source_tree": "ec4790d5483923329ef6cc843ae2f7cfdba4fe68"
+      "source_tree": "ec4790d5483923329ef6cc843ae2f7cfdba4fe68",
+      "exported_files": 5031
     },
     {
       "component": "FSDPTurbo",
@@ -28,7 +29,8 @@
       "upstream": "https://gitcode.com/Ascend/FSDPTurbo",
       "files": 625,
       "dependencies": [],
-      "source_tree": "1cf0f43e3664a4d208d7f1a4451772e826d974ff"
+      "source_tree": "1cf0f43e3664a4d208d7f1a4451772e826d974ff",
+      "exported_files": 625
     },
     {
       "component": "MindSpeed-LLM",
@@ -49,7 +51,8 @@
           "commit": "7969e1c6b61c44fdb09d20607561824675bb216f"
         }
       ],
-      "source_tree": "0c0aeb3cb7103cdb11f8ee9f5381b37093efdbd2"
+      "source_tree": "0c0aeb3cb7103cdb11f8ee9f5381b37093efdbd2",
+      "exported_files": 1979
     },
     {
       "component": "native-balanced/3rdparty/catccos",
@@ -65,7 +68,8 @@
           "path": "3rdparty/shmem",
           "commit": "aa1e4c24f706a4f9d63975c77e527ef1eb37ca9f"
         }
-      ]
+      ],
+      "exported_files": 557
     },
     {
       "component": "native-balanced/3rdparty/catlass",
@@ -81,14 +85,16 @@
           "path": "python/tla_dsl/3rdparty/AscendNPU-IR",
           "commit": "a07821269ede7a5e683ac02c8a2d291608083741"
         }
-      ]
+      ],
+      "exported_files": 2493
     },
     {
       "component": "native-balanced/3rdparty/shmem",
       "commit": "f281664309cc09bf9b134ba4fe6803fa2ebc10e4",
       "upstream": "https://gitcode.com/bingobb/shmem_wuhan.git",
       "files": 954,
-      "optional_upstream_dependencies": []
+      "optional_upstream_dependencies": [],
+      "exported_files": 954
     }
   ],
   "full_component_blobs_exported": true,
