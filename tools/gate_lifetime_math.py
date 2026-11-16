@@ -199,6 +199,8 @@ def main():
             print(json.dumps(dict(rank=rank,**record)),flush=True)
             for weight in weights:weight.grad=None
             case+=1
+    from run_audit import loaded_libraries
+    loaded_libraries(args.out,rank)
     pool.close()
     del bridge,pool
     gc.collect();torch.accelerator.synchronize()
