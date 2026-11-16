@@ -1,0 +1,3171 @@
+diff --git a/configs/lifetime-runtime-freeze.json b/configs/lifetime-runtime-freeze.json
+new file mode 100644
+index 0000000..289fea6
+--- /dev/null
++++ b/configs/lifetime-runtime-freeze.json
+@@ -0,0 +1,6 @@
++{
++  "capability": 1,
++  "binaries": {
++    "source/native-balanced/worker-variants/ep8-cap64-lifetime-v1/libascend_deepep_megaflux_early_bf16.so": "7023c5d860ba49a7104d6d76502ea22e3eb30ad7a47c2fa422242d626556b88b"
++  }
++}
+\ No newline at end of file
+diff --git a/research/step_lifetime/DECISIONS.md b/research/step_lifetime/DECISIONS.md
+new file mode 100644
+index 0000000..9a4e6fb
+--- /dev/null
++++ b/research/step_lifetime/DECISIONS.md
+@@ -0,0 +1,23 @@
++# Decisions
++
++2026-11-15: separate clone (--no-hardlinks), branch research/step-lifetime. Old study read-only. Two pilots before choosing main mechanism; no presumed novelty or speedup. Node observed idle; admission must recheck.
++
++Attempt1: first gate launched before deployment finished and failed before device initialization (missing lane). Retained receipt/log and track-a.json. Added new a2 tags; restart only after successful deploy.
++
++Private worker build3 passed:7023c5d8. CPU Gloo oracle passed. B1 controller CLI mistakenly dispatched into A lane and rejected the unrecognized lifetime flag before NPU training; preserved, fixed using dedicated remote_b gate CLI and new b2 tags.
++B transport now uses a separate HCCL group and owner service stream, drains actual completion events before bank reuse and clip/Adam. Eight accumulation entries plus one bounded receive pair are included in measured memory; same allocation offered to anchor.
++
++Empty-owner audit: external dW path now creates explicit FP32 zero gradients at each update, including fully empty owner matrices, preserving Adam/weight-decay semantics. Extended two-rank oracle passed the empty-owner case. B source was updated only after anchor controller completed with source_unchanged=true, while next B job was held locally; no active snapshot was changed.
++
++Independent v2 FFN errors passed but all remote/cache byte counts were zero: Native chose no small-shape replicas, so it was explicitly rejected as remote-path qualification. v3 constructs an arbitrary legal proposal with hot8 replicas/rank via the public common compiler, uses original forward plan for checkpoint/backward, and passes64records with positive logical cache/gradient payload. Outputmax0.00030364, gradientmax0.00275919. This gate is semantic only, never a performance planner. Core-source fingerprints are bound to the proof before B timings.
++Future remote patches are staged outside guarded source then atomically published while holding the shared run lock, avoiding source mutation during any active frozen run.
++
++2026-11-16: Timer diagnostic clone initially exceeded Windows path limits. Restoring only the worktree left a partial index; an unpublished diagnostic commit accidentally recorded deletions. Restored the full index and moved only the private diagnostic branch back to272d83e before recommitting the intended5-line change as3808cf9. Verified7725tracked files and a train.py-only diff. Main research/step-lifetime, old study and active A/B snapshots were unaffected. The incomplete first deploy never created a runnable container; corrected deploy uses a fresh full Git archive and the global run lock.
++
++Timer v1 finished three updates and passed full-gradient comparison, but coordinate records were zero. Snapshot inspection confirmed Native selected zero replicas in every small-shape call. This qualifies local-path numerical instrumentation only, not replica lifecycle timing. Preserve numerical proof and reject replica-coverage claim. A second Timer diagnostic uses MoonEP legal replica planning as a coverage stimulus, not a performance result. No causal kernel-tail conclusion is drawn from v1.
++
++The small Native plan-hash campaign was superseded after its first anchor was submitted: empty copies cannot qualify main replica consistency. Only its local waiting scheduler was stopped; the admitted/queued child gate was allowed to finish. Main-shape three-update hash diagnostics replace further small hash gates, in the isolated diagnostic lane. They capture actual Native copies/source_quota/IDs/counts for anchor and B0-B3, without multi-GiB gradient dumps; numerical math and full-gradient gates remain separate evidence. All prior registration and receipts are retained.
++
++Timer v2 with real replicas was correctly rejected for duplicate coordinate slots. Prefix recomputation can replay two waves before their consecutive backwards; the previous recorder only cleared both traces at forward time. In the diagnostic clone, each backward descriptor now clears only its own trace coordinate region and refreshes its epoch before the kernel. v3 passes all-rank nonzero record coverage, three Adam updates and per-parameter gradient comparison. This is a diagnostic fix, not a timed kernel optimization; ordinary A/B snapshots remain untouched.
++
++CPU exact-once regression found complete((a,a)) accepted a duplicate completion. Valid adapter submissions are unique, so this does not retrospectively change measured valid executions. Harden the contract only after the registered B pilot ends, then rerun six CPU tests and forced-replica NPU math with a new certificate. Keep the v3 certificate attached to original timed snapshots, and require a fresh v4 source match for final runtime qualification.
+diff --git a/research/step_lifetime/INTERPRETATION.md b/research/step_lifetime/INTERPRETATION.md
+new file mode 100644
+index 0000000..4e95667
+--- /dev/null
++++ b/research/step_lifetime/INTERPRETATION.md
+@@ -0,0 +1,39 @@
++# 如何解释这轮结果
++
++本文件记录可检验的解释与尚缺的证据。绝对时间、完成数量以动态REPORT.md和results.csv为准。当前每点只有一个独立进程，不把20个更新当成20次独立重复。
++
++## 先区分三个问题
++
++1. 负载向量是否互补？离线诊断显示交替/随机任务存在约9.70%/8.30%的同层线性FFN计算互补指标，但它忽略通信、依赖、重计算和Attention，不是整步加速上界。
++2. 执行器能否把互补转化为实际收益？固定分组已经能混合两个同层任务；动态MaxUtil必须超过这一强对照，才能说明选择动作本身有价值。
++3. 驻留和延迟交付是否减少暴露在关键路径上的工作？原流水可能已经隐藏一部分搬运/归并；减少逻辑字节不足以证明完整更新加快。
++
++## 当前形状的固定成本
++
++一个BF16专家的两份投影合计3×F×H×2=24MiB，FP32完整梯度合计48MiB。八条权重缓存192MiB、八条累积项384MiB，另有48MiB接收平面对和元数据/通信资源。三类存储均有上界；它们不是按任务token数缩小的负载。
++
++同一版本、同一执行rank、同一层专家的后续贡献，在尚未交付前可以合并成一次完整dW交付；提前flush可能让后续贡献再次需要完整交付。与此同时，保留债务占用银行，可能妨碍后续层。研究问题是这些固定成本与资源时限如何进入更新关键路径，不是最大化缓存命中率。
++
++当前B路径在kernel完整返回后才拿到raw dW，使用公共FP32累积、独立HCCL组及服务流。它没有实现tile级Wgrad提前交付。B0与原锚点的差异同时包含数值格式、核内/核外交付边界、元数据观察和服务实现差异；因此B0只用于B1–B3的匹配控制，最终还要超过原锚点和最强适用A对照。
++
++## 当前数据能够和不能说明什么
++
++已完成点显示复制路径往往比固定home更慢，缓存路径尚未超过原流水锚点。这是共同形状和已测试人工路由下的单轮观察。需要Timer资格通过后的真实执行时间线，才能判断额外复制、尾部归并、CPU供应间隙或本来已被隐藏的通信分别占多大影响。
++
++目标ExpertMaxVio约10并不表示rank负载达到11倍：每rank拥有32个不同专家，具体专家到owner的聚合可以平滑偏斜。冻结路由的home-rank MaxVio均值约0.32–0.35，真实最大值及分布保存在diagnostics/route-opportunity.json；不能只凭横轴MaxVio推断复制必然有利。
++
++总缓存命中字节包含前向、checkpoint重放和反向准备。首版总计数不能把它们全部归因于跨microbatch常驻。B3在容量压力下会提前flush全部pending，也不是理想的无限容量步末归并。
++
++## 条件决策
++
++A/B两矩阵完成后按预登记规则决定是否补重复。没有稳定信号时停止扩大矩阵，保留失败和负结果；不直接堆叠新联合策略，也不宣称问题已被否定。
++
++若后续出现信号，先补逐调用copies/quota摘要、缓存命中来源分类和匹配服务时间线，再冻结候选与强基线。只有证明简单固定分组、缓存、固定归并边界无法解释的可重复冲突，才进入联合策略和论文创新性验证。
++
++## 已观察到的任务集合选择
++
++实测日志中，W2的FIFO遵循最小runset=ceil(W/2)=1，因此每次选择一个任务。它是最小就绪集合对照，不是强制两任务分组。共同条件下的fixed_home提供两任务分组强对照，不能只与FIFO比较便归因于动态选择。
++
++后20次更新中：same的MaxUtil有252组，其中184个单任务组、68个双任务跨层组；alternating有160个双任务同层组；random有210组，其中100个单任务组、110个双任务组，43组跨层。固定分组每类均160个双任务同层组。详见diagnostics/completed-audit.json。
++
++这说明MaxUtil并非一直执行相同选择：在same/random里确实产生跨层组合及更多小组。但它在当前W2没有超过固定分组；alternating与固定分组采用相同的两任务同层组合，胜过单任务FIFO不足以支持选择策略的独立贡献。上述是执行集合证据，仍不能单凭组数定位完整更新耗时的原因。
+diff --git a/research/step_lifetime/PLAN.md b/research/step_lifetime/PLAN.md
+new file mode 100644
+index 0000000..64b39cd
+--- /dev/null
++++ b/research/step_lifetime/PLAN.md
+@@ -0,0 +1,14 @@
++# Step-lifetime study
++
++Independent ordinary MegaMoE exploration, starting at 44b4e0d.
++
++Order: isolate -> matched correctness -> Track A task/replication screening and Track B weight/gradient lifetime screening -> independent repeats -> choose a mechanism -> conditional joint strategy.
++
++Fixed: L4 EP8 E256 K8 H4096 F1024 S16384/rank, GA4 W2, FP32 persistent states, BF16 compute, FSDP8/E-FSDP1, fixed owners, common recv262144, whole-card90GiB. Native32home+32replica; two-layer64home+0replica.
++
++Track A: serial_home, serial_native, fixed_home, fixed_native, fifo_home, easy_home. 3 patterns at MaxVio10, 25 updates with5 warmup.
++Track B: original anchor, immediate uncached, immediate cached, window flush, step flush. Eight cache and gradient entries/rank. Identical copies/quota and FP32 external path for B0-B3.
++
++No future routing, no external process termination, no old workspace mutation. Only numerical-qualified completed runs enter plots. Full matrix requires >=3% full-update improvement in3 independent runs.
++
++Required gates: identity, actual SO capability, assignment conservation, cache version/epoch/lease, exact-once gradients, owner scaling once, output relativeL2<=.004 and each gradient<=.02, three Adam updates, <=90GiB. Failures remain recorded.
+diff --git a/research/step_lifetime/README.md b/research/step_lifetime/README.md
+new file mode 100644
+index 0000000..93b02d3
+--- /dev/null
++++ b/research/step_lifetime/README.md
+@@ -0,0 +1,46 @@
++# Step-lifetime research
++
++Independent ordinary MegaMoE branch based on44b4e0d. Canonical raw artifacts: D:/megamoe_train/planner-executor-ep8-lab/step-lifetime-study.
++
++Track A uses a frozen baseline lane. Serial means the same ready prefixes/checkpoint partition with independent full-S FFN calls, rather than coexecuted half-S waves; it does not change GA or serialize all Attention.
++Track B uses the private ABI1 candidate lane and a dedicated owner-service stream/HCCL group. Metadata inspection is online and CPU-observed; this is not an AscendC joint planner.
++
++The candidate worker exports megaflux_step_lifetime_version=1. Sidecar fields6/7 select per-slot cached BF16 sources/raw per-copy dW. Public Host descriptor ABI is unchanged. Ordinary pools leave these fields zero.
++
++A weight hit saves remote traffic but still performs a local copy into the execution slot and publishes fresh stripe/panel epochs. Eight cache entries and eight FP32 gradient entries are shared across layers, with one additional FP32 receive plane pair. Recompute reuses the immutable route plan. Current-stream ordering protects weight readers; gradient service events protect sends and bank reuse.
++
++Raw routed gradients bypass autograd weight returns: the framework parameter hook does not execute on None. The adapter accumulates into the original FP32 Parameter.grad layout, applying EP=8 scaling once. No Parameter, owner or optimizer is replaced. GA scaling remains in the loss. clip/Adam follow the explicit finish boundary.
++
++CPU contract test: python tools/test_step_lifetime.py. Two-rank CPU math oracle: python tools/test_lifetime_delivery.py in the Torch runtime. Actual8-rank math and SO/HBM/identity gates are required before interpreting performance.
++
++Run the transport/campaign scripts in this folder from a checkout at PROJECT/stack. Campaign registrations and receipts stay in PROJECT, not Git. Every restart uses a fresh prefix. Controllers share the original global device-jobs.lock, check real device owners, and reject overlaps.
++
++Formal108-run matrix and joint planner remain conditional on the registered gain gate. Failed gates stop their campaign; no silent fallback. Only completed numerical-qualified measurements enter figures.
++
++Every external-path update initializes zero FP32 routed gradients even for an empty owner, so Adam/weight decay is not skipped. The Gloo oracle additionally checks an all-empty update. Raw tensors used on the owner stream are recorded there, and send/receive completion events are observed before bank reuse.
++
++Qualification status and live results are project artifacts in REPORT.md/STATUS.json, never inferred from this source snapshot.
++
++The first A18/B15 pilots completed without crossing the gain gate. The project
++report keeps all33processes as single-repeat qualification results, not a stable
++speedup claim. Main-shape three-version actual plan hashes match across the five
++B modes on all8ranks. Prefix Timer replica coverage is separately qualified on a
++small shape; main/B-service critical-path analysis is still outstanding.
++
++The final completion contract rejects duplicate identities atomically. Six CPU
++contracts and a new64record forced-replica NPU certificate qualify the hardened
++core. Original timed snapshots remain tied to their preceding v3certificate;
++the hardening is not presented as a measured performance optimization.
++
++Replay entrypoints are remote.py/remote_b.py, run_track_a.py/run_track_b.py and
++run_independent_gate.py. Use fresh campaign prefixes and evidence tags. The
++final checkout already contains the contract hardening; finish_hardening.py is
++a preserved one-time migration for the original frozen pilot, not a prerequisite
++to rerun on final sources. run_diagnostic_gates.py also preserves the historical
++small-shape attempt and shared utilities; current replica-plan coverage uses
++run_main_plan_gates.py. Diagnostic clone changes are in diagnostic-source/.
++
++Existing execution-pool and current-stream ordering remain required. These
++leases do not authorize arbitrary concurrent streams. Full-model W1,
++invalid-cache collective rejection/recovery, held-out/natural routes and a
++device-resident joint policy are not qualified by these results.
+diff --git a/research/step_lifetime/RESEARCH-NOTES.md b/research/step_lifetime/RESEARCH-NOTES.md
+new file mode 100644
+index 0000000..9961ee3
+--- /dev/null
++++ b/research/step_lifetime/RESEARCH-NOTES.md
+@@ -0,0 +1,37 @@
++# 实现过程中保留的研究问题
++
++本文件是问题与机制分析，不是新增性能结论。实测以REPORT.md为准。
++
++## 需要区分两种驻留
++
++权重缓存和梯度累积是两个资源。权重可以在读取结束后淘汰，同时保留该专家的梯度累积；梯度也可以提前提交，同时保留仍有效的权重。不能把一次权重淘汰机械地等同为必须归并全部梯度。当前实现为两类资源分别分配八个条目。
++
++一个参数版本内，同一专家在同一执行rank的多次非零任务，可以累积后交付完整参数梯度；交付字节由实际参数平面决定，不按token数缩小。节约字节仍不等于缩短更新：若原归并已被隐藏，或者累积让通信集中到最后，步时可能不变或更慢。
++
++## 与直接近邻的边界
++
++[REM附录B.3](https://arxiv.org/html/2609.32398)已有逐microbatch计算、全局更新边界累积归主及固定optimizer owner。本研究不能把这些基本语义当新贡献。
++
++[UltraEP第4.1–4.2节](https://arxiv.org/html/2606.04101v3)明确跨层复用冗余槽的权重和梯度缓冲，并要求相应归并在下个MoE层前完成。这提供一个具体执行边界：放宽交付时间需要额外有界存储和新的完成协议；收益必须包含资源占用与通信竞争。
++
++## 仍待验证的联合决策
++
++假设值得研究的是：任务组合改变复制需要，复制与驻留改变后续任务成本，而梯度交付又改变可用缓冲和更新尾部。独立选择三者可能产生循环依赖，但目前未证明这种冲突在本机条件下足够强。
++
++未来候选计划的目标应为资源约束依赖图的完成时间，而不是把所有kernel耗时相加。已知任务使用实际路由，尚未就绪的任务只能使用历史分布和剩余microbatch数量；不可读未来路由银行。
++
++## 当前执行器能支持的内容
++
++原MegaMoE内部前反向流水保留。新版本在native backward返回后获得完整raw dW，FP32累积和owner服务使用独立流与通信组，并在银行复用和clip/Adam前观察完成事件。它没有暴露任意tile的Wgrad延迟，也没有证明通信与下一个持久核可以无代价并行。
++
++第一次选题决策依赖A/B小矩阵、真实缓存命中/通信字节和关键路径诊断；稳定收益验证、独立银行、自然路由及不同形状迁移仍是后续门禁。
++
++## 条件成立后优先验证的策略差异
++
++把新增任务放到已有且未提交梯度的同版本专家副本上，未必增加一次完整dW交付；放到另一个rank的新副本上，则可能增加新的完整交付。这是随状态变化的固定成本，不能由一个恒定token罚项完整表示。提前flush会释放银行并争取重叠，但也可能令后续同专家任务再次产生完整交付。
++
++因此候选联合策略可比较“已有驻留且已有梯度债务的副本”与“新副本”，同时考虑flush是否重置了这一边际代价。该想法仍须对照REM式固定更新布局、Afore式驻留优先，以及MegaFlux的归并罚项，不能因写出状态量便称创新。
++
++当前三类路由分别偏向完全持续、交替、随机。若小实验有信号，另建预登记的部分持续性诊断银行：固定部分热点专家身份，改变其余热点使空闲目标rank变化；保持单次MaxVio和每更新token总量一致。它只补充机制验证，不替换原银行，也不能替代自然训练路由。
++
++2026-11-16离线路由审计：冻结主银行ExpertMaxVio=9.982666，三类home-rank MaxVio均值0.323/0.323/0.346；同层两任务理想线性FFN互补指标0/9.70%/8.30%。top16热点身份Jaccard为1/0.0311/0.0318。这是离线负载几何，不是完整step收益或上界，也不是在线planner可读的未来信息。需区分重计算/同调用缓存命中与跨microbatch命中，不能仅由总命中量宣称跨批次贡献。
+diff --git a/research/step_lifetime/RUNBOOK.md b/research/step_lifetime/RUNBOOK.md
+new file mode 100644
+index 0000000..a61c2ac
+--- /dev/null
++++ b/research/step_lifetime/RUNBOOK.md
+@@ -0,0 +1,46 @@
++# Runbook
++
++Source: stack/, branch research/step-lifetime. Primary project report: REPORT.md (watch_report.py refreshes it from guarded receipts).
++
++## Isolation
++
++A lane/container: /home/z00956592/megaflux/step-lifetime-study-20261115.
++B lane/container: /home/z00956592/megaflux/step-lifetime-kernel-20261115.
++Both use the existing global device-jobs.lock under temporal-replica-study-20261114. No private competing hardware lock. Controllers check fuser, driver processes/utilization, and foreign ownership during each run. Only our jobs are timed out.
++
++Never deploy to a lane during its frozen run. Changing local code does not change a submitted source snapshot. Reuse neither registration files nor evidence tags; restarts use fresh campaign prefixes and preserve failures. HOLD-B delays the next B submission while a completed checkpoint is patched; it is not a device lease.
++
++## Current finite campaigns
++
++A: run_track_a.py, registration lifetime-a3.json. Six small gates, per-parameter FP32 gradient comparisons, a main shape/memory gate, then18 screened processes.
++B: run_track_b.py through remote_b.py, registration lifetime-b2.json. Anchor plus B0-B3 small gates/comparisons, a main shape gate, then15 qualification screening processes. On any gate failure the campaign stops; it never falls back.
++Each screened process:25 updates,5 warmup+20 measured. Complete-update wall max across8ranks. Formal108 matrix is not started by these scripts.
++
++## Validation
++
++Local: python stack/tools/test_step_lifetime.py.
++Torch CPU: python implementation/validate_cpu.py; logs diagnostics/delivery-cpu.log and JSON. Includes two ranks, four gradient boundaries, three Adam updates and an empty-owner update.
++Worker build: implementation/build-lifetime.sh; build logs preserve every attempt. Final fingerprint: stack/configs/lifetime-runtime-freeze.json. Actual loaded SO and source identities are in each evidence run.
++
++## Results
++
++python analyze.py refreshes REPORT.md, STATUS.json, results.csv and figures/{A,B-qualification}.{png,svg,pdf}. Only completed25-update runs with all8ranks, unchanged guarded sources, no foreign overlap and <=90GiB are eligible. Diagnostic/qualification status is explicit. One point is one independent process, not20 repeats.
++Large gradient tensors stay in the task-owned remote evidence path in each *-receipt.json; metadata is collected locally. No raw data goes to D:/WORK.
++
++## Reproduction
++
++Replay source entrypoints are tracked in stack/research/step_lifetime/. These expect the checkout at PROJECT/stack and place artifacts in PROJECT. Use fresh tags. Remote deployment currently needs the frozen predecessor runtime and CANN/SHMEM SDK paths recorded in build-lifetime.sh; it does not modify those inputs.
++
++## Outstanding science gates
++
++Independent output/dx/dp/owner-dW checks passed64records with forced legal replicas and positive remote/cache payload; see diagnostics/independent-lifetime-math.json. Matched-prefix Timer qualification, invalid-cache collective rejection, online device-resident control, stable multi-repeat gains, held-out/natural routes and a calibrated joint policy remain required. No top-conference or innovation claim follows from the integration alone.
++
++2026-11-16：follow_up.py已登记并等待A/B两矩阵完成。候选与基线按三类路由的进程中位步时几何均值选取；任一点单轮改善达到3%才补R2/R3，三轮同向且中位改善>=3%再补R4/R5。区间含筛选轮，仅为机制筛查，独立银行/自然路由和正式新planner验证仍必需。发生门禁失败停止，不覆盖旧回执。
++
++字节统计是从有效缓存来源/参数平面及发送缓冲长度推导的逻辑payload，包含预热，不是链路带宽计数器。B3是更新末尾优先；银行满会提前flush，当前实现会flush全局pending集合，需与更细粒度服务策略区分。
++
++2026-11-16：audit_completed.py读取已完成点，核对八rank的初始参数、输入、逻辑路由、重计算次数及B实际任务顺序；输出diagnostics/completed-audit.json和lifetime-payloads.csv。没有逐调用copies/quota的计时日志不能作为该字段运行期完全相等的直接证明。
++
++原Timer诊断使用第三独立lane/container step-lifetime-prefix-timer-20261116，以及implementation/prefix-timer-stack的research/prefix-timer-check分支。仅允许<=3更新且导出step0梯度；不进入性能曲线。该诊断源码与A/B正式筛查快照分开。
++
++主形状copies/quota摘要：run_main_plan_gates.py。先在共同锁内发布诊断代码，然后五方式各三次更新，验证非空副本与逐调用计划一致。--plan-hash-qualification同步读回只在<=3更新诊断允许，主形状不导出巨大梯度PT；相应数值正确性由独立门禁提供。原run_diagnostic_gates.py保留小形状资格尝试及共享发布/对照工具，不能把其零副本记录冒称主形状覆盖。
+diff --git a/research/step_lifetime/VALIDATION.md b/research/step_lifetime/VALIDATION.md
+new file mode 100644
+index 0000000..af37b9c
+--- /dev/null
++++ b/research/step_lifetime/VALIDATION.md
+@@ -0,0 +1,21 @@
++# 验证回执
++
++A组六种方式均完成八rank、三次Adam、输入/路由/初始参数身份检查；五组相对serial_home逐参数FP32梯度比较均通过。主形状门禁峰值65.49GiB。
++
++生命周期CPU契约5项通过；两rankGloo参考覆盖b0-b3、三次Adam和空owner零梯度，结果通过。
++
++独立FFN强制合法复制门禁：八rank×四种交付方式×W1/W2，共64条记录通过。实际存在缓存命中和远端梯度交付；不是仅走本地专家。输出相对L2最大0.00030363924452103674；dx/dp/dW最大0.0027591867838054895。
++
++详见diagnostics/independent-lifetime-math.json及evidence/lifetime-independent-ffn-v3/rank*.json。正式训练计时前，transport要求该证明的核心源码指纹仍与当前运行代码一致。
++
++B完整模型逐参数比较、主形状与性能筛查的最新状态以REPORT.md和lifetime-b2.json为准。非法缓存集体拒绝、匹配prefix的原Timer验证、独立银行和稳定收益尚待完成。
++
++2026-11-16：原worker与ABI1候选默认锚点的相同输入/参数/路由逐参数梯度比较通过，见diagnostics/lifetime-anchor-vs-original-comparison.json。
++
++原AscendTimerV2 prefix资格：v1 Native小形状数值通过但所有copies为空，不能证明副本覆盖。v2采用合法MoonEP计划激励复制，原校验发现重复坐标记录并拒绝，保留失败。定位到两个FFN波次连续反向时，采集缓冲仅在前向清零；在独立诊断副本的每次backward descriptor边界清零本次坐标区、刷新epoch，ready/梯度缓冲不变。v3八rank各72次前向/重放/反向采集，均有非零坐标记录且无重复/越界；三次Adam和对TimerOFF Native的逐参数梯度比较通过。范围仍是L2/H512/F512/S256，MoonEP复制仅作资格激励，未计入性能；主形状及raw B服务关键路径尚未验收。
++
++完成ticket批次的重复identity拒绝在CPU回归中暴露缺口，diagnostics/duplicate-completion-before.json保留失败。修复安排在冻结B矩阵全部结束后，由finish_hardening.py更新，并重新执行CPU契约和独立NPU强制副本门禁；实时状态见diagnostics/hardening.json。原计时核心的v3证书保留，最终代码不能冒用旧源码指纹。
++
++最终回执：A18/18、B15/15首轮进程全部完成。主形状random三次更新中，anchor/B0/B1/B2/B3的copies、source_quota、logical_ids、physical_ids及logical_counts，在八rank各48次原始编译调用逐项哈希一致，实际副本上限8。见diagnostics/lifetime-plan-equality.json。五方式均受同一资源/源文件/设备独占门禁约束。
++
++冻结矩阵结束后增加重复completion批次的原子拒绝，六项CPU契约与before/after回归通过；随后lifetime-independent-ffn-v4重新完成64条有真实缓存/远端梯度的独立NPU对照，结果通过且当前本地核心源码匹配新证书。旧计时点按v3历史证书匹配，不冒用v4。新版不新增性能结论。详见diagnostics/hardening.json与independent-lifetime-math.json。
+diff --git a/research/step_lifetime/analyze.py b/research/step_lifetime/analyze.py
+new file mode 100644
+index 0000000..275ab69
+--- /dev/null
++++ b/research/step_lifetime/analyze.py
+@@ -0,0 +1,196 @@
++"""Publish completed, guarded runs only; qualification timings are kept separate."""
++from pathlib import Path
++import csv
++import json
++import statistics
++import hashlib
++
++ROOT = Path(__file__).resolve().parents[3]
++
++
++def analyze():
++    from audit_completed import audit
++    matched_audit = audit()
++    states = {}
++    rows = []
++    names=sorted(path.stem for path in ROOT.glob('lifetime-*.json') if '-receipt' not in path.stem)
++    for name in names:
++        path = ROOT / (name + '.json')
++        if not path.exists():
++            continue
++        try:state = json.loads(path.read_text())
++        except json.JSONDecodeError:continue
++        if 'runs' not in state:continue
++        states[name] = state
++        for item in state.get('runs', []):
++            if not item.get('passed'):
++                continue
++            folder = ROOT / 'evidence' / item['tag']
++            try:
++                ranks = [[json.loads(line) for line in (folder / f'steps-rank{rank}.jsonl').read_text().splitlines()]
++                         for rank in range(8)]
++            except FileNotFoundError:
++                continue
++            if any(len(rank) != 25 or [row['step'] for row in rank] != list(range(25)) for rank in ranks):
++                continue
++            times = [max(rank[step]['milliseconds'] for rank in ranks) / 1000 for step in range(5, 25)]
++            rows.append(dict(track='B-qualification' if name.startswith('lifetime-b') else 'A',
++                             arm=item['arm'], pattern=item['pattern'], maxvio=10, repeat=1,
++                             mean_s=statistics.mean(times), median_s=statistics.median(times),
++                             peak_hbm_gib=item['receipt']['peak_driver_MiB'] / 1024, tag=item['tag']))
++    target = ROOT / 'results.csv'
++    with target.open('w', newline='', encoding='utf-8') as handle:
++        writer = csv.DictWriter(handle, fieldnames=('track', 'arm', 'pattern', 'maxvio', 'repeat',
++                                                   'mean_s', 'median_s', 'peak_hbm_gib', 'tag'))
++        writer.writeheader()
++        writer.writerows(rows)
++    contrasts=[]
++    pairs=(('A','fixed_home','serial_home','grouping_home'),
++           ('A','fixed_native','serial_native','grouping_native'),
++           ('A','serial_native','serial_home','replication_serial'),
++           ('A','fixed_native','fixed_home','replication_grouped'),
++           ('A','fifo_home','fixed_home','fifo_selection'),
++           ('A','easy_home','fixed_home','maxutil_vs_fixed'),
++           ('A','easy_home','fifo_home','maxutil_vs_fifo'),
++           ('B-qualification','b1','b0','residence'),
++           ('B-qualification','b2','b1','window_delivery'),
++           ('B-qualification','b3','b1','step_delivery'),
++           ('B-qualification','b1','anchor','residence_vs_anchor'),
++           ('B-qualification','b2','anchor','window_vs_anchor'),
++           ('B-qualification','b3','anchor','step_vs_anchor'))
++    index={(row['track'],row['pattern'],row['arm']):row for row in rows}
++    for track,candidate,baseline,mechanism in pairs:
++        for pattern in ('same','alternating','random'):
++            if (track,pattern,candidate) not in index or (track,pattern,baseline) not in index:continue
++            first=index[track,pattern,candidate];second=index[track,pattern,baseline]
++            gain=1-first['median_s']/second['median_s']
++            contrasts.append(dict(track=track,pattern=pattern,mechanism=mechanism,candidate=candidate,
++                baseline=baseline,gain=gain,pilot_3percent_trigger=gain>=.03,stable=False))
++    with (ROOT/'diagnostics/matched-contrasts.csv').open('w',newline='') as handle:
++        writer=csv.DictWriter(handle,fieldnames=('track','pattern','mechanism','candidate','baseline','gain',
++                                               'pilot_3percent_trigger','stable'))
++        writer.writeheader();writer.writerows(contrasts)
++    lines = ['# Step-lifetime study：实施与实测状态', '',
++             '独立分支：`research/step-lifetime`；源码位于`stack/`。原始数据在本目录的`evidence/`，大梯度PT保留在各receipt标注的本研究远端目录。', '',
++             '固定L4/EP8/E256/Top8/H4096/F1024/S16384，GA4/W2。每个筛查点一次新进程、25更新、5预热＋20测量，取逐更新八rank最大完整wall time。单轮不构成稳定收益。', '',
++             '## 当前阶段', '']
++    for name, state in states.items():
++        passed = sum(bool(item.get('passed')) for item in state.get('gates', []))
++        lines.append(f"- {name}: {state['stage']}；通过执行门禁{passed}项；已完成筛查{len(state.get('runs', []))}项。")
++        if state.get('error'):
++            lines.append(f"  失败原因：{state['error']}。保留原始日志，不用失败点作图。")
++    lines += ['', '## 方式说明', '',
++        '本页所有方式均使用普通MegaMoE执行器；native指原有单调用规划策略，不是另一个模型或共享融合分支。模型shared expert统一由框架计算。', '',
++        '|代号|实际执行|', '|---|---|',
++        '|serial_home / serial_native|相同就绪前缀下分别执行完整S的FFN；后者允许单调用专家复制|',
++        '|fixed_home / fixed_native|同层固定任务分组，分两波半S执行；后者允许单调用专家复制|',
++        '|fifo_home|FIFO最小就绪集合，W2时通常单任务，固定home；双任务强对照见fixed_home|',
++        '|easy_home|MaxUtil就绪任务选择，固定home|',
++        '|anchor|fixed_native原核内dW流水归并；与B使用同一候选SO的默认路径|',
++        '|b0|每调用准备权重，公共FP32 dW路径产生后立即提交|',
++        '|b1|同参数版本内八条权重驻留；dW立即提交|',
++        '|b2|b1权重策略；每GA2窗口提交累积dW|',
++        '|b3|b1权重策略；GA4步末优先提交，容量满可提前归并|']
++    lines += ['', '## 已完成筛查', '',
++              '|组|路由|方式|平均步时(s)|中位步时(s)|整卡峰值(GiB)|', '|---|---|---|---:|---:|---:|']
++    for row in rows:
++        lines.append(f"|{row['track']}|{row['pattern']}|{row['arm']}|{row['mean_s']:.6f}|{row['median_s']:.6f}|{row['peak_hbm_gib']:.3f}|")
++    if not rows:
++        lines += ['', '目前没有完成并通过门禁的25更新筛查点，尚不画性能曲线。']
++    proof_path=ROOT/'diagnostics/independent-lifetime-math.json'
++    proof=json.loads(proof_path.read_text()) if proof_path.exists() else {}
++    current_math_qualified=bool(proof.get('passed') and all(
++        hashlib.sha256((ROOT/'stack'/name).read_bytes()).hexdigest()==digest
++        for name,digest in proof.get('runtime_sources',{}).items()))
++    def diagnostic(name):
++        path=ROOT/'diagnostics'/name
++        try:return json.loads(path.read_text()) if path.exists() else {}
++        except json.JSONDecodeError:return {}
++    timer=diagnostic('prefix-timer-qualification.json')
++    plans=diagnostic('lifetime-plan-equality.json')
++    diagnostics=diagnostic('diagnostic-gates.json')
++    hardening=diagnostic('hardening.json')
++    lines += ['', '## 独立执行器验证', '',
++        f"门禁标签：{proof.get('tag','pending')}；通过：{proof.get('passed',False)}；记录数：{proof.get('records',0)}；缓存命中字节：{proof.get('actual_cache_hit_bytes',0)}；梯度远端字节：{proof.get('actual_gradient_remote_bytes',0)}。"]
++    if proof.get('reason'):lines += ['',proof['reason']]
++    lines += ['',f"当前本地运行代码与最新数值证书匹配：{current_math_qualified}；接口加固状态：{hardening.get('stage','未启动')}。计时快照按自身历史证书核对，未覆盖改写旧数据。"]
++    lines += ['',f"独立诊断lane状态：{diagnostics.get('stage','未启动')}。小形状prefix原Timer副本覆盖资格：{timer.get('passed',False)}；独立主形状实际copies/quota跨B方式一致性：{plans.get('passed',False)}。"]
++    if plans.get('passed'):lines += ['',f"计划一致性范围：{plans['scope']}。它补充三次更新的诊断证据，不等于为全部25更新计时日志补出了逐调用哈希。"]
++    if timer.get('reason'):lines += ['',f"Timer覆盖说明：{timer['reason']}。"]
++    if timer.get('passed'):lines += ['',f"Timer资格范围：{timer['scope']}；与TimerOFF固定Native的逐参数梯度对照通过。主形状关键路径与B公共服务路径时间线仍未完成。"]
++    if diagnostics.get('error'):lines += ['',f"诊断失败保留：{diagnostics['error']}。不作为性能成绩。"]
++    for pattern in ('same','alternating','random'):
++        points={row['arm']:row for row in rows if row['track']=='A' and row['pattern']==pattern}
++        required=('serial_home','serial_native','fixed_home','fixed_native')
++        if all(arm in points for arm in required):
++            serial=points['serial_home']['mean_s']-points['serial_native']['mean_s']
++            grouped=points['fixed_home']['mean_s']-points['fixed_native']['mean_s']
++            lines += ['',f"{pattern}单轮四格：复制收益（顺序/分组）={serial:.6f}/{grouped:.6f}s；交互差={serial-grouped:.6f}s。负收益表示复制更慢；单轮不构成因果或稳定性结论。"]
++    if rows:lines += ['', '[实测图PNG](figures/A.png) · [SVG](figures/A.svg) · [PDF](figures/A.pdf) · [CSV](results.csv)']
++    if any(row['track']=='B-qualification' for row in rows):lines += ['', '[B组资格路径PNG](figures/B-qualification.png) · [SVG](figures/B-qualification.svg) · [PDF](figures/B-qualification.pdf)']
++    lines += ['', '## 匹配条件和机制证据', '',
++        '主机为Ascend950DT八卡。本轮使用合法合成token与next-token标签，不是预训练收敛实验。每卡四条完整16K序列，GA4覆盖32条序列、524288个序列token；有效label数按实际mask归一化。',
++        'V4 attention/mHC、框架shared expert、FP32参数/梯度/Adam、BF16专家、AdamW LR1e-5/betas(0.9,0.95)/epsilon1e-8/decay0.01/clip1；相同prefix复用、checkpoint切分及FSDP前向驻留。',
++        f"已完成{len(matched_audit['records'])}个点的八rank初始参数、输入、逻辑路由及重计算调用指纹核对；全部匹配：{matched_audit['all_completed_match']}。B的实际任务分组/切片顺序也一致。",
++        '当前计时日志没有保存每次copies/quota的完整摘要，不能把相同Native输入当作运行期逐项一致的直接证明。这个证据缺口保留，诊断版本另行补齐。',
++        '字节和发送次数见[逻辑payload CSV](diagnostics/lifetime-payloads.csv)，为八rank、全部25更新之和，包含预热；不是硬件链路计数。缓存命中包含前向、重放和反向准备，尚未分离跨microbatch收益。',
++        'B3不是保证只在步末发送：八条梯度存储耗尽时会确定性提前flush全部pending，必须结合flush次数解释结果。',
++        '路由几何诊断[JSON](diagnostics/route-opportunity.json)只给线性计算理想互补空间，不能解释为整步加速上界或实测关键路径。']
++    lines += ['', '实际任务组大小与跨层次数见[运行期审计](diagnostics/completed-audit.json)；MaxUtil在same/random确实产生跨层任务组，在alternating采用与固定分组相同的双任务同层组。W2的FIFO最小集合为1，不能把胜过它单独解释为动态任务选择的收益。']
++    lines += ['', '[匹配机制差异CSV](diagnostics/matched-contrasts.csv)逐项区分分组、复制、动态选择、驻留和归并时机；单轮触发不等于稳定收益。',
++        '最高层筛选仍需比较最强适用A对照与原锚点，不能只超过新增公共路径中较慢的B0。']
++    lines += ['', '## 实现与限制', '',
++              '- A：新增serial_home、serial_native、fifo_home；统一prefix/checkpoint条件。serial保留相同就绪前缀，FFN使用独立完整S调用，分组使用两波半S组合。',
++              '- B：ABI1候选worker，版本化八条BF16权重缓存、八条FP32梯度累积项、独立owner服务流/HCCL组；复用缓冲与更新前等待交付。',
++              '- 缓存命中减少远端权重读取，仍需本地拷入执行槽；没有声称零搬运或自动降低HBM。原始route plan和optimizer owner保留。',
++              '- routed原始dW走显式交付，返回None绕过原Parameter hook；向原FP32.grad布局只应用一次EP缩放。GA仍由loss归一化。',
++              '- B当前为资格验证路径，CPU读取当前placement的开销全部计入；尚非AscendC联合planner。需NPU正确性与机制时间线通过后才能解释正式性能。',
++              '- 两rank Gloo参考检查通过b0-b3、三次Adam及精确梯度求和/EP缩放；初版五项CPU契约通过，加固后六项通过。CPU通过不代替NPU验收。',
++              '- 新联合策略、主形状/B服务路径完整时间线、非法缓存集体拒绝、稳定收益、独立银行与自然训练路由验证尚未完成；108矩阵关闭。Timer和copies/quota的小形状诊断状态见上。',
++              '', '## 失败与恢复', '',
++              '- 首次部署未完成时的提前启动：在设备初始化前失败，记录在track-a.json。',
++              '- a2冻结检查发现漏复制扩展SO：在训练前拒绝；补齐冻结二进制后改用a3新标签。',
++              '- 候选首次构建遇到CRLF脚本；第二次编译发现字段位于关闭的宏内，修正后第三次构建成功。所有构建日志保留。',
++              '', '## 下一步', '',
++              '完成两条门禁与小矩阵；按整步结果和真实搬运/交付记录选择主线。若B资格路径显示损失，先区分服务实现成本与生命周期策略，不据此断言该研究问题无收益。']
++    (ROOT / 'REPORT.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
++    follow_path=ROOT/'followup.json'
++    follow=json.loads(follow_path.read_text()) if follow_path.exists() else {}
++    if follow:lines += ['', '## 后续判定', '', f"状态：{follow.get('stage')}。{follow.get('conclusion','等待两条小矩阵完成；达到门槛才补独立重复。')}"]
++    (ROOT / 'REPORT.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
++    (ROOT / 'STATUS.json').write_text(json.dumps(dict(stages={name: state['stage'] for name, state in states.items()},
++        completed_screen_points=len(rows), independent_expert_math=proof, current_runtime_math_qualified=current_math_qualified,
++        hardening_stage=hardening.get('stage'),diagnostic_stage=diagnostics.get('stage'),
++        small_prefix_timer_qualified=timer.get('passed',False), main_lifetime_plans_equal=plans.get('passed',False),
++        new_joint_planner=False, stable_gain_established=follow.get('stable_gain',False), followup=follow.get('stage'),
++        formal_matrix_enabled=False), indent=2) + '\n')
++    if rows:
++        import matplotlib
++        matplotlib.use('Agg')
++        import matplotlib.pyplot as plt
++        for track in sorted({row['track'] for row in rows}):
++            selected = [row for row in rows if row['track'] == track]
++            fig, axes = plt.subplots(3, 2, figsize=(12, 10))
++            for index,pattern in enumerate(('same','alternating','random')):
++                points=[row for row in selected if row['pattern']==pattern]
++                order=('serial_home','serial_native','fixed_home','fixed_native','fifo_home','easy_home') if track=='A' else ('anchor','b0','b1','b2','b3')
++                points.sort(key=lambda row:order.index(row['arm']))
++                for axis,field,title in zip(axes[index],('mean_s','peak_hbm_gib'),
++                    ('Mean complete update (s)','Whole-card sampled HBM (GiB)')):
++                    bars=axis.barh(range(len(points)),[row[field] for row in points])
++                    axis.bar_label(bars,fmt='%.3f',fontsize=8,padding=3)
++                    axis.set_yticks(range(len(points)),[row['arm'] for row in points],fontsize=9)
++                    axis.invert_yaxis()
++                    axis.set_title(pattern+' / '+title)
++                    axis.set_xlim(0,5.5 if field=='mean_s' else 95)
++                    axis.grid(axis='x',alpha=.2)
++            fig.suptitle(f'{track}: measured completed runs; MaxVio10, GA4/W2; one independent repeat')
++            fig.tight_layout()
++            for extension in ('png', 'svg', 'pdf'):
++                fig.savefig(ROOT / 'figures' / f'{track}.{extension}', dpi=160)
++            plt.close(fig)
++    return states
++
++
++if __name__ == '__main__':
++    analyze()
+diff --git a/research/step_lifetime/audit_completed.py b/research/step_lifetime/audit_completed.py
+new file mode 100644
+index 0000000..efb7598
+--- /dev/null
++++ b/research/step_lifetime/audit_completed.py
+@@ -0,0 +1,108 @@
++"""Read-only matched-input/order and logical payload audit of completed pilots."""
++from pathlib import Path
++import csv
++import hashlib
++import json
++from collections import Counter
++
++ROOT = Path(__file__).resolve().parents[3]
++PATTERNS = ('same', 'alternating', 'random')
++
++
++def canonical(value):
++    return json.dumps(value, sort_keys=True, separators=(',', ':')).encode()
++
++
++def read(folder, name):
++    return json.loads((folder / name).read_text())
++
++
++def fingerprint(folder, kind):
++    values = [read(folder, f'{kind}-rank{rank}.json') for rank in range(8)]
++    return hashlib.sha256(canonical(values)).hexdigest()
++
++
++def order(folder):
++    # Timing and strategy observations are intentionally excluded. The actual
++    # task identities, slices and expert-domain layers must remain identical.
++    fields = ('step', 'group', 'keys', 'ready_keys', 'native_waves')
++    ranks = []
++    for rank in range(8):
++        rows = [json.loads(line) for line in
++                (folder / f'temporal-groups-rank{rank}.jsonl').read_text().splitlines()]
++        ranks.append([{key: row[key] for key in fields} for row in rows])
++    return hashlib.sha256(canonical(ranks)).hexdigest()
++
++
++def audit():
++    states = [read(ROOT, name) for name in ('lifetime-a3.json', 'lifetime-b2.json')]
++    proof = read(ROOT, 'diagnostics/independent-lifetime-math.json')
++    proofs=[proof]+[json.loads(path.read_text()) for path in
++                   sorted((ROOT/'diagnostics').glob('lifetime-independent-ffn-v*.json'))]
++    proofs=[item for item in proofs if item.get('passed')]
++    records, matched, payloads = [], [], []
++    for state in states:
++        for item in state['runs']:
++            if not item.get('passed'):
++                continue
++            folder = ROOT / 'evidence' / item['tag']
++            record = dict(tag=item['tag'], arm=item['arm'], pattern=item['pattern'])
++            for name in ('initial', 'input-identity', 'route-identity', 'route-calls'):
++                record[name] = fingerprint(folder, name)
++            record['order'] = order(folder)
++            groups=[json.loads(line) for line in (folder/'temporal-groups-rank0.jsonl').read_text().splitlines()]
++            groups=[row for row in groups if row['step']>=5]
++            record['measured_group_geometry']=dict(groups=len(groups),
++                task_count_histogram=dict(Counter(len(row['keys']) for row in groups)),
++                cross_layer_groups=sum(len({key[2] for key in row['keys']})>1 for row in groups),
++                windows_with_unselected_ready_tasks=sum(len(row['keys'])<len(row['ready_keys']) for row in groups))
++            if 'lifetime-mode' in ' '.join(item['receipt'].get('command', [])):
++                sources = read(folder, 'source-identity.json')
++                matching=[item for item in proofs if all(sources.get(name)==digest
++                          for name,digest in item['runtime_sources'].items())]
++                record['qualified_core_matches'] = bool(matching)
++                certificate=matching[0] if matching else proof
++                record['qualification_tag']=certificate['tag']
++                record['qualified_worker_matches'] = all(any(
++                    value['sha256'] == certificate['worker_sha256'] and name.endswith('early_bf16.so')
++                    for name,value in read(folder, f'libraries-rank{rank}.json')['libraries'].items())
++                    for rank in range(8))
++            records.append(record)
++            files = [folder / f'lifetime-audit-rank{rank}.json' for rank in range(8)]
++            if all(path.exists() for path in files):
++                values = [json.loads(path.read_text()) for path in files]
++                row = dict(tag=item['tag'], arm=item['arm'], pattern=item['pattern'])
++                for key in ('weight_remote_bytes', 'weight_hit_bytes', 'cache_local_copy_bytes',
++                            'gradient_remote_bytes', 'gradient_deliveries', 'flushes', 'pending'):
++                    row[key] = sum(value[key] for value in values)
++                row['updates_including_warmup'] = 25
++                payloads.append(row)
++    for pattern in PATTERNS:
++        selected = [row for row in records if row['pattern'] == pattern]
++        if not selected:
++            continue
++        checks = {name: len({row[name] for row in selected}) == 1 for name in
++                  ('initial', 'input-identity', 'route-identity', 'route-calls')}
++        lifecycle = [row for row in selected if row['arm'] in ('anchor', 'b0', 'b1', 'b2', 'b3')]
++        checks['B_order'] = len({row['order'] for row in lifecycle}) <= 1
++        matched.append(dict(pattern=pattern, checks=checks, passed=all(checks.values()),
++                            B_arms=[row['arm'] for row in lifecycle], completed=len(selected)))
++    result = dict(records=records, matched=matched, all_completed_match=all(row['passed'] for row in matched),
++                  all_lifetime_runs_match_qualified_core_and_worker=all(
++                      row.get('qualified_core_matches',True) and row.get('qualified_worker_matches',True)
++                      for row in records),
++                  payload_scope='logical source payloads summed across eight ranks and all25 updates, not hardware counters',
++                  copies_quota_equality='not captured in pilot logs; deterministic identical Native inputs are insufficient as direct runtime proof',
++                  checkpoint_hits='aggregate hit bytes include forward, replay and backward preparation; no cross-microbatch-only attribution')
++    (ROOT / 'diagnostics/completed-audit.json').write_text(json.dumps(result, indent=2) + '\n')
++    if payloads:
++        with (ROOT / 'diagnostics/lifetime-payloads.csv').open('w', newline='') as handle:
++            writer = csv.DictWriter(handle, fieldnames=list(payloads[0]))
++            writer.writeheader()
++            writer.writerows(payloads)
++    return result
++
++
++if __name__ == '__main__':
++    result = audit()
++    print(json.dumps(dict(records=len(result['records']), matched=result['matched'])))
+diff --git a/research/step_lifetime/audit_route_geometry.py b/research/step_lifetime/audit_route_geometry.py
+new file mode 100644
+index 0000000..2fbd42e
+--- /dev/null
++++ b/research/step_lifetime/audit_route_geometry.py
+@@ -0,0 +1,59 @@
++"""Offline histogram audit of the frozen RouteProvider permutations, never a planner."""
++from pathlib import Path
++import hashlib
++import json
++import numpy as np
++
++ROOT = Path(__file__).resolve().parents[3]
++
++
++def main():
++    path = ROOT / 'routes/maxvio-10.npy'
++    digest = hashlib.sha256(path.read_bytes()).hexdigest()
++    identity = json.loads((ROOT / 'evidence/lifetime-a3-main-adam3/source-identity.json').read_text())
++    if digest != identity['routes/maxvio-10.npy']:
++        raise ValueError('Route bank differs from the measured main shape')
++    base = np.load(path, allow_pickle=False)
++    if base.shape != (8, 16384, 8):
++        raise ValueError('This audit covers only the frozen EP8/S16K/Top8 family')
++    counts = np.bincount(base.ravel(), minlength=256)
++    records, summary = [], {}
++    for pattern in ('same', 'alternating', 'random'):
++        violations, complementarity, reuse = [], [], []
++        for step in range(25):
++            for layer in range(4):
++                loads, hotsets = [], []
++                for microbatch in range(4):
++                    counter = step * 4 + layer
++                    if pattern == 'random':
++                        counter = counter * 4 + microbatch
++                    permutation = np.random.default_rng(42 + 100003 * counter).permutation(256)
++                    if pattern == 'alternating':
++                        permutation = (permutation + microbatch * 32) % 256
++                    mapped = np.empty_like(counts)
++                    mapped[permutation] = counts
++                    rank_load = mapped.reshape(8, 32).sum(1)
++                    loads.append(rank_load)
++                    hotsets.append(set(np.argsort(-mapped, kind='stable')[:16].tolist()))
++                    violation = float(rank_load.max() / rank_load.mean() - 1)
++                    violations.append(violation)
++                    records.append(dict(pattern=pattern, step=step, layer=layer, microbatch=microbatch,
++                                        home_rank_load=rank_load.tolist(), home_rank_maxvio=violation))
++                for first in (0, 2):
++                    left, right = loads[first:first + 2]
++                    complementarity.append(float(1 - (left + right).max() / (left.max() + right.max())))
++                    first_hot, second_hot = hotsets[first:first + 2]
++                    reuse.append(len(first_hot & second_hot) / len(first_hot | second_hot))
++        summary[pattern] = dict(home_rank_maxvio_mean=float(np.mean(violations)),
++                                home_rank_maxvio_max=float(np.max(violations)),
++                                ideal_same_layer_pair_compute_saving=float(np.mean(complementarity)),
++                                top16_hot_identity_jaccard=float(np.mean(reuse)))
++    result = dict(role='offline_route_geometry_audit_not_online_score_or_full_step_bound',
++                  bank_sha256=digest, expert_maxvio=float(counts.max() / counts.mean() - 1),
++                  summary=summary, records=records)
++    (ROOT / 'diagnostics/route-opportunity.json').write_text(json.dumps(result, indent=2))
++    return result
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/research/step_lifetime/diagnostic-source/README.md b/research/step_lifetime/diagnostic-source/README.md
+new file mode 100644
+index 0000000..6dae458
+--- /dev/null
++++ b/research/step_lifetime/diagnostic-source/README.md
+@@ -0,0 +1,12 @@
++# Diagnostic clone patch
++
++This patch adds gated prefix-Timer/plan-hash diagnostics and clears each
++backward invocation's coordinate trace. It does not alter timed A/B sources.
++
++Apply to a clean clone of the final research/step-lifetime tree. Git archives
++and Linux checkouts use LF. On Windows, capture_diagnostics.py can have CRLF;
++use `git apply --ignore-whitespace <patch-path>` for its unchanged context.
++Index-only validation uses `git apply --check --cached <patch-path>`.
++The new flags allow at most three diagnostic updates. Timer qualification
++requires step0 gradients. Plan-hash diagnostics intentionally avoid main-shape
++multi-GiB gradient dumps, and are never performance runs.
+diff --git a/research/step_lifetime/diagnostic-source/prefix-timer.patch b/research/step_lifetime/diagnostic-source/prefix-timer.patch
+new file mode 100644
+index 0000000..586eadc
+--- /dev/null
++++ b/research/step_lifetime/diagnostic-source/prefix-timer.patch
+@@ -0,0 +1,117 @@
++diff --git a/tools/capture_diagnostics.py b/tools/capture_diagnostics.py
++index 1443886..d8bbafb 100644
++--- a/tools/capture_diagnostics.py
+++++ b/tools/capture_diagnostics.py
++@@ -128,11 +128,23 @@ def install(out:Path,rank:int):
++         if len(matches)!=1:raise RuntimeError('saved backward placement has no unique diagnostic plan identity')
++         key,ticket=matches[0];contexts.append((key,False))
++         token=scopes['begin']('MegaMoE.backward',key=key,recompute=False);start=time.monotonic_ns()
+++        original_descriptor=pool.module._descriptor
+++        def descriptor(plan):
+++            # Prefix checkpoints can replay two waves before either backward.
+++            # Reset this backward's reusable coordinate slots on its consuming
+++            # stream; forward-only reset otherwise merges the two invocations.
+++            m=pool.module;trace=m.gradient_trace;offset=PREFIX['backward']
+++            trace[:offset].zero_();trace[offset+HEADER:].zero_()
+++            trace[offset+7].fill_(plan.epoch)
+++            return original_descriptor(plan)
+++        pool.module._descriptor=descriptor
++         try:
++             result=original_backward(pool,*args,**kwargs);finish=time.monotonic_ns();scopes['end'](token)
++             snapshot(pool,'backward',key,False,token,start,finish,ticket.body)
++             return result
++-        finally:contexts.pop()
+++        finally:
+++            pool.module._descriptor=original_descriptor
+++            contexts.pop()
++
++     scopes['register_flusher'](export)
++     NativeFSDP2Pool.forward=forward;NativeFSDP2Pool.backward=backward
++diff --git a/tools/capture_plan_hashes.py b/tools/capture_plan_hashes.py
++new file mode 100644
++index 0000000..ecc7bb1
++--- /dev/null
+++++ b/tools/capture_plan_hashes.py
++@@ -0,0 +1,30 @@
+++"""Diagnostic-only synchronizing hashes; never enable in performance runs."""
+++import hashlib
+++import json
+++from ascend_deepep.plan_replay import invocation
+++from ascend_deepep.unified_planner import CommonOnlinePlanner
+++
+++
+++def install(out, rank):
+++    original = CommonOnlinePlanner._compile
+++    sequence = 0
+++
+++    def compile(self, *args, **kwargs):
+++        nonlocal sequence
+++        plan = original(self, *args, **kwargs)
+++        request = invocation()
+++        key, replay = request if request is not None else (None, None)
+++        hashes = {};replicas=0
+++        for field in ('copies', 'source_quota', 'logical_ids', 'physical_ids', 'logical_counts'):
+++            tensor = getattr(plan, field).detach().cpu().contiguous()
+++            hashes[field] = hashlib.sha256(tensor.numpy().tobytes()).hexdigest()
+++            if field=='copies':replicas=int((tensor>=0).sum())
+++        row = dict(rank=rank, sequence=sequence, invocation=key, recompute=replay,
+++                   hashes=hashes,replicas=replicas,diagnostic_only=True,
+++                   semantics='synchronizing actual compiled plan, not timed online planner overhead')
+++        with (out / f'actual-plan-hashes-rank{rank}.jsonl').open('a') as handle:
+++            handle.write(json.dumps(row) + '\n')
+++        sequence += 1
+++        return plan
+++
+++    CommonOnlinePlanner._compile = compile
++diff --git a/tools/train.py b/tools/train.py
++index e648424..fa89078 100644
++--- a/tools/train.py
+++++ b/tools/train.py
++@@ -88,6 +88,8 @@ def main():
++     parser.add_argument('--maxvio', type=float, required=True)
++     parser.add_argument('--layers', type=int, default=2)
++     parser.add_argument('--steps', type=int, default=25)
+++    parser.add_argument('--prefix-timer-qualification',action='store_true')
+++    parser.add_argument('--plan-hash-qualification',action='store_true')
++     parser.add_argument('--lifetime-mode',choices=('anchor','b0','b1','b2','b3'))
++     parser.add_argument('--tokens', type=int, default=16384)
++     parser.add_argument('--microbatches', type=int, default=1)
++@@ -117,6 +119,10 @@ def main():
++     parser.add_argument('--diagnose-memory', action='store_true')
++     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
++     args = parser.parse_args()
+++    if args.plan_hash_qualification and args.steps>3:
+++        parser.error('Plan hash capture is diagnostic-only and limited to3 updates')
+++    if args.prefix_timer_qualification and (not args.diagnostic_timer or not args.dump_grad_step0 or args.steps>3):
+++        parser.error('Prefix Timer qualification requires TimerON, step0 gradients and at most3 updates')
++     if args.lifetime_mode and (args.temporal_policy!='fixed_native' or not args.temporal_prefix_reuse or args.diagnostic_timer):
++         parser.error('Lifetime qualification requires fixed_native, prefix reuse and TimerOFF')
++     if args.maxutil_rule=='upstream_first' and args.temporal_policy not in ('easy_home','easy_independent'):
++@@ -126,7 +132,7 @@ def main():
++     if args.temporal_schedule_replay and (args.temporal_policy!='easy_home' or args.diagnostic_timer):
++         parser.error('task replay is a TimerOFF diagnostic for easy_home, never online performance')
++     if args.temporal_prefix_reuse and (not args.temporal_policy or args.temporal_policy=='legacy' or
++-            args.diagnostic_timer or args.forward_window!=2 or args.microbatches!=4):
+++            (args.diagnostic_timer and not args.prefix_timer_qualification) or args.forward_window!=2 or args.microbatches!=4):
++         parser.error('prefix reuse requires GA4/W2 online grouped policy; other windows, offline and Timer capture are not qualified')
++     if (args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or (args.temporal_prefix_reuse and args.temporal_schedule_replay)) and (
++             not args.temporal_prefix_reuse or not args.dump_grad_step0 or args.steps>3):
++@@ -183,7 +189,7 @@ def main():
++             temporal_prefix_reuse=args.temporal_prefix_reuse,
++             prefix_diagnostic_sync=args.prefix_diagnostic_sync,
++             prefix_stage_audit=args.prefix_stage_audit,
++-            numerical_diagnostic_only=bool(args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only),
+++            numerical_diagnostic_only=bool(args.plan_hash_qualification or args.prefix_timer_qualification or args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only),
++             rematerialization_partition=('prefix+ffn_shared_finish' if args.temporal_prefix_reuse else
++                 'logical-layer-group' if args.temporal_policy and args.temporal_policy!='legacy' else 'layer'),
++             execution_mode=('offline-task-selection-replay-diagnostic' if args.temporal_schedule_replay else
++@@ -240,6 +246,9 @@ def main():
++     from mindspeed_llm.fsdp2.features.ep8_imbalance import plan_invocation
++     from ascend_deepep.plan_replay import install_replay_provider
++     install_replay_provider(plan_invocation)
+++    if args.plan_hash_qualification:
+++        from capture_plan_hashes import install
+++        install(args.out,rank)
++     if args.diagnostic_timer:
++         from capture_diagnostics import install
++         install(args.out,rank)
+diff --git a/research/step_lifetime/finish_hardening.py b/research/step_lifetime/finish_hardening.py
+new file mode 100644
+index 0000000..762b061
+--- /dev/null
++++ b/research/step_lifetime/finish_hardening.py
+@@ -0,0 +1,74 @@
++"""After frozen pilots finish, harden duplicate completion and requalify NPU math."""
++from pathlib import Path
++import json
++import subprocess
++import sys
++import time
++
++ROOT=Path(__file__).resolve().parents[3]
++STATE=ROOT/'diagnostics/hardening.json'
++
++
++def save(state):STATE.write_text(json.dumps(state,indent=2)+'\n')
++
++
++def main():
++    if STATE.exists():raise RuntimeError('Preserve hardening registration')
++    state=dict(stage='waiting_for_frozen_pilot',reason='Do not change proof-covered core during registered25-update runs')
++    save(state)
++    for _ in range(240):
++        try:pilot=json.loads((ROOT/'lifetime-b2.json').read_text())
++        except json.JSONDecodeError:time.sleep(30);continue
++        if pilot['stage'] in ('screening_complete','stopped_at_gate'):break
++        time.sleep(30)
++    else:raise TimeoutError('Pilot waiting limit; no automatic core mutation')
++    if pilot['stage']!='screening_complete':raise RuntimeError('Pilot failed; preserve its core before manual recovery')
++    source=ROOT/'stack/tools/step_lifetime.py'
++    text=source.read_text(encoding='utf-8')
++    old='''        """Retire only transfers whose completion has actually been observed."""
++        tickets = [self.tickets[key] for key in identities]'''
++    new='''        """Retire only transfers whose completion has actually been observed."""
++        if len(set(identities)) != len(identities):
++            raise ValueError('Duplicate completion identity')
++        tickets = [self.tickets[key] for key in identities]'''
++    if text.count(old)!=1:raise RuntimeError('Completion contract source changed; do not blind-patch')
++    source.write_text(text.replace(old,new),encoding='utf-8',newline='\n')
++    tests=ROOT/'stack/tools/test_step_lifetime.py'
++    text=tests.read_text(encoding='utf-8')
++    marker="\n\nif __name__ == '__main__':"
++    addition='''
++    def test_completion_batch_rejects_duplicates_atomically(self):
++        self.context.contribute(('a',), self.key, 0)
++        self.context.submit((('a',),))
++        with self.assertRaises(ValueError):
++            self.context.complete((('a',), ('a',)))
++        self.assertFalse(self.context.tickets[('a',)].complete)
++        self.context.complete((('a',),))
++        self.context.finish()
++'''
++    if text.count(marker)!=1:raise RuntimeError('Contract test source changed')
++    tests.write_text(text.replace(marker,'\n'+addition+marker),encoding='utf-8',newline='\n')
++    state['stage']='cpu_contract';save(state)
++    with (ROOT/'diagnostics/hardening-cpu.log').open('wb') as log:
++        subprocess.run([sys.executable,str(tests)],check=True,stdout=log,stderr=subprocess.STDOUT)
++    with (ROOT/'diagnostics/duplicate-completion-after.json').open('wb') as log:
++        subprocess.run([sys.executable,str(ROOT/'implementation/check_duplicate_completion.py')],check=True,
++                       stdout=log,stderr=subprocess.STDOUT)
++    state['stage']='publishing_guard';save(state)
++    with (ROOT/'diagnostics/hardening-publish.log').open('wb') as log:
++        subprocess.run([sys.executable,str(Path(__file__).resolve().parent/'publish_b.py'),
++            'tools/step_lifetime.py','tools/test_step_lifetime.py'],check=True,stdout=log,stderr=subprocess.STDOUT)
++    state['stage']='independent_npu_requalification';save(state)
++    with (ROOT/'diagnostics/hardening-npu.log').open('wb') as log:
++        subprocess.run([sys.executable,str(Path(__file__).resolve().parent/'run_independent_gate.py'),
++            '--tag','lifetime-independent-ffn-v4'],check=True,stdout=log,stderr=subprocess.STDOUT)
++    state.update(stage='complete',passed=True,performance_data_source='original frozen pilot, prior v3 certificate retained',
++        scope='reject duplicate completion before retirement; six CPU contracts and64forced-replica NPU comparisons')
++    save(state)
++
++
++if __name__=='__main__':
++    try:main()
++    except BaseException as error:
++        state=json.loads(STATE.read_text()) if STATE.exists() else {}
++        state.update(stage='failed',error=str(error));save(state);raise
+diff --git a/research/step_lifetime/follow_up.py b/research/step_lifetime/follow_up.py
+new file mode 100644
+index 0000000..2c7915c
+--- /dev/null
++++ b/research/step_lifetime/follow_up.py
+@@ -0,0 +1,143 @@
++"""Wait for the registered pilots; confirm only candidates crossing the gain gate."""
++from pathlib import Path
++import importlib
++import json
++import math
++import random
++import statistics
++import time
++
++ROOT = Path(__file__).resolve().parents[3]
++PATH = ROOT / 'followup.json'
++PATTERNS = ('same', 'alternating', 'random')
++
++
++def save(state):
++    temporary = PATH.with_suffix('.tmp')
++    temporary.write_text(json.dumps(state, indent=2) + '\n')
++    temporary.replace(PATH)
++
++
++def measurements(item):
++    folder = ROOT / 'evidence' / item['tag']
++    ranks = [[json.loads(line) for line in (folder / f'steps-rank{rank}.jsonl').read_text().splitlines()]
++             for rank in range(8)]
++    if not item['passed'] or any(len(rank) != 25 for rank in ranks):
++        raise RuntimeError('Incomplete confirmation process')
++    values = [max(rank[step]['milliseconds'] for rank in ranks) / 1000 for step in range(5, 25)]
++    return dict(median_s=statistics.median(values), mean_s=statistics.mean(values))
++
++
++def read_state(name):
++    try:
++        return json.loads((ROOT / name).read_text())
++    except (FileNotFoundError, json.JSONDecodeError):
++        return None
++
++
++def finish(state, conclusion):
++    state.update(stage='complete', conclusion=conclusion)
++    save(state)
++    (ROOT / 'NEXT.md').write_text('# 下一步\n\n' + conclusion + '\n\n'
++        '新联合策略、匹配prefix的原Timer关键路径诊断、设备端在线生命周期控制、独立/自然路由验证尚未完成。'
++        '当前结论只适用于本轮共同裁剪形状与已测试路由。完整原始回执和失败均保留。\n', encoding='utf-8')
++
++
++def main():
++    if PATH.exists():
++        raise RuntimeError('Follow-up registration exists; preserve it')
++    state = dict(stage='waiting_for_pilots', runs=[], stable_gain=False, formal_matrix=False,
++                 rule='One B candidate and one A baseline by geometric mean; >=3% at any pilot pattern triggers independent paired repeats')
++    save(state)
++    for _ in range(720):
++        first, second = read_state('lifetime-a3.json'), read_state('lifetime-b2.json')
++        if first and second and all(item['stage'] in ('screening_complete', 'stopped_at_gate') for item in (first, second)):
++            break
++        time.sleep(30)
++    else:
++        state.update(stage='waiting_deadline', conclusion='Pilot waiting limit reached; inspect live controllers, no automatic retry.')
++        save(state)
++        return
++    if any(item['stage'] != 'screening_complete' for item in (first, second)):
++        state.update(stage='stopped_at_gate', conclusion='A pilot did not pass its registered gates. No confirmation or large matrix launched.')
++        save(state)
++        return
++    times = {}
++    originals = {}
++    for track, pilot in (('A', first), ('B', second)):
++        for item in pilot['runs']:
++            key = (track, item['arm'], item['pattern'])
++            times[key] = measurements(item)['median_s']
++            originals[key] = item
++    baseline_arms = ('serial_home', 'serial_native', 'fixed_home', 'fixed_native', 'fifo_home', 'easy_home')
++    candidates = ('b0', 'b1', 'b2', 'b3')
++
++    def score(track, arm):
++        return math.exp(statistics.mean(math.log(times[(track, arm, pattern)]) for pattern in PATTERNS))
++
++    baseline = min(baseline_arms, key=lambda arm: (score('A', arm), arm))
++    candidate = min(candidates, key=lambda arm: (score('B', arm), arm))
++    pilot_gains = {pattern: 1 - times[('B', candidate, pattern)] / times[('A', baseline, pattern)] for pattern in PATTERNS}
++    state.update(baseline=baseline, candidate=candidate, pilot_gains=pilot_gains)
++    save(state)
++    if max(pilot_gains.values()) < .03:
++        finish(state, '两条小矩阵已完成；本轮最好的生命周期候选未相对已跑最强A对照达到3%的单轮触发门槛。未建立稳定收益，停止扩大矩阵；先分析控制、FP32交付和流水资源开销，再决定下一项研究。')
++        return
++    first_runner = importlib.import_module('run_track_a')
++    second_runner = importlib.import_module('run_track_b')
++    pairs = {pattern: [(times[('A', baseline, pattern)], times[('B', candidate, pattern)])] for pattern in PATTERNS}
++
++    def repeat(number):
++        state['stage'] = 'confirming'
++        save(state)
++        for pattern_index, pattern in enumerate(PATTERNS):
++            order = ('B', 'A') if (number + pattern_index) % 2 else ('A', 'B')
++            result = {}
++            for track in order:
++                arm = baseline if track == 'A' else candidate
++                runner = first_runner if track == 'A' else second_runner
++                tag = f'lifetime-confirm-{pattern}-{track}-{arm}-r{number}'
++                item = runner.job(tag, arm, steps=25, pattern=pattern)
++                item.update(track=track, repeat=number)
++                state['runs'].append(item)
++                save(state)
++                result[track] = measurements(item)['median_s']
++            pairs[pattern].append((result['A'], result['B']))
++
++    repeat(2)
++    repeat(3)
++
++    def stable(pattern):
++        gains = [1 - candidate_time / baseline_time for baseline_time, candidate_time in pairs[pattern]]
++        return all(value > 0 for value in gains) and statistics.median(gains) >= .03
++
++    selected = [pattern for pattern in PATTERNS if stable(pattern)]
++    state.update(three_repeat_pairs=json.loads(json.dumps(pairs)), three_repeat_stable_patterns=selected)
++    save(state)
++    if not selected:
++        finish(state, '候选完成三轮独立配对后未满足同向且中位改善至少3%的门槛。未建立稳定收益，保留全部负结果；不启动108矩阵。')
++        return
++    repeat(4)
++    repeat(5)
++    rng = random.Random(42)
++    intervals = {}
++    for pattern in PATTERNS:
++        gains = [1 - candidate_time / baseline_time for baseline_time, candidate_time in pairs[pattern]]
++        samples = sorted(statistics.median(rng.choices(gains, k=5)) for _ in range(10000))
++        intervals[pattern] = dict(gains=gains, median=statistics.median(gains),
++                                  ci95=[samples[250], samples[9749]])
++    accepted = [pattern for pattern in PATTERNS if stable(pattern) and intervals[pattern]['ci95'][0] > 0]
++    state.update(five_repeat_pairs=pairs, intervals=intervals, stable_gain=bool(accepted), stable_patterns=accepted, interval_includes_selection_repeat=True)
++    finish(state, ('生命周期机制在' + ', '.join(accepted) + '通过本轮五次独立配对筛选；下一步优先做B的关键路径诊断、设备端控制与联合决策设计。尚未实现或验证新的联合planner，不自动启动108矩阵。')
++           if accepted else '五轮配对后未形成满足门槛的稳定收益。保留结果并停止扩大矩阵；不宣称新的planner加速。')
++
++
++if __name__ == '__main__':
++    if PATH.exists():raise SystemExit('Follow-up registration exists; preserve it')
++    try:
++        main()
++    except BaseException as error:
++        state = read_state('followup.json') or {}
++        state.update(stage='stopped_at_gate', error=str(error))
++        save(state)
++        raise
+diff --git a/research/step_lifetime/publish_b.py b/research/step_lifetime/publish_b.py
+new file mode 100644
+index 0000000..22cdd9a
+--- /dev/null
++++ b/research/step_lifetime/publish_b.py
+@@ -0,0 +1,36 @@
++"""Stage local patches, then publish only while holding the shared run lock."""
++from pathlib import Path
++import hashlib,json,subprocess,sys
++root=Path(__file__).resolve().parents[3]
++lane='/home/z00956592/megaflux/step-lifetime-kernel-20261115'
++files=sys.argv[1:]
++if not files:raise SystemExit('pass stack-relative file paths')
++manifest={}
++for name in files:
++ source=(root/'stack'/name).resolve()
++ if not source.is_relative_to((root/'stack').resolve()):raise ValueError('outside isolated source')
++ manifest[name]=hashlib.sha256(source.read_bytes()).hexdigest()
++stage=lane+'/staging/'+hashlib.sha256(json.dumps(manifest,sort_keys=True).encode()).hexdigest()[:16]
++subprocess.run(['ssh','pod6-1-root','mkdir','-p',stage],check=True)
++for index,name in enumerate(files):
++ subprocess.run(['scp',str(root/'stack'/name),'pod6-1-root:'+stage+'/'+str(index)],check=True)
++script="""import fcntl,hashlib,json,os,shutil
++from pathlib import Path
++lane=Path(LANE)
++source=Path(STAGE)
++files=MANIFEST
++with Path('/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock').open('a') as lock:
++ fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
++ for index,(name,expected) in enumerate(files.items()):
++  target=(lane/'stack'/name).resolve()
++  if not target.is_relative_to((lane/'stack').resolve()):raise ValueError('outside task')
++  incoming=source/str(index)
++  if hashlib.sha256(incoming.read_bytes()).hexdigest()!=expected:raise ValueError('staging mismatch')
++  target.parent.mkdir(parents=True,exist_ok=True)
++  temporary=target.with_name(target.name+'.incoming')
++  shutil.copy2(incoming,temporary);os.replace(temporary,target)
++ print(json.dumps({'published':files,'staging':str(source)}))
++""".replace('LANE',repr(lane)).replace('STAGE',repr(stage)).replace('MANIFEST',repr(manifest))
++result=subprocess.run(['ssh','pod6-1-root','python3','-'],input=script.encode(),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
++(root/'implementation'/('publish-'+Path(stage).name+'.log')).write_bytes(result.stdout)
++raise SystemExit(result.returncode)
+diff --git a/research/step_lifetime/remote.py b/research/step_lifetime/remote.py
+new file mode 100644
+index 0000000..86f1e0b
+--- /dev/null
++++ b/research/step_lifetime/remote.py
+@@ -0,0 +1,151 @@
++"""Deploy an isolated frozen checkout and execute finite, admitted study gates."""
++from pathlib import Path
++import argparse
++import hashlib
++import json
++import subprocess
++import tarfile
++import re
++from datetime import datetime, timezone
++
++ROOT = Path(__file__).resolve().parents[3]
++STACK = ROOT / 'stack'
++HOST = 'pod6-1-root'
++REMOTE = '/home/z00956592/megaflux/step-lifetime-study-20261115'
++CONTAINER = 'step-lifetime-study-20261115'
++
++
++def call(arguments, **kwargs):
++    return subprocess.run(arguments, check=True, **kwargs)
++
++
++def deploy():
++    archive = ROOT / 'source.tar'
++    with archive.open('wb') as handle:
++        call(['git','-c','core.longpaths=true','-C',str(STACK),'archive','HEAD'], stdout=handle)
++    with tarfile.open(archive, 'a') as handle:
++        changed = subprocess.check_output(['git','-c','core.longpaths=true','-C',str(STACK),'diff','--name-only'],text=True).splitlines()
++        untracked = subprocess.check_output(['git','-c','core.longpaths=true','-C',str(STACK),'ls-files','--others','--exclude-standard'],text=True).splitlines()
++        for name in changed + untracked:
++            handle.add(STACK / name, arcname=name)
++    hashes = {name: hashlib.sha256((STACK/name).read_bytes()).hexdigest() for name in changed+untracked}
++    (ROOT/'source-overlay.json').write_text(json.dumps(hashes, indent=2))
++    call(['ssh', HOST, 'mkdir', '-p', REMOTE])
++    call(['scp', str(archive), f'{HOST}:{REMOTE}/source.tar'])
++    script = f'''set -euo pipefail
++task={REMOTE}
++exec 9>/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock
++flock -x 9
++base=/home/z00956592/megaflux/temporal-replica-frontier-20261115/stack
++mkdir -p "$task/stack" "$task/evidence"
++if [ ! -d "$task/stack/source" ]; then
++ mkdir -p "$task/stack/source/native-balanced/ascend_deepep"
++ cp -a --reflink=auto "$base/source/native-balanced/ascend_deepep/lib" "$task/stack/source/native-balanced/ascend_deepep/"
++ cp -a --reflink=auto "$base/source/native-balanced/worker-variants" "$task/stack/source/native-balanced/"
++ cp -a --reflink=auto "$base/routes" "$task/stack/routes"
++ cp -a --reflink=auto /home/z00956592/megaflux/temporal-replica-study-20261114/stack/small-routes "$task/stack/small-routes"
++fi
++tar -xf "$task/source.tar" -C "$task/stack"
++python3 - "$base" "$task/stack" <<'STAGE'
++from pathlib import Path
++import json,shutil,sys
++base,dest=map(Path,sys.argv[1:])
++for name in ('runtime-freeze.json','temporal-scheduler-freeze.json'):
++ manifest=json.loads((dest/'configs'/name).read_text())
++ for relative in manifest['binaries']:
++  target=dest/relative
++  if not target.exists():
++   target.parent.mkdir(parents=True,exist_ok=True)
++   shutil.copy2(base/relative,target)
++STAGE
++if ! docker container inspect {CONTAINER} >/dev/null 2>&1; then
++ docker run -d --name {CONTAINER} --label codex.task=step-lifetime-study-20261115 --privileged --network host --ipc host -v /home:/home -v /usr/local/Ascend/driver:/usr/local/Ascend/driver -v /usr/local/dcmi:/usr/local/dcmi -v /etc/ascend_install.info:/etc/ascend_install.info --entrypoint /bin/bash planner-executor-ep8-runtime:20261114 -lc 'sleep infinity'
++fi
++test "$(docker inspect {CONTAINER} --format '{{{{index .Config.Labels "codex.task"}}}}')" = step-lifetime-study-20261115
++docker start {CONTAINER} >/dev/null
++'''
++    launcher = re.sub(r'^TASK=.*$', f'TASK={REMOTE}/stack', (STACK/'tools/launch.sh').read_text(), flags=re.M)
++    controller = re.sub(r"^TASK = pathlib.Path\(.*$", f"TASK = pathlib.Path('{REMOTE}/stack')", (STACK/'tools/controller.py').read_text(), flags=re.M)
++    controller = re.sub(r"^CONTAINER = .*$", f"CONTAINER = '{CONTAINER}'", controller, flags=re.M)
++    for name, contents in [('launch.sh',launcher), ('controller.py',controller)]:
++        path = ROOT/name
++        path.write_text(contents, encoding='utf-8', newline='\n')
++    call(['scp', str(ROOT/'launch.sh'), str(ROOT/'controller.py'), f'{HOST}:{REMOTE}/'])
++    script += '\ncp "$task/launch.sh" "$task/controller.py" "$task/stack/tools/"\n'
++    call(['ssh', HOST, 'bash', '-s'], input=script.encode())
++
++
++def gate(tag, extra, *, metadata_only=False):
++    script = f'''set -euo pipefail
++cd {REMOTE}/stack
++mkdir -p evidence/source-snapshots
++python3 tools/controller.py --backend balanced --tag {tag} --worker-variant ep8-cap64-aligned --seconds 900 {' '.join(extra)}
++'''
++    began = datetime.now(timezone.utc).isoformat()
++    with (ROOT/f'{tag}-remote.log').open('wb') as handle:
++        result = subprocess.run(['ssh', HOST, 'bash', '-s'], input=script.encode(), stdout=handle, stderr=subprocess.STDOUT)
++    receipt = dict(tag=tag, started=began, exit=result.returncode)
++    (ROOT/f'{tag}-receipt.json').write_text(json.dumps(receipt, indent=2))
++    if metadata_only:
++        # Full tensors remain in this run's project-owned remote directory.
++        # This avoids retransmitting multi-GiB PT files for every qualification.
++        bundle=f'{REMOTE}/stack/evidence/{tag}-metadata.tar.gz'
++        packed=subprocess.run(['ssh',HOST,'tar','-czf',bundle,'--exclude=*.pt','-C',
++                               f'{REMOTE}/stack/evidence',tag])
++        packed.check_returncode()
++        collected=subprocess.run(['scp',f'{HOST}:{bundle}',str(ROOT/'evidence')])
++        if collected.returncode==0:
++            with tarfile.open(ROOT/'evidence'/f'{tag}-metadata.tar.gz') as handle:
++                handle.extractall(ROOT/'evidence',filter='data')
++        receipt['large_tensors_remote']=f'{REMOTE}/stack/evidence/{tag}'
++    else:
++        collected = subprocess.run(['scp', '-r', f'{HOST}:{REMOTE}/stack/evidence/{tag}', str(ROOT/'evidence')])
++    receipt['collection_exit'] = collected.returncode
++    snapshots = ROOT/'evidence'/'source-snapshots'
++    snapshots.mkdir(exist_ok=True)
++    current=ROOT/'evidence'/tag/'source-identity.json'
++    duplicate=None
++    if current.exists():
++        identity=json.loads(current.read_text())
++        for candidate in (ROOT/'evidence').glob('*/source-identity.json'):
++            other=candidate.parent.name
++            other_receipt=ROOT/f'{other}-receipt.json'
++            if other==tag or not (snapshots/f'{other}.tar.gz').exists() or not other_receipt.exists():continue
++            if json.loads(other_receipt.read_text()).get('collection_exit')!=0:continue
++            if json.loads(candidate.read_text())==identity:
++                duplicate=other;break
++    if duplicate is None and current.exists():
++        copied=subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}.tar.gz',str(snapshots)])
++        receipt['snapshot_collection_exit']=copied.returncode
++    elif duplicate is not None:
++        (snapshots/f'{tag}-source-reference.json').write_text(json.dumps(dict(
++            same_guarded_files_as=duplicate,archive=f'{duplicate}.tar.gz'),indent=2))
++        receipt['source_snapshot_reused']=duplicate
++    suffixes=['-runtime.json']
++    if '--temporal-scheduler' in extra or 'scheduler' in extra:suffixes.append('-temporal-runtime.json')
++    if '--lifetime-mode' in extra:suffixes.append('-lifetime-runtime.json')
++    for suffix in suffixes:
++        if current.exists():
++            subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}{suffix}',str(snapshots)])
++    if '--diagnostic-timer' in extra and current.exists():
++        subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}-timer-worker-runtime.json',str(snapshots)])
++    (ROOT/f'{tag}-receipt.json').write_text(json.dumps(receipt, indent=2))
++    print(json.dumps(receipt), flush=True)
++    raise SystemExit(result.returncode)
++
++
++if __name__ == '__main__':
++    parser = argparse.ArgumentParser()
++    parser.add_argument('action', choices=('deploy','gate'))
++    parser.add_argument('--tag')
++    parser.add_argument('--metadata-only', action='store_true')
++    args, extra = parser.parse_known_args()
++    (ROOT/'evidence').mkdir(exist_ok=True)
++    if args.action == 'deploy':
++        deploy()
++    else:
++        if not args.tag or not all(character.isalnum() or character in '-_.' for character in args.tag):
++            parser.error('a safe run tag is required')
++        if any(not all(character.isalnum() or character in '-_./:' for character in item) for item in extra):
++            parser.error('unexpected shell metacharacter in gate arguments')
++        gate(args.tag, extra, metadata_only=args.metadata_only)
+diff --git a/research/step_lifetime/remote_b.py b/research/step_lifetime/remote_b.py
+new file mode 100644
+index 0000000..947801e
+--- /dev/null
++++ b/research/step_lifetime/remote_b.py
+@@ -0,0 +1,32 @@
++"""Private ABI1 lane, sharing only the global hardware admission lock."""
++from pathlib import Path
++import argparse
++import time
++import remote
++parser=argparse.ArgumentParser()
++parser.add_argument('action',choices=('deploy','gate'))
++parser.add_argument('--tag')
++parser.add_argument('--metadata-only',action='store_true')
++args,extra=parser.parse_known_args()
++remote.REMOTE='/home/z00956592/megaflux/step-lifetime-kernel-20261115'
++remote.CONTAINER='step-lifetime-kernel-20261115'
++if args.action=='deploy':
++    remote.ROOT=Path(__file__).resolve().parents[3]/'implementation/kernel-lane'
++    remote.ROOT.mkdir(parents=True,exist_ok=True)
++    (remote.ROOT/'evidence').mkdir(exist_ok=True)
++    remote.deploy()
++else:
++    if not args.tag or not all(value.isalnum() or value in '-_.' for value in args.tag):parser.error('safe tag required')
++    if any(not all(value.isalnum() or value in '-_./:' for value in item) for item in extra):parser.error('unexpected shell character')
++    while (remote.ROOT/'HOLD-B').exists():time.sleep(1)
++    if '--steps' in extra and int(extra[extra.index('--steps')+1])==25:
++        proof=remote.ROOT/'diagnostics/independent-lifetime-math.json'
++        import json
++        if not proof.exists() or not json.loads(proof.read_text()).get('passed'):
++            raise RuntimeError('Independent lifetime output/dx/dp/dW gate is required before B timings')
++        import hashlib
++        checked=json.loads(proof.read_text())
++        if not checked.get('runtime_sources') or any(hashlib.sha256((remote.STACK/name).read_bytes()).hexdigest()!=value
++            for name,value in checked['runtime_sources'].items()):
++            raise RuntimeError('Lifetime math proof is stale for the local runtime sources')
++    remote.gate(args.tag,extra,metadata_only=args.metadata_only)
+diff --git a/research/step_lifetime/remote_timer.py b/research/step_lifetime/remote_timer.py
+new file mode 100644
+index 0000000..ee467b7
+--- /dev/null
++++ b/research/step_lifetime/remote_timer.py
+@@ -0,0 +1,21 @@
++"""Isolated original-Timer prefix qualification lane, never performance."""
++from pathlib import Path
++import argparse
++import remote
++parser=argparse.ArgumentParser()
++parser.add_argument('action',choices=('deploy','gate'))
++parser.add_argument('--tag')
++args,extra=parser.parse_known_args()
++root=Path(__file__).resolve().parents[3]
++remote.REMOTE='/home/z00956592/megaflux/step-lifetime-prefix-timer-20261116'
++remote.CONTAINER='step-lifetime-prefix-timer-20261116'
++remote.STACK=root/'implementation/prefix-timer-stack'
++if args.action=='deploy':
++ remote.ROOT=root/'implementation/timer-lane';remote.ROOT.mkdir(exist_ok=True)
++ (remote.ROOT/'evidence').mkdir(exist_ok=True)
++ remote.deploy()
++else:
++ if not args.tag or not all(value.isalnum() or value in '-_.' for value in args.tag):parser.error('safe tag required')
++ if '--diagnostic-timer' not in extra and '--plan-hash-qualification' not in extra:parser.error('This lane accepts diagnostics only')
++ if any(not all(value.isalnum() or value in '-_./:' for value in item) for item in extra):parser.error('unexpected shell character')
++ remote.gate(args.tag,extra,metadata_only=True)
+diff --git a/research/step_lifetime/run_diagnostic_gates.py b/research/step_lifetime/run_diagnostic_gates.py
+new file mode 100644
+index 0000000..8dbf7ad
+--- /dev/null
++++ b/research/step_lifetime/run_diagnostic_gates.py
+@@ -0,0 +1,170 @@
++"""Finite independent diagnostic lane: qualify Timer, then audit real plans."""
++from pathlib import Path
++import hashlib
++import json
++import subprocess
++import sys
++import time
++import numpy as np
++import remote
++
++ROOT = Path(__file__).resolve().parents[3]
++LANE = '/home/z00956592/megaflux/step-lifetime-prefix-timer-20261116'
++CONTAINER = 'step-lifetime-prefix-timer-20261116'
++SOURCE = ROOT / 'implementation/prefix-timer-stack'
++STATE = ROOT / 'diagnostics/diagnostic-gates.json'
++REFERENCE = '/home/z00956592/megaflux/step-lifetime-study-20261115/stack/evidence/lifetime-a3-math-fixed_native'
++
++
++def save(state):
++    STATE.write_text(json.dumps(state, indent=2) + '\n')
++
++
++def compare(tag):
++    target = LANE + '/stack/evidence/' + tag + '-comparison.json'
++    command = ['ssh', remote.HOST, 'docker', 'exec', '-e', 'OMP_NUM_THREADS=1', CONTAINER,
++               '/usr/local/python3.12.13/bin/python3', LANE + '/stack/tools/compare_temporal_gradients.py',
++               REFERENCE, LANE + '/stack/evidence/' + tag, '--step0-only', '--out', target]
++    with (ROOT / 'diagnostics' / (tag + '-compare.log')).open('wb') as handle:
++        subprocess.run(command, check=True, stdout=handle, stderr=subprocess.STDOUT)
++    subprocess.run(['scp', remote.HOST + ':' + target, str(ROOT / 'diagnostics')], check=True)
++    result = json.loads((ROOT / 'diagnostics' / (tag + '-comparison.json')).read_text())
++    if not result['passed'] or not all(result['identities_equal'].values()):
++        raise RuntimeError('Diagnostic gradient or identity mismatch: ' + tag)
++    return result
++
++
++def publish():
++    files = ('tools/train.py', 'tools/capture_plan_hashes.py', 'tools/capture_diagnostics.py')
++    manifest = {name: hashlib.sha256((SOURCE / name).read_bytes()).hexdigest() for name in files}
++    stage = LANE + '/staging/plan-hash-' + hashlib.sha256(json.dumps(manifest).encode()).hexdigest()[:12]
++    subprocess.run(['ssh', remote.HOST, 'mkdir', '-p', stage], check=True)
++    for index, name in enumerate(files):
++        subprocess.run(['scp', str(SOURCE / name), remote.HOST + ':' + stage + '/' + str(index)], check=True)
++    worker = json.loads((ROOT / 'stack/configs/lifetime-runtime-freeze.json').read_text())['binaries']
++    script = '''import fcntl,hashlib,os,shutil
++from pathlib import Path
++lane=Path(LANE)
++stage=Path(STAGE)
++manifest=MANIFEST
++workers=WORKERS
++with Path('/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock').open('a') as lock:
++ fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
++ for index,(name,expected) in enumerate(manifest.items()):
++  source=stage/str(index);target=lane/'stack'/name
++  assert hashlib.sha256(source.read_bytes()).hexdigest()==expected
++  temporary=target.with_name(target.name+'.incoming');shutil.copy2(source,temporary);os.replace(temporary,target)
++ for name,entry in workers.items():
++  expected=entry['sha256'] if isinstance(entry,dict) else entry
++  source=Path('/home/z00956592/megaflux/step-lifetime-kernel-20261115/stack')/name
++  assert hashlib.sha256(source.read_bytes()).hexdigest()==expected
++  target=lane/'stack'/name;target.parent.mkdir(parents=True,exist_ok=True)
++  temporary=target.with_name(target.name+'.incoming');shutil.copy2(source,temporary);os.replace(temporary,target)
++ print('Published diagnostic files and private ABI1 worker under global lock')
++'''.replace('LANE', repr(LANE)).replace('STAGE', repr(stage)).replace('MANIFEST', repr(manifest)).replace('WORKERS', repr(worker))
++    with (ROOT / 'diagnostics/plan-hash-publish.log').open('wb') as handle:
++        subprocess.run(['ssh', remote.HOST, 'python3', '-'], input=script.encode(), check=True,
++                       stdout=handle, stderr=subprocess.STDOUT)
++    return manifest
++
++
++def signatures(tag, rank):
++    rows = [json.loads(line) for line in (ROOT / 'evidence' / tag /
++            f'actual-plan-hashes-rank{rank}.jsonl').read_text().splitlines()]
++    return [(row['invocation'], row['recompute'], row['hashes']) for row in rows
++            if row['invocation'] is not None and row['invocation'][0] >= 0]
++
++
++def timer_records(tag):
++    results={}
++    directory=ROOT/'evidence'/tag/'timer'
++    for rank in range(8):
++        phases=set();replay=False;records=0;calls=0;nonzero=0
++        for path in sorted(directory.glob(f'rank{rank}-*.npz')):
++            with np.load(path,allow_pickle=False) as data:
++                meta=json.loads(str(data['metadata']))
++                phases.add(meta['phase']);replay|=meta['recompute'];calls+=1
++                records+=len(data['stage_pairs'])
++                nonzero+=int(np.count_nonzero(data['original_'+meta['phase']]))
++        passed=phases=={'forward','backward'} and replay and records>0 and nonzero>0
++        results[str(rank)]=dict(passed=passed,calls=calls,coordinate_stage_records=records,
++                               nonzero_timer_words=nonzero,recompute_seen=replay)
++    if not all(row['passed'] for row in results.values()):
++        raise RuntimeError('Missing original Timer/stage records or replay coverage')
++    return results
++
++
++def main():
++    if STATE.exists():
++        raise RuntimeError('Diagnostic registration already exists; preserve all attempts')
++    state = dict(stage='waiting_for_timer_gate', runs=[], performance=False)
++    save(state)
++    tag = 'lifetime-prefix-timer-math-v1'
++    for _ in range(120):
++        receipt = ROOT / (tag + '-receipt.json')
++        if receipt.exists():
++            value = json.loads(receipt.read_text())
++            if 'collection_exit' in value:
++                break
++        time.sleep(30)
++    else:
++        raise TimeoutError('Timer gate waiting limit')
++    if value['exit'] or value['collection_exit']:
++        raise RuntimeError('Timer execution/collection gate failed')
++    status = json.loads((ROOT / 'evidence' / tag / 'status.json').read_text())
++    if not all(status.get(key) for key in ('qualified','source_unchanged','exclusive_devices')):
++        raise RuntimeError('Timer run did not retain source/device qualification')
++    comparison = compare(tag)
++    qualification = dict(passed=True, tag=tag, scope='L2 H512 F512 S256 GA4 W2 fixed_native, three full Adam updates',
++                         source_identity=str(ROOT / 'evidence' / tag / 'source-identity.json'),
++                         full_step0_gradient_comparison=True, original_timer_records=timer_records(tag),performance=False)
++    (ROOT / 'diagnostics/prefix-timer-qualification.json').write_text(json.dumps(qualification, indent=2))
++    state.update(stage='publishing_plan_audit', timer=qualification)
++    save(state)
++    state['published'] = publish()
++    state['stage'] = 'plan_hash_gates'
++    save(state)
++    tags = []
++    for mode in ('anchor','b0','b1','b2','b3'):
++        tag = 'lifetime-plan-hash-' + mode + '-v1'
++        extra = ['--layers','2','--steps','3','--tokens','256','--hidden','512','--ffn','512',
++                 '--microbatches','4','--forward-window','2','--recv-capacity','4096','--maxvio','10',
++                 '--planner','native','--temporal-pattern','random','--temporal-policy','fixed_native',
++                 '--lifetime-mode',mode,'--worker-variant','ep8-cap64-lifetime-v1',
++                 '--temporal-scheduler','ascendc','--temporal-scheduler-library',
++                 LANE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so',
++                 '--grad-sync','--hold-fsdp-forward','--temporal-prefix-reuse',
++                 '--route-bank',LANE+'/stack/small-routes','--dump-grad-step0','--plan-hash-qualification']
++        with (ROOT / 'diagnostics' / (tag + '-driver.log')).open('wb') as handle:
++            code = subprocess.run([sys.executable, str(Path(__file__).resolve().parent / 'remote_timer.py'),
++                                   'gate','--tag',tag,*extra], stdout=handle, stderr=subprocess.STDOUT).returncode
++        state['runs'].append(dict(tag=tag, mode=mode, exit=code))
++        save(state)
++        if code:
++            raise RuntimeError('Plan hash gate failed: ' + tag)
++        compare(tag)
++        tags.append(tag)
++    checks = {}
++    for rank in range(8):
++        reference = signatures(tags[0], rank)
++        if not reference:
++            raise RuntimeError('No actual original-forward plan hashes were captured')
++        checks[str(rank)] = dict(calls=len(reference), all_equal=all(signatures(tag,rank)==reference for tag in tags[1:]))
++    result = dict(passed=all(row['all_equal'] for row in checks.values()), ranks=checks, tags=tags,
++                  scope='small qualification only; includes three parameter versions; actual Native compiled copies/source_quota/IDs/counts',
++                  performance=False)
++    (ROOT / 'diagnostics/lifetime-plan-equality.json').write_text(json.dumps(result, indent=2))
++    if not result['passed']:
++        raise RuntimeError('Actual plan copies/quota differ across lifecycle modes')
++    state.update(stage='complete', passed=True, plan_equality=result)
++    save(state)
++
++
++if __name__ == '__main__':
++    try:
++        main()
++    except BaseException as error:
++        state = json.loads(STATE.read_text()) if STATE.exists() else {}
++        state.update(stage='failed', error=str(error), performance=False)
++        save(state)
++        raise
+diff --git a/research/step_lifetime/run_independent_gate.py b/research/step_lifetime/run_independent_gate.py
+new file mode 100644
+index 0000000..a04cde7
+--- /dev/null
++++ b/research/step_lifetime/run_independent_gate.py
+@@ -0,0 +1,58 @@
++"""Run or collect the admitted, forced-replica independent numerical gate."""
++from pathlib import Path
++import argparse
++import hashlib
++import json
++import re
++import remote
++ROOT=Path(__file__).resolve().parents[3]
++CORE=('tools/lifetime_device.py','tools/step_lifetime.py','tools/grouped_experts.py','tools/train.py',
++      'tools/temporal_model.py','tools/temporal_prefix_reuse.py',
++      'source/native-balanced/ascend_deepep/fsdp2_bridge.py',
++      'source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py')
++
++def collect(tag,code):
++ folder=ROOT/'evidence'/tag
++ records=[]
++ for rank in range(8):
++  path=folder/f'rank{rank}.json'
++  if path.exists():records.extend(json.loads(path.read_text())['records'])
++ status=json.loads((folder/'status.json').read_text())
++ sources=json.loads((folder/'source-identity.json').read_text())
++ hits=max((item['lifetime_stats']['weight_hit_bytes'] for item in records),default=0)
++ traffic=max((item['lifetime_stats']['gradient_remote_bytes'] for item in records),default=0)
++ identities={name:sources[name] for name in CORE}
++ matches=all(hashlib.sha256((ROOT/'stack'/name).read_bytes()).hexdigest()==value for name,value in identities.items())
++ passed=(code==0 and status.get('qualified') and status.get('source_unchanged') and status.get('exclusive_devices')
++  and len(records)==64 and all(item['passed'] for item in records) and hits>0 and traffic>0 and matches)
++ manifest=ROOT/'stack/configs/lifetime-runtime-freeze.json'
++ if hashlib.sha256(manifest.read_bytes()).hexdigest()!=sources['configs/lifetime-runtime-freeze.json']:
++  raise RuntimeError('Worker freeze manifest differs from qualified snapshot')
++ proof=dict(passed=passed,exit=code,tag=tag,records=len(records),expected_records=64,
++  actual_cache_hit_bytes=hits,actual_gradient_remote_bytes=traffic,payload_scope='logical payload, not hardware link counters',
++  runtime_sources=identities,local_sources_match=matches,
++  worker_sha256=next(iter(json.loads(manifest.read_text())['binaries'].values())),
++  scope='eight ranks, b0-b3, W1/W2, checkpoint replay, independent output/dx/dp/owner-dW with EP scaling',
++  output_threshold=.004,gradient_threshold=.02)
++ if records:
++  proof['max_relative_l2']={key:max(item['comparisons'][key]['relative_l2'] for item in records) for key in ('output','dx','dp','dw1','dw2')}
++ for path in (ROOT/'diagnostics'/(tag+'.json'),ROOT/'diagnostics/independent-lifetime-math.json'):
++  path.write_text(json.dumps(proof,indent=2)+'\n')
++ if passed:(ROOT/'HOLD-B').unlink(missing_ok=True)
++ return passed
++
++if __name__=='__main__':
++ parser=argparse.ArgumentParser()
++ parser.add_argument('--tag',default='lifetime-independent-ffn-v4')
++ parser.add_argument('--collect-only',action='store_true')
++ args=parser.parse_args()
++ if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*',args.tag):parser.error('Safe tag required')
++ remote.REMOTE='/home/z00956592/megaflux/step-lifetime-kernel-20261115'
++ remote.CONTAINER='step-lifetime-kernel-20261115'
++ if args.collect_only:code=json.loads((ROOT/'evidence'/args.tag/'status.json').read_text())['exit']
++ else:
++  try:
++   remote.gate(args.tag,['--mode','lifetime_math','--worker-variant','ep8-cap64-lifetime-v1',
++    '--lifetime-mode','all','--route-bank',remote.REMOTE+'/stack/small-routes'],metadata_only=True)
++  except SystemExit as result:code=result.code
++ raise SystemExit(0 if collect(args.tag,code) else 1)
+diff --git a/research/step_lifetime/run_main_plan_gates.py b/research/step_lifetime/run_main_plan_gates.py
+new file mode 100644
+index 0000000..37b5581
+--- /dev/null
++++ b/research/step_lifetime/run_main_plan_gates.py
+@@ -0,0 +1,72 @@
++"""Compare real Native copies/quota across B modes at the frozen main shape."""
++from pathlib import Path
++import json
++import subprocess
++import sys
++from run_diagnostic_gates import publish, LANE
++
++ROOT=Path(__file__).resolve().parents[3]
++STATE=ROOT/'diagnostics/main-plan-gates.json'
++
++
++def save(state):
++    text=json.dumps(state,indent=2)+'\n'
++    STATE.write_text(text)
++    (ROOT/'diagnostics/diagnostic-gates.json').write_text(text)
++
++
++def rows(tag,rank):
++    path=ROOT/'evidence'/tag/f'actual-plan-hashes-rank{rank}.jsonl'
++    result=[json.loads(line) for line in path.read_text().splitlines()]
++    return [row for row in result if row['invocation'] is not None and row['invocation'][0]>=0]
++
++
++def main():
++    if STATE.exists():raise RuntimeError('Preserve main plan audit registration')
++    state=dict(stage='publishing_main_plan_audit',runs=[],performance=False)
++    save(state)
++    state['published']=publish();state['stage']='main_plan_gates';save(state)
++    for mode in ('anchor','b0','b1','b2','b3'):
++        tag='lifetime-main-plan-hash-'+mode+'-v1'
++        extra=['--layers','4','--steps','3','--tokens','16384','--hidden','4096','--ffn','1024',
++            '--microbatches','4','--forward-window','2','--recv-capacity','262144','--maxvio','10',
++            '--planner','native','--temporal-pattern','random','--temporal-policy','fixed_native',
++            '--lifetime-mode',mode,'--worker-variant','ep8-cap64-lifetime-v1',
++            '--temporal-scheduler','ascendc','--temporal-scheduler-library',
++            LANE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so',
++            '--grad-sync','--hold-fsdp-forward','--temporal-prefix-reuse','--plan-hash-qualification']
++        with (ROOT/'diagnostics'/(tag+'-driver.log')).open('wb') as handle:
++            code=subprocess.run([sys.executable,str(Path(__file__).resolve().parent/'remote_timer.py'),
++                'gate','--tag',tag,*extra],stdout=handle,stderr=subprocess.STDOUT).returncode
++        item=dict(tag=tag,mode=mode,exit=code);state['runs'].append(item);save(state)
++        if code:raise RuntimeError('Main plan audit execution failed: '+tag)
++        folder=ROOT/'evidence'/tag
++        status=json.loads((folder/'status.json').read_text())
++        if not all(status.get(key) for key in ('qualified','source_unchanged','exclusive_devices')) or status['peak_driver_MiB']>90*1024:
++            raise RuntimeError('Main plan audit admission/memory/source gate failed')
++        item['replica_max']=max(row['replicas'] for rank in range(8) for row in rows(tag,rank))
++        if item['replica_max']==0:raise RuntimeError('Main shape produced no replicas; do not qualify empty path')
++        save(state)
++    checks={}
++    for rank in range(8):
++        signatures=[]
++        for item in state['runs']:
++            records=rows(item['tag'],rank)
++            signatures.append([(row['invocation'],row['recompute'],row['hashes']) for row in records])
++        checks[str(rank)]=dict(calls=len(signatures[0]),equal=all(value==signatures[0] for value in signatures[1:]))
++    result=dict(passed=all(value['equal'] for value in checks.values()),ranks=checks,
++        tags=[item['tag'] for item in state['runs']],performance=False,
++        scope='main L4 H4096 F1024 S16384 GA4 W2 random routes, three parameter versions; actual compiled Native plans with positive replicas',
++        fields=['copies','source_quota','logical_ids','physical_ids','logical_counts'])
++    (ROOT/'diagnostics/lifetime-plan-equality.json').write_text(json.dumps(result,indent=2))
++    state.update(stage='complete' if result['passed'] else 'failed',passed=result['passed'],plan_equality=result)
++    save(state)
++    if not result['passed']:raise RuntimeError('Compiled plans differ across lifecycle modes')
++
++
++if __name__=='__main__':
++    try:main()
++    except BaseException as error:
++        state=json.loads(STATE.read_text()) if STATE.exists() else {}
++        state.update(stage='failed',error=str(error),performance=False);save(state)
++        raise
+diff --git a/research/step_lifetime/run_track_a.py b/research/step_lifetime/run_track_a.py
+new file mode 100644
+index 0000000..6eac10c
+--- /dev/null
++++ b/research/step_lifetime/run_track_a.py
+@@ -0,0 +1,68 @@
++"""Finite Track A campaign; every arm must pass matched gradient and memory gates."""
++from pathlib import Path
++import json,subprocess,sys
++import remote
++ROOT=Path(__file__).resolve().parents[3]
++LANE=remote.REMOTE+'/stack'
++LIB=LANE+'/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so'
++ARMS=('serial_home','serial_native','fixed_home','fixed_native','fifo_home','easy_home')
++PREFIX=sys.argv[1] if len(sys.argv)>1 else 'lifetime-a3'
++STATE=ROOT/(PREFIX+'.json')
++
++def save(state):
++    STATE.write_text(json.dumps(state,indent=2)+'\n')
++
++def job(tag,arm,small=False,steps=3,pattern='random'):
++    args=['--layers','2' if small else '4','--steps',str(steps),'--tokens','256' if small else '16384',
++        '--hidden','512' if small else '4096','--ffn','512' if small else '1024','--microbatches','4',
++        '--forward-window','2','--recv-capacity','4096' if small else '262144','--maxvio','10',
++        '--planner','native','--temporal-pattern',pattern,'--temporal-policy',arm,
++        '--temporal-scheduler','ascendc','--temporal-scheduler-library',LIB,'--grad-sync',
++        '--hold-fsdp-forward','--temporal-prefix-reuse']
++    if small:args+=['--route-bank',LANE+'/small-routes','--dump-grad-step0']
++    if arm=='easy_home':args+=['--maxutil-rule','upstream_first']
++    code=subprocess.run([sys.executable,str(Path(__file__).resolve().parent/'remote.py'),'gate','--metadata-only','--tag',tag,*args]).returncode
++    folder=ROOT/'evidence'/tag
++    receipt=json.loads((folder/'status.json').read_text()) if (folder/'status.json').exists() else {}
++    passed=(code==0 and receipt.get('qualified') and receipt.get('source_unchanged') and
++            receipt.get('exclusive_devices') and receipt.get('peak_driver_MiB',1e9)<=90*1024)
++    return dict(tag=tag,arm=arm,small=small,steps=steps,pattern=pattern,passed=passed,receipt=receipt)
++
++def main():
++    if STATE.exists():raise RuntimeError('Registration already exists; preserve tags')
++    state=dict(stage='gates',gates=[],runs=[],independent_repeats=1,formal=False)
++    save(state)
++    for arm in ARMS:
++        item=job(PREFIX+'-math-'+arm,arm,small=True)
++        state['gates'].append(item);save(state)
++        if not item['passed']:raise RuntimeError('Numerical execution failed: '+arm)
++        if arm!='serial_home':
++            target=LANE+'/evidence/'+item['tag']+'-comparison.json'
++            command=['ssh',remote.HOST,'docker','exec',remote.CONTAINER,
++                '/usr/local/python3.12.13/bin/python3',LANE+'/tools/compare_temporal_gradients.py',
++                LANE+'/evidence/'+PREFIX+'-math-serial_home',LANE+'/evidence/'+item['tag'],
++                '--step0-only','--out',target]
++            item['gradient_comparison_exit']=subprocess.run(command).returncode
++            subprocess.run(['scp',remote.HOST+':'+target,str(ROOT/'evidence')],check=True)
++            save(state)
++            if item['gradient_comparison_exit']:raise RuntimeError('Per-parameter gradient gate failed: '+arm)
++    state['stage']='main_memory_gate';save(state)
++    item=job(PREFIX+'-main-adam3','fixed_native')
++    state['gates'].append(item);save(state)
++    if not item['passed']:raise RuntimeError('Main shape failed; do not shrink')
++    state['stage']='screening';save(state)
++    for index,pattern in enumerate(('same','alternating','random')):
++        order=ARMS[index:]+ARMS[:index]
++        for arm in order:
++            item=job(PREFIX+'-screen-'+pattern+'-'+arm+'-r1',arm,steps=25,pattern=pattern)
++            state['runs'].append(item);save(state)
++            if not item['passed']:raise RuntimeError('Screening failure: '+item['tag'])
++    state['stage']='screening_complete';save(state)
++
++if __name__=='__main__':
++    if STATE.exists():raise SystemExit('Registration exists; choose a fresh prefix')
++    try:main()
++    except BaseException as error:
++        if STATE.exists():
++            state=json.loads(STATE.read_text());state.update(stage='stopped_at_gate',error=str(error));save(state)
++        raise
+diff --git a/research/step_lifetime/run_track_b.py b/research/step_lifetime/run_track_b.py
+new file mode 100644
+index 0000000..6d2509f
+--- /dev/null
++++ b/research/step_lifetime/run_track_b.py
+@@ -0,0 +1,72 @@
++"""Finite Track A campaign; every arm must pass matched gradient and memory gates."""
++from pathlib import Path
++import json,subprocess,sys
++import remote
++ROOT=Path(__file__).resolve().parents[3]
++remote.REMOTE='/home/z00956592/megaflux/step-lifetime-kernel-20261115'
++remote.CONTAINER='step-lifetime-kernel-20261115'
++LANE=remote.REMOTE+'/stack'
++LIB=LANE+'/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so'
++ARMS=('anchor','b0','b1','b2','b3')
++PREFIX=sys.argv[1] if len(sys.argv)>1 else 'lifetime-b2'
++STATE=ROOT/(PREFIX+'.json')
++
++def save(state):
++    STATE.write_text(json.dumps(state,indent=2)+'\n')
++
++def job(tag,arm,small=False,steps=3,pattern='random'):
++    args=['--layers','2' if small else '4','--steps',str(steps),'--tokens','256' if small else '16384',
++        '--hidden','512' if small else '4096','--ffn','512' if small else '1024','--microbatches','4',
++        '--forward-window','2','--recv-capacity','4096' if small else '262144','--maxvio','10',
++        '--planner','native','--temporal-pattern',pattern,'--temporal-policy','fixed_native','--lifetime-mode',arm,'--worker-variant','ep8-cap64-lifetime-v1',
++        '--temporal-scheduler','ascendc','--temporal-scheduler-library',LIB,'--grad-sync',
++        '--hold-fsdp-forward','--temporal-prefix-reuse']
++    if small:args+=['--route-bank',LANE+'/small-routes','--dump-grad-step0']
++    code=subprocess.run([sys.executable,str(Path(__file__).resolve().parent/'remote_b.py'),'gate','--metadata-only','--tag',tag,*args]).returncode
++    folder=ROOT/'evidence'/tag
++    receipt=json.loads((folder/'status.json').read_text()) if (folder/'status.json').exists() else {}
++    passed=(code==0 and receipt.get('qualified') and receipt.get('source_unchanged') and
++            receipt.get('exclusive_devices') and receipt.get('peak_driver_MiB',1e9)<=90*1024)
++    return dict(tag=tag,arm=arm,small=small,steps=steps,pattern=pattern,passed=passed,receipt=receipt)
++
++def main():
++    if STATE.exists():raise RuntimeError('Registration already exists; preserve tags')
++    cpu=json.loads((ROOT/'diagnostics/delivery-cpu.json').read_text())
++    if not cpu['passed']:raise RuntimeError('CPU delivery oracle failed')
++    state=dict(stage='gates',gates=[],runs=[],independent_repeats=1,formal=False,qualification_path=True,
++               control='CPU observed current placement; all observation and service costs counted')
++    save(state)
++    for arm in ARMS:
++        item=job(PREFIX+'-math-'+arm,arm,small=True)
++        state['gates'].append(item);save(state)
++        if not item['passed']:raise RuntimeError('Numerical execution failed: '+arm)
++        if arm!='anchor':
++            target=LANE+'/evidence/'+item['tag']+'-comparison.json'
++            command=['ssh',remote.HOST,'docker','exec',remote.CONTAINER,
++                '/usr/local/python3.12.13/bin/python3',LANE+'/tools/compare_temporal_gradients.py',
++                LANE+'/evidence/'+PREFIX+'-math-anchor',LANE+'/evidence/'+item['tag'],
++                '--step0-only','--out',target]
++            item['gradient_comparison_exit']=subprocess.run(command).returncode
++            subprocess.run(['scp',remote.HOST+':'+target,str(ROOT/'evidence')],check=True)
++            save(state)
++            if item['gradient_comparison_exit']:raise RuntimeError('Per-parameter gradient gate failed: '+arm)
++    state['stage']='main_memory_gate';save(state)
++    item=job(PREFIX+'-main-adam3','b3')
++    state['gates'].append(item);save(state)
++    if not item['passed']:raise RuntimeError('Main shape failed; do not shrink')
++    state['stage']='screening';save(state)
++    for index,pattern in enumerate(('same','alternating','random')):
++        order=ARMS[index:]+ARMS[:index]
++        for arm in order:
++            item=job(PREFIX+'-screen-'+pattern+'-'+arm+'-r1',arm,steps=25,pattern=pattern)
++            state['runs'].append(item);save(state)
++            if not item['passed']:raise RuntimeError('Screening failure: '+item['tag'])
++    state['stage']='screening_complete';save(state)
++
++if __name__=='__main__':
++    if STATE.exists():raise SystemExit('Registration exists; choose a fresh prefix')
++    try:main()
++    except BaseException as error:
++        if STATE.exists():
++            state=json.loads(STATE.read_text());state.update(stage='stopped_at_gate',error=str(error));save(state)
++        raise
+diff --git a/research/step_lifetime/watch_report.py b/research/step_lifetime/watch_report.py
+new file mode 100644
+index 0000000..fe27001
+--- /dev/null
++++ b/research/step_lifetime/watch_report.py
+@@ -0,0 +1,26 @@
++"""Finite local watcher; no source upload or device execution."""
++import time,json,os
++from pathlib import Path
++from analyze import analyze
++root=Path(__file__).resolve().parents[3]
++(root/'report-watcher-pid.json').write_text(json.dumps(dict(pid=os.getpid(),script=str(Path(__file__).resolve()))))
++last=None
++for _ in range(1440):
++    identities=tuple((p.name,p.stat().st_mtime_ns) for p in sorted(root.glob('lifetime-*.json')) if '-receipt' not in p.name)
++    proof=root/'diagnostics/independent-lifetime-math.json'
++    identities+=(('proof',proof.stat().st_mtime_ns),) if proof.exists() else ()
++    follow=root/'followup.json'
++    identities+=(('followup',follow.stat().st_mtime_ns),) if follow.exists() else ()
++    for name in ('diagnostic-gates.json','prefix-timer-qualification.json','lifetime-plan-equality.json','hardening.json'):
++        path=root/'diagnostics'/name
++        if path.exists():identities+=((name,path.stat().st_mtime_ns),)
++    if identities!=last:
++        states=analyze();last=identities
++        active=[s for s in states.values() if s['stage'] not in ('screening_complete','stopped_at_gate')]
++        follow_state=json.loads(follow.read_text()) if follow.exists() else {}
++        diagnostic=root/'diagnostics/diagnostic-gates.json'
++        diagnostic_done=not diagnostic.exists() or json.loads(diagnostic.read_text()).get('stage') in ('complete','failed')
++        hardening=root/'diagnostics/hardening.json'
++        hardening_done=not hardening.exists() or json.loads(hardening.read_text()).get('stage') in ('complete','failed')
++        if states and not active and diagnostic_done and hardening_done and follow_state.get('stage') in ('complete','stopped_at_gate','waiting_deadline'):break
++    time.sleep(30)
+diff --git a/research/step_lifetime/write_research_report.py b/research/step_lifetime/write_research_report.py
+new file mode 100644
+index 0000000..94beb69
+--- /dev/null
++++ b/research/step_lifetime/write_research_report.py
+@@ -0,0 +1,64 @@
++"""Generate a bounded research report from completed, guarded pilot data."""
++from pathlib import Path
++import csv
++import json
++import subprocess
++
++ROOT=Path(__file__).resolve().parents[3]
++
++
++def write_report():
++    with (ROOT/'results.csv').open(encoding='utf-8') as handle:rows=list(csv.DictReader(handle))
++    index={(row['track'],row['pattern'],row['arm']):row for row in rows}
++    follow=json.loads((ROOT/'followup.json').read_text())
++    head=subprocess.check_output(['git','-C',str(ROOT/'stack'),'rev-parse','HEAD'],text=True).strip()
++    def table(track,arms):
++        lines=['|路由|'+('|'.join(arms))+'|','|---|'+('|'.join('---:' for _ in arms))+'|']
++        for pattern in ('same','alternating','random'):
++            cells=[f"{float(index[track,pattern,arm]['median_s']):.4f}" if (track,pattern,arm) in index else '未完成' for arm in arms]
++            lines.append('|'+pattern+'|'+'|'.join(cells)+'|')
++        return lines
++    lines=['# 面向完整训练更新的任务互补与副本生命周期：Ascend EP8探索报告','',
++        '## 摘要','',
++        f'本研究在独立普通MegaMoE分支上实现任务选择对照、同版本专家缓存、FP32梯度累积和显式owner交付。目前完成{len(rows)}/33个首轮筛查进程；每点仅一次独立运行。没有确认稳定加速，也没有实现或验证新的联合planner。报告保留负结果，不将通信量下降等同为训练更新加速。','',
++        '## 1. 问题与研究边界','',
++        '研究问题是：在固定一次optimizer更新的数据、逻辑路由、参数owner和资源预算下，选择哪些已就绪任务一起执行、是否复制、权重保留多久、dW何时归主，能否使完整更新更早结束？单个microbatch的更快或更慢都不足以回答这一问题。',
++        '任务互补、专家复制/缓存和梯度累积本身已有工作。此轮把它们当作机制对照，先验证是否存在值得联合决策的冲突；不预先命名新的算法或声称论文创新性。EasyBalance与REM等近邻边界见[研究笔记](RESEARCH-NOTES.md)及原始研究计划。','',
++        '## 2. 实验条件','',
++        'Ascend950DT八卡；L4、EP8/E256/Top8、H4096、routed/shared F1024、每条完整序列16K、每卡MB1/GA4、执行窗口W2。V4 attention/mHC和框架shared expert保持共同；FSDP8、Expert-FSDP1、固定owner、不使用CPU offload。合法合成token及next-token标签，路由MaxVio10分same/alternating/random；不属于自然预训练分布或收敛实验。',
++        '持久参数、梯度、Adam状态FP32，专家BF16。AdamW恒定LR1e-5、betas(0.9,0.95)、epsilon1e-8、decay0.01、clip1。共同接收容量262144；整卡采样峰值门槛90GiB。同层执行域32home+32replica，跨两层为64home+0replica，该限制不是算法主动关闭复制。',
++        '所有对照复用相同prefix、checkpoint切分和FSDP前向驻留。完整Attention上下文不因FFN分波而截断。每进程25次更新，5预热/20测量；每次更新取八rank最大完整wall time。正式计时不启用Timer或profiler。','',
++        '## 3. 实现与数值验证','',
++        '不可变ExecutionPlanBody保持逻辑路由；UpdateContext/ReplicaLease/GradientTicket分离参数版本、权重读取与梯度债务。八条BF16缓存192MiB、八条FP32累积384MiB，另加48MiB接收平面及元数据/通信。命中仍需本地拷入执行槽并发布本次ready；参数更新使旧权重失效。',
++        'B0–B3采用同一公共FP32交付路径与固定owner。原始dW累积后向原Parameter.grad布局只应用一次EP缩放，返回None避免旧hook再次缩放；更新前等待全部交付。B3容量满会提前flush全部pending，因此不是无限容量统一步末归并。该版本在线读取CPU元数据，全部开销计入；属于资格原型，尚非正式设备端联合planner。',
++        'CPU生命周期契约和两rankGloo交付参考通过。A/B小形状三次Adam与逐参数梯度检查通过；原worker和候选worker默认锚点也完成匹配比较。强制合法副本的独立NPU参考覆盖输出、dx、路由权重梯度及dW，64条W1/W2记录通过，且实际产生缓存命中/远端梯度；最大输出相对L2约0.000304，最大梯度相对L2约0.002760。详见[验证回执](VALIDATION.md)。','',
++        '## 4. 首轮结果','',
++        '以下单位为秒/完整optimizer更新，列出各独立进程后20更新的中位值。列间比较不构成独立重复的置信区间。','',
++        '### A：任务分组与复制','',*table('A',('serial_home','serial_native','fixed_home','fixed_native','fifo_home','easy_home')),'',
++        'serial是匹配前缀下的独立完整S FFN调用；fixed是双任务同层分组。FIFO采用最小runset，W2时为单任务；fixed提供双任务分组强基线。MaxUtil在交替热点下与固定分组采用相同组合；same/random实际出现跨层组和更多单任务组。不能把胜过单任务FIFO单独归因于动态选择。','',
++        '### B：驻留与梯度交付资格路径','',*table('B-qualification',('anchor','b0','b1','b2','b3')),'',
++        'anchor为原核内流水归并；B0每调用准备/立即交付；B1驻留/立即交付；B2驻留/GA2窗口交付；B3驻留/更新末尾优先交付。B0与原锚点还包含数值格式和核内/核外服务边界差异，所以最终必须超过原锚点与最强适用A基线。','',
++        f"预登记后续筛选状态：{follow['stage']}。{follow.get('conclusion','等待完整首轮数据，不提前选择主线。')}",
++        '逐项匹配机制差异见[CSV](diagnostics/matched-contrasts.csv)。[A图](figures/A.png)、[B资格路径图](figures/B-qualification.png)以及SVG/PDF和[绝对数据CSV](results.csv)均保存在本项目。','',
++        '## 5. 能支持的解释与不能支持的结论','',
++        'ExpertMaxVio约10不等于rank负载11倍；每rank聚合32个专家，冻结路由home-rank MaxVio均值约0.32–0.35。交替/随机任务有线性计算互补空间，但这不是完整更新加速上界。实际任务集合和负载几何见[运行期审计](diagnostics/completed-audit.json)及[路由审计](diagnostics/route-opportunity.json)。',
++        '逻辑payload计数含预热、前向、重放及反向准备，不能把所有命中归因于跨microbatch常驻，也不能据此推断暴露通信减少。完整主形状和B服务路径关键时间线尚未完成，无法定量区分原通信重叠、服务实现成本与归并尾部。数值通过和打点覆盖通过也分别记录，不相互替代。',
++        '此轮不支持“联合策略已有效”或“方向已被否定”。人工路由、单机W2、单独进程首轮和资格原型均限制泛化。完整模型W1、非法缓存集体拒绝/恢复、自然训练路由、独立银行和新设备端联合策略仍未验收。按计划，没有稳定信号不启动108矩阵或继续堆叠机制。','',
++        '## 6. 失败记录与重放','',
++        '首次提前启动、漏复制_C.so、误派B控制器均在设备训练前失败并保留原回执；构建保留CRLF及宏作用域失败。Timer Native小形状数值通过但无副本；复制覆盖探针发现重复坐标记录，未绕过校验或计入性能图。修复/再验证状态以VALIDATION.md及diagnostics为准。',
++        f'源码分支research/step-lifetime，报告生成时HEAD `{head}`；基于44b4e0d独立clone。候选worker SHA256为7023c5d860ba49a7104d6d76502ea22e3eb30ad7a47c2fa422242d626556b88b。源码/构建/SO/输入/路由身份均保存，旧工程不作改动。',
++        '完整源码在stack/，重放脚本在stack/research/step_lifetime/；配置、原始回执、失败和快照均位于当前项目。大梯度PT保留在receipt标注的专用远端evidence目录；本地元数据和源码快照已收集。详见[运行说明](RUNBOOK.md)。','']
++    if follow.get('stage')=='complete' and follow.get('pilot_gains'):
++        values=list(follow['pilot_gains'].values())
++        summary=(f"首轮最强适用对照为{follow['baseline']}，最佳生命周期候选为{follow['candidate']}；"
++                 f"后者三类路由完整更新中位耗时仍高约{min(-v for v in values)*100:.1f}%–{max(-v for v in values)*100:.1f}%。"
++                 '未触发独立重复或108矩阵；任务互补与生命周期联合优化的必要性尚未建立。')
++        lines[5:5]=['',summary]
++    lines += ['## 7. 最终验证边界','',
++        '主形状随机路由、三次参数版本、五种B方式的八rank逐调用实际copies/source_quota/逻辑与物理IDs/计数完全一致，每rank48个原始编译调用，且存在非空副本。此诊断补强策略隔离，不声称为全部25更新计时日志补齐了哈希。',
++        'prefix原Timer副本路径的小形状资格、重复完成identity拒绝及其新NPU证书见VALIDATION.md。计时数据仍绑定加固前的原冻结核心及v3证书；最终代码加固后另用六项CPU契约和v4强制副本NPU门禁验收，没有将加固解释为性能收益。',
++        '尚待完成：主形状与B服务路径关键时间线、非法缓存集体拒绝/恢复、完整模型W1控制、自然/独立路由和新联合设备策略。上述未验收项不会因首轮33点完成而自动转为通过。','']
++    (ROOT/'RESEARCH-REPORT.md').write_text('\n'.join(lines),encoding='utf-8')
++
++
++if __name__=='__main__':write_report()
+diff --git a/source/native-balanced/ascend_deepep/fsdp2_bridge.py b/source/native-balanced/ascend_deepep/fsdp2_bridge.py
+index fe1b76d..0cac01b 100644
+--- a/source/native-balanced/ascend_deepep/fsdp2_bridge.py
++++ b/source/native-balanced/ascend_deepep/fsdp2_bridge.py
+@@ -132,6 +132,8 @@ class _ExternalExperts(torch.autograd.Function):
+                 w1, w2, header.detach().cpu().tolist(), placement, (dx, dp, dw1, dw2), ctx.limit)
+         # BF16 native partial/owner rounding is preserved. Casting here only
+         # satisfies the original Parameter/router dtype at the framework edge.
++        if dw1 is None:
++            return None, dx, None, dp.to(ctx.prob_dtype), None, None, None
+         return (None, dx, None, dp.to(ctx.prob_dtype), dw1.to(ctx.weight_meta[0][1]),
+                 dw2.to(ctx.weight_meta[1][1]), None)
+ 
+@@ -332,6 +334,8 @@ class NativeFSDP2Pool:
+             plan._consumed = True
+             y, _, counts, state, dispatch = m._forward_device(
+                 x, prob.to(torch.bfloat16).contiguous(), plan, limit)
++            lifetime=getattr(m,'lifetime',None)
++            if lifetime is not None:lifetime.commit(plan)
+             # Freeze planner scratch on this stream before the next layer reuses it.
+             placement = (tuple(getattr(body,n) for n in _PLAN_TENSORS) if request is not None else
+                          tuple(getattr(plan, n).detach().clone() for n in _PLAN_TENSORS))
+@@ -495,6 +499,10 @@ class NativeFSDP2Pool:
+             # Native allocates fresh torch-owned dW outputs per call. A home view
+             # retains that storage until its consumer retires; it never aliases
+             # pool gradient scratch. The old clone remains an ablation switch.
++            lifetime=getattr(m,'lifetime',None)
++            if lifetime is not None:
++                lifetime.gradients(plan,dw1,dw2)
++                return dx,dp,None,None
+             return dx, dp, _owner_gradient(dw1, self.home), _owner_gradient(dw2, self.home)
+         except BaseException:
+             self.failed = True
+@@ -584,6 +592,10 @@ class NativeFSDP2Pool:
+                 self.stats['backwards'] += 1
+             # Native already performs owner SUM and shared dX addition. Shared
+             # dW stays on the original ordinary-FSDP Parameters/mesh.
++            lifetime=getattr(m,'lifetime',None)
++            if lifetime is not None:
++                lifetime.gradients(plan,dw1,dw2)
++                return dx,dp,None,None
+             return dx, dp, _owner_gradient(dw1, self.home), _owner_gradient(dw2, self.home), dwg, dwu, dwd
+         except BaseException:
+             self.failed = True
+diff --git a/source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py b/source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py
+index 1d7b1f7..5bf3959 100644
+--- a/source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py
++++ b/source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py
+@@ -60,6 +60,12 @@ class MegaFluxBF16WorkerPipelineTrain(MegaFluxBF16EarlyTrain):
+                 self.worker_sidecar[4].fill_(trace)
+             self._worker_trace_ptr=trace
+         # Only the explicit candidate SO interprets this opaque envelope word.
++        lifetime=getattr(self,'lifetime',None)
++        if lifetime is not None:
++            self.worker_sidecar=self.worker_sidecar.detach().clone()
++            cache=lifetime.prepare(plan)
++            self.worker_sidecar[6].fill_(cache.data_ptr())
++            self.worker_sidecar[7].fill_(1)
+         descriptor[20]=self.worker_sidecar.data_ptr()
+         return descriptor
+ 
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_backward_restore.h b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_backward_restore.h
+index ed46eb6..9f33121 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_backward_restore.h
++++ b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_backward_restore.h
+@@ -17,7 +17,7 @@ __aicore__ inline __gm__ int32_t* Flag(uint64_t ready,int slot,int projection,in
+ }
+ 
+ __aicore__ inline void CopyExperts(const MegaMoeReplicaDescriptor& d,uint64_t ready,int epoch,
+-        bool w1First=false) {
++        bool w1First=false,uint64_t cache=0) {
+     if constexpr(g_coreType==AIV) {
+         if(GetSubBlockIdx()!=1)return;
+         const int worker=GetBlockIdx()/GetTaskRation(),workers=GetBlockNum();
+@@ -49,7 +49,8 @@ __aicore__ inline void CopyExperts(const MegaMoeReplicaDescriptor& d,uint64_t re
+                 for(int64_t chunk=worker;chunk<chunks;chunk+=workers) {
+                     const int64_t begin=chunk*CHUNK;
+                     const int n=plane-begin<CHUNK?plane-begin:CHUNK;
+-                    copy.Push(peer+home-d.base+(logical%d.home*plane+begin)*2,
++                    const uint64_t cached=cache?MegaFluxWorker::Field(cache,slot*2+p):0;
++                    copy.Push(cached?cached+begin*2:peer+home-d.base+(logical%d.home*plane+begin)*2,
+                               replica+(slot*plane+begin)*2,n);
+                 }
+                 copy.Drain();
+@@ -94,7 +95,7 @@ __aicore__ inline void WaitPanel(uint64_t ready,int slot,int projection,int pane
+ }
+ 
+ __aicore__ inline void CopyExpertsPanel(const MegaMoeReplicaDescriptor& d,
+-        uint64_t ready,int epoch,uint64_t trace=0,bool w1First=false) {
++        uint64_t ready,int epoch,uint64_t trace=0,bool w1First=false,uint64_t cache=0) {
+     if constexpr(g_coreType==AIV) {
+         if(GetSubBlockIdx()!=1)return;
+         const int worker=GetBlockIdx()/GetTaskRation(),workers=GetBlockNum();
+@@ -141,7 +142,8 @@ __aicore__ inline void CopyExpertsPanel(const MegaMoeReplicaDescriptor& d,
+                             const int64_t offset=first*rowWidth+begin;
+                             const int64_t srcOffset=(logical%d.home)*plane+offset;
+                             const int64_t dstOffset=slot*plane+offset;
+-                            copy.Push(peer+home-d.base+srcOffset*2,
++                            const uint64_t cached=cache?MegaFluxWorker::Field(cache,slot*2+projection):0;
++                            copy.Push(cached?cached+offset*2:peer+home-d.base+srcOffset*2,
+                                 replica+dstOffset*2,n);
+                         }
+                     }
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16.h b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16.h
+index f947cf4..039b95e 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16.h
++++ b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16.h
+@@ -84,6 +84,7 @@ public:
+ #if defined(DEEPEP_BF16_REPLICA)
+     __aicore__ inline void EnableReplica(const MegaMoeReplicaDescriptor& d) {replica_=d;}
+ #if defined(DEEPEP_BF16_REPLICA_PIPELINE)
++    __aicore__ inline void EnableLifetimeCache(uint64_t cache) {lifetimeCache_=cache;}
+     __aicore__ inline void EnableReplicaPipeline(uint64_t ready,uint64_t trace,int epoch) {
+         pipelineReady_=ready;pipelineTrace_=trace;pipelineEpoch_=epoch;
+     }
+@@ -118,6 +119,7 @@ private:
+     MegaMoeReplicaDescriptor replica_{};
+ #if defined(DEEPEP_BF16_REPLICA_PIPELINE)
+     uint64_t pipelineReady_=0,pipelineTrace_=0;
++    uint64_t lifetimeCache_=0;
+ #if MEGAFLUX_WORKER_FORWARD
+     uint64_t workerSide_=0;
+     MegaFluxWorker::Queue workerQueue_;
+@@ -1561,7 +1563,7 @@ __aicore__ inline void MegaMoeBF16::ProcessWithSaveMode()
+                 // AIV0 has retired FirstBuff/SaveState. AIC writes only the
+                 // <=192KiB BF16 input tiles; no SwiGLU has started on this lane.
+                 // The bounded high-UB copy overlaps AIV1 Dispatch + first MMAD.
+-                MegaFluxPipeline::CopyW2StripeRange(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,0,prefetchedW2Stripes);
++                MegaFluxPipeline::CopyW2StripeRange(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,0,prefetchedW2Stripes,lifetimeCache_);
+                 MegaFluxPipeline::Stamp(pipelineTrace_,blockIdx_,332);
+             }
+         }
+@@ -1710,9 +1712,9 @@ __aicore__ inline void MegaMoeBF16::ProcessWithSaveMode()
+             workerQueue_.Service(replica_);
+ #elif defined(DEEPEP_BF16_W2_PREFETCH)
+             MegaFluxPipeline::CopyW2StripeRange(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,prefetchedW2Stripes,
+-                (replica_.hidden+MegaFluxPipeline::STRIPE_N-1)/MegaFluxPipeline::STRIPE_N);
++                (replica_.hidden+MegaFluxPipeline::STRIPE_N-1)/MegaFluxPipeline::STRIPE_N,lifetimeCache_);
+ #else
+-            MegaFluxPipeline::CopyW2Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_);
++            MegaFluxPipeline::CopyW2Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,lifetimeCache_);
+ #endif
+         }
+     }
+@@ -1734,7 +1736,7 @@ __aicore__ inline void MegaMoeBF16::ProcessWithSaveMode()
+ #if defined(DEEPEP_BF16_REPLICA_PIPELINE)
+ #if defined(DEEPEP_BF16_REPLICA_STRIPES)
+             if(pipelineReady_)
+-                MegaFluxPipeline::CopyW1Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_);
++                MegaFluxPipeline::CopyW1Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,lifetimeCache_);
+ #endif
+             // Dispatch is retired; W2 can overlap remaining GMM1/SwiGLU.
+ #if defined(DEEPEP_BF16_REPLICA_STREAM)
+@@ -1744,7 +1746,7 @@ __aicore__ inline void MegaMoeBF16::ProcessWithSaveMode()
+                 if(useSplitTrainingState_)NotifyCube(GMM2_UB_READY_FLAG);
+                 MegaFluxPipeline::Stamp(pipelineTrace_,blockIdx_,331);
+ #if !defined(DEEPEP_BF16_FULL_PIPELINE)
+-                MegaFluxPipeline::CopyW2Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_);
++                MegaFluxPipeline::CopyW2Stripes(replica_,stripeReady_,pipelineTrace_,pipelineEpoch_,lifetimeCache_);
+ #endif
+             } else
+ #endif
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h
+index 5d0bb88..e46fef8 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h
++++ b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h
+@@ -193,6 +193,11 @@ public:
+     }
+ #endif
+ #if defined(DEEPEP_BF16_GRADIENT_PIPE)
++    __aicore__ inline void EnableLifetime(uint64_t side) {
++        if(!side)return;
++        lifetimeCache_=MegaFluxWorker::Field(side,6);
++        if(MegaFluxWorker::Field(side,7)==1)gradient_.ready=0;
++    }
+     __aicore__ inline void EnableGradientPipe(uint64_t ready,uint64_t trace,int epoch) {
+         gradient_.replica=replica_;gradient_.ready=ready;gradient_.trace=trace;gradient_.epoch=epoch;
+         for(int e=0;e<expertPerRank_;++e)gradientOrder_[e]=e;
+@@ -249,6 +254,7 @@ private:
+ #endif
+ #if defined(DEEPEP_BF16_REPLICA)
+     MegaMoeReplicaDescriptor replica_{};
++    uint64_t lifetimeCache_=0;
+ #if defined(DEEPEP_BF16_GRADIENT_PIPE)
+     MegaFluxGradient::Context gradient_{};
+ #if defined(DEEPEP_BF16_EARLY_REDUCE)
+@@ -1201,9 +1207,9 @@ __aicore__ inline void MegaMoeBF16Backward::TransportXRedispatch()
+             // the panel service borrows its own UB window on this same lane.
+             if (restoreReady_) {
+                 if (restoreMode_ == 2)
+-                    MegaFluxBackwardRestore::CopyExpertsPanel(replica_, restoreReady_, restoreEpoch_, gradient_.trace, noneGmEnabled_);
++                    MegaFluxBackwardRestore::CopyExpertsPanel(replica_, restoreReady_, restoreEpoch_, gradient_.trace, noneGmEnabled_, lifetimeCache_);
+                 else
+-                    MegaFluxBackwardRestore::CopyExperts(replica_, restoreReady_, restoreEpoch_, noneGmEnabled_);
++                    MegaFluxBackwardRestore::CopyExperts(replica_, restoreReady_, restoreEpoch_, noneGmEnabled_, lifetimeCache_);
+             }
+ #endif
+         }
+@@ -2309,9 +2315,9 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
+ #if MEGAFLUX_BACKWARD_RESTORE
+         if(restoreReady_ && subBlockIdx_==1) {
+             if(restoreMode_==2)
+-                MegaFluxBackwardRestore::CopyExpertsPanel(replica_,restoreReady_,restoreEpoch_,gradient_.trace,noneGmEnabled_);
++                MegaFluxBackwardRestore::CopyExpertsPanel(replica_,restoreReady_,restoreEpoch_,gradient_.trace,noneGmEnabled_,lifetimeCache_);
+             else
+-                MegaFluxBackwardRestore::CopyExperts(replica_,restoreReady_,restoreEpoch_,noneGmEnabled_);
++                MegaFluxBackwardRestore::CopyExperts(replica_,restoreReady_,restoreEpoch_,noneGmEnabled_,lifetimeCache_);
+         }
+ #endif
+         if (subBlockIdx_ == 0) {
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_replica_pipeline.h b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_replica_pipeline.h
+index 19802ea..a0185ee 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_replica_pipeline.h
++++ b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_replica_pipeline.h
+@@ -144,7 +144,7 @@ struct ReadyCache {
+ // Independent AIV1 producer after Dispatch retires. No Cube handshake here:
+ // AIC and AIV0 may consume early stripes while later stripes are copied.
+ __aicore__ inline void CopyW1Stripes(const MegaMoeReplicaDescriptor& d,
+-        uint64_t ready,uint64_t trace,int epoch) {
++        uint64_t ready,uint64_t trace,int epoch,uint64_t cache=0) {
+     if constexpr(g_coreType==AIV) {
+         const int worker=GetBlockIdx()/GetTaskRation(),workers=GetBlockNum();
+         const int stripes=(d.ffn+STRIPE_N-1)/STRIPE_N;
+@@ -172,10 +172,12 @@ __aicore__ inline void CopyW1Stripes(const MegaMoeReplicaDescriptor& d,
+                     const int64_t offset=(first+(task/chunks)*d.ffn)*d.hidden+begin;
+                     const int n=elements-begin<MegaFluxMixed::CHUNK?elements-begin:MegaFluxMixed::CHUNK;
+ #if MEGAFLUX_OPT_COPY
+-                    copy.Push(peer+d.home1-d.base+(logical%d.home*plane+offset)*2,
++                    const uint64_t cached=cache?*((__gm__ uint64_t*)cache+slot*2):0;
++                    copy.Push(cached?cached+offset*2:peer+d.home1-d.base+(logical%d.home*plane+offset)*2,
+                         d.replica1+(slot*plane+offset)*2,n);
+ #else
+-                    MegaFluxMixed::Load(b,(GM_ADDR)(peer+d.home1-d.base+(logical%d.home*plane+offset)*2),n);
++                    const uint64_t cached=cache?*((__gm__ uint64_t*)cache+slot*2):0;
++                    MegaFluxMixed::Load(b,(GM_ADDR)(cached?cached+offset*2:peer+d.home1-d.base+(logical%d.home*plane+offset)*2),n);
+                     MegaFluxMixed::Store((GM_ADDR)(d.replica1+(slot*plane+offset)*2),b,n);
+ #endif
+                     copiedBytes+=n*2;
+@@ -203,7 +205,7 @@ __aicore__ inline void CopyW1Stripes(const MegaMoeReplicaDescriptor& d,
+ #if defined(DEEPEP_BF16_REPLICA_STREAM)
+ // W2 is [H,F]: one GMM2 output-N stripe is contiguous 256 rows, full K=F.
+ __aicore__ inline void CopyW2StripeRange(const MegaMoeReplicaDescriptor& d,
+-        uint64_t ready,uint64_t trace,int epoch,int firstStripe,int endStripe) {
++        uint64_t ready,uint64_t trace,int epoch,int firstStripe,int endStripe,uint64_t cache=0) {
+     if constexpr(g_coreType==AIV) {
+         if(firstStripe>=endStripe)return;
+         const int worker=GetBlockIdx()/GetTaskRation(),workers=GetBlockNum();
+@@ -233,10 +235,12 @@ __aicore__ inline void CopyW2StripeRange(const MegaMoeReplicaDescriptor& d,
+                     const int64_t position=first*d.ffn+begin;
+                     const int n=elements-begin<MegaFluxMixed::CHUNK?elements-begin:MegaFluxMixed::CHUNK;
+ #if MEGAFLUX_OPT_COPY
+-                    copy.Push(peer+d.home2-d.base+(logical%d.home*plane+position)*2,
++                    const uint64_t cached=cache?*((__gm__ uint64_t*)cache+slot*2+1):0;
++                    copy.Push(cached?cached+position*2:peer+d.home2-d.base+(logical%d.home*plane+position)*2,
+                         d.replica2+(slot*plane+position)*2,n);
+ #else
+-                    MegaFluxMixed::Load(b,(GM_ADDR)(peer+d.home2-d.base+(logical%d.home*plane+position)*2),n);
++                    const uint64_t cached=cache?*((__gm__ uint64_t*)cache+slot*2+1):0;
++                    MegaFluxMixed::Load(b,(GM_ADDR)(cached?cached+position*2:peer+d.home2-d.base+(logical%d.home*plane+position)*2),n);
+                     MegaFluxMixed::Store((GM_ADDR)(d.replica2+(slot*plane+position)*2),b,n);
+ #endif
+                     copiedBytes+=n*2;
+@@ -259,8 +263,8 @@ __aicore__ inline void CopyW2StripeRange(const MegaMoeReplicaDescriptor& d,
+     }
+ }
+ __aicore__ inline void CopyW2Stripes(const MegaMoeReplicaDescriptor& d,
+-        uint64_t ready,uint64_t trace,int epoch) {
+-    CopyW2StripeRange(d,ready,trace,epoch,0,(d.hidden+STRIPE_N-1)/STRIPE_N);
++        uint64_t ready,uint64_t trace,int epoch,uint64_t cache=0) {
++    CopyW2StripeRange(d,ready,trace,epoch,0,(d.hidden+STRIPE_N-1)/STRIPE_N,cache);
+ }
+ #endif
+ #endif
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_worker_queue.h b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_worker_queue.h
+index e87201c..c64af41 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_worker_queue.h
++++ b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_worker_queue.h
+@@ -112,7 +112,9 @@ struct Queue {
+             const int64_t plane=p?d.hidden*d.ffn:2*d.ffn*d.hidden;
+             const int64_t offset=((int64_t)stripe*256+(p?0:band*d.ffn))*width+inner;
+             const uint64_t peer=(uint64_t)aclshmem_ptr((GM_ADDR)d.base,logical/d.home);
+-            const uint64_t src=peer+(p?d.home2:d.home1)-d.base+((logical%d.home)*plane+offset)*2;
++            const uint64_t cache=Field(side,6);
++            const uint64_t cached=cache?Field(cache,slot*2+p):0;
++            const uint64_t src=cached?cached+offset*2:peer+(p?d.home2:d.home1)-d.base+((logical%d.home)*plane+offset)*2;
+             const uint64_t dst=(p?d.replica2:d.replica1)+(slot*plane+offset)*2;
+             // Raw asynchronous queue residence, not a pure device busy span.
+             const auto copyTimer=MegaFluxStageTimer::BeginAsync(Trace(side),false,
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/megaflux_full_bf16.cpp b/source/native-balanced/kernels/mega_moe_bf16/megaflux_full_bf16.cpp
+index 080b06a..c973c05 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/megaflux_full_bf16.cpp
++++ b/source/native-balanced/kernels/mega_moe_bf16/megaflux_full_bf16.cpp
+@@ -82,6 +82,7 @@ __global__ __aicore__ void megaflux_full_bf16(
+     if(active) {
+ #if defined(DEEPEP_BF16_WORKER_PIPELINE)
+         op.EnableReplicaPipeline(pipeline.forward.ready,MegaFluxWorker::Trace(pipeline.forward.trace),descriptor.epoch);
++        op.EnableLifetimeCache(MegaFluxWorker::Field(pipeline.forward.trace,6));
+ #if MEGAFLUX_WORKER_FORWARD
+         op.EnableWorker(pipeline.forward.trace);
+ #endif
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/megaflux_full_bf16_backward.cpp b/source/native-balanced/kernels/mega_moe_bf16/megaflux_full_bf16_backward.cpp
+index 55127f8..d3af675 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/megaflux_full_bf16_backward.cpp
++++ b/source/native-balanced/kernels/mega_moe_bf16/megaflux_full_bf16_backward.cpp
+@@ -84,6 +84,9 @@ __global__ __aicore__ void megaflux_full_bf16_backward(
+         timerAddr);
+     op.EnableReplica(descriptor.replica);
+     if(active)op.EnableGradientPipe(pipeline.grad_ready,pipeline.grad_trace,descriptor.epoch);
++#if defined(DEEPEP_BF16_WORKER_PIPELINE)
++    op.EnableLifetime(pipeline.forward.trace);
++#endif
+ #if MEGAFLUX_BACKWARD_RESTORE
+     if(active)op.EnableBackwardRestore(pipeline.forward.stripes,descriptor.epoch,
+         MEGAFLUX_BACKWARD_RESTORE);
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp b/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp
+index afbeff6..7610a56 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp
++++ b/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp
+@@ -44,6 +44,7 @@ return 2;
+ }
+ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_shared_expert_tile_pipeline_version(){return 1;}
+ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_worker_pipeline_version(){return 3;}
++extern "C" ASCEND_DEEPEP_EXPORT int megaflux_step_lifetime_version(){return 1;}
+ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_shared_expert_forward_abi(){
+ #if defined(MEGAFLUX_SHARED_EXPERT_FORWARD) && MEGAFLUX_SHARED_EXPERT_FORWARD
+     return MegaMoeSharedExpertLayout::kAbi;
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16_backward_shared.cpp b/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16_backward_shared.cpp
+index c094128..b5c931c 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16_backward_shared.cpp
++++ b/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16_backward_shared.cpp
+@@ -218,6 +218,7 @@ __global__ __aicore__ void megaflux_worker_bf16_shared_backward_v3_kernel(
+         timerAddr, routedOnly ? nullptr : &v2.base);
+     op.EnableReplica(descriptor.replica);
+     if (active) op.EnableGradientPipe(pipeline.grad_ready, pipeline.grad_trace, descriptor.epoch);
++    if(routedOnly)op.EnableLifetime(pipeline.forward.trace);
+ #if MEGAFLUX_BACKWARD_RESTORE
+     if (active) op.EnableBackwardRestore(pipeline.forward.stripes, descriptor.epoch,
+         MEGAFLUX_BACKWARD_RESTORE);
+diff --git a/tools/controller.py b/tools/controller.py
+index deaa2a6..2098daf 100644
+--- a/tools/controller.py
++++ b/tools/controller.py
+@@ -12,8 +12,8 @@ import hashlib
+ import os
+ from concurrent.futures import ThreadPoolExecutor
+ 
+-TASK = pathlib.Path('/home/z00956592/megaflux/planner-executor-ep8-lab')
+-CONTAINER = 'planner-executor-ep8-lab'
++TASK = pathlib.Path('/home/z00956592/megaflux/step-lifetime-study-20261115/stack')
++CONTAINER = 'step-lifetime-study-20261115'
+ 
+ def source_identity(arguments=()):
+     paths={}
+@@ -132,6 +132,11 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
+         subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
+             str(TASK/'configs/temporal-scheduler-freeze.json'),'--out',
+             str(snapshots/f'{tag}-temporal-runtime.json')],check=True)
++    if '--lifetime-mode' in arguments:
++        if worker!='ep8-cap64-lifetime-v1':raise RuntimeError('Lifetime ABI must use its own frozen worker')
++        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
++            str(TASK/'configs/lifetime-runtime-freeze.json'),'--out',
++            str(snapshots/f'{tag}-lifetime-runtime.json')],check=True)
+     sources=source_identity(arguments)
+     (out/'source-identity.json').write_text(json.dumps(sources,indent=2))
+     # Cache only byte-identical, verified snapshots from unchanged prior runs.
+@@ -184,7 +189,7 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
+     return status
+ 
+ def run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
+-    with (TASK / 'evidence' / 'device-jobs.lock').open('a') as lock:
++    with pathlib.Path('/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock').open('a') as lock:
+         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+         return _run_job(backend, mode, tag, arguments, seconds, worker, capacity)
+ 
+@@ -192,7 +197,7 @@ def run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=6
+ def main():
+     parser = argparse.ArgumentParser()
+     parser.add_argument('--backend', choices=['balanced', 'shared', 'moonep'])
+-    parser.add_argument('--mode', default='train', choices=['train', 'validate', 'activation', 'scaling', 'pool', 'norm', 'moonpool', 'sharedpool','plan','links','scheduler','temporal_math'])
++    parser.add_argument('--mode', default='train', choices=['train', 'validate', 'activation', 'scaling', 'pool', 'norm', 'moonpool', 'sharedpool','plan','links','scheduler','temporal_math','lifetime_math'])
+     parser.add_argument('--tag')
+     parser.add_argument('--worker-variant')
+     parser.add_argument('--capacity', type=int, choices=[32,64], default=64)
+diff --git a/tools/gate_lifetime_math.py b/tools/gate_lifetime_math.py
+new file mode 100644
+index 0000000..35fce43
+--- /dev/null
++++ b/tools/gate_lifetime_math.py
+@@ -0,0 +1,199 @@
++"""Isolate grouped FFN math from FSDP, Attention and decoder checkpoint hooks."""
++import argparse
++from types import SimpleNamespace
++from lifetime_device import LifetimeDevice
++import gc
++from contextlib import contextmanager,nullcontext
++from contextvars import ContextVar
++import json
++import os
++from pathlib import Path
++
++import numpy as np
++import torch
++import torch.distributed as dist
++from torch.utils.checkpoint import checkpoint,set_checkpoint_early_stop
++from ascend_deepep import ShmemInstance
++from ascend_deepep.fsdp2_bridge import NativeFSDP2Pool
++from ascend_deepep.home_group_planner import FixedHomeGroupPlanner
++from ascend_deepep.plan_replay import install_replay_provider
++from fsdp_turbo.distributed.expert_parallel.dispatcher_mega_moe import _local_mem_bytes
++from grouped_experts import ExpertDomain,GroupedExpertsBridge
++from temporal_scheduler import TaskKey,compile_waves
++from mindspeed_llm.fsdp2.features.ep8_imbalance import RouteProvider
++
++
++def difference(actual,expected,forward=False):
++    actual,expected=actual.detach().float(),expected.detach().float()
++    error=float(torch.linalg.vector_norm(actual-expected)/torch.linalg.vector_norm(expected).clamp_min(1e-12))
++    return dict(relative_l2=error,passed=error<=(.004 if forward else .02))
++
++
++def main():
++    parser=argparse.ArgumentParser()
++    parser.add_argument('--backend')
++    parser.add_argument('--out',type=Path,required=True)
++    parser.add_argument('--route-bank',type=Path,required=True)
++    parser.add_argument('--serialized',action='store_true')
++    parser.add_argument('--lifetime-mode',default='all')
++    args=parser.parse_args()
++    from fsdp_turbo.utils.device import set_accelerator_compatible
++    set_accelerator_compatible()
++    rank=int(os.environ['LOCAL_RANK']);ep=8;tokens=256;hidden=ffn=512;topk=8
++    torch.npu.set_device(rank);device=f'npu:{rank}'
++    dist.init_process_group('hccl')
++    shmem=ShmemInstance(rank,ep,'tcp://127.0.0.1:'+str(int(os.environ['MASTER_PORT'])+1))
++    shmem.set_data_op_engine_type(0x08);shmem.init(8*1024**3)
++    window=max(256*1024**2,_local_mem_bytes(tokens,hidden,topk,ep,64,4096))
++    pool=NativeFSDP2Pool(shmem,dist.group.WORLD,32,32,hidden,ffn,tokens,topk,
++                        window,4096,device,'native','panel',routed_input_mode='redispatch',
++                        defer_completion_checks=True)
++    native=pool.policy
++    class ForcedReplicaPlan:
++        def plan(self,context):
++            from ascend_deepep.unified_planner import DeviceProposal
++            local=torch.bincount(context.logical_ids.long().flatten(),minlength=ep*32).int()
++            peers=[torch.empty_like(local) for _ in range(ep)]
++            dist.all_gather(peers,local)
++            counts=torch.stack(peers).cpu().numpy()
++            total=counts.sum(0)
++            copies=np.full((ep,32),-1,dtype=np.int32)
++            selected=set()
++            for owner in range(ep):
++                hot=sorted(range(owner*32,(owner+1)*32),key=lambda expert:(-int(total[expert]),expert))[:8]
++                hot=[expert for expert in hot if total[expert]>0]
++                copies[(owner+1)%ep,:len(hot)]=hot
++                selected.update(hot)
++            quota=np.zeros((ep,ep*32,ep),dtype=np.int32)
++            for source in range(ep):
++                for expert in range(ep*32):
++                    rows=int(counts[source,expert]);owner=expert//32
++                    remote=rows//2 if expert in selected else 0
++                    quota[source,expert,owner]=rows-remote
++                    if remote:quota[source,expert,(owner+1)%ep]=remote
++            return native.compile_proposal(context,DeviceProposal(
++                torch.from_numpy(copies).to(device),torch.from_numpy(quota).to(device)))
++    forced=ForcedReplicaPlan()
++    home=FixedHomeGroupPlanner(native.validator)
++    rng=np.random.default_rng(1234+rank)
++    def data(shape,scale=1.):
++        return torch.from_numpy((rng.standard_normal(shape)*scale).astype(np.float32)).to(device)
++    weights=[torch.nn.Parameter(data(shape,.02)) for shape in
++             ((32,2*ffn,hidden),(32,hidden,ffn))]
++    bridge=GroupedExpertsBridge(ExpertDomain((0,),32,8),pool,
++        {0:lambda:tuple(value.to(torch.bfloat16) for value in weights)})
++    provider=RouteProvider(args.route_bank/'maxvio-10.npy',rank,1,1,torch.device(device),microbatches=4)
++    replay=ContextVar('math_gate_replay',default=False)
++    install_replay_provider(None)
++    @contextmanager
++    def replay_context():
++        token=replay.set(True)
++        try:yield
++        finally:replay.reset(token)
++    def reference(value,ids,probability,reference_weights):
++        from torch.distributed.nn.functional import all_gather,all_reduce
++        import torch.nn.functional as functional
++        packed=torch.cat((value.float(),probability.to(torch.bfloat16).float()),dim=-1)
++        gathered=torch.cat(all_gather(packed),dim=0)
++        x,p=gathered[:,:hidden],gathered[:,hidden:]
++        all_ids=[torch.empty_like(ids) for _ in range(ep)];dist.all_gather(all_ids,ids)
++        all_ids=torch.cat(all_ids).long()
++        w1,w2=[weight.to(torch.bfloat16).float() for weight in reference_weights]
++        result=torch.zeros((ep*tokens*topk,hidden),device=device)
++        result=result+(w1.sum()+w2.sum()+gathered.sum())*0
++        for expert in range(32):
++            rows,choices=torch.where(all_ids==rank*32+expert)
++            if rows.numel()==0:continue
++            raw=functional.linear(x[rows],w1[expert]).to(torch.bfloat16).float()
++            gate,up=raw.chunk(2,dim=-1)
++            activation=(functional.silu(gate.clamp(max=10.))*up.clamp(-10.,10.)).to(torch.bfloat16).float()
++            # The frozen epilogue rounds SwiGLU to BF16, then applies the
++            # BF16 routing weight BEFORE GMM2 (block_epilogue_swiglu_bf16.h).
++            weighted=(activation*p[rows,choices,None]).to(torch.bfloat16).float()
++            output=functional.linear(weighted,w2[expert]).to(torch.bfloat16).float()
++            result=result.index_add(0,rows*topk+choices,output)
++        routes=all_reduce(result).to(torch.bfloat16).view(ep*tokens,topk,hidden)
++        # mega_moe_unpermute.h explicitly preserves per-route BF16 rounding
++        # and original TopK order, rather than a final FP32 reduction.
++        combined=routes[:,0]
++        for choice in range(1,topk):combined=combined+routes[:,choice]
++        return combined[rank*tokens:(rank+1)*tokens]
++    records=[];case=0
++    for policy in ('b0','b1','b2','b3'):
++        pool.policy=forced
++        experts=SimpleNamespace(gate_up_proj=weights[0],down_proj=weights[1])
++        model=SimpleNamespace(model=SimpleNamespace(layers=[SimpleNamespace(mlp=SimpleNamespace(experts=experts))]))
++        lifetime=LifetimeDevice(model,pool,policy)
++        for count in (1,2):
++            lifetime.begin(case)
++            values=[data((tokens,hidden)).to(torch.bfloat16) for _ in range(count)]
++            probabilities=[data((tokens,topk),.01).sigmoid()*.2 for _ in range(count)]
++            ids=[provider.routes[0,index,0] for index in range(count)]
++            dys=[data((tokens,hidden),.1).to(torch.bfloat16) for _ in range(count)]
++            expected_weights=[value.detach().clone().requires_grad_() for value in weights]
++            reference_x=[value.detach().clone().requires_grad_() for value in values]
++            reference_p=[value.detach().clone().requires_grad_() for value in probabilities]
++            expected=[reference(x,i,p,expected_weights) for x,i,p in zip(reference_x,ids,reference_p)]
++            sum((value.float()*dy.float()).sum()/count for value,dy in zip(expected,dys)).backward()
++            torch.accelerator.synchronize()
++            actual_x=[value.detach().clone().requires_grad_() for value in values]
++            actual_p=[value.detach().clone().requires_grad_() for value in probabilities]
++            waves=compile_waves(tuple(TaskKey(case,index,0) for index in range(count)),tokens)
++            bodies=[]
++            def execute(*inputs):
++                x,p=inputs[:count],inputs[count:]
++                parts=[[] for _ in range(count)]
++                order=torch.zeros((),device=device)
++                for wave_index,wave in enumerate(waves):
++                    key=(case,0,wave_index,1)
++                    outputs=bridge(tuple((0,x[index][begin:end],ids[index][begin:end],p[index][begin:end]+order*0)
++                        for index,begin,end in wave),key,recompute=replay.get())
++                    order=outputs[0].reshape(-1)[0].float()*0
++                    for (index,begin,_),output in zip(wave,outputs):parts[index].append((begin,output))
++                    if not replay.get():bodies.append(pool._plan_bodies[key].body)
++                    if args.serialized:torch.accelerator.synchronize()
++                return tuple(torch.cat([value for _,value in sorted(chunks)]) for chunks in parts)
++            with set_checkpoint_early_stop(False):
++                actual=checkpoint(execute,*actual_x,*actual_p,use_reentrant=False,
++                                  context_fn=lambda:(nullcontext(),replay_context()))
++            sum((value.float()*dy.float()).sum()/count for value,dy in zip(actual,dys)).backward()
++            lifetime.finish()
++            from ascend_deepep.deferred_completion import flush
++            flush()
++            torch.accelerator.synchronize()
++            comparisons={
++                'output':difference(torch.cat(actual),torch.cat(expected),True),
++                'dx':difference(torch.cat([x.grad for x in actual_x]),torch.cat([x.grad for x in reference_x])),
++                'dp':difference(torch.cat([p.grad for p in actual_p]),torch.cat([p.grad for p in reference_p])),
++                'dw1':difference(weights[0].grad,expected_weights[0].grad/ep),
++                'dw2':difference(weights[1].grad,expected_weights[1].grad/ep)}
++            plans=[]
++            for body in bodies:
++                copies=body.copies.cpu().tolist();quota=body.source_quota.sum(0).cpu()
++                active=[(destination,expert,int(quota[expert,destination])) for destination,row in
++                        enumerate(copies) for expert in row if expert>=0]
++                plans.append(dict(copies=active,unused_replicas=sum(rows==0 for _,_,rows in active)))
++            retired=pool.retire_training_step(case)
++            if retired!=count:raise RuntimeError('Math gate plan lifetime mismatch')
++            record=dict(policy=policy,tasks=count,forced_checked_replica_plan=True,comparisons=comparisons,plans=plans,lifetime_stats=dict(lifetime.stats),
++                        passed=all(value['passed'] for value in comparisons.values()))
++            records.append(record)
++            args.out.mkdir(exist_ok=True,parents=True)
++            (args.out/f'rank{rank}.json').write_text(json.dumps(dict(rank=rank,records=records),indent=2))
++            print(json.dumps(dict(rank=rank,**record)),flush=True)
++            for weight in weights:weight.grad=None
++            case+=1
++    pool.close()
++    del bridge,pool
++    gc.collect();torch.accelerator.synchronize()
++    shmem.destroy();dist.destroy_process_group()
++    return all(record['passed'] for record in records)
++
++
++if __name__=='__main__':
++    try:raise SystemExit(0 if main() else 1)
++    except SystemExit:raise
++    except BaseException:
++        import traceback
++        traceback.print_exc()
++        os._exit(1)
+diff --git a/tools/grouped_experts.py b/tools/grouped_experts.py
+index ad0e237..17e3463 100644
+--- a/tools/grouped_experts.py
++++ b/tools/grouped_experts.py
+@@ -74,6 +74,7 @@ class GroupedExpertsBridge:
+         from ascend_deepep.fsdp2_bridge import FSDP2ExpertsBridge
+         if pool.home != domain.local_home or set(owners) != set(domain.layers):
+             raise ValueError('Grouped pool/owner domain mismatch')
++        self.pool = pool
+         self.domain = domain
+         self.owners = owners
+         self.bridge = FSDP2ExpertsBridge(pool,self._weights)
+@@ -81,6 +82,10 @@ class GroupedExpertsBridge:
+         self.ranks = pool.shmem.world_size()
+ 
+     def _weights(self):
++        lifetime=getattr(self.pool.module,'lifetime',None)
++        if lifetime is not None:
++            if len(self.domain.layers)!=1:raise RuntimeError('Lifetime prototype accepts single-layer domains only')
++            lifetime.layer=self.domain.layers[0]
+         weights = [self.owners[layer]() for layer in self.domain.layers]
+         if len(weights) == 1:
+             return weights[0]
+diff --git a/tools/launch.sh b/tools/launch.sh
+index 82bd9ae..f42227d 100644
+--- a/tools/launch.sh
++++ b/tools/launch.sh
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env bash
+ set -euo pipefail
+-TASK=/home/z00956592/megaflux/planner-executor-ep8-lab
++TASK=/home/z00956592/megaflux/step-lifetime-study-20261115/stack
+ BACKEND=$1
+ MODE=$2
+ TAG=$3
+@@ -51,6 +51,9 @@ if [ "$MODE" = links ]; then
+ elif [ "$MODE" = scheduler ]; then
+  SCRIPT="$TASK/tools/gate_temporal_scheduler.py"
+  EXTRA=()
++elif [ "$MODE" = lifetime_math ]; then
++ SCRIPT="$TASK/tools/gate_lifetime_math.py"
++ EXTRA=()
+ elif [ "$MODE" = temporal_math ]; then
+  SCRIPT="$TASK/tools/gate_runset_math.py"
+  EXTRA=()
+diff --git a/tools/lifetime_device.py b/tools/lifetime_device.py
+new file mode 100644
+index 0000000..3016cea
+--- /dev/null
++++ b/tools/lifetime_device.py
+@@ -0,0 +1,245 @@
++"""Correctness-first lifetime adapter for the private ABI1 worker.
++
++CPU metadata observation and serialized P2P service are counted online. This
++adapter is a qualification path, not a qualified performance implementation.
++"""
++import json
++from contextlib import contextmanager
++import torch
++import torch.distributed as dist
++from torch.distributed.tensor import DTensor
++from step_lifetime import ExpertKey, UpdateContext
++
++
++def _local(value):
++    return value.to_local() if isinstance(value, DTensor) else value
++
++
++class LifetimeDevice:
++    """Own bounded replica storage and return complete gradients to fixed owners."""
++
++    def __init__(self, model, pool, mode, entries=8):
++        if mode not in ('anchor', 'b0', 'b1', 'b2', 'b3'):
++            raise ValueError('Unknown lifetime mode')
++        module = pool.module
++        abi = getattr(module._worker_native, 'megaflux_step_lifetime_version', None)
++        if abi is None or int(abi()) != 1:
++            raise RuntimeError('Lifetime mode requires a rebuilt ABI1 worker')
++        self.module, self.pool, self.mode = module, pool, mode
++        self.rank, self.group = pool.shmem.rank(), pool.group
++        self.ranks, self.entries = pool.shmem.world_size(), entries
++        self.context = UpdateContext(entries, entries)
++        self.layer = None
++        self.service = None
++        self.flight = []
++        if module.w1.device.type != 'cpu':
++            self.service = torch.accelerator.Stream()
++        self.delivery_group = dist.new_group(ranks=dist.get_process_group_ranks(self.group),
++                                             backend=dist.get_backend(self.group))
++        dist.barrier(group=self.delivery_group)
++        self.sequence = 0
++        self.pending = {}
++        self.parameters = {index: (layer.mlp.experts.gate_up_proj, layer.mlp.experts.down_proj)
++                           for index, layer in enumerate(model.model.layers)}
++        template = (module.w1[0], module.w2[0])
++        self.weights = tuple(torch.empty((entries, *value.shape), device=value.device, dtype=value.dtype)
++                             for value in template)
++        self.gradients_buffer = tuple(torch.empty((entries, *value.shape), device=value.device,
++                                                 dtype=torch.float32) for value in template)
++        self.receive = tuple(torch.empty_like(value, dtype=torch.float32) for value in template)
++        self.cache_addresses = torch.zeros((pool.slots, 2), device=module.w1.device, dtype=torch.int64)
++        self.stats = dict(weight_remote_bytes=0, weight_hit_bytes=0, cache_local_copy_bytes=0,
++                          gradient_remote_bytes=0, gradient_deliveries=0, flushes=0)
++        self._current = None
++        if mode != 'anchor':
++            module.lifetime = self
++
++    def begin(self, version):
++        self.context.begin(version)
++        if self.pending:
++            raise RuntimeError('Pending gradients crossed an optimizer update')
++        if self.mode!='anchor':
++            with torch.no_grad():
++                for pair in self.parameters.values():
++                    for parameter in pair:
++                        if parameter.grad is not None:raise RuntimeError('Gradients must be zeroed before a new version')
++                        parameter.grad=torch.zeros_like(parameter,dtype=torch.float32)
++
++    def prepare(self, plan):
++        """Observe this call's actual placement and bind a versioned cache source."""
++        if self.layer is None:
++            raise RuntimeError('Missing logical layer for replica cache')
++        copies = plan.copies.detach().cpu().tolist()
++        self.sequence += 1
++        reader = (self.context.version, self.sequence)
++        leases = []
++        addresses = [[0, 0] for _ in range(self.pool.slots)]
++        plane_bytes = sum(value[0].numel() * value.element_size() for value in self.weights)
++        with torch.no_grad():
++            for slot, expert in enumerate(copies[self.rank]):
++                if expert < 0:
++                    continue
++                key = ExpertKey(self.context.version, self.layer, expert, self.rank)
++                if self.mode == 'b0':
++                    self.stats['weight_remote_bytes'] += plane_bytes
++                    continue
++                try:
++                    lease, hit = self.context.acquire(key, reader)
++                except RuntimeError as error:
++                    if str(error) != 'All cache leases are active':
++                        raise
++                    self.stats['weight_remote_bytes'] += plane_bytes
++                    continue
++                leases.append((slot, lease))
++                if hit:
++                    addresses[slot] = [value[lease.slot].data_ptr() for value in self.weights]
++                    self.stats['weight_hit_bytes'] += plane_bytes
++                    self.stats['cache_local_copy_bytes'] += plane_bytes
++                else:
++                    self.stats['weight_remote_bytes'] += plane_bytes
++            self.cache_addresses.copy_(torch.tensor(addresses, device=self.cache_addresses.device,
++                                                    dtype=torch.int64))
++        self._current = (reader, copies, leases, self.layer)
++        return self.cache_addresses
++
++    def commit(self, plan):
++        """Commit payload copies on the same ordered stream before releasing slots."""
++        reader, _, leases, _ = self._current
++        with torch.no_grad():
++            for source, lease in leases:
++                if not lease.ready:
++                    self.weights[0][lease.slot].copy_(self.module.replica_w1[source])
++                    self.weights[1][lease.slot].copy_(self.module.replica_w2[source])
++                    self.context.commit(lease)
++                self.context.release(lease, reader)
++
++    @contextmanager
++    def _delivery_scope(self):
++        if self.service is None:
++            yield
++            return
++        ready = torch.accelerator.Event()
++        ready.record(torch.accelerator.current_stream())
++        self.service.wait_event(ready)
++        with torch.accelerator.stream(self.service):
++            yield
++
++    def _drain(self):
++        for event, identities in self.flight:
++            if event is not None:event.synchronize()
++            if identities:self.context.complete(identities)
++        self.flight.clear()
++
++    def _add_owner(self, layer, local_expert, first, second):
++        with torch.no_grad():
++            for parameter, contribution in zip(self.parameters[layer], (first, second)):
++                if parameter.grad is None:
++                    parameter.grad = torch.zeros_like(parameter, dtype=torch.float32)
++                # Raw native SUM -> EP mean. This path returns no autograd dW.
++                _local(parameter.grad)[local_expert].add_(contribution.float(), alpha=1.0 / self.ranks)
++
++    def gradients(self, plan, first, second):
++        """Capture raw local/replica dW; dx and probability gradients stay immediate."""
++        self._drain()
++        self.commit(plan)
++        reader, copies, _, layer = self._current
++        counts = self.module.last_exec_counts.detach().cpu().tolist()
++        # Actual counts, not copies alone, define gradient obligations.
++        local = [int(counts[self.pool.home + slot]) > 0 if expert >= 0 else False
++                 for slot, expert in enumerate(copies[self.rank])]
++        active = [None] * self.ranks
++        dist.all_gather_object(active, local, group=self.group)
++        with torch.no_grad():
++            with self._delivery_scope():
++                if self.service is not None:
++                    first.record_stream(self.service)
++                    second.record_stream(self.service)
++                for expert in range(self.pool.home):
++                    if counts[expert] > 0:
++                        self._add_owner(layer, expert, first[expert], second[expert])
++                if self.service is not None:
++                    event=torch.accelerator.Event();event.record(self.service)
++                    self.flight.append((event,()))
++            obligations = [(source, expert, slot) for source in range(self.ranks)
++                           for slot, expert in enumerate(copies[source])
++                           if expert >= 0 and active[source][slot]]
++            for source, expert, slot in obligations:
++                key = (source, layer, expert)
++                per_source = [item for item in self.pending if item[0] == source]
++                if key not in self.pending and len(per_source) == self.entries:
++                    self.flush()
++                    self._drain()
++                    per_source = []
++                if key not in self.pending:
++                    used = {self.pending[item][0] for item in per_source}
++                    index = next(value for value in range(self.entries) if value not in used)
++                    self.pending[key] = (index, [])
++                    if source == self.rank:
++                        for buffer in self.gradients_buffer:
++                            buffer[index].zero_()
++                index, tickets = self.pending[key]
++                identity = (*reader, layer, expert, source)
++                tickets.append(identity)
++                if source == self.rank:
++                    self.context.contribute(identity, ExpertKey(self.context.version, layer, expert, source),
++                                            expert // self.pool.home)
++                    self.gradients_buffer[0][index].add_(first[self.pool.home + slot].float())
++                    self.gradients_buffer[1][index].add_(second[self.pool.home + slot].float())
++        if self.mode in ('b0', 'b1'):
++            self.flush()
++
++    def flush(self):
++        """Use deterministic P2P order and bounded receive storage, then retire debt."""
++        if not self.pending:
++            return
++        self.stats['flushes'] += 1
++        own_tickets=[]
++        with self._delivery_scope():
++            for (source, layer, expert), (index, tickets) in sorted(self.pending.items()):
++                owner = expert // self.pool.home
++                if source == self.rank:
++                    self.context.submit(tuple(tickets))
++                if source == owner:
++                    if source == self.rank:
++                        self._add_owner(layer, expert % self.pool.home,
++                                        *(buffer[index] for buffer in self.gradients_buffer))
++                elif self.rank in (source, owner):
++                    operations = []
++                    for projection in range(2):
++                        if self.rank == source:
++                            operations.append(dist.P2POp(dist.isend, self.gradients_buffer[projection][index],
++                                                         owner, group=self.delivery_group))
++                        else:
++                            operations.append(dist.P2POp(dist.irecv, self.receive[projection],
++                                                         source, group=self.delivery_group))
++                    for work in dist.batch_isend_irecv(operations):
++                        work.wait()
++                    if self.rank == owner:
++                        self._add_owner(layer, expert % self.pool.home, *self.receive)
++                    else:
++                        self.stats['gradient_remote_bytes'] += sum(value[0].numel() * 4
++                                                                   for value in self.gradients_buffer)
++                        self.stats['gradient_deliveries'] += 1
++                if source == self.rank:
++                    own_tickets.extend(tickets)
++            event=None
++            if self.service is not None:
++                event=torch.accelerator.Event();event.record(self.service)
++            self.flight.append((event,tuple(own_tickets)))
++        self.pending.clear()
++
++    def window_boundary(self):
++        if self.mode == 'b2':
++            self.flush()
++
++    def finish(self):
++        self.flush()
++        self._drain()
++        self.context.finish()
++
++    def write_audit(self, path):
++        path.write_text(json.dumps(dict(mode=self.mode, entries=self.entries, **self.stats,
++            pending=len(self.pending), qualified_performance_path=False,
++            control='observed_current_plan_cpu_metadata',
++            transport='bounded_owner_service_stream_drain_before_bank_reuse',
++            weight_hit_mechanism='local_copy_from_versioned_bank_then_fresh_epoch'), indent=2))
+diff --git a/tools/step_lifetime.py b/tools/step_lifetime.py
+new file mode 100644
+index 0000000..5224a5e
+--- /dev/null
++++ b/tools/step_lifetime.py
+@@ -0,0 +1,144 @@
++"""Versioned leases and exact-once gradient delivery, independent of tensors."""
++from dataclasses import dataclass, field
++
++
++@dataclass(frozen=True, order=True)
++class ExpertKey:
++    version: int
++    layer: int
++    expert: int
++    rank: int
++
++
++@dataclass
++class ReplicaLease:
++    key: ExpertKey
++    slot: int
++    generation: int
++    ready: bool = False
++    readers: set = field(default_factory=set)
++
++
++@dataclass
++class GradientTicket:
++    identity: tuple
++    key: ExpertKey
++    owner: int
++    submitted: bool = False
++    complete: bool = False
++
++
++class UpdateContext:
++    """Bound resource lifetime to one parameter version and fail on stale reuse."""
++
++    def __init__(self, cache_entries: int = 8, gradient_entries: int = 8):
++        if min(cache_entries, gradient_entries) < 1:
++            raise ValueError('Positive lifetime budgets are required')
++        self.cache_entries = cache_entries
++        self.gradient_entries = gradient_entries
++        self.version = None
++        self.leases = {}
++        self.tickets = {}
++        self.generation = 0
++        self.last_use = {}
++        self.clock = 0
++
++    def begin(self, version: int) -> None:
++        """Advance only after all reads and gradient deliveries have retired."""
++        if self.version is not None:
++            self.finish()
++            if version <= self.version:
++                raise ValueError('Parameter version must increase')
++        self.version = version
++        self.leases.clear()
++        self.last_use.clear()
++        self.tickets.clear()
++
++    def acquire(self, key: ExpertKey, reader: tuple) -> tuple[ReplicaLease, bool]:
++        """Reserve a cache entry; eviction never discards an active reader."""
++        if key.version != self.version:
++            raise ValueError('Stale weight version')
++        self.clock += 1
++        if key in self.leases:
++            lease = self.leases[key]
++            hit = lease.ready
++            if not hit:
++                raise RuntimeError('Weight copy has not committed')
++        else:
++            if len(self.leases) == self.cache_entries:
++                free = [item for item in self.leases.values() if not item.readers]
++                if not free:
++                    raise RuntimeError('All cache leases are active')
++                victim = min(free, key=lambda item: (self.last_use[item.key], item.key))
++                slot = victim.slot
++                del self.leases[victim.key]
++                del self.last_use[victim.key]
++            else:
++                used = {item.slot for item in self.leases.values()}
++                slot = next(index for index in range(self.cache_entries) if index not in used)
++            self.generation += 1
++            lease = ReplicaLease(key, slot, self.generation)
++            self.leases[key] = lease
++            hit = False
++        if reader in lease.readers:
++            raise ValueError('Duplicate reader lease')
++        lease.readers.add(reader)
++        self.last_use[key] = self.clock
++        return lease, hit
++
++    def commit(self, lease: ReplicaLease) -> None:
++        """Call after the weight-copy completion event, never at submission."""
++        self._current(lease)
++        lease.ready = True
++
++    def release(self, lease: ReplicaLease, reader: tuple) -> None:
++        """Retire one completed reader without changing the weight version."""
++        self._current(lease)
++        if reader not in lease.readers:
++            raise ValueError('Unknown reader')
++        lease.readers.remove(reader)
++
++    def _current(self, lease):
++        if self.leases.get(lease.key) is not lease or lease.key.version != self.version:
++            raise ValueError('Expired physical lease generation')
++
++    def contribute(self, identity: tuple, key: ExpertKey, owner: int,
++                   *, nonzero: bool = True) -> GradientTicket | None:
++        """Register real assignments once; replay must not call this method."""
++        if not nonzero:
++            return None
++        if key.version != self.version or identity in self.tickets:
++            raise ValueError('Stale or duplicate gradient contribution')
++        active = {ticket.key for ticket in self.tickets.values() if not ticket.complete}
++        if key not in active and len(active) >= self.gradient_entries:
++            raise RuntimeError('Flush gradients before reusing their bounded storage')
++        ticket = GradientTicket(identity, key, owner)
++        self.tickets[identity] = ticket
++        return ticket
++
++    def submit(self, identities: tuple[tuple, ...]) -> None:
++        """Freeze a delivery set; reject duplicates before changing any ticket."""
++        if len(set(identities)) != len(identities):
++            raise ValueError('Duplicate delivery identity')
++        tickets = [self.tickets[key] for key in identities]
++        if any(ticket.submitted for ticket in tickets):
++            raise ValueError('Gradient already submitted')
++        for ticket in tickets:
++            ticket.submitted = True
++
++    def complete(self, identities: tuple[tuple, ...]) -> None:
++        """Retire only transfers whose completion has actually been observed."""
++        if len(set(identities)) != len(identities):
++            raise ValueError('Duplicate completion identity')
++        tickets = [self.tickets[key] for key in identities]
++        if any(not ticket.submitted or ticket.complete for ticket in tickets):
++            raise ValueError('Unsubmitted or already completed delivery')
++        for ticket in tickets:
++            ticket.complete = True
++
++    def finish(self) -> None:
++        """The clip/optimizer barrier requires no readers or gradient debt."""
++        if any(lease.readers for lease in self.leases.values()):
++            raise RuntimeError('Weights are still being consumed')
++        if any(not ticket.complete for ticket in self.tickets.values()):
++            raise RuntimeError('Optimizer cannot consume incomplete gradients')
+diff --git a/tools/temporal_model.py b/tools/temporal_model.py
+index 78fdbe9..ece6da5 100644
+--- a/tools/temporal_model.py
++++ b/tools/temporal_model.py
+@@ -283,7 +283,7 @@ class TemporalRuntime:
+                 ready.append(self._probe(model,key,hidden,value,kwargs))
+         while ready:
+             selection = 'easybalance' if self.policy in ('easy_home','easy_independent') else (
+-                        'fixed_group' if self.policy in ('fixed_native','fixed_home') else 'fifo')
++                        'fixed_group' if self.policy in ('fixed_native','fixed_home','serial_native','serial_home') else 'fifo')
+             if selection=='easybalance' and self.maxutil_rule=='upstream_first':selection='easybalance_upstream'
+             begin = time.perf_counter_ns()
+             if self.schedule_replay is not None:
+@@ -313,8 +313,8 @@ class TemporalRuntime:
+                 routing_loads_observed=self.route_stats_required,
+                 task_ready_boundary='observed_router_prefix' if self.route_stats_required else 'layer_input_available',
+                 diagnostic_linear_score_only=self.route_stats_required))
+-            outputs = self._execute(model,selected,self.group_id,independent=self.policy=='easy_independent',
+-                                    home_only=self.policy in ('easy_home','fixed_home'))
++            outputs = self._execute(model,selected,self.group_id,independent=self.policy in ('easy_independent','serial_native','serial_home'),
++                                    home_only=self.policy in ('easy_home','fixed_home','serial_home','fifo_home'))
+             self.group_id += 1
+             ready = [task for task in ready if task.key not in plan.selected]
+             for task in ready:
+diff --git a/tools/test_lifetime_delivery.py b/tools/test_lifetime_delivery.py
+new file mode 100644
+index 0000000..9e52e49
+--- /dev/null
++++ b/tools/test_lifetime_delivery.py
+@@ -0,0 +1,76 @@
++"""Two-rank CPU oracle for exact raw-gradient accumulation and EP scaling."""
++from pathlib import Path
++from types import SimpleNamespace
++import tempfile
++import unittest
++import torch
++import torch.distributed as dist
++import torch.multiprocessing as mp
++from lifetime_device import LifetimeDevice
++
++
++def delivery_worker(rank, rendezvous):
++    torch.set_num_threads(1)
++    dist.init_process_group('gloo', init_method='file://' + rendezvous, rank=rank, world_size=2)
++    for mode in ('b0', 'b1', 'b2', 'b3'):
++        experts = SimpleNamespace(gate_up_proj=torch.nn.Parameter(torch.ones(1, 8, 8)),
++                                  down_proj=torch.nn.Parameter(torch.ones(1, 8, 4)))
++        model = SimpleNamespace(model=SimpleNamespace(layers=[SimpleNamespace(mlp=SimpleNamespace(experts=experts))]))
++        module = SimpleNamespace(w1=torch.zeros(1, 8, 8, dtype=torch.bfloat16),
++                                 w2=torch.zeros(1, 8, 4, dtype=torch.bfloat16),
++                                 replica_w1=torch.full((1, 8, 8), 7, dtype=torch.bfloat16),
++                                 replica_w2=torch.full((1, 8, 4), 9, dtype=torch.bfloat16),
++                                 last_exec_counts=torch.ones(2, dtype=torch.int32),
++                                 _worker_native=SimpleNamespace(megaflux_step_lifetime_version=lambda: 1))
++        pool = SimpleNamespace(module=module, home=1, slots=1, group=dist.group.WORLD,
++                               shmem=SimpleNamespace(rank=lambda: rank, world_size=lambda: 2))
++        adapter = LifetimeDevice(model, pool, mode, entries=1)
++        optimizer = torch.optim.AdamW([experts.gate_up_proj, experts.down_proj], lr=1e-5)
++        for version in range(3):
++            adapter.begin(version)
++            adapter.layer = 0
++            for microbatch in range(4):
++                copies = torch.tensor([[1], [0]], dtype=torch.int32)
++                plan = SimpleNamespace(copies=copies)
++                adapter.prepare(plan)
++                adapter.commit(plan)
++                first = torch.stack([torch.full((8, 8), float(1 + microbatch)),
++                                     torch.full((8, 8), float(10 + microbatch + rank))])
++                second = torch.stack([torch.full((8, 4), float(2 + microbatch)),
++                                      torch.full((8, 4), float(20 + microbatch + rank))])
++                adapter.prepare(plan)
++                adapter.gradients(plan, first, second)
++                if microbatch % 2:
++                    adapter.window_boundary()
++            adapter.finish()
++            expected_first = sum(1 + item + 10 + item + (1 - rank) for item in range(4)) / 2
++            expected_second = sum(2 + item + 20 + item + (1 - rank) for item in range(4)) / 2
++            torch.testing.assert_close(experts.gate_up_proj.grad, torch.full_like(experts.gate_up_proj, expected_first))
++            torch.testing.assert_close(experts.down_proj.grad, torch.full_like(experts.down_proj, expected_second))
++            optimizer.step()
++            optimizer.zero_grad()
++        adapter.begin(3)
++        module.last_exec_counts.zero_()
++        plan=SimpleNamespace(copies=torch.full((2,1),-1,dtype=torch.int32))
++        adapter.prepare(plan)
++        adapter.gradients(plan,torch.zeros(2,8,8),torch.zeros(2,8,4))
++        adapter.finish()
++        assert experts.gate_up_proj.grad is not None
++        assert experts.down_proj.grad is not None
++        assert torch.count_nonzero(experts.gate_up_proj.grad)==0
++        assert torch.count_nonzero(experts.down_proj.grad)==0
++        if mode == 'b0':
++            assert adapter.stats['weight_hit_bytes'] == 0
++        else:
++            assert adapter.stats['weight_hit_bytes'] > 0
++    dist.destroy_process_group()
++
++
++class DeliveryTests(unittest.TestCase):
++    def test_three_updates_all_delivery_boundaries(self):
++        with tempfile.TemporaryDirectory() as directory:
++            mp.spawn(delivery_worker, args=(str(Path(directory) / 'gloo'),), nprocs=2, join=True)
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tools/test_step_lifetime.py b/tools/test_step_lifetime.py
+new file mode 100644
+index 0000000..57b2261
+--- /dev/null
++++ b/tools/test_step_lifetime.py
+@@ -0,0 +1,81 @@
++"""CPU contract tests for the update/lease/delivery state machine."""
++import unittest
++from step_lifetime import ExpertKey, UpdateContext
++
++
++class LifetimeTests(unittest.TestCase):
++    def setUp(self):
++        self.context = UpdateContext(1, 1)
++        self.context.begin(0)
++        self.key = ExpertKey(0, 0, 3, 1)
++
++    def test_copy_commit_replay_and_version(self):
++        lease, hit = self.context.acquire(self.key, ('forward',))
++        self.assertFalse(hit)
++        with self.assertRaises(RuntimeError):
++            self.context.acquire(self.key, ('replay',))
++        self.context.commit(lease)
++        self.context.release(lease, ('forward',))
++        replay, hit = self.context.acquire(self.key, ('replay',))
++        self.assertTrue(hit)
++        self.context.release(replay, ('replay',))
++        self.context.begin(1)
++        with self.assertRaises(ValueError):
++            self.context.acquire(self.key, ('stale',))
++
++    def test_cross_layer_and_inflight_eviction(self):
++        lease, _ = self.context.acquire(self.key, ('backward',))
++        other = ExpertKey(0, 1, 3, 1)
++        with self.assertRaises(RuntimeError):
++            self.context.acquire(other, ('forward',))
++        self.context.commit(lease)
++        self.context.release(lease, ('backward',))
++        replacement, hit = self.context.acquire(other, ('forward',))
++        self.assertFalse(hit)
++        self.assertGreater(replacement.generation, lease.generation)
++        with self.assertRaises(ValueError):
++            self.context.commit(lease)
++
++    def test_exact_once_and_optimizer_barrier(self):
++        first = ('call0', 'replica1')
++        second = ('call1', 'replica1')
++        self.context.contribute(first, self.key, 0)
++        self.context.contribute(second, self.key, 0)
++        with self.assertRaises(ValueError):
++            self.context.contribute(first, self.key, 0)
++        with self.assertRaises(RuntimeError):
++            self.context.finish()
++        self.context.submit((first, second))
++        self.context.complete((first, second))
++        self.context.finish()
++        with self.assertRaises(ValueError):
++            self.context.submit((first,))
++
++    def test_zero_quota_and_gradient_capacity(self):
++        self.assertIsNone(self.context.contribute(('zero',), self.key, 0, nonzero=False))
++        self.context.contribute(('active',), self.key, 0)
++        with self.assertRaises(RuntimeError):
++            self.context.contribute(('other',), ExpertKey(0, 1, 3, 1), 0)
++        self.context.submit((('active',),))
++        self.context.complete((('active',),))
++        self.context.contribute(('other',), ExpertKey(0, 1, 3, 1), 0)
++
++    def test_reject_batch_atomically(self):
++        self.context.contribute(('a',), self.key, 0)
++        with self.assertRaises(ValueError):
++            self.context.submit((('a',), ('a',)))
++        self.assertFalse(self.context.tickets[('a',)].submitted)
++
++
++    def test_completion_batch_rejects_duplicates_atomically(self):
++        self.context.contribute(('a',), self.key, 0)
++        self.context.submit((('a',),))
++        with self.assertRaises(ValueError):
++            self.context.complete((('a',), ('a',)))
++        self.assertFalse(self.context.tickets[('a',)].complete)
++        self.context.complete((('a',),))
++        self.context.finish()
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tools/train.py b/tools/train.py
+index 3e8a13c..e648424 100644
+--- a/tools/train.py
++++ b/tools/train.py
+@@ -88,6 +88,7 @@ def main():
+     parser.add_argument('--maxvio', type=float, required=True)
+     parser.add_argument('--layers', type=int, default=2)
+     parser.add_argument('--steps', type=int, default=25)
++    parser.add_argument('--lifetime-mode',choices=('anchor','b0','b1','b2','b3'))
+     parser.add_argument('--tokens', type=int, default=16384)
+     parser.add_argument('--microbatches', type=int, default=1)
+     parser.add_argument('--forward-window', type=int, choices=(1, 2, 4), default=1)
+@@ -97,7 +98,7 @@ def main():
+     parser.add_argument('--dump-final-state', action='store_true')
+     parser.add_argument('--dump-grad-step0', action='store_true')
+     parser.add_argument('--finite-diagnostics', action='store_true')
+-    parser.add_argument('--temporal-policy', choices=('legacy','fixed_native','fixed_home','fifo_native','easy_home','easy_independent'))
++    parser.add_argument('--temporal-policy', choices=('legacy','fixed_native','fixed_home','serial_home','serial_native','fifo_home','fifo_native','easy_home','easy_independent'))
+     parser.add_argument('--maxutil-rule',choices=('work_tie','upstream_first'),default='work_tie',
+                         help='Separate author-style mask ordering; never relabel previous work-tie runs')
+     parser.add_argument('--temporal-prefix-reuse',action='store_true',
+@@ -116,6 +117,8 @@ def main():
+     parser.add_argument('--diagnose-memory', action='store_true')
+     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
+     args = parser.parse_args()
++    if args.lifetime_mode and (args.temporal_policy!='fixed_native' or not args.temporal_prefix_reuse or args.diagnostic_timer):
++        parser.error('Lifetime qualification requires fixed_native, prefix reuse and TimerOFF')
+     if args.maxutil_rule=='upstream_first' and args.temporal_policy not in ('easy_home','easy_independent'):
+         parser.error('author-style MaxUtil applies only to EasyBalance selection policies')
+     if bool(args.temporal_schedule_replay)!=args.diagnostic_only:
+@@ -275,6 +278,13 @@ def main():
+         samples_after_warmup = parameter_samples(engine)
+         if any(not torch.equal(value,samples_after_warmup[name]) for name,value in samples_before_warmup.items()):
+             raise RuntimeError('Explicit setup warmup modified owner Parameters')
++    lifetime = None
++    if args.lifetime_mode:
++        from lifetime_device import LifetimeDevice
++        lifetime = LifetimeDevice(engine.model,temporal.legacy,args.lifetime_mode)
++        (args.out/f'lifetime-config-rank{rank}.json').write_text(json.dumps(dict(
++            mode=args.lifetime_mode,worker_capability=1,qualified_performance_path=False,
++            routing_gradient_scaling='explicit_ep_once' if args.lifetime_mode!='anchor' else 'parameter_hook')))
+     if args.finite_diagnostics:
+         from torch.utils._pytree import tree_flatten
+         def finite_hook(name):
+@@ -329,6 +339,7 @@ def main():
+         start = time.perf_counter_ns()
+         if temporal is not None:
+             temporal.begin_step(step)
++        if lifetime is not None:lifetime.begin(step)
+         loss = torch.zeros((), device=device)
+         for offset in range(0, args.microbatches, args.forward_window):
+             pending = []
+@@ -347,6 +358,7 @@ def main():
+                 loss = loss+result.loss.detach()
+                 memory_mark(step,'forward')
+                 result.loss.backward()
++                if lifetime is not None:lifetime.window_boundary()
+                 del result
+                 continue
+             for microbatch in range(offset, offset + args.forward_window):
+@@ -364,6 +376,7 @@ def main():
+             for weighted_loss in reversed(pending):
+                 weighted_loss.backward()
+             del pending, weighted_loss, result
++        if lifetime is not None:lifetime.finish()
+         memory_mark(step, 'backward')
+         if args.backend != 'moonep':
+             from fsdp_turbo.distributed.expert_parallel.dispatcher_megamoe_balanced import check_step_completions
+@@ -467,6 +480,7 @@ def main():
+         print(json.dumps(row), flush=True)
+     expected_route_calls = (2 if args.temporal_prefix_reuse else
+         3 if args.temporal_policy in ('easy_home','easy_independent') and not args.temporal_schedule_replay else 2)
++    if lifetime is not None:lifetime.write_audit(args.out/f'lifetime-audit-rank{rank}.json')
+     if len(provider.calls) != args.steps * args.layers * args.microbatches or any(count != expected_route_calls for count in provider.calls.values()):
+         raise RuntimeError(f'Unexpected checkpoint replay route calls: {provider.calls}')
+     (args.out / f'route-calls-rank{rank}.json').write_text(json.dumps({':'.join(map(str,key)): count for key, count in provider.calls.items()}, indent=2))

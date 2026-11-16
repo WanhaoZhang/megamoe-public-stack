@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "branch": "research/step-lifetime",
+  "input_commit": "6e7dd58acc11b292b2b49185f6a8f082ea9d50b0",
+  "original_source_repository": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study\\stack",
+  "original_project": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study",
+  "source_files_exact": 7398,
+  "full_source_files": 7398,
+  "all_tracked_files": 10894,
+  "syntax_checked": 3885,
+  "syntax_warnings": 532,
+  "gitlinks": 0,
+  "raw_artifacts_published": false,
+  "new_device_runs": false,
+  "original_research_source_unchanged": true,
+  "manifest_sha256": "164558f05f51e37c35133dfca1d59e9bc7378daec4acf3007b84280df19a167c",
+  "preserved_whitespace_warnings": true
+}

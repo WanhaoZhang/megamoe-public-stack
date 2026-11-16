@@ -1,0 +1,64 @@
+"""Generate a bounded research report from completed, guarded pilot data."""
+from pathlib import Path
+import csv
+import json
+import subprocess
+
+ROOT=Path(__file__).resolve().parent
+
+
+def write_report():
+    with (ROOT/'results.csv').open(encoding='utf-8') as handle:rows=list(csv.DictReader(handle))
+    index={(row['track'],row['pattern'],row['arm']):row for row in rows}
+    follow=json.loads((ROOT/'followup.json').read_text())
+    head=subprocess.check_output(['git','-C',str(ROOT/'stack'),'rev-parse','HEAD'],text=True).strip()
+    def table(track,arms):
+        lines=['|路由|'+('|'.join(arms))+'|','|---|'+('|'.join('---:' for _ in arms))+'|']
+        for pattern in ('same','alternating','random'):
+            cells=[f"{float(index[track,pattern,arm]['median_s']):.4f}" if (track,pattern,arm) in index else '未完成' for arm in arms]
+            lines.append('|'+pattern+'|'+'|'.join(cells)+'|')
+        return lines
+    lines=['# 面向完整训练更新的任务互补与副本生命周期：Ascend EP8探索报告','',
+        '## 摘要','',
+        f'本研究在独立普通MegaMoE分支上实现任务选择对照、同版本专家缓存、FP32梯度累积和显式owner交付。目前完成{len(rows)}/33个首轮筛查进程；每点仅一次独立运行。没有确认稳定加速，也没有实现或验证新的联合planner。报告保留负结果，不将通信量下降等同为训练更新加速。','',
+        '## 1. 问题与研究边界','',
+        '研究问题是：在固定一次optimizer更新的数据、逻辑路由、参数owner和资源预算下，选择哪些已就绪任务一起执行、是否复制、权重保留多久、dW何时归主，能否使完整更新更早结束？单个microbatch的更快或更慢都不足以回答这一问题。',
+        '任务互补、专家复制/缓存和梯度累积本身已有工作。此轮把它们当作机制对照，先验证是否存在值得联合决策的冲突；不预先命名新的算法或声称论文创新性。EasyBalance与REM等近邻边界见[研究笔记](RESEARCH-NOTES.md)及原始研究计划。','',
+        '## 2. 实验条件','',
+        'Ascend950DT八卡；L4、EP8/E256/Top8、H4096、routed/shared F1024、每条完整序列16K、每卡MB1/GA4、执行窗口W2。V4 attention/mHC和框架shared expert保持共同；FSDP8、Expert-FSDP1、固定owner、不使用CPU offload。合法合成token及next-token标签，路由MaxVio10分same/alternating/random；不属于自然预训练分布或收敛实验。',
+        '持久参数、梯度、Adam状态FP32，专家BF16。AdamW恒定LR1e-5、betas(0.9,0.95)、epsilon1e-8、decay0.01、clip1。共同接收容量262144；整卡采样峰值门槛90GiB。同层执行域32home+32replica，跨两层为64home+0replica，该限制不是算法主动关闭复制。',
+        '所有对照复用相同prefix、checkpoint切分和FSDP前向驻留。完整Attention上下文不因FFN分波而截断。每进程25次更新，5预热/20测量；每次更新取八rank最大完整wall time。正式计时不启用Timer或profiler。','',
+        '## 3. 实现与数值验证','',
+        '不可变ExecutionPlanBody保持逻辑路由；UpdateContext/ReplicaLease/GradientTicket分离参数版本、权重读取与梯度债务。八条BF16缓存192MiB、八条FP32累积384MiB，另加48MiB接收平面及元数据/通信。命中仍需本地拷入执行槽并发布本次ready；参数更新使旧权重失效。',
+        'B0–B3采用同一公共FP32交付路径与固定owner。原始dW累积后向原Parameter.grad布局只应用一次EP缩放，返回None避免旧hook再次缩放；更新前等待全部交付。B3容量满会提前flush全部pending，因此不是无限容量统一步末归并。该版本在线读取CPU元数据，全部开销计入；属于资格原型，尚非正式设备端联合planner。',
+        'CPU生命周期契约和两rankGloo交付参考通过。A/B小形状三次Adam与逐参数梯度检查通过；原worker和候选worker默认锚点也完成匹配比较。强制合法副本的独立NPU参考覆盖输出、dx、路由权重梯度及dW，64条W1/W2记录通过，且实际产生缓存命中/远端梯度；最大输出相对L2约0.000304，最大梯度相对L2约0.002760。详见[验证回执](VALIDATION.md)。','',
+        '## 4. 首轮结果','',
+        '以下单位为秒/完整optimizer更新，列出各独立进程后20更新的中位值。列间比较不构成独立重复的置信区间。','',
+        '### A：任务分组与复制','',*table('A',('serial_home','serial_native','fixed_home','fixed_native','fifo_home','easy_home')),'',
+        'serial是匹配前缀下的独立完整S FFN调用；fixed是双任务同层分组。FIFO采用最小runset，W2时为单任务；fixed提供双任务分组强基线。MaxUtil在交替热点下与固定分组采用相同组合；same/random实际出现跨层组和更多单任务组。不能把胜过单任务FIFO单独归因于动态选择。','',
+        '### B：驻留与梯度交付资格路径','',*table('B-qualification',('anchor','b0','b1','b2','b3')),'',
+        'anchor为原核内流水归并；B0每调用准备/立即交付；B1驻留/立即交付；B2驻留/GA2窗口交付；B3驻留/更新末尾优先交付。B0与原锚点还包含数值格式和核内/核外服务边界差异，所以最终必须超过原锚点与最强适用A基线。','',
+        f"预登记后续筛选状态：{follow['stage']}。{follow.get('conclusion','等待完整首轮数据，不提前选择主线。')}",
+        '逐项匹配机制差异见[CSV](diagnostics/matched-contrasts.csv)。[A图](figures/A.png)、[B资格路径图](figures/B-qualification.png)以及SVG/PDF和[绝对数据CSV](results.csv)均保存在本项目。','',
+        '## 5. 能支持的解释与不能支持的结论','',
+        'ExpertMaxVio约10不等于rank负载11倍；每rank聚合32个专家，冻结路由home-rank MaxVio均值约0.32–0.35。交替/随机任务有线性计算互补空间，但这不是完整更新加速上界。实际任务集合和负载几何见[运行期审计](diagnostics/completed-audit.json)及[路由审计](diagnostics/route-opportunity.json)。',
+        '逻辑payload计数含预热、前向、重放及反向准备，不能把所有命中归因于跨microbatch常驻，也不能据此推断暴露通信减少。完整主形状和B服务路径关键时间线尚未完成，无法定量区分原通信重叠、服务实现成本与归并尾部。数值通过和打点覆盖通过也分别记录，不相互替代。',
+        '此轮不支持“联合策略已有效”或“方向已被否定”。人工路由、单机W2、单独进程首轮和资格原型均限制泛化。完整模型W1、非法缓存集体拒绝/恢复、自然训练路由、独立银行和新设备端联合策略仍未验收。按计划，没有稳定信号不启动108矩阵或继续堆叠机制。','',
+        '## 6. 失败记录与重放','',
+        '首次提前启动、漏复制_C.so、误派B控制器均在设备训练前失败并保留原回执；构建保留CRLF及宏作用域失败。Timer Native小形状数值通过但无副本；复制覆盖探针发现重复坐标记录，未绕过校验或计入性能图。修复/再验证状态以VALIDATION.md及diagnostics为准。',
+        f'源码分支research/step-lifetime，报告生成时HEAD `{head}`；基于44b4e0d独立clone。候选worker SHA256为7023c5d860ba49a7104d6d76502ea22e3eb30ad7a47c2fa422242d626556b88b。源码/构建/SO/输入/路由身份均保存，旧工程不作改动。',
+        '完整源码在stack/，重放脚本在stack/research/step_lifetime/；配置、原始回执、失败和快照均位于当前项目。大梯度PT保留在receipt标注的专用远端evidence目录；本地元数据和源码快照已收集。详见[运行说明](RUNBOOK.md)。','']
+    if follow.get('stage')=='complete' and follow.get('pilot_gains'):
+        values=list(follow['pilot_gains'].values())
+        summary=(f"首轮最强适用对照为{follow['baseline']}，最佳生命周期候选为{follow['candidate']}；"
+                 f"后者三类路由完整更新中位耗时仍高约{min(-v for v in values)*100:.1f}%–{max(-v for v in values)*100:.1f}%。"
+                 '未触发独立重复或108矩阵；任务互补与生命周期联合优化的必要性尚未建立。')
+        lines[5:5]=['',summary]
+    lines += ['## 7. 最终验证边界','',
+        '主形状随机路由、三次参数版本、五种B方式的八rank逐调用实际copies/source_quota/逻辑与物理IDs/计数完全一致，每rank48个原始编译调用，且存在非空副本。此诊断补强策略隔离，不声称为全部25更新计时日志补齐了哈希。',
+        'prefix原Timer副本路径的小形状资格、重复完成identity拒绝及其新NPU证书见VALIDATION.md。计时数据仍绑定加固前的原冻结核心及v3证书；最终代码加固后另用六项CPU契约和v4强制副本NPU门禁验收，没有将加固解释为性能收益。',
+        '尚待完成：主形状与B服务路径关键时间线、非法缓存集体拒绝/恢复、完整模型W1控制、自然/独立路由和新联合设备策略。上述未验收项不会因首轮33点完成而自动转为通过。','']
+    (ROOT/'RESEARCH-REPORT.md').write_text('\n'.join(lines),encoding='utf-8')
+
+
+if __name__=='__main__':write_report()

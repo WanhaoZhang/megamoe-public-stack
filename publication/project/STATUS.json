@@ -1,0 +1,49 @@
+{
+  "stages": {
+    "lifetime-a3": "screening_complete",
+    "lifetime-b1": "stopped_at_gate",
+    "lifetime-b2": "screening_complete"
+  },
+  "completed_screen_points": 33,
+  "independent_expert_math": {
+    "passed": true,
+    "exit": 0,
+    "tag": "lifetime-independent-ffn-v4",
+    "records": 64,
+    "expected_records": 64,
+    "actual_cache_hit_bytes": 88080384,
+    "actual_gradient_remote_bytes": 75497472,
+    "payload_scope": "logical payload, not hardware link counters",
+    "runtime_sources": {
+      "tools/lifetime_device.py": "f6c87a6c90dd0205763669884f4a64f8c8cd1ceb36f4f27324ad63c38e35dbb4",
+      "tools/step_lifetime.py": "651c34aac14992f31453665b02109328c98e8637ff16aa6cf9b7e61da8c6f647",
+      "tools/grouped_experts.py": "fe7836797ec17ff21e004119a205974775bfa1afce4067b30144eb9b00ccbcf4",
+      "tools/train.py": "5d7631bb0c39fbc84a0b24554ca13028028ae1b7c28966ddf178e79e54bb4acb",
+      "tools/temporal_model.py": "268a45148684dd52ebea8782bcff792ab791c723d5422afafa460b38550ffe50",
+      "tools/temporal_prefix_reuse.py": "7636d45545195c791fef634e03c1fb58d10c652b0e29a6fb6b5dc8d788584029",
+      "source/native-balanced/ascend_deepep/fsdp2_bridge.py": "6e975d521b63727fbc3e2e14fe727eba5840be088866495e6ceb8dd41c6a4a2e",
+      "source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py": "6acfe7693078ab9800a49bdd967d61af3de210d60af24d346de8164f80502f56"
+    },
+    "local_sources_match": true,
+    "worker_sha256": "7023c5d860ba49a7104d6d76502ea22e3eb30ad7a47c2fa422242d626556b88b",
+    "scope": "eight ranks, b0-b3, W1/W2, checkpoint replay, independent output/dx/dp/owner-dW with EP scaling",
+    "output_threshold": 0.004,
+    "gradient_threshold": 0.02,
+    "max_relative_l2": {
+      "output": 0.00030363924452103674,
+      "dx": 0.002616159152239561,
+      "dp": 0.0027591867838054895,
+      "dw1": 0.0023487729486078024,
+      "dw2": 0.00234860903583467
+    }
+  },
+  "current_runtime_math_qualified": true,
+  "hardening_stage": "complete",
+  "diagnostic_stage": "complete",
+  "small_prefix_timer_qualified": true,
+  "main_lifetime_plans_equal": true,
+  "new_joint_planner": false,
+  "stable_gain_established": false,
+  "followup": "complete",
+  "formal_matrix_enabled": false
+}

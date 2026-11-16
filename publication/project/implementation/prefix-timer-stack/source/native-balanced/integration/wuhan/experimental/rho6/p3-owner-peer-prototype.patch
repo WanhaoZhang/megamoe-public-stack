@@ -1,0 +1,125 @@
+diff --git a/kernels/mega_moe_bf16/include/mega_moe_gradient_pipe.h b/kernels/mega_moe_bf16/include/mega_moe_gradient_pipe.h
+--- a/kernels/mega_moe_bf16/include/mega_moe_gradient_pipe.h
++++ b/kernels/mega_moe_bf16/include/mega_moe_gradient_pipe.h
+@@ -15,6 +15,12 @@
+ #endif
+ #ifndef MEGAFLUX_OWNER_COMPACT
+ #define MEGAFLUX_OWNER_COMPACT 0
++#endif
++#ifndef MEGAFLUX_OWNER_PEER_CACHE
++#define MEGAFLUX_OWNER_PEER_CACHE 0
++#endif
++#if MEGAFLUX_OWNER_PEER_CACHE && (!MEGAFLUX_OWNER_COMPACT || defined(DEEPEP_BF16_OWNER_DB))
++#error "peer-cache candidate requires compact-only standalone owner; no DB combination"
+ #endif
+ #if defined(DEEPEP_BF16_OWNER_DB)
+ #include "mega_moe_owner_reduce_db.h"
+@@ -147,6 +153,20 @@
+                 if(copies[i]==d.rank*d.home+e)contributors[contributorCount++]=i;
+         }
+         offsets[d.home]=contributorCount;
++#endif
++#if MEGAFLUX_OWNER_PEER_CACHE
++        // Invocation-local pointer cache: SHMEM arena, epoch and placement may
++        // all change on the next call. Only this owner's active contributors
++        // are mapped. Ascending rank/slot SUM order is preserved below.
++        // Candidate host gates explicitly restrict EP2/4/8.
++        uint64_t readyPeer[8]={},basePeer[8]={};
++        for(int i=0;i<contributorCount;++i) {
++            const int r=contributors[i]/d.slots;
++            if(!readyPeer[r]) {
++                readyPeer[r]=(uint64_t)aclshmem_ptr((GM_ADDR)c.ready,r);
++                basePeer[r]=(uint64_t)aclshmem_ptr((GM_ADDR)d.base,r);
++            }
++        }
+ #endif
+         Stamp(c,worker,0);bool first=true,firstDone=true;
+         MEGAFLUX_STAGE_BEGIN(stageWorker,c.trace,true,MegaFluxStageTimer::REDUCE_WORKER);
+@@ -205,7 +225,12 @@
+                 for(int r=0;r<d.ranks;++r)for(int s=0;s<d.slots;++s) {
+                     if(copies[r*d.slots+s]!=logical)continue;
+ #endif
+-                    const auto flags=(uint64_t)aclshmem_ptr((GM_ADDR)c.ready,r);
++                    const auto flags=
++#if MEGAFLUX_OWNER_PEER_CACHE
++                        readyPeer[r];
++#else
++                        (uint64_t)aclshmem_ptr((GM_ADDR)c.ready,r);
++#endif
+                     const auto begin=MegaFluxDetail::Now(c.trace,true);
+                     MEGAFLUX_STAGE_BEGIN(stageWait,c.trace,true,MegaFluxStageTimer::CONTRIBUTOR_WAIT,expert,p,row,col,r,s);
+                     Wait(c,flags,d.home+s,p,row,col);
+@@ -251,7 +276,12 @@
+                     for(int r=0;r<d.ranks;++r)for(int s=0;s<d.slots;++s) {
+                         if(copies[r*d.slots+s]!=logical)continue;
+ #endif
+-                        const auto peer=(uint64_t)aclshmem_ptr((GM_ADDR)d.base,r);
++                        const auto peer=
++#if MEGAFLUX_OWNER_PEER_CACHE
++                            basePeer[r];
++#else
++                            (uint64_t)aclshmem_ptr((GM_ADDR)d.base,r);
++#endif
+                         detailStart=MegaFluxDetail::Now(c.trace,true);
+                         MEGAFLUX_STAGE_BEGIN(stageLoad,c.trace,true,MegaFluxStageTimer::PARTIAL_LOAD,expert,p,row+offset,col,r,s);
+                         LoadRows(b,peer+partial-d.base+s*plane*2,row+offset,col,count,width,cols);
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -765,6 +765,10 @@
+     set(MEGAFLUX_WORKER_SHARED_PREFIX 0 CACHE STRING "Shared prefix: 0=all-expert worker, 1=cooperative prefix, 2=producer-only prefix")
+     set(MEGAFLUX_WORKER_EXTERNAL_REFRESH 0 CACHE STRING "Refresh exported external home weights in the fused forward (0/1)")
+     set(MEGAFLUX_OWNER_ROWS 16 CACHE STRING "Standalone S9 owner subblock rows (16/32)")
++    set(MEGAFLUX_OWNER_PEER_CACHE 0 CACHE STRING "Invocation-local small-EP owner peer cache (0/1)")
++    if(NOT "${MEGAFLUX_OWNER_PEER_CACHE}" MATCHES "^[01]$")
++        message(FATAL_ERROR "MEGAFLUX_OWNER_PEER_CACHE must be 0 or 1")
++    endif()
+     set(MEGAFLUX_OWNER_COMPACT 0 CACHE STRING "Cache standalone S9 contributors once per call (0/1)")
+     if(NOT "${MEGAFLUX_OWNER_COMPACT}" MATCHES "^[01]$")
+         message(FATAL_ERROR "MEGAFLUX_OWNER_COMPACT must be 0 or 1")
+@@ -804,6 +808,7 @@
+             MEGAFLUX_WORKER_EXTERNAL_REFRESH=${MEGAFLUX_WORKER_EXTERNAL_REFRESH}
+             MEGAFLUX_OWNER_ROWS=${MEGAFLUX_OWNER_ROWS}
+             MEGAFLUX_OWNER_COMPACT=${MEGAFLUX_OWNER_COMPACT}
++            MEGAFLUX_OWNER_PEER_CACHE=${MEGAFLUX_OWNER_PEER_CACHE}
+             DEEPEP_BF16_SWIGLU_DECOUPLE_MODE=${BF16_SWIGLU_DECOUPLE_MODE}
+             ${BF16_GMM1_SCHEDULE_DEFINITIONS})
+     set_source_files_properties(kernels/mega_moe_bf16/megaflux_worker_bf16.cpp
+diff --git a/scripts/build_megaflux_worker_pipeline.sh b/scripts/build_megaflux_worker_pipeline.sh
+--- a/scripts/build_megaflux_worker_pipeline.sh
++++ b/scripts/build_megaflux_worker_pipeline.sh
+@@ -7,6 +7,7 @@
+ EXTERNAL=${MEGAFLUX_WORKER_EXTERNAL_REFRESH:-0}
+ OWNER_ROWS=${MEGAFLUX_OWNER_ROWS:-16}
+ OWNER_COMPACT=${MEGAFLUX_OWNER_COMPACT:-0}
++OWNER_PEER_CACHE=${MEGAFLUX_OWNER_PEER_CACHE:-0}
+ RESTORE=${MEGAFLUX_BACKWARD_RESTORE:-0}
+ OPERAND_READY=${MEGAFLUX_RESTORE_OPERAND_READY:-1}
+ RESTORE_DELAY=${MEGAFLUX_RESTORE_DELAY_CYCLES:-0}
+@@ -27,7 +28,7 @@
+  -DMEGAFLUX_RESTORE_OPERAND_READY="$OPERAND_READY" -DMEGAFLUX_RESTORE_DELAY_CYCLES="$RESTORE_DELAY" \
+  -DMEGAFLUX_WORKER_SHARED_PREFIX="$PREFIX" \
+  -DMEGAFLUX_WORKER_EXTERNAL_REFRESH="$EXTERNAL" -DMEGAFLUX_OWNER_ROWS="$OWNER_ROWS" \
+- -DMEGAFLUX_OWNER_COMPACT="$OWNER_COMPACT"
++ -DMEGAFLUX_OWNER_COMPACT="$OWNER_COMPACT" -DMEGAFLUX_OWNER_PEER_CACHE="$OWNER_PEER_CACHE"
+ cmake --build "$BUILD" --target ascend_deepep_megaflux_worker_bf16 --parallel "${MAX_JOBS:-4}"
+ cp "$BUILD/lib/libascend_deepep_megaflux_worker_bf16.so" "$NATIVE/libascend_deepep_megaflux_early_bf16.so"
+ python3 - "$ROOT" "$NAME" "$FWD" "$BWD" "$TIMER" "$PREFIX" "$EXTERNAL" "$OWNER_ROWS" "$OWNER_COMPACT" "$RESTORE" "$OPERAND_READY" "$RESTORE_DELAY" <<'PY'
+@@ -48,3 +49,8 @@
+ (n/'build.json').write_text(json.dumps(d,indent=2))
+ print('WORKER_PIPELINE_BUILT',name,d['native_sha256'],d['expected_flags'])
+ PY
++
++python3 - "$NATIVE" "$OWNER_PEER_CACHE" <<'PY'
++import json,pathlib,sys
++p=pathlib.Path(sys.argv[1]);(p/"peer-cache.json").write_text(json.dumps(dict(peer_cache=int(sys.argv[2]),small_ep_only=True)))
++PY
+diff --git a/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp b/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp
+--- a/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp
++++ b/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp
+@@ -18,3 +18,5 @@
+ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_backward_restore_mode(){return MEGAFLUX_BACKWARD_RESTORE;}
+ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_restore_operand_ready(){return MEGAFLUX_RESTORE_OPERAND_READY;}
+ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_restore_delay_cycles(){return MEGAFLUX_RESTORE_DELAY_CYCLES;}
++
++extern "C" ASCEND_DEEPEP_EXPORT int megaflux_owner_peer_cache(){return MEGAFLUX_OWNER_PEER_CACHE;}
