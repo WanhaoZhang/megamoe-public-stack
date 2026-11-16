@@ -1,0 +1,123 @@
+{
+  "rows": [
+    {
+      "mode": "Fixed home",
+      "milliseconds": 4127.910165,
+      "n": 1,
+      "tag": "priority-control1-fixed_home-v1",
+      "reduction_vs_strongest_control_pct": 0.0,
+      "peak_driver_GiB": 66.564453125
+    },
+    {
+      "mode": "Native anchor",
+      "milliseconds": 4138.519935,
+      "n": 1,
+      "tag": "priority-control1-anchor-v1",
+      "reduction_vs_strongest_control_pct": -0.2570252155669195,
+      "peak_driver_GiB": 66.7734375
+    },
+    {
+      "mode": "B0",
+      "milliseconds": 4215.812685,
+      "n": 1,
+      "tag": "priority-screen-b0-v1",
+      "reduction_vs_strongest_control_pct": -2.1294678538625433,
+      "peak_driver_GiB": 69.2236328125
+    },
+    {
+      "mode": "B1 resident/immediate",
+      "milliseconds": 4203.33834,
+      "n": 3,
+      "tag": "three audited B1 processes",
+      "reduction_vs_strongest_control_pct": -1.8272726872679002,
+      "peak_driver_GiB": 69.48046875
+    },
+    {
+      "mode": "B2",
+      "milliseconds": 4218.507405,
+      "n": 1,
+      "tag": "priority-screen-b2-v1",
+      "reduction_vs_strongest_control_pct": -2.1947483442871896,
+      "peak_driver_GiB": 66.0224609375
+    },
+    {
+      "mode": "B3",
+      "milliseconds": 4235.85699,
+      "n": 1,
+      "tag": "priority-screen-b3-v1",
+      "reduction_vs_strongest_control_pct": -2.6150478252958687,
+      "peak_driver_GiB": 66.373046875
+    }
+  ],
+  "counters": [
+    {
+      "mode": "b1",
+      "tag": "priority-pilot-cached_keys-v1",
+      "scope": "All 25 updates, includes 5 warmup; aggregates over all 8 ranks",
+      "weight_remote_MiB": 22680.0,
+      "weight_hit_MiB": 172728.0,
+      "gradient_remote_MiB": 130272.0,
+      "gradient_deliveries": 2714,
+      "flushes": 3200
+    },
+    {
+      "mode": "b1",
+      "tag": "priority-repeat2-cached_keys-v1",
+      "scope": "All 25 updates, includes 5 warmup; aggregates over all 8 ranks",
+      "weight_remote_MiB": 22680.0,
+      "weight_hit_MiB": 172728.0,
+      "gradient_remote_MiB": 130272.0,
+      "gradient_deliveries": 2714,
+      "flushes": 3200
+    },
+    {
+      "mode": "b1",
+      "tag": "priority-repeat3-cached_keys-v1",
+      "scope": "All 25 updates, includes 5 warmup; aggregates over all 8 ranks",
+      "weight_remote_MiB": 22680.0,
+      "weight_hit_MiB": 172728.0,
+      "gradient_remote_MiB": 130272.0,
+      "gradient_deliveries": 2714,
+      "flushes": 3200
+    },
+    {
+      "mode": "b0",
+      "tag": "priority-screen-b0-v1",
+      "scope": "All 25 updates, includes 5 warmup; aggregates over all 8 ranks",
+      "weight_remote_MiB": 195408.0,
+      "weight_hit_MiB": 0.0,
+      "gradient_remote_MiB": 130272.0,
+      "gradient_deliveries": 2714,
+      "flushes": 3200
+    },
+    {
+      "mode": "b2",
+      "tag": "priority-screen-b2-v1",
+      "scope": "All 25 updates, includes 5 warmup; aggregates over all 8 ranks",
+      "weight_remote_MiB": 22680.0,
+      "weight_hit_MiB": 172728.0,
+      "gradient_remote_MiB": 82656.0,
+      "gradient_deliveries": 1722,
+      "flushes": 544
+    },
+    {
+      "mode": "b3",
+      "tag": "priority-screen-b3-v1",
+      "scope": "All 25 updates, includes 5 warmup; aggregates over all 8 ranks",
+      "weight_remote_MiB": 22680.0,
+      "weight_hit_MiB": 172728.0,
+      "gradient_remote_MiB": 58224.0,
+      "gradient_deliveries": 1213,
+      "flushes": 360
+    }
+  ],
+  "predeclared_modes": [
+    "b0",
+    "b2",
+    "b3"
+  ],
+  "single_screen_only": true,
+  "new_planner": false,
+  "threshold_signal": false,
+  "interpretation": "B0/B2/B3 and controls each N=1 process, B1 N=3; only a screening comparison, not stable gain. Counters include warmup and cannot establish speed."
+}

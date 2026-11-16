@@ -1,0 +1,50 @@
+{
+  "common_executor_optimization": true,
+  "new_planner": false,
+  "shape": "L4 EP8 E256 Top8 H4096 F1024 S16384/rank, MB1 GA4 W2",
+  "routing": "MaxVio10 / same / artificial controlled route bank",
+  "pairs": [
+    {
+      "repeat": 1,
+      "old_ms": 4481.169239999999,
+      "cached_ms": 4203.33834,
+      "reduction_pct": 6.199964453920048
+    },
+    {
+      "repeat": 2,
+      "old_ms": 4475.336235,
+      "cached_ms": 4196.07276,
+      "reduction_pct": 6.240055726226334
+    },
+    {
+      "repeat": 3,
+      "old_ms": 4472.87136,
+      "cached_ms": 4208.68574,
+      "reduction_pct": 5.906398792564427
+    }
+  ],
+  "old_run_median_ms": 4475.336235,
+  "cached_run_median_ms": 4203.33834,
+  "reduction_of_run_medians_pct": 6.07770859478225,
+  "minimum_paired_reduction_pct": 5.906398792564427,
+  "maximum_paired_reduction_pct": 6.240055726226334,
+  "all_three_same_direction": true,
+  "controls": [
+    {
+      "name": "control1-fixed_home",
+      "median_step_ms": 4127.910165,
+      "independent_processes": 1,
+      "b1_reduction_vs_control_pct": -1.8272726872679002
+    },
+    {
+      "name": "control1-anchor",
+      "median_step_ms": 4138.519935,
+      "independent_processes": 1,
+      "b1_reduction_vs_control_pct": -1.566221886520891
+    }
+  ],
+  "peak_driver_GiB": 69.48046875,
+  "independent_processes_per_key_variant": 3,
+  "control_processes_per_point": 1,
+  "caveat": "No natural routes, all-MaxVio validation, new planner or stable lifecycle-policy gain established."
+}

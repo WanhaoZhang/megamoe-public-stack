@@ -1,0 +1,9 @@
+# 固定访问序列下，扩大缓存能省多少搬运
+
+这是对旧causal-v1-main-b1三更新原始记录的离线分析，不是新在线策略或稳态性能。按实际(version,layer,expert,destination rank)区分身份，并将prepare中miss数量×24MiB与记录的weight_remote_bytes核对，全部相符。
+
+八rank三次更新共120次miss，其中98次是该版本第一次使用，22次是同版本同身份再次miss；每rank每更新最多11个不同远端专家。当前每rank八条目，说明确有少量容量/回收机会，但即使对这个固定序列使用无限缓存，能够额外消除的也最多为22次payload，共528MiB，分布在24个rank-update上。
+
+第一次使用可通过预取隐藏，不能靠保留同版本缓存免去其字节。改变副本计划、任务顺序或更新版本会改变这个上界，因此它既不能推广到其他热点分布，也不是联合规划的理论全局上界。这里没有把字节换算成步时，更不能将通信量减少等同于加速。
+
+这项证据提示：在当前same路由上，不应仅凭高总命中率扩大缓存并期待大幅改善整步。应先量清当前公共梯度路径的实际暴露成本，并用同资源预算的固定布局/交付方式作比较。原始记录在causal子项目，脚本和逐rank/version结果见analyze_cache_opportunity.py及diagnostics/cache-opportunity-bound.json。

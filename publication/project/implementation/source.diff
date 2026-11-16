@@ -1,0 +1,2513 @@
+diff --git a/configs/lifetime-runtime-freeze.json b/configs/lifetime-runtime-freeze.json
+index d9fb5c1..4f999f2 100644
+--- a/configs/lifetime-runtime-freeze.json
++++ b/configs/lifetime-runtime-freeze.json
+@@ -1,7 +1,7 @@
+ {
+   "scope": "private ABI2 TimerOFF raw-output schedule control",
+   "binaries": {
+-    "source/native-balanced/worker-variants/ep8-cap64-lifetime-raw-control-v2/libascend_deepep_megaflux_early_bf16.so": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf",
+-    "source/native-balanced/worker-variants/ep8-cap64-lifetime-raw-control-v2/libascend_deepep_megaflux_worker_bf16.so": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf"
++    "source/native-balanced/worker-variants/ep8-cap64-lifetime-priority-cache-v1/libascend_deepep_megaflux_early_bf16.so": "e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed",
++    "source/native-balanced/worker-variants/ep8-cap64-lifetime-priority-cache-v1/libascend_deepep_megaflux_worker_bf16.so": "e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed"
+   }
+ }
+diff --git a/configs/priority-baseline-freeze.json b/configs/priority-baseline-freeze.json
+new file mode 100644
+index 0000000..d9fb5c1
+--- /dev/null
++++ b/configs/priority-baseline-freeze.json
+@@ -0,0 +1,7 @@
++{
++  "scope": "private ABI2 TimerOFF raw-output schedule control",
++  "binaries": {
++    "source/native-balanced/worker-variants/ep8-cap64-lifetime-raw-control-v2/libascend_deepep_megaflux_early_bf16.so": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf",
++    "source/native-balanced/worker-variants/ep8-cap64-lifetime-raw-control-v2/libascend_deepep_megaflux_worker_bf16.so": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf"
++  }
++}
+diff --git a/research/step_lifetime/priority_cache/CACHE-OPPORTUNITY.md b/research/step_lifetime/priority_cache/CACHE-OPPORTUNITY.md
+new file mode 100644
+index 0000000..77c8a3f
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/CACHE-OPPORTUNITY.md
+@@ -0,0 +1,9 @@
++# 固定访问序列下，扩大缓存能省多少搬运
++
++这是对旧causal-v1-main-b1三更新原始记录的离线分析，不是新在线策略或稳态性能。按实际(version,layer,expert,destination rank)区分身份，并将prepare中miss数量×24MiB与记录的weight_remote_bytes核对，全部相符。
++
++八rank三次更新共120次miss，其中98次是该版本第一次使用，22次是同版本同身份再次miss；每rank每更新最多11个不同远端专家。当前每rank八条目，说明确有少量容量/回收机会，但即使对这个固定序列使用无限缓存，能够额外消除的也最多为22次payload，共528MiB，分布在24个rank-update上。
++
++第一次使用可通过预取隐藏，不能靠保留同版本缓存免去其字节。改变副本计划、任务顺序或更新版本会改变这个上界，因此它既不能推广到其他热点分布，也不是联合规划的理论全局上界。这里没有把字节换算成步时，更不能将通信量减少等同于加速。
++
++这项证据提示：在当前same路由上，不应仅凭高总命中率扩大缓存并期待大幅改善整步。应先量清当前公共梯度路径的实际暴露成本，并用同资源预算的固定布局/交付方式作比较。原始记录在causal子项目，脚本和逐rank/version结果见analyze_cache_opportunity.py及diagnostics/cache-opportunity-bound.json。
+diff --git a/research/step_lifetime/priority_cache/COMMON-LIFETIME-REPORT.md b/research/step_lifetime/priority_cache/COMMON-LIFETIME-REPORT.md
+new file mode 100644
+index 0000000..8feb09f
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/COMMON-LIFETIME-REPORT.md
+@@ -0,0 +1,22 @@
++# 同一优化执行器上的生命周期复查
++
++完整更新联合规划目标仍未完成。这是预声明的B0/B2/B3三点有界复查，没有新策略。
++
++|方式|秒/完整更新|独立进程数|相对较强控制的耗时减少|整卡峰值GiB|
++|---|---:|---:|---:|---:|
++|Fixed home|4.127910|1|+0.00%|66.56|
++|Native anchor|4.138520|1|-0.26%|66.77|
++|B0|4.215813|1|-2.13%|69.22|
++|B1 resident/immediate|4.203338|3|-1.83%|69.48|
++|B2|4.218507|1|-2.19%|66.02|
++|B3|4.235857|1|-2.62%|66.37|
++
++负号表示更慢。B0/B2/B3及两个控制各只有一个进程，B1为三进程中位；所有方法共同执行资源/模型/输入/路由/配额生成/公共数值与owner语义不变。正式TimerOFF，25更新、5预热＋20测量、每更新八rank最大wall。三个小形状完整模型资格和实际SO/数据身份补充审计均通过。
++
++![仅实际完成的数据](figures/common-lifetime-screen.png)
++
++B0每次权重准备＋立即FP32归并；B1同版本驻留＋立即归并；B2驻留＋GA2窗口；B3驻留＋更新末偏好，八条目不足时仍会容量flush。B3不是REM的完整实现。缓存实际命中仍从独立bank本地copy至现有计算槽，再发布当前epoch，不是永久保留所有计算槽。
++
++是否出现至少3%筛查信号：False。即使有信号，也必须补独立重复后才允许稳定收益表述或完整矩阵；若无信号，不扩矩阵。通信量、命中率和归并次数不能替代完整更新成绩。
++
++逐rank原始lifetime-audit、effective-config、实际库、初始/输入/路由身份及step日志保留在各tag；counter汇总见common-lifetime-summary.json，范围为全部25更新（包括预热）而非20测量更新。原始大梯度张量仍在receipt指向的远端独立项目。旧33点结果不覆盖，此处只回答公共优化底座上的当前same路由。
+diff --git a/research/step_lifetime/priority_cache/COMMON-LIFETIME-RESCREEN.md b/research/step_lifetime/priority_cache/COMMON-LIFETIME-RESCREEN.md
+new file mode 100644
+index 0000000..1524909
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/COMMON-LIFETIME-RESCREEN.md
+@@ -0,0 +1,7 @@
++# 公共优化后的生命周期小筛查
++
++排序键缓存三轮均减少约6%，因此旧B0/B2/B3数据不能直接回答当前公共底座上哪个生命周期方式更好。保持当前MaxVio10/same人工路由和所有共同设置，先补B0、B2、B3各一个小形状三更新＋step0逐参数梯度门禁，全部通过后各跑一个25更新（5预热＋20测量）主形状进程。
++
++这是三点有界复查，不是108矩阵，不改变任务、Native复制配额、八条目预算或既有生命周期策略。B0每次准备＋立即归并，B2驻留＋GA2窗口归并，B3驻留＋更新末偏好但保留容量flush。全点保留；主形状各N=1，只筛查，不能称稳定收益。
++
++与已完成的同worker原执行器/fixed-home控制和B1三次运行一起分析。如没有相对最强适用基线的至少3%信号，不补重复或启动大矩阵。主机诊断不进入此计时结果；所有正式运行关闭其开关及Timer/profiler。
+diff --git a/research/step_lifetime/priority_cache/CONFIRMATION-PROTOCOL.md b/research/step_lifetime/priority_cache/CONFIRMATION-PROTOCOL.md
+new file mode 100644
+index 0000000..adba43b
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/CONFIRMATION-PROTOCOL.md
+@@ -0,0 +1,13 @@
++# 公共排序优化的有界确认
++
++本阶段不替代完整更新联合规划目标，不启动108点矩阵。
++
++已完成第一配对：同一框架/路由/任务分组/Native配额/生命周期B1，TimerOFF worker，25次更新、5次预热、后20次逐更新取八rank最大wall。旧worker72653a→新workere2868f，4.481169s→4.203338s，减少6.20%。参数/输入/路由/重放次数/实际库/受保护源码全量身份审计通过。完整原始计划张量未在计时中额外导出；数值门禁和顺序oracle为独立证据。
++
++在看到其余结果前固定后续顺序：第二轮新→旧，第三轮旧→新；随后同一新worker的原执行器（不接lifetime adapter）和fixed-home各一组匹配筛查。后两项只有N=1，不能形成稳定策略结论。各方法资源上限相同；原执行器和fixed-home不必为了相同预算而分配不使用的缓存。
++
++独立重复是新进程，不是同一进程内20个更新。先按每次运行的20个rank-max步时取中位，再配对比较。只报告完整通过准入/源码/库/身份/有限性/内存检查的运行；异常、排队和失败不覆盖、不删除。
++
++编译干预：编译选项及CMake cache去掉明确的任务绝对路径后完全一致，仅mega_moe_bf16_backward.h不同。新头文件一次计算每个GradientKey，在原稳定排序中复用，不改变副本布局、配额、ExpertAt顺序、ready协议或梯度owner。256B/core局部数组；不新增HBM缓存。
++
++若三轮一致，仅确认这项执行器优化在当前形状/MaxVio10/same人工路由/B1路径的效果，不推广到全部MaxVio或自然路由。必须在同一公共优化底座上重新检查驻留、归并与强基线，才讨论联合策略。
+diff --git a/research/step_lifetime/priority_cache/GROUP-DELIVERY-DESIGN.md b/research/step_lifetime/priority_cache/GROUP-DELIVERY-DESIGN.md
+new file mode 100644
+index 0000000..f546669
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/GROUP-DELIVERY-DESIGN.md
+@@ -0,0 +1,27 @@
++# Next causal control, conditional on the common executor baseline
++
++Status: design only; not implemented or measured. This does not replace the full joint-planning objective.
++
++Prior diagnostic: B1/B3 actual GEMM and X/probability pull are close; source-publication/table rendezvous differs strongly. This does not prove asynchronous gradient service causes the delay. A pre-Native service drain may merely move unavoidable waiting from the kernel to host. A fixed group flush may merely be ordinary gradient aggregation. Test these explanations before proposing policy novelty.
++
++## Minimal future controls
++
++1. Immediate delivery, unchanged.
++2. Identical sends/bytes/placements, but complete outstanding service flights before the next Native entry. Keep existing stream/buffer leases; never delete the serial-pool guard. Measure complete updates, not just reduced in-kernel wait.
++3. Accumulate remote dW across the original group's two FFN waves and deliver after all its backwards finish. Distinguish this from GA2-window or GA4-update delivery. Keep capacities and deterministic capacity-pressure fallback common.
++
++Use the best qualified common raw-output schedule, same copies/quota/task order and same FP32 public path. Original native anchor and fixed-home remain required stronger controls before any policy claim.
++
++## Authority belongs to the plan lifecycle
++
++The prefix key currently is `(step,group,wave,1)`, not `(step,mb,layer,call)`. Do not infer group meaning from generic tuple positions inside the device executor. The framework already knows the original wave set before execution and should bind explicit group identity/member count alongside the existing invocation context. PlanTicket owns this immutable membership; checkpoint replay reuses it. Backward binds a unique live ticket before producing an obligation. The common lifecycle marks one completed backward per ticket; a delivery policy consumes the group-complete event. No strategy-name-dependent routing decisions belong in the executor.
++
++Group completion must count every original member once, including zero-work replicas; zero-work replicas create no dW obligation. Version/layer/expert/rank identify weights, separate from ready epoch and physical slot generation. Pending gradient debt stays bounded and cannot cross clip/Adam. Weight eviction and gradient-bank reclamation remain separate actions.
++
++All current B modes can be represented by common settings: cache-enabled, flush boundary (call/group/window/update), and service-admission rule. A future joint policy emits these actions through one executor. This settings refactor is common infrastructure, not a claimed novel planner.
++
++## Qualification before timing
++
++Independent reference: W1/W2, frozen checkpoint replay, empty owners/all-remote dW, zero replicas, and two waves whose disjoint hotspot sets force an8-entry bank to flush mid-group. Validate reverse backward order, exactly-once contributions, same global submit order and deterministic capacity fallback. Three actual Adam updates must invalidate old weights and finish all gradient debt before clipping. Keep outputL2<=.004, gradients<=.02 and whole-card<=90GiB.
++
++If a control only relocates a wait, report no benefit. If a fixed boundary/caching fix explains all gains, open it to baselines and do not attribute it to joint task selection. Only after showing a residual conflict between grouping, copies and gradient service should search a new online policy. Never read future layers/microbatches from the pre-generated bank.
+diff --git a/research/step_lifetime/priority_cache/OBSERVATION-LIMITS.md b/research/step_lifetime/priority_cache/OBSERVATION-LIMITS.md
+new file mode 100644
+index 0000000..e952851
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/OBSERVATION-LIMITS.md
+@@ -0,0 +1,13 @@
++# Do not turn an unobserved diagnostic gap into a policy premise
++
++The existing one-node diagnostic gives a shared-host observation without merging device clocks: B1 has three backward entry gaps of188–206ms at `(step2,group1/2/3,wave0,1)`, whereas B3's maximum is5.03ms. Median B1 entry skew is only.353ms; a median over ranks/calls hides these outliers. Full records: diagnostics/host-operator-entry-skew.json.
++
++The recorded lifetime/framework CPU envelopes do not cover more than5ms of the late rank's gap in these cases. P2P submission calls themselves have no duration over10ms across the624B1 submissions; maximum reused-pattern submission is.969ms. This excludes a large HOST batch_isend_irecv call in the recorded data, not device-side communication initialization or pending work.
++
++There is a measurement blind spot: capture_framework.begin creates/records its timing Event before assigning metadata.host_begin_ns; corresponding wrapper bodies also start their host envelope after begin. Event-record/allocation cost or runtime/GC work outside wrappers can therefore be absent from existing host scopes. We have not measured such a stall or established a particular hardware Event limit. Do not claim either as the cause.
++
++The three-update detailed capture also precedes the standard five-update warmup. Its source-publication waits cannot automatically explain the steady-state TimerOFF score. Keep the measured waits as observations, not proven avoidable critical path.
++
++Before implementing a gradient policy from this evidence, use a separate explicit host-only trace on the same TimerOFF worker: no new device Events, no tensor clones and no new synchronizations; record original function entry/return before any diagnostic resource creation and dump after the run. Compare ordinary/warmed updates, including the two waves of a group. Separately instrument Event creation/record envelopes if repeating the rich capture. Numerically qualify wrappers and keep all traced wall times separate from formal performance.
++
++Group-delivery / pre-Native-flight-drain controls remain useful hypotheses, but may only relocate unavoidable work. A proposed joint planner must ultimately outperform the strongest common runtime after these observer/startup effects are excluded.
+diff --git a/research/step_lifetime/priority_cache/ORDER-PROOF.md b/research/step_lifetime/priority_cache/ORDER-PROOF.md
+new file mode 100644
+index 0000000..b7f759d
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/ORDER-PROOF.md
+@@ -0,0 +1,9 @@
++# Why key caching preserves the original execution priority
++
++For one legal invocation, let `g(e,P)` be GradientKey for physical expert `e` and immutable placement table `P`. It reads no token counters, ready flags, delivery epochs, gradient values or RNG. Empty slots map to100000+e; valid slots use their logical identity and membership in the fixed replica table. Current legal layouts have at most64physical experts and logical IDs below the sentinel range.
++
++Both implementations initialize order[e]=e. In original insertion-sort iteration i, the condition is g(order[j],P)>g(v,P). The candidate precomputes priority[e]=g(e,P) for every e. Its condition is priority[order[j]]>priority[v], which is identical whenever P is unchanged. By induction, every shift and final insertion position is identical; strict greater-than retains the same tie order. The existing expert/row prefix and ready protocol are untouched.
++
++The premise is the common plan/executor contract: this call's checked placement stays unchanged until its consuming serial stream has finished. Planner scratch may be reused only in stream order after that consumer. Checkpoint/backward bind the saved immutable placement. The change does not cache polling reads from ready/epoch locations. Invalid concurrent mutation is not a supported plan and is not made valid by this optimization.
++
++The384actual-plan integer oracle is supporting evidence of correct encoding and sentinels, not the general proof. NPU output/dx/dp/dW and three-update qualification separately check implementation behavior. Build audits compare the real baseline and candidate source/flags. Reduced source-level table tests are not a predicted or measured wall-time gain: register/stack allocation and compiler behavior can change and must be measured.
+diff --git a/research/step_lifetime/priority_cache/PLAN.md b/research/step_lifetime/priority_cache/PLAN.md
+new file mode 100644
+index 0000000..9cc14be
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/PLAN.md
+@@ -0,0 +1,13 @@
++# Original-order priority-key caching: isolated causal intervention
++
++Goal remains full-update joint ready-task / replica / gradient-lifetime planning. Previous goal turn made progress: completed ABI2 correctness and a matched negative screening pair; it did not achieve the full goal.
++
++This child starts at raw-control@693f7fc. Branch research/step-lifetime-priority-cache; old source/compiled variants/evidence remain read-only. One production-kernel change only: evaluate each immutable placement-derived GradientKey once, then retain the original stable insertion sort. No routing/quota/task order/owner/transport/FP32 accumulation or resource changes. Same private ABI2; no ready polling value is cached.
++
++Reference worker ep8-cap64-lifetime-raw-control-v2 SHA72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf is copied into a new isolated remote lane. Candidate gets a NEW variant ep8-cap64-lifetime-priority-cache-v1. Common source/host/framework and build options are held constant; build manifests explicitly distinguish compiled reference and candidate header hashes. Per-process source-tree identity is not presented as the baseline binary's build-source identity.
++
++First preserve the order oracle on actual plans, build, run independent output/dx/dp/dW gates including empty owners/remote-only contributions, then three complete-model updates with FP32 gradients. Only then run a narrow matched TimerOFF pilot on L4 EP8 E256 K8 H4096 F1024 S16384/rank GA4/W2 recv262144, common90GiB limit. Per process25updates,5warmup20measured,8rank-max wall time. Qualify then compare the cached public path; follow with native anchor/fixed-home controls if evidence warrants. No 108matrix or new-policy claims from a common kernel optimization.
++
++If the candidate changes numerical semantics or does not improve complete updates, retain failure/negative evidence and proceed to the already-proposed service-admission/group-delivery causal controls. Any useful common optimization is opened to all applicable baselines before claiming a joint planner win.
++
++Remote isolation: new task directory/container/SO paths, shared device-jobs lock and actual occupancy checks; no other task termination or library replacement. All artifacts stay in this project, summaries only in codexwork. No future routes or optimizer-owner changes.
+diff --git a/research/step_lifetime/priority_cache/REPORT.md b/research/step_lifetime/priority_cache/REPORT.md
+new file mode 100644
+index 0000000..ed5a7fb
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/REPORT.md
+@@ -0,0 +1,46 @@
++# 排序键缓存：公共执行器干预与匹配控制
++
++当前完整训练步联合规划目标仍在研究中。本阶段验证一项公共执行器优化，没有实现或确认新的联合planner。
++
++## 已完成结果
++
++|独立配对|旧worker秒/完整更新|新worker秒/完整更新|耗时减少|
++|---|---:|---:|---:|
++|1|4.481169|4.203338|6.20%|
++|2|4.475336|4.196073|6.24%|
++|3|4.472871|4.208686|5.91%|
++
++三次新进程配对均为同方向。先取每进程20个测量更新的中位，再统计运行间中位：4.475336→4.203338秒，减少6.08%。这是MaxVio10/same人工路由/B1的一项公共执行器收益，不能推广为生命周期策略收益、自然路由收益或官方MoonEP复现结果。
++
++|相同新worker上的新控制|秒/完整更新|独立进程数|B1相对该控制的耗时减少|
++|---|---:|---:|---:|
++|control1-fixed_home|4.127910|1|-1.83%|
++|control1-anchor|4.138520|1|-1.57%|
++
++控制各只有一组匹配筛查。负号表示B1较慢；不能将这些点宣称为稳定策略优劣。所有方法共用相同资源上限；不需要lifetime adapter的控制不强制分配未使用的缓存。
++
++![实际完成的运行](figures/priority-cache-and-controls.png)
++
++## 改了什么，为何可比较
++
++独立research/step-lifetime-priority-cache，仅修改backward头文件中稳定排序键的求值方式：原本每次比较重复扫描全局copies，改为本次每个expert计算一次，原排序和tie-break不变。不改变copies/quota、ExpertAt执行顺序、ready、owner、通信格式或生命周期策略。局部int数组256B/core，不新增HBM缓存。
++
++实际编译选项和CMake cache只归一化明确任务路径后完全相同，编译输入仅一个头文件不同。baseline worker SHA72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf；candidate e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed。基线的编译来源单独冻结，不能用计时时磁盘上的新头文件替代旧SO来源。
++
++384份实际计划的排序oracle一致；新内核128项NPU独立数学比较（bank＋空owner/远端贡献，B0–B3、W1/W2）通过。小形状L2/H512/F512/S256的完整三次Adam更新及step0逐参数FP32梯度比较通过；主形状各运行另有前三更新参数抽样变化和全25更新有限性检查，不冒称导出了全主形状逐参数梯度。资格原始张量保留在对应远端项目目录。
++
++## 实验条件与计时
++
++L4 EP8/E256/Top8 H4096 routed/sharedFFN1024，每条完整16K序列，每卡四条、MB1/GA4/W2；vocab32768、Q-heads32、mHC2、shared expert1、SwiGLU limit10、hash0；V4 attention/mHC普通MegaMoE，shared由框架计算；FSDP8/E-FSDP1固定owner，FP32参数/梯度/Adam、BF16专家计算，recv262144，无CPU offload，整卡上限90GiB（沿用allocator预算89.5GiB留出余量）。本阶段最高实测69.48GiB。具体配置见各run/effective-config.json。
++
++每次新进程25次更新，前5次预热；每次更新八rank最大完整wall，覆盖GA4、在线规划、全部交付、clip、Adam和设备完成。Timer/profiler关闭。第一轮旧→新，第二轮新→旧，第三轮旧→新。20个更新不当作20个独立重复。
++
++实际SO/单SHMEM、受保护源码、初始逻辑及持久参数、全部25更新输入与逻辑路由、任务组、重放次数、有限性和内存均检查。正式计时没有额外导出完整计划张量；数值比较、顺序oracle和此前全量计划一致性是独立资格，不能声称本次每一步都另存了完整实际计划。
++
++## 未完成、限制与下一步
++
++原33点负结果和raw-schedule单轮约0.06%负结果保持不变。当前B路径仍是CPU观察实际计划及串行化HCCL公共梯度的正确性原型，不是设备端在线生命周期planner。当前B3也不是REM完整系统复现。
++
++旧rich capture存在未覆盖的主机入口间隙、额外设备Event/snapshot及仅前三更新的观察限制，不能直接拿它推导可消除关键路径。独立host-boundary诊断正在用TimerOFF和不增加设备Event/同步的主机封套重新验证。先据此定位实际依赖，再决定group交付或其他单变量控制；新策略必须胜过同一公共优化底座的强基线。
++
++所有实际数据、失败记录、源码/构建/SO指纹、重放脚本和PNG/SVG/PDF均在本项目目录；大张量仅在对应独立远端路径，receipt及source-snapshot指向来源。summary.json、runs.csv、measured-updates.csv是本报告数据源。原始失败审计保留为pilot-identity-audit-initial-schema-assumptions.json：属于审计脚本对既有日志字段的错误假设，经核对train.py及实际库名修正，不是被删除的训练失败。
+diff --git a/research/step_lifetime/priority_cache/REPRODUCE.md b/research/step_lifetime/priority_cache/REPRODUCE.md
+new file mode 100644
+index 0000000..179db51
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/REPRODUCE.md
+@@ -0,0 +1,27 @@
++# 复查与重放
++
++本交付只覆盖独立priority-cache公共执行器干预及同一底座的有界生命周期复查，不是新联合planner。旧工程、旧SO和原33点结果不改动。
++
++## 现有冻结节点上的新进程重放
++
++使用项目Python：D:/megamoe_train/planner-executor-ep8-lab/.venv/Scripts/python.exe。
++
++```
++python replay_case.py --case cached_keys --tag priority-replay-cached-unique-01
++```
++
++case可选reference、cached_keys、b0、b2、b3、anchor、fixed_home。每次必须使用新tag；远端controller以exist_ok=False拒绝覆盖旧运行。该脚本不改运行库、不部署文件，只调用当前冻结的独立节点目录/容器，复用全节点准入锁、实际设备占用检查及源码/库指纹。所有新进程仍25更新、5预热＋20测量、八rank最大完整更新wall，Timer/profiler/主机诊断均关闭。
++
++remote.py记录实际SSH别名、独立远端和容器。若节点上该冻结环境已清除，不能只复制一个SO就当作重放；应在新的独立目录/容器按依赖版本重建，再重新完整数值验收。不要用remote.deploy覆盖其他正在运行的研究源码，也不要修改旧完成数据。
++
++## 源码与构建
++
++SOURCE-INDEX.json给出Git交付head、原始base、source.zip、source.diff、两份实际SO及构建指纹。source.zip解压到新的独立目录后保留stack/和同层辅助脚本布局；stack/research/step_lifetime/priority_cache是辅助脚本的版本化审阅副本，实际脚本按交付根目录布局执行。
++
++implementation/build-priority-worker.sh与build_worker.py记录真实CANN9.2.0b070、Python3.12.13、SDK/SHMEM、CAP64、restore2、pipeline flags0和TimerOFF。外部大型环境不放进源码ZIP，冻结库清单/实际加载库保存在configs与evidence。reference-worker.so为原已冻结72653a，worker.so为新e2868f；对照构建输入证明只有backward排序头文件变化，不能拿新磁盘源文件冒充旧SO的编译来源。
++
++## 数据与验收边界
++
++summary.json、runs.csv、measured-updates.csv对应三配对和两个控制；common-lifetime-summary.json与CSV对应新增三点生命周期复查。每个evidence/tag保存effective-config、身份、实际库、源码freeze、更新与步骤日志、HBM、退出/独占状态；大梯度PT保留在各receipt.large_tensors_remote指向的同任务远端。计时运行不额外导出全量计划张量，不能声称存在不存在的逐步实际计划快照。
++
++独立小形状输出/梯度及三更新资格、384计划顺序oracle、完整main身份审计是分开的证据。只用实际完成且通过门禁的运行画图；步内20样本不当独立重复；本轮还没有自然路由验证、新策略稳定收益或论文创新性结论。
+diff --git a/research/step_lifetime/priority_cache/RESEARCH-BOUNDARIES-RECHECK.md b/research/step_lifetime/priority_cache/RESEARCH-BOUNDARIES-RECHECK.md
+new file mode 100644
+index 0000000..c684072
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/RESEARCH-BOUNDARIES-RECHECK.md
+@@ -0,0 +1,23 @@
++# 2026-11-16：近邻机制与当前实验不能混用
++
++本次在线核对REM v1的§3.2/附录B.3、Afore v1的§5.1–5.2、EasyBalance v1的§4/§5.3，补充以下边界；并非新增训练实测，也不声称精读了整个资料库。
++
++## REM已经覆盖的内容
++
++[REM原文](https://arxiv.org/html/2609.32398v1)描述global-batch级副本布局、microbatch级任务派发、原owner持有优化器，以及跨microbatch梯度累积后归主。附录B.3还明确描述每次forward前同步副本参数、提前获取早层参数并与先前层计算重叠。因此，固定owner＋GA累积归主不能作为新贡献。
++
++当前B3不是REM的复现：它仍使用每调用Native布局和quota，只有八个跨层梯度条目，容量不足时会提前flush；它也没有实现REM的global-batch布局算法或微步派发算法。B3只能叫“更新末归并偏好、带容量回退的生命周期控制”，不能用B3输赢来推断REM的优劣。未来比较需有明确同运行时的固定布局/更新末归并强基线。
++
++## Afore已经覆盖的内容
++
++[Afore §5](https://arxiv.org/html/2610.03203v1)优先在现有布局内重分配，再比较新副本的FFN收益与未被流水窗口隐藏的搬运成本；还保留可复用的槽位绑定并保护仍在使用的槽位。单独提出“复用旧副本”“看净收益再复制”不足以构成新策略。其AFD推理输入可提前提供需求，当前训练首版仍只能使用已就绪真实路由和历史，不能拿预生成未来银行当在线信息。
++
++## EasyBalance已经覆盖的内容
++
++[EasyBalance](https://arxiv.org/html/2608.07964v1)已经比较与EPLB组合；不能把任务选择＋复制的简单串联直接命名为创新。当前W2和双层域64home＋0replica也限制了合法动作集合；跨层不复制是执行域限制，不能解释为算法自适应决策。
++
++## 本阶段可检验的后续问题
++
++需要先证明在共同优化执行器中，单次调用的复制/归并决策确实损害某段更新关键路径，并且普通固定分组、缓存、固定布局和统一末尾归并不能解释或消除它。排序键缓存是公共底座优化；旧rich capture的未观测主机间隙也尚不能充当此问题存在的证据。
++
++在明确实际阻塞后，才比较“使用当前服务空隙提前交付、在预计重用窗口内保留条目、为真正临界任务让出容量”等有限动作。上述是待验证研究问题；尚无新策略加速或论文创新性结论。
+diff --git a/research/step_lifetime/priority_cache/analyze_cache_opportunity.py b/research/step_lifetime/priority_cache/analyze_cache_opportunity.py
+new file mode 100644
+index 0000000..9cb44e3
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/analyze_cache_opportunity.py
+@@ -0,0 +1,41 @@
++"""Use original closed-run accesses to separate cold misses from avoidable misses.
++
++This is a sequence-conditioned byte lower bound, not an online policy score.
++"""
++from collections import defaultdict
++from pathlib import Path
++import json
++
++ROOT=Path(__file__).resolve().parent
++SOURCE=ROOT.parent/'causal-diagnostics-20261116/evidence/causal-v1-main-b1'
++PLANE=24*1024*1024
++records=[]
++for rank in range(8):
++    rows=[json.loads(line) for line in (SOURCE/f'lifetime-events-rank{rank}.jsonl').read_text().splitlines()]
++    steps=defaultdict(list)
++    for row in rows:
++        if row['name']=='prepare':steps[row['version']].append(row)
++    for version,calls in sorted(steps.items()):
++        seen=set();hits=misses=cold=repeated_misses=0;observed_remote=0
++        for row in calls:
++            observed_remote+=row['payload_delta']['weight_remote_bytes']
++            for entry in row['cache_uses']:
++                key=(entry['layer'],entry['expert'])
++                if entry['hit']:hits+=1
++                else:
++                    misses+=1
++                    if key in seen:repeated_misses+=1
++                    else:cold+=1
++                seen.add(key)
++        records.append(dict(rank=rank,version=version,accesses=hits+misses,hits=hits,misses=misses,
++                            cold_misses=cold,repeated_misses=repeated_misses,distinct_keys=len(seen),
++                            remote_bytes=observed_remote,access_miss_bytes_match=observed_remote==misses*PLANE))
++output=dict(source=str(SOURCE),source_scope='Old rich diagnostic only, 3 updates, same artificial route; not formal steady-state performance.',
++            destination_rank_is_in_outer_record=True,cache_entries_per_rank=8,
++            records=records,miss_byte_reconciliation=all(row['access_miss_bytes_match'] for row in records),
++            total_misses=sum(row['misses'] for row in records),total_cold_misses=sum(row['cold_misses'] for row in records),
++            total_repeated_misses=sum(row['repeated_misses'] for row in records),
++            max_distinct_keys_per_rank_update=max(row['distinct_keys'] for row in records),
++            interpretation='An observed first use of a (version,layer,expert,destination) needs a fresh payload unless prefetched. Prefetch may hide it but cannot remove its bytes. Repeated misses are an upper bound on byte reductions from more capacity for this exact sequence; changing plans/order/version changes the bound.')
++(ROOT/'diagnostics/cache-opportunity-bound.json').write_text(json.dumps(output,indent=2)+'\n',newline='\n')
++print(json.dumps({key:value for key,value in output.items() if key!='records'},indent=2))
+diff --git a/research/step_lifetime/priority_cache/analyze_host_blockers.py b/research/step_lifetime/priority_cache/analyze_host_blockers.py
+new file mode 100644
+index 0000000..c516488
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/analyze_host_blockers.py
+@@ -0,0 +1,31 @@
++"""Locate recorded CPU scopes covering the late rank's shared-host entry gap."""
++from pathlib import Path
++import json
++root=Path(__file__).resolve().parent
++base=root.parent/'causal-diagnostics-20261116/evidence'
++skews=json.loads((root/'diagnostics/host-operator-entry-skew.json').read_text())
++results={}
++for mode in ('b0','b1'):
++ folder=base/('causal-v1-main-'+mode);windows=[]
++ for skew in skews['modes'][mode]['records']:
++  if skew['host_operator_entry_skew_ms']<=10:continue
++  key=skew['invocation'];rank=skew['last_rank'];entries=[]
++  for peer in (skew['first_rank'],rank):
++   rows=[json.loads(line) for line in (folder/f'framework-events-rank{peer}.jsonl').read_text().splitlines()]
++   row=next(row for row in rows if row['name']=='operator.backward' and row['invocation']==key)
++   entries.append(row['host_begin_ns'])
++  begin,end=entries;cover=[]
++  for filename in (f'lifetime-events-rank{rank}.jsonl',f'framework-events-rank{rank}.jsonl'):
++   for line in (folder/filename).read_text().splitlines():
++    row=json.loads(line)
++    duration=(row['host_end_ns']-row['host_begin_ns'])/1e6
++    overlap=max(0,min(end,row['host_end_ns'])-max(begin,row['host_begin_ns']))/1e6
++    if overlap>5:
++     cover.append(dict(name=row['name'],invocation=row['invocation'],host_ms=duration,
++         overlap_with_host_entry_gap_ms=overlap,packet=row.get('packet'),source_file=filename))
++  windows.append(dict(**skew,covering_scopes=sorted(cover,key=lambda row:-row['overlap_with_host_entry_gap_ms'])[:14]))
++ results[mode]=windows
++data=dict(modes=results,scope='recorded host scopes only; nested overlap is not additive; uninstrumented gaps remain unknown; does not identify HCCL internal/device cause')
++(root/'diagnostics/host-entry-blocking-scopes.json').write_text(json.dumps(data,indent=2)+'\n',newline='\n')
++for mode,rows in results.items():
++ for row in rows:print(mode,row['invocation'],row['last_rank'],row['covering_scopes'][:4])
+diff --git a/research/step_lifetime/priority_cache/analyze_host_skew.py b/research/step_lifetime/priority_cache/analyze_host_skew.py
+new file mode 100644
+index 0000000..bba8b23
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/analyze_host_skew.py
+@@ -0,0 +1,27 @@
++"""Use the shared SINGLE-HOST monotonic clock, never independent device zeros."""
++from pathlib import Path
++import json,statistics
++root=Path(__file__).resolve().parent
++evidence=root.parent/'causal-diagnostics-20261116/evidence'
++result={}
++for mode in ('fixed_home','anchor','b0','b1','b3'):
++ groups={}
++ for rank in range(8):
++  for line in (evidence/('causal-v1-main-'+mode)/f'framework-events-rank{rank}.jsonl').read_text().splitlines():
++   row=json.loads(line)
++   if row['step']!=2 or row['name']!='operator.backward':continue
++   key=tuple(row['invocation'])
++   if rank in groups.setdefault(key,{}):raise RuntimeError('Duplicate original operator identity')
++   groups[key][rank]=row['host_begin_ns']
++ rows=[]
++ for key,peers in sorted(groups.items()):
++  if set(peers)!=set(range(8)):raise RuntimeError('Missing matching host invocation')
++  first,last=min(peers,key=peers.get),max(peers,key=peers.get)
++  rows.append(dict(invocation=key,host_operator_entry_skew_ms=(peers[last]-peers[first])/1e6,
++                   first_rank=first,last_rank=last))
++ result[mode]=dict(records=rows,median_ms=statistics.median(row['host_operator_entry_skew_ms'] for row in rows),
++                   max_ms=max(row['host_operator_entry_skew_ms'] for row in rows))
++data=dict(modes=result,
++ scope='existing one-node8-process diagnostic, update2 only; same-host monotonic_ns wrapper-entry times. Not device launch/completion times or avoided critical path; do not add these skews.')
++(root/'diagnostics/host-operator-entry-skew.json').write_text(json.dumps(data,indent=2)+'\n',newline='\n')
++print(json.dumps({name:{key:row[key] for key in ('median_ms','max_ms')} for name,row in result.items()},indent=2))
+diff --git a/research/step_lifetime/priority_cache/analyze_p2p_first_use.py b/research/step_lifetime/priority_cache/analyze_p2p_first_use.py
+new file mode 100644
+index 0000000..149894e
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/analyze_p2p_first_use.py
+@@ -0,0 +1,31 @@
++"""Check whether long HOST submission calls coincide with new peer patterns."""
++from pathlib import Path
++import json,statistics
++root=Path(__file__).resolve().parent
++base=root.parent/'causal-diagnostics-20261116/evidence'
++results={}
++for mode in ('b0','b1','b3'):
++ submissions=[]
++ for rank in range(8):
++  peers_seen=set();patterns_seen=set()
++  rows=[json.loads(line) for line in (base/('causal-v1-main-'+mode)/f'lifetime-events-rank{rank}.jsonl').read_text().splitlines()]
++  for row in sorted(rows,key=lambda x:x['host_begin_ns']):
++   if row['name']!='p2p_submit_enqueue':continue
++   peers=tuple(sorted({op['peer'] for op in row['operations']}))
++   pattern=tuple((op['peer'],op['kind'],op['bytes']) for op in row['operations'])
++   entry=dict(rank=rank,invocation=row['invocation'],packet=row['packet'],peers=peers,
++     duration_ms=(row['host_end_ns']-row['host_begin_ns'])/1e6,
++     new_peer=any(peer not in peers_seen for peer in peers),new_pattern=pattern not in patterns_seen)
++   submissions.append(entry);peers_seen.update(peers);patterns_seen.add(pattern)
++ long=[row for row in submissions if row['duration_ms']>10]
++ results[mode]=dict(total_submissions=len(submissions),long_host_submissions=long,
++     long_all_new_peer=bool(long) and all(row['new_peer'] for row in long),
++     long_all_new_pattern=bool(long) and all(row['new_pattern'] for row in long),
++     maximum_reused_pattern_host_ms=max((row['duration_ms'] for row in submissions if not row['new_pattern']),default=0))
++data=dict(modes=results,scope='all3 existing diagnostic updates; shared-host CPU call durations, not device transfer times; first observed peer/pattern does not prove HCCL internal initialization cause')
++(root/'diagnostics/p2p-first-use-observation.json').write_text(json.dumps(data,indent=2)+'\n',newline='\n')
++for mode,row in results.items():
++ print(mode,'submissions',row['total_submissions'],'long',len(row['long_host_submissions']),
++       'all_new_peer',row['long_all_new_peer'],'all_new_pattern',row['long_all_new_pattern'],
++       'max_reused_ms',row['maximum_reused_pattern_host_ms'])
++ print(row['long_host_submissions'][:5])
+diff --git a/research/step_lifetime/priority_cache/analyze_rank_pressure.py b/research/step_lifetime/priority_cache/analyze_rank_pressure.py
+new file mode 100644
+index 0000000..5ccb0d4
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/analyze_rank_pressure.py
+@@ -0,0 +1,31 @@
++"""Distinguish expert MaxVio from actual fixed-owner rank pressure."""
++from pathlib import Path
++import json
++import statistics
++import numpy as np
++
++ROOT=Path(__file__).resolve().parent
++SOURCE=ROOT.parent/'causal-diagnostics-20261116/evidence/causal-v1-main-fixed_home/timer'
++rows=[]
++for path in sorted(SOURCE.glob('rank0-*-forward.npz')):
++    with np.load(path,allow_pickle=False) as data:
++        meta=json.loads(str(data['metadata']))
++        if meta['invocation'][0]!=2 or meta['recompute']:continue
++        quota=data['source_quota'].astype(np.int64)
++        if quota.shape!=(8,256,8):raise RuntimeError('Unexpected quota identity '+str(quota.shape))
++        logical=quota.sum(axis=(0,2))
++        home=logical.reshape(8,32).sum(axis=1)
++        execute=quota.sum(axis=(0,1))
++        if not np.array_equal(home,execute):raise RuntimeError('Fixed-home quota changed owners')
++        rows.append(dict(invocation=meta['invocation'],assignment_total=int(logical.sum()),
++                         expert_maxvio=float(logical.max()/logical.mean()-1),
++                         home_rank_maxvio=float(home.max()/home.mean()-1),home_rank_assignments=home.tolist(),
++                         perfect_linear_compute_reduction_pct=float(100*(1-home.mean()/home.max()))))
++if len(rows)!=16:raise RuntimeError('Need all16 actual original forward calls of update2')
++output=dict(source=str(SOURCE),scope='Old same MaxVio10 rich diagnostic, all16 original forward calls of update2; rank0 plan body contains complete EP quotas',
++            rows=rows,median_expert_maxvio=statistics.median(row['expert_maxvio'] for row in rows),
++            median_home_rank_maxvio=statistics.median(row['home_rank_maxvio'] for row in rows),
++            max_home_rank_maxvio=max(row['home_rank_maxvio'] for row in rows),
++            interpretation='An expert MaxVio target does not specify rank imbalance. Perfect linear row balancing is only a compute-load illustration, not an end-to-end speed bound: tiles, transport, barriers and non-MoE work differ.')
++(ROOT/'diagnostics/actual-home-rank-pressure.json').write_text(json.dumps(output,indent=2)+'\n',newline='\n')
++print(json.dumps({key:value for key,value in output.items() if key!='rows'},indent=2))
+diff --git a/research/step_lifetime/priority_cache/audit_runs.py b/research/step_lifetime/priority_cache/audit_runs.py
+new file mode 100644
+index 0000000..c19fcfa
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/audit_runs.py
+@@ -0,0 +1,81 @@
++"""Audit actual admitted runs; never treat 20 within-process steps as 20 repeats."""
++from pathlib import Path
++import hashlib
++import json
++import math
++import statistics
++
++ROOT = Path(__file__).resolve().parent
++WORKERS = {
++    'ep8-cap64-lifetime-raw-control-v2': '72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf',
++    'ep8-cap64-lifetime-priority-cache-v1': 'e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed',
++}
++
++def load(path):
++    return json.loads(path.read_text())
++
++def canonical_groups(folder, rank):
++    rows = [json.loads(line) for line in (folder/f'temporal-groups-rank{rank}.jsonl').read_text().splitlines()]
++    return [{key: row[key] for key in ('step', 'group', 'keys', 'ready_keys', 'native_waves')} for row in rows]
++
++def audit(tag, variant, *, reference=None, lifetime='b1'):
++    folder = ROOT/'evidence'/tag
++    status = load(folder/'status.json')
++    checks = {key: bool(status.get(key)) for key in ('qualified', 'source_unchanged', 'exclusive_devices')}
++    checks['hbm_budget'] = status['peak_driver_MiB'] <= 90*1024
++    receipt = load(ROOT/f'{tag}-receipt.json')
++    checks['collected'] = receipt['exit'] == receipt['collection_exit'] == 0
++    sources = load(folder/'source-identity.json')
++    for name, digest in sources.items():
++        # Deployment explicitly rewrites TASK/CONTAINER paths in these two launch files.
++        local = ROOT/name.removeprefix('tools/') if name in ('tools/controller.py', 'tools/launch.sh') else ROOT/'stack'/name
++        # Runtime snapshots include all guarded source files, not generated binary files.
++        if local.is_file():
++            checks['current_source:'+name] = hashlib.sha256(local.read_bytes()).hexdigest() == digest
++    all_steps = []
++    worker_records = []
++    for rank in range(8):
++        rows = [json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()]
++        all_steps.append(rows)
++        checks[f'rank{rank}:25_finite_updates'] = len(rows) == 25 and all(
++            all(math.isfinite(row[key]) for key in ('loss', 'grad_norm', 'milliseconds')) for row in rows)
++        # train.py samples parameters only for the first three updates.
++        checks[f'rank{rank}:three_parameter_updates'] = len(load(folder/f'updates-rank{rank}.json')) == 3 and all(
++            row['changed'] for row in load(folder/f'updates-rank{rank}.json'))
++        complete = load(folder/f'complete-rank{rank}.json')
++        checks[f'rank{rank}:complete'] = complete['steps'] == 25 and complete['exit'] == 0
++        libraries = load(folder/f'libraries-rank{rank}.json')
++        workers = [(name, info['sha256']) for name, info in libraries['libraries'].items() if '/worker-variants/' in name and name.endswith('/libascend_deepep_megaflux_early_bf16.so')]
++        checks[f'rank{rank}:worker'] = len(workers) == 1 and '/'+variant+'/' in workers[0][0] and workers[0][1] == WORKERS[variant]
++        checks[f'rank{rank}:one_shmem'] = len(libraries['shmem']) == 1
++        worker_records.append(dict(rank=rank, workers=workers, shmem=libraries['shmem']))
++        routes = load(folder/f'route-identity-rank{rank}.json')
++        calls = load(folder/f'route-calls-rank{rank}.json')
++        checks[f'rank{rank}:route_replay'] = len(routes) == len(calls) == 400 and set(calls.values()) == {2}
++        if lifetime != 'off':
++            config = load(folder/f'lifetime-config-rank{rank}.json')
++            stats = load(folder/f'lifetime-audit-rank{rank}.json')
++            checks[f'rank{rank}:abi_mode'] = config['worker_capability'] == 2 and config['raw_schedule'] == 'preserve' and config['mode'] == lifetime
++            checks[f'rank{rank}:delivered'] = stats['pending'] == 0
++        if reference:
++            other = ROOT/'evidence'/reference
++            for stem in ('initial', 'persistent-initial', 'input-identity', 'route-identity', 'route-calls'):
++                checks[f'rank{rank}:same_{stem}'] = load(folder/f'{stem}-rank{rank}.json') == load(other/f'{stem}-rank{rank}.json')
++            checks[f'rank{rank}:same_groups'] = canonical_groups(folder, rank) == canonical_groups(other, rank)
++    if reference:
++        checks['same_actual_guarded_sources'] = sources == load(ROOT/'evidence'/reference/'source-identity.json')
++    times = [max(rows[step]['milliseconds'] for rows in all_steps) for step in range(5, 25)]
++    return dict(tag=tag, passed=all(checks.values()), failed_checks=[key for key, value in checks.items() if not value],
++                checks=checks, actual_libraries=worker_records, median_step_ms=statistics.median(times),
++                measured_rank_max_step_ms=times, peak_driver_MiB=status['peak_driver_MiB'],
++                independent_processes=1, warmup_updates=5, measured_updates=20,
++                full_actual_plan_dump=False, reference=reference)
++
++if __name__ == '__main__':
++    results = [audit('priority-pilot-reference-v1', next(iter(WORKERS))),
++               audit('priority-pilot-cached_keys-v1', list(WORKERS)[1], reference='priority-pilot-reference-v1')]
++    output = dict(passed=all(row['passed'] for row in results), runs=results,
++                  actual_plan_evidence='Immutable route/task identity and order-equivalence proof; no full plan tensor dump in timed runs.')
++    (ROOT/'diagnostics/pilot-identity-audit.json').write_text(json.dumps(output, indent=2)+'\n', newline='\n')
++    print(json.dumps(dict(passed=output['passed'], failures=[(row['tag'], row['failed_checks']) for row in results])))
++    raise SystemExit(0 if output['passed'] else 1)
+diff --git a/research/step_lifetime/priority_cache/build-intervention-audit.json b/research/step_lifetime/priority_cache/build-intervention-audit.json
+new file mode 100644
+index 0000000..4d8f4cd
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/build-intervention-audit.json
+@@ -0,0 +1,15 @@
++{
++  "passed": true,
++  "option_changes": {},
++  "compiled_source_changes": {
++    "kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h": [
++      "ef7544fd05996b6c0c38c26e5a09fa54e17721a130afc699b77c0953576ca97f",
++      "2785d208e6dac7f1259d459c6596d54f16cfb070f5d16267fec9a14c52d045ce"
++    ]
++  },
++  "generated_build_input_differences": [],
++  "path_normalization": "Only explicit task-root and /build-worker or /worker-variants directory names; raw inputs retained and checked against frozen hashes",
++  "baseline_sha256": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf",
++  "candidate_sha256": "e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed",
++  "note": "Compiled reference and candidate differ in one header; on-disk snapshot alone is not baseline build provenance"
++}
+diff --git a/research/step_lifetime/priority_cache/build_worker.py b/research/step_lifetime/priority_cache/build_worker.py
+new file mode 100644
+index 0000000..dd94380
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/build_worker.py
+@@ -0,0 +1,28 @@
++"""Build the isolated ABI2 worker under the common task lock, then freeze it."""
++from pathlib import Path
++import hashlib,json,subprocess
++root=Path(__file__).resolve().parent
++lane='/home/z00956592/megaflux/step-lifetime-priority-cache-20261116'
++container='step-lifetime-priority-cache-20261116'
++variant='ep8-cap64-lifetime-priority-cache-v1'
++script=root/'implementation/build-priority-worker.sh'
++subprocess.run(['scp',str(script),'pod6-1-root:'+lane+'/build-priority-worker.sh'],check=True)
++command=f'''set -euo pipefail
++exec 9>/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock
++flock -x 9
++test -f {lane}/stack/tools/controller.py
++docker exec {container} bash {lane}/build-priority-worker.sh
++'''
++with (root/'implementation/build.log').open('wb') as log:
++ result=subprocess.run(['ssh','pod6-1-root','bash','-s'],input=command.encode(),stdout=log,stderr=subprocess.STDOUT)
++(root/'implementation/build-status.json').write_text(json.dumps(dict(exit=result.returncode,variant=variant))+'\n')
++if result.returncode:raise SystemExit(result.returncode)
++for remote,local in (
++ ('stack/configs/lifetime-runtime-freeze.json','stack/configs/lifetime-runtime-freeze.json'),
++ ('stack/source/native-balanced/worker-variants/'+variant+'/build.json','implementation/worker-build.json'),
++ ('stack/source/native-balanced/worker-variants/'+variant+'/libascend_deepep_megaflux_early_bf16.so','implementation/worker.so')):
++ subprocess.run(['scp','pod6-1-root:'+lane+'/'+remote,str(root/local)],check=True)
++manifest=json.loads((root/'stack/configs/lifetime-runtime-freeze.json').read_text())
++sha=hashlib.sha256((root/'implementation/worker.so').read_bytes()).hexdigest()
++if set(manifest['binaries'].values())!={sha}:raise RuntimeError('Collected ABI2 SO mismatch')
++print(json.dumps(dict(variant=variant,sha256=sha,build_passed=True)))
+diff --git a/research/step_lifetime/priority_cache/collect_compile_options.py b/research/step_lifetime/priority_cache/collect_compile_options.py
+new file mode 100644
+index 0000000..d829691
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/collect_compile_options.py
+@@ -0,0 +1,26 @@
++"""Read actual immutable generated build inputs; no compilation or NPU calls."""
++from pathlib import Path
++import json,subprocess
++root=Path(__file__).resolve().parent
++program='''
++from pathlib import Path
++import json,hashlib
++items={}
++for name,task,variant in (
++ ('reference','step-lifetime-raw-control-20261116','ep8-cap64-lifetime-raw-control-v2'),
++ ('candidate','step-lifetime-priority-cache-20261116','ep8-cap64-lifetime-priority-cache-v1')):
++ source=Path('/home/z00956592/megaflux')/task/'stack/source/native-balanced'
++ meta=json.loads((source/'worker-variants'/variant/'build.json').read_text())
++ build=source/('build-worker-'+variant)
++ values={}
++ for relative,expected in {**meta['compile_files'],'CMakeCache.txt':meta['cmake_cache_sha256']}.items():
++  data=(build/relative).read_bytes()
++  if hashlib.sha256(data).hexdigest()!=expected:raise RuntimeError('Generated build input differs from frozen metadata: '+name+relative)
++  values[relative]=data.decode()
++ items[name]=dict(task=task,variant=variant,files=values)
++print(json.dumps(items))
++'''
++answer=subprocess.run(['ssh','pod6-1-root','python3','-'],input=program.encode(),capture_output=True,check=True)
++data=json.loads(answer.stdout)
++(root/'diagnostics/raw-build-options.json').write_text(json.dumps(data,indent=2)+'\n',newline='\n')
++print('Collected and hash-checked both compile flag sets and CMake caches')
+diff --git a/research/step_lifetime/priority_cache/controller.py b/research/step_lifetime/priority_cache/controller.py
+new file mode 100644
+index 0000000..4a15056
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/controller.py
+@@ -0,0 +1,235 @@
++"""Serialize task-owned EP8 jobs, driver HBM sampling, and admission checks."""
++from __future__ import annotations
++import argparse
++import fcntl
++import datetime
++import json
++import pathlib
++import re
++import subprocess
++import time
++import hashlib
++import os
++from concurrent.futures import ThreadPoolExecutor
++
++TASK = pathlib.Path('/home/z00956592/megaflux/step-lifetime-priority-cache-20261116/stack')
++CONTAINER = 'step-lifetime-priority-cache-20261116'
++
++def source_identity(arguments=()):
++    paths={}
++    for component in ('native-balanced','FSDPTurbo','MindSpeed-LLM'):
++        root=TASK/'source'/component
++        for directory,children,names in os.walk(root):
++            children[:] = sorted(name for name in children if name not in
++                ('.git','__pycache__','3rdparty','worker-variants') and not name.startswith('build'))
++            for name in sorted(names):
++                path=pathlib.Path(directory)/name
++                if path.is_symlink():continue
++                if path.suffix in ('.py','.cpp','.h','.hpp','.cmake') or path.name=='CMakeLists.txt':
++                    paths[str(path.relative_to(TASK))]=path
++    for directory in ('tools','configs','routes'):
++        for path in sorted((TASK/directory).rglob('*')):
++            if path.is_file() and path.suffix in ('.py','.sh','.json','.yaml','.yml','.npy'):
++                paths[str(path.relative_to(TASK))]=path
++    if '--route-bank' in arguments:
++        bank=pathlib.Path(arguments[arguments.index('--route-bank')+1])
++        if not bank.is_absolute():bank=TASK/bank
++        for path in sorted(bank.iterdir()):
++            if path.is_file() and path.suffix in ('.json','.npy'):
++                key=str(path.relative_to(TASK)) if path.is_relative_to(TASK) else str(path)
++                paths[key]=path
++    if '--temporal-schedule-replay' in arguments:
++        replay=pathlib.Path(arguments[arguments.index('--temporal-schedule-replay')+1])
++        if not replay.is_absolute():replay=TASK/replay
++        paths[str(replay.relative_to(TASK)) if replay.is_relative_to(TASK) else str(replay)]=replay
++    def digest(item):
++        name,path=item
++        return name,hashlib.sha256(path.read_bytes()).hexdigest()
++    with ThreadPoolExecutor(max_workers=16) as readers:
++        return dict(readers.map(digest,sorted(paths.items())))
++
++def hbm_sample():
++    result = subprocess.run(['npu-smi', 'info'], capture_output=True, text=True, timeout=20)
++    cards = []
++    current_rank = None
++    for line in result.stdout.splitlines():
++        cells = [cell.strip() for cell in line.split('|')[1:-1]]
++        if len(cells) == 4 and cells[0].isdigit() and cells[1].startswith('Ascend'):
++            current_rank = int(cells[0])
++        if len(cells) != 4 or cells[2] != 'NA':
++            continue
++        numbers = cells[3].split()
++        if len(numbers) >= 3 and numbers[-2] == '/':
++            cards.append(dict(rank=current_rank, used_MiB=int(numbers[-3]), total_MiB=int(numbers[-1]),
++                              utilization=int(numbers[0])))
++    if len(cards) != 8:
++        raise RuntimeError('Could not parse eight driver HBM readings')
++    return dict(timestamp=time.time(), cards=cards, no_process_cards=result.stdout.count('No running processes found'))
++
++def idle():
++    owners = subprocess.run(['fuser', *[f'/dev/davinci{rank}' for rank in range(8)]],
++                            capture_output=True, text=True)
++    if owners.stdout.strip():
++        raise RuntimeError(f'GPUs occupied: {owners.stdout.strip()}')
++    sample = hbm_sample()
++    if sample['no_process_cards'] != 8:
++        raise RuntimeError('Driver reports GPU processes before admission')
++    if any(card['utilization'] > 0 for card in sample['cards']):
++        raise RuntimeError('GPU utilization is nonzero before admission')
++    return sample
++
++
++def foreign_device_owners(container_id):
++    """Observe overlap without signalling another project's processes."""
++    result=subprocess.run(['fuser',*[f'/dev/davinci{rank}' for rank in range(8)]],
++                          capture_output=True,text=True,timeout=10)
++    foreign=[]
++    for value in set(result.stdout.split()):
++        if not value.isdigit():continue
++        try:group=pathlib.Path(f'/proc/{value}/cgroup').read_text()
++        except (FileNotFoundError,PermissionError):continue
++        if container_id not in group and container_id[:12] not in group:
++            foreign.append(int(value))
++    return sorted(foreign)
++
++def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
++    diagnostic='--diagnostic-timer' in arguments
++    if '--temporal-schedule-replay' in arguments and '--diagnostic-only' not in arguments:
++        raise RuntimeError('Offline task schedules cannot be submitted as online training performance')
++    if worker=='temporal-ep8-cap64-timer' and not diagnostic:
++        raise RuntimeError('TimerON worker is diagnostic-only, never a performance backend')
++    out = TASK / 'evidence' / tag
++    out.mkdir(parents=True, exist_ok=False)
++    deadline=time.monotonic()+3600
++    while True:
++        try:
++            admission = idle()
++            break
++        except (RuntimeError,subprocess.TimeoutExpired) as error:
++            (out/'queue.json').write_text(json.dumps(dict(state='waiting_for_idle_devices',
++                timestamp=time.time(),reason=str(error),admission_limit_seconds=3600),indent=2))
++            if time.monotonic()>=deadline:
++                status=dict(exit=1,qualified=False,source_unchanged=None,rank_completions=0,
++                            started=False,outcome='admission_timeout',reason=str(error),peak_driver_MiB=0)
++                (out/'status.json').write_text(json.dumps(status,indent=2))
++                return status
++            time.sleep(5)
++    (out / 'admission.json').write_text(json.dumps(admission, indent=2))
++    snapshots=TASK/'evidence'/'source-snapshots'
++    snapshots.mkdir(exist_ok=True)
++    subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
++                    str(TASK/'configs/runtime-freeze.json'),'--out',str(snapshots/f'{tag}-runtime.json')],check=True)
++    if diagnostic:
++        manifest=TASK/'configs/temporal-worker-timer-freeze.json'
++        entries=json.loads(manifest.read_text())['binaries']
++        prefix=f'source/native-balanced/worker-variants/{worker}/'
++        if not entries or any(not name.startswith(prefix) for name in entries):
++            raise RuntimeError('Diagnostic worker does not match its separately frozen TimerON build')
++        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',str(manifest),
++            '--out',str(snapshots/f'{tag}-timer-worker-runtime.json')],check=True)
++    if mode=='scheduler' or ('--temporal-scheduler' in arguments and
++            arguments[arguments.index('--temporal-scheduler')+1]=='ascendc'):
++        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
++            str(TASK/'configs/temporal-scheduler-freeze.json'),'--out',
++            str(snapshots/f'{tag}-temporal-runtime.json')],check=True)
++    private_manifests={
++        'ep8-cap64-lifetime-raw-control-v2':'priority-baseline-freeze.json',
++        'ep8-cap64-lifetime-priority-cache-v1':'lifetime-runtime-freeze.json'}
++    if worker in private_manifests:
++        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
++            str(TASK/'configs'/private_manifests[worker]),'--out',
++            str(snapshots/f'{tag}-lifetime-runtime.json')],check=True)
++    elif '--lifetime-mode' in arguments:
++        raise RuntimeError('Priority intervention must use an explicitly frozen ABI2 worker')
++    sources=source_identity(arguments)
++    (out/'source-identity.json').write_text(json.dumps(sources,indent=2))
++    # Cache only byte-identical, verified snapshots from unchanged prior runs.
++    from source_freeze import freeze_snapshot
++    freeze_snapshot(TASK,tag,sources)
++    # The source freeze may take time on NFS. Another project need not share
++    # this study's flock, so check hardware ownership again before launching.
++    final_admission=idle()
++    (out/'launch-admission.json').write_text(json.dumps(final_admission,indent=2))
++    container_id=subprocess.check_output(['docker','inspect',CONTAINER,'--format','{{.Id}}'],text=True).strip()
++    command = ['docker', 'exec', '-w', str(TASK), '-e', f'EP8_MASTER_PORT={29200 + int(time.time()) % 2000}',
++               CONTAINER, 'timeout', '-k', '30', str(seconds), 'bash', 'tools/launch.sh',
++               backend, mode, tag, *arguments]
++    if worker:
++        command[2:2] = ['-e', f'EP8_WORKER_VARIANT={worker}']
++    if capacity == 32:
++        command[2:2] = ['-e', 'EP8_CAPACITY=32', '-e', 'EP8_NATIVE_SUFFIX=32']
++    started = time.time()
++    max_hbm = max(card['used_MiB'] for card in admission['cards'])
++    overlap=set()
++    with (out / 'stdout.log').open('w') as log, (out / 'hbm.jsonl').open('w') as monitor:
++        process = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT)
++        while process.poll() is None:
++            try:
++                sample = hbm_sample()
++                owners=foreign_device_owners(container_id)
++                sample['foreign_device_owners']=owners
++                overlap.update(owners)
++            except (RuntimeError, subprocess.TimeoutExpired) as error:
++                monitor.write(json.dumps(dict(timestamp=time.time(), sample_error=str(error))) + '\n')
++                monitor.flush()
++                continue
++            max_hbm = max(max_hbm, *(card['used_MiB'] for card in sample['cards']))
++            monitor.write(json.dumps(sample) + '\n')
++            monitor.flush()
++            time.sleep(1)
++        status = dict(command=command, exit=process.returncode, start=started,
++                      finish=time.time(), peak_driver_MiB=max_hbm,
++                      foreign_device_owners=sorted(overlap),exclusive_devices=not overlap)
++    if mode == 'train':
++        status['rank_completions'] = len(list(out.glob('complete-rank*.json')))
++        status['qualified'] = status['exit'] == 0 and status['rank_completions'] == 8
++    else:
++        status['qualified'] = status['exit'] == 0
++    if overlap:status['qualified']=False
++    status['source_unchanged']=sources==source_identity(arguments)
++    if not status['source_unchanged']:status['qualified']=False
++    (out / 'status.json').write_text(json.dumps(status, indent=2))
++    print(json.dumps(dict(tag=tag, **status)), flush=True)
++    return status
++
++def run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
++    with pathlib.Path('/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock').open('a') as lock:
++        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
++        return _run_job(backend, mode, tag, arguments, seconds, worker, capacity)
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument('--backend', choices=['balanced', 'shared', 'moonep'])
++    parser.add_argument('--mode', default='train', choices=['train', 'validate', 'activation', 'scaling', 'pool', 'norm', 'moonpool', 'sharedpool','plan','links','scheduler','temporal_math','lifetime_math'])
++    parser.add_argument('--tag')
++    parser.add_argument('--worker-variant')
++    parser.add_argument('--capacity', type=int, choices=[32,64], default=64)
++    parser.add_argument('--campaign', action='store_true')
++    parser.add_argument('--layers', type=int, default=2)
++    parser.add_argument('--seconds', type=int, default=1800)
++    args, extra = parser.parse_known_args()
++    if not args.campaign:
++        if args.mode == 'train':
++            extra += ['--layers', str(args.layers)]
++        status = run_job(args.backend, args.mode, args.tag, extra, args.seconds, args.worker_variant, args.capacity)
++        raise SystemExit(0 if status['qualified'] else 1)
++    matrix = []
++    arms = ['moonep', 'balanced', 'shared']
++    for repeat in range(3):
++        ordered = arms[repeat:] + arms[:repeat]
++        for maxvio in (.2, 1, 5, 10, 15, 20):
++            for backend in ordered:
++                tag = f'formal-L{args.layers}-vio{maxvio:g}-{backend}-r{repeat+1}'
++                status = run_job(backend, 'train', tag,
++                         ['--maxvio', str(maxvio), '--layers', str(args.layers)], args.seconds, args.worker_variant, args.capacity)
++                matrix.append(dict(tag=tag, backend=backend, maxvio=maxvio, repeat=repeat+1, **status))
++                (TASK / 'evidence' / 'campaign.json').write_text(json.dumps(matrix, indent=2))
++                if not status['qualified']:
++                    raise RuntimeError(f'Unqualified run: {tag}')
++                if status['peak_driver_MiB'] > 90 * 1024:
++                    raise RuntimeError(f'Common shape memory gate exceeded: {tag}')
++    print('CAMPAIGN_COMPLETE', flush=True)
++
++if __name__ == '__main__':
++    main()
+diff --git a/research/step_lifetime/priority_cache/make_lifetime_report.py b/research/step_lifetime/priority_cache/make_lifetime_report.py
+new file mode 100644
+index 0000000..b53d1b0
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/make_lifetime_report.py
+@@ -0,0 +1,99 @@
++"""Summarize the predeclared common-runtime lifecycle screen after completion."""
++from pathlib import Path
++import csv
++import json
++import statistics
++import matplotlib
++matplotlib.use('Agg')
++import matplotlib.pyplot as plt
++from audit_runs import load, audit, WORKERS
++
++ROOT=Path(__file__).resolve().parent
++state=load(ROOT/'common-lifetime-screen-v1.json')
++if not state.get('passed'):raise SystemExit('Do not plot pending or failed lifecycle runs')
++checks={}
++for run in state['runs']:
++    if not run['small']:continue
++    folder=ROOT/'evidence'/run['tag']; reference=ROOT/'evidence/priority-model-v1'
++    for rank in range(8):
++        prefix=run['tag']+f':rank{rank}'
++        libraries=load(folder/f'libraries-rank{rank}.json')
++        workers=[info['sha256'] for name,info in libraries['libraries'].items() if '/worker-variants/' in name and name.endswith('.so')]
++        checks[prefix+':worker']=workers==[list(WORKERS.values())[1]] and len(libraries['shmem'])==1
++        config=load(folder/f'lifetime-config-rank{rank}.json')
++        checks[prefix+':mode']=config['worker_capability']==2 and config['mode']==run['mode'] and config['raw_schedule']=='preserve'
++        for stem in ('initial','persistent-initial','input-identity','route-identity','route-calls'):
++            checks[prefix+':same_'+stem]=load(folder/f'{stem}-rank{rank}.json')==load(reference/f'{stem}-rank{rank}.json')
++        checks[prefix+':no_debt']=load(folder/f'lifetime-audit-rank{rank}.json')['pending']==0
++        for step in range(3):
++            finite=load(folder/f'gradient-finite-step{step}-rank{rank}.json')
++            checks[prefix+f':step{step}_finite']=bool(finite) and all(row.get('finite',True) for row in finite)
++    checks[run['tag']+':gradients']=load(ROOT/'diagnostics'/(run['tag']+'-gradient-comparison.json'))['passed']
++proof=dict(passed=all(checks.values()),failed_checks=[name for name,value in checks.items() if not value],checks=checks)
++(ROOT/'diagnostics/common-lifetime-small-audit.json').write_text(json.dumps(proof,indent=2)+'\n',newline='\n')
++if not proof['passed']:raise SystemExit('Small integrated qualification failed '+str(proof['failed_checks']))
++summary=load(ROOT/'summary.json');confirmation=load(ROOT/'confirmation-v1.json')
++controls={row['name']:row for row in confirmation['runs']}
++rows=[dict(mode='Fixed home',milliseconds=controls['control1-fixed_home']['median_step_ms'],n=1,tag=controls['control1-fixed_home']['tag']),
++      dict(mode='Native anchor',milliseconds=controls['control1-anchor']['median_step_ms'],n=1,tag=controls['control1-anchor']['tag']),
++      dict(mode='B1 resident/immediate',milliseconds=summary['cached_run_median_ms'],n=3,tag='three audited B1 processes')]
++for run in state['runs']:
++    if run['small']:continue
++    rows.append(dict(mode=run['mode'].upper(),milliseconds=run['median_step_ms'],n=1,tag=run['tag']))
++order={'Fixed home':0,'Native anchor':1,'B0':2,'B1 resident/immediate':3,'B2':4,'B3':5}
++rows.sort(key=lambda row:order[row['mode']])
++best=min(row['milliseconds'] for row in rows[:2])
++for row in rows:
++    row['reduction_vs_strongest_control_pct']=100*(1-row['milliseconds']/best)
++    if row['mode'].startswith('B1'):
++        row['peak_driver_GiB']=max(load(ROOT/'evidence'/tag/'status.json')['peak_driver_MiB'] for tag in
++            ('priority-pilot-cached_keys-v1','priority-repeat2-cached_keys-v1','priority-repeat3-cached_keys-v1'))/1024
++    else:row['peak_driver_GiB']=load(ROOT/'evidence'/row['tag']/'status.json')['peak_driver_MiB']/1024
++counters=[]
++counter_runs=[('b1',tag) for tag in ('priority-pilot-cached_keys-v1','priority-repeat2-cached_keys-v1','priority-repeat3-cached_keys-v1')]
++counter_runs += [(run['mode'],run['tag']) for run in state['runs'] if not run['small']]
++for mode,tag in counter_runs:
++    all_ranks=[load(ROOT/'evidence'/tag/f'lifetime-audit-rank{rank}.json') for rank in range(8)]
++    counters.append(dict(mode=mode,tag=tag,scope='All 25 updates, includes 5 warmup; aggregates over all 8 ranks',
++        weight_remote_MiB=sum(row['weight_remote_bytes'] for row in all_ranks)/1024**2,
++        weight_hit_MiB=sum(row['weight_hit_bytes'] for row in all_ranks)/1024**2,
++        gradient_remote_MiB=sum(row['gradient_remote_bytes'] for row in all_ranks)/1024**2,
++        gradient_deliveries=sum(row['gradient_deliveries'] for row in all_ranks),
++        flushes=sum(row['flushes'] for row in all_ranks)))
++output=dict(rows=rows,counters=counters,predeclared_modes=state['predeclared_modes'],
++            single_screen_only=True,new_planner=False,threshold_signal=any(row['reduction_vs_strongest_control_pct']>=3 for row in rows[2:]),
++            interpretation='B0/B2/B3 and controls each N=1 process, B1 N=3; only a screening comparison, not stable gain. Counters include warmup and cannot establish speed.')
++(ROOT/'common-lifetime-summary.json').write_text(json.dumps(output,indent=2)+'\n',newline='\n')
++with (ROOT/'common-lifetime-screen.csv').open('w',newline='') as handle:
++    writer=csv.DictWriter(handle,fieldnames=rows[0].keys());writer.writeheader();writer.writerows(rows)
++fig,ax=plt.subplots(figsize=(10.8,4.7),layout='constrained')
++values=[row['milliseconds']/1000 for row in rows]
++bars=ax.bar(range(len(rows)),values,color=['#2b9348','#277da8','#f8961e','#90be6d','#43aa8b','#577590'],width=.65)
++ax.set(xticks=range(len(rows)),xticklabels=[row['mode']+f"\nN={row['n']}" for row in rows],ylim=(0,max(values)*1.18),
++       ylabel='Full optimizer update (s)',title='Common cached-key worker | EP8 L4 H4096 F1024 S16384/rank | GA4 W2 | MaxVio10 same')
++for bar,row in zip(bars,rows):ax.text(bar.get_x()+bar.get_width()/2,bar.get_height()+.03,f"{bar.get_height():.3f}",ha='center')
++ax.grid(axis='y',alpha=.25);ax.set_axisbelow(True)
++fig.supxlabel('25 updates/process; 5 warmup + 20 measured; each update max over 8 ranks.\nBounded screen, synthetic routing, no new planner or stable policy gain claim.',fontsize=9)
++for suffix in ('png','svg','pdf'):fig.savefig(ROOT/'figures'/('common-lifetime-screen.'+suffix),dpi=180)
++plt.close(fig)
++table='\n'.join(f'|{row["mode"]}|{row["milliseconds"]/1000:.6f}|{row["n"]}|{row["reduction_vs_strongest_control_pct"]:+.2f}%|{row["peak_driver_GiB"]:.2f}|' for row in rows)
++report=f'''# 同一优化执行器上的生命周期复查
++
++完整更新联合规划目标仍未完成。这是预声明的B0/B2/B3三点有界复查，没有新策略。
++
++|方式|秒/完整更新|独立进程数|相对较强控制的耗时减少|整卡峰值GiB|
++|---|---:|---:|---:|---:|
++{table}
++
++负号表示更慢。B0/B2/B3及两个控制各只有一个进程，B1为三进程中位；所有方法共同执行资源/模型/输入/路由/配额生成/公共数值与owner语义不变。正式TimerOFF，25更新、5预热＋20测量、每更新八rank最大wall。三个小形状完整模型资格和实际SO/数据身份补充审计均通过。
++
++![仅实际完成的数据](figures/common-lifetime-screen.png)
++
++B0每次权重准备＋立即FP32归并；B1同版本驻留＋立即归并；B2驻留＋GA2窗口；B3驻留＋更新末偏好，八条目不足时仍会容量flush。B3不是REM的完整实现。缓存实际命中仍从独立bank本地copy至现有计算槽，再发布当前epoch，不是永久保留所有计算槽。
++
++是否出现至少3%筛查信号：{output['threshold_signal']}。即使有信号，也必须补独立重复后才允许稳定收益表述或完整矩阵；若无信号，不扩矩阵。通信量、命中率和归并次数不能替代完整更新成绩。
++
++逐rank原始lifetime-audit、effective-config、实际库、初始/输入/路由身份及step日志保留在各tag；counter汇总见common-lifetime-summary.json，范围为全部25更新（包括预热）而非20测量更新。原始大梯度张量仍在receipt指向的远端独立项目。旧33点结果不覆盖，此处只回答公共优化底座上的当前same路由。
++'''
++(ROOT/'COMMON-LIFETIME-REPORT.md').write_text(report,encoding='utf-8',newline='\n')
++print(json.dumps(output,indent=2))
+diff --git a/research/step_lifetime/priority_cache/make_report.py b/research/step_lifetime/priority_cache/make_report.py
+new file mode 100644
+index 0000000..2616cde
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/make_report.py
+@@ -0,0 +1,118 @@
++"""Figures use only audited actual runs; process medians are the repeat unit."""
++from pathlib import Path
++import csv
++import json
++import statistics
++import matplotlib
++matplotlib.use('Agg')
++import matplotlib.pyplot as plt
++
++ROOT = Path(__file__).resolve().parent
++(ROOT/'figures').mkdir(exist_ok=True)
++load = lambda name: json.loads((ROOT/name).read_text())
++pilot = load('pilot-v1.json')
++confirmation = load('confirmation-v1.json')
++audit = load('diagnostics/pilot-identity-audit.json')
++if not (pilot['passed'] and confirmation.get('passed') and audit['passed']):
++    raise SystemExit('Complete audited confirmation schedule required; do not plot pending data.')
++runs = pilot['runs']+confirmation['runs']
++if not all(row['passed'] for row in runs):
++    raise SystemExit('Unqualified run remains in predeclared schedule.')
++lookup = {row['name']: row for row in runs}
++pairs = [(lookup['reference'],lookup['cached_keys']),
++         (lookup['repeat2-reference'],lookup['repeat2-cached_keys']),
++         (lookup['repeat3-reference'],lookup['repeat3-cached_keys'])]
++reductions = [100*(1-new['median_step_ms']/old['median_step_ms']) for old,new in pairs]
++old_median = statistics.median(old['median_step_ms'] for old,new in pairs)
++new_median = statistics.median(new['median_step_ms'] for old,new in pairs)
++controls = [lookup['control1-fixed_home'],lookup['control1-anchor']]
++result = dict(common_executor_optimization=True, new_planner=False,
++              shape='L4 EP8 E256 Top8 H4096 F1024 S16384/rank, MB1 GA4 W2',
++              routing='MaxVio10 / same / artificial controlled route bank',
++              pairs=[dict(repeat=i+1,old_ms=old['median_step_ms'],cached_ms=new['median_step_ms'],reduction_pct=reductions[i]) for i,(old,new) in enumerate(pairs)],
++              old_run_median_ms=old_median,cached_run_median_ms=new_median,
++              reduction_of_run_medians_pct=100*(1-new_median/old_median),
++              minimum_paired_reduction_pct=min(reductions), maximum_paired_reduction_pct=max(reductions),
++              all_three_same_direction=all(value>0 for value in reductions),
++              controls=[dict(name=row['name'],median_step_ms=row['median_step_ms'],independent_processes=1,
++                             b1_reduction_vs_control_pct=100*(1-new_median/row['median_step_ms'])) for row in controls],
++              peak_driver_GiB=max(row['peak_driver_MiB'] for row in runs)/1024,
++              independent_processes_per_key_variant=3, control_processes_per_point=1,
++              caveat='No natural routes, all-MaxVio validation, new planner or stable lifecycle-policy gain established.')
++(ROOT/'summary.json').write_text(json.dumps(result,indent=2)+'\n',newline='\n')
++with (ROOT/'runs.csv').open('w',newline='') as handle:
++    writer=csv.writer(handle)
++    writer.writerow(['tag','name','median_rank_max_update_seconds','measured_updates','warmup_updates','driver_peak_GiB','qualified'])
++    for row in runs:
++        writer.writerow([row['tag'],row['name'],row['median_step_ms']/1000,20,5,row['peak_driver_MiB']/1024,row['passed']])
++with (ROOT/'measured-updates.csv').open('w',newline='') as handle:
++    writer=csv.writer(handle)
++    writer.writerow(['tag','optimizer_update','eight_rank_max_wall_seconds'])
++    for row in runs:
++        for step,value in enumerate(row['measured_rank_max_step_ms'],start=5):
++            writer.writerow([row['tag'],step,value/1000])
++plt.rcParams.update({'font.size':10,'axes.spines.top':False,'axes.spines.right':False,'svg.fonttype':'none','pdf.fonttype':42})
++fig, axes = plt.subplots(1,2,figsize=(11.8,4.7),layout='constrained')
++for i,(old,new) in enumerate(pairs):
++    axes[0].plot([0,1],[old['median_step_ms']/1000,new['median_step_ms']/1000],marker='o',label=f'Pair {i+1}: {reductions[i]:.2f}% lower')
++axes[0].set(xticks=[0,1],xticklabels=['Repeated key scans','Cached sort keys'],ylabel='Full optimizer update (s)',title='Common executor intervention; B1, N=3 processes each')
++axes[0].grid(axis='y',alpha=.25);axes[0].legend(loc='best',fontsize=9)
++values=[controls[0]['median_step_ms']/1000,controls[1]['median_step_ms']/1000,new_median/1000]
++bars=axes[1].bar(range(3),values,color=['#2b9348','#277da8','#f8961e'],width=.6)
++axes[1].set(xticks=range(3),xticklabels=['Fixed home\nN=1','Native anchor\nN=1','B1 lifetime\nN=3'],ylabel='Full optimizer update (s)',title='Fresh controls on the same cached-key worker',ylim=(0,max(values)*1.18))
++for bar,value in zip(bars,values):
++    axes[1].text(bar.get_x()+bar.get_width()/2,value+.025,f'{value:.3f}',ha='center')
++axes[1].grid(axis='y',alpha=.25);axes[1].set_axisbelow(True)
++fig.suptitle('Ascend EP8 | L4 E256 K8 H4096 F1024 S16384/rank | GA4 W2 | MaxVio10 same',fontsize=12)
++fig.supxlabel('25 updates/process: 5 warmup + 20 measured; each update takes max wall time over 8 ranks.\nSynthetic routing, TimerOFF. Executor optimization is not a new planner result.',fontsize=9)
++for suffix in ('png','svg','pdf'):
++    fig.savefig(ROOT/'figures'/('priority-cache-and-controls.'+suffix),dpi=180)
++plt.close(fig)
++pair_rows='\n'.join(f'|{i+1}|{old["median_step_ms"]/1000:.6f}|{new["median_step_ms"]/1000:.6f}|{reductions[i]:.2f}%|' for i,(old,new) in enumerate(pairs))
++control_rows='\n'.join(f'|{row["name"]}|{row["median_step_ms"]/1000:.6f}|1|{100*(1-new_median/row["median_step_ms"]):+.2f}%|' for row in controls)
++report=f'''# 排序键缓存：公共执行器干预与匹配控制
++
++当前完整训练步联合规划目标仍在研究中。本阶段验证一项公共执行器优化，没有实现或确认新的联合planner。
++
++## 已完成结果
++
++|独立配对|旧worker秒/完整更新|新worker秒/完整更新|耗时减少|
++|---|---:|---:|---:|
++{pair_rows}
++
++三次新进程配对均为同方向。先取每进程20个测量更新的中位，再统计运行间中位：{old_median/1000:.6f}→{new_median/1000:.6f}秒，减少{result['reduction_of_run_medians_pct']:.2f}%。这是MaxVio10/same人工路由/B1的一项公共执行器收益，不能推广为生命周期策略收益、自然路由收益或官方MoonEP复现结果。
++
++|相同新worker上的新控制|秒/完整更新|独立进程数|B1相对该控制的耗时减少|
++|---|---:|---:|---:|
++{control_rows}
++
++控制各只有一组匹配筛查。负号表示B1较慢；不能将这些点宣称为稳定策略优劣。所有方法共用相同资源上限；不需要lifetime adapter的控制不强制分配未使用的缓存。
++
++![实际完成的运行](figures/priority-cache-and-controls.png)
++
++## 改了什么，为何可比较
++
++独立research/step-lifetime-priority-cache，仅修改backward头文件中稳定排序键的求值方式：原本每次比较重复扫描全局copies，改为本次每个expert计算一次，原排序和tie-break不变。不改变copies/quota、ExpertAt执行顺序、ready、owner、通信格式或生命周期策略。局部int数组256B/core，不新增HBM缓存。
++
++实际编译选项和CMake cache只归一化明确任务路径后完全相同，编译输入仅一个头文件不同。baseline worker SHA72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf；candidate e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed。基线的编译来源单独冻结，不能用计时时磁盘上的新头文件替代旧SO来源。
++
++384份实际计划的排序oracle一致；新内核128项NPU独立数学比较（bank＋空owner/远端贡献，B0–B3、W1/W2）通过。小形状L2/H512/F512/S256的完整三次Adam更新及step0逐参数FP32梯度比较通过；主形状各运行另有前三更新参数抽样变化和全25更新有限性检查，不冒称导出了全主形状逐参数梯度。资格原始张量保留在对应远端项目目录。
++
++## 实验条件与计时
++
++L4 EP8/E256/Top8 H4096 routed/sharedFFN1024，每条完整16K序列，每卡四条、MB1/GA4/W2；vocab32768、Q-heads32、mHC2、shared expert1、SwiGLU limit10、hash0；V4 attention/mHC普通MegaMoE，shared由框架计算；FSDP8/E-FSDP1固定owner，FP32参数/梯度/Adam、BF16专家计算，recv262144，无CPU offload，整卡上限90GiB（沿用allocator预算89.5GiB留出余量）。本阶段最高实测{result['peak_driver_GiB']:.2f}GiB。具体配置见各run/effective-config.json。
++
++每次新进程25次更新，前5次预热；每次更新八rank最大完整wall，覆盖GA4、在线规划、全部交付、clip、Adam和设备完成。Timer/profiler关闭。第一轮旧→新，第二轮新→旧，第三轮旧→新。20个更新不当作20个独立重复。
++
++实际SO/单SHMEM、受保护源码、初始逻辑及持久参数、全部25更新输入与逻辑路由、任务组、重放次数、有限性和内存均检查。正式计时没有额外导出完整计划张量；数值比较、顺序oracle和此前全量计划一致性是独立资格，不能声称本次每一步都另存了完整实际计划。
++
++## 未完成、限制与下一步
++
++原33点负结果和raw-schedule单轮约0.06%负结果保持不变。当前B路径仍是CPU观察实际计划及串行化HCCL公共梯度的正确性原型，不是设备端在线生命周期planner。当前B3也不是REM完整系统复现。
++
++旧rich capture存在未覆盖的主机入口间隙、额外设备Event/snapshot及仅前三更新的观察限制，不能直接拿它推导可消除关键路径。独立host-boundary诊断正在用TimerOFF和不增加设备Event/同步的主机封套重新验证。先据此定位实际依赖，再决定group交付或其他单变量控制；新策略必须胜过同一公共优化底座的强基线。
++
++所有实际数据、失败记录、源码/构建/SO指纹、重放脚本和PNG/SVG/PDF均在本项目目录；大张量仅在对应独立远端路径，receipt及source-snapshot指向来源。summary.json、runs.csv、measured-updates.csv是本报告数据源。原始失败审计保留为pilot-identity-audit-initial-schema-assumptions.json：属于审计脚本对既有日志字段的错误假设，经核对train.py及实际库名修正，不是被删除的训练失败。
++'''
++(ROOT/'REPORT.md').write_text(report,encoding='utf-8',newline='\n')
++print(json.dumps(result,indent=2))
+diff --git a/research/step_lifetime/priority_cache/math-v1.json b/research/step_lifetime/priority_cache/math-v1.json
+new file mode 100644
+index 0000000..b8b2c48
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/math-v1.json
+@@ -0,0 +1,53 @@
++{
++  "stage": "complete",
++  "runs": [
++    {
++      "tag": "priority-math-bank-v1",
++      "passed": true,
++      "records": 64,
++      "runtime_sources": {
++        "tools/lifetime_device.py": "de87a2450164081acdb30ac4421076308e6d07a495f62539affe064b2045458f",
++        "tools/step_lifetime.py": "651c34aac14992f31453665b02109328c98e8637ff16aa6cf9b7e61da8c6f647",
++        "tools/train.py": "de6fae05b8ef5aa042f27f0250d1b4842580ddbeaf599af8050548a0ce2e412f",
++        "tools/grouped_experts.py": "fe7836797ec17ff21e004119a205974775bfa1afce4067b30144eb9b00ccbcf4",
++        "tools/temporal_model.py": "268a45148684dd52ebea8782bcff792ab791c723d5422afafa460b38550ffe50",
++        "tools/temporal_prefix_reuse.py": "2dba99a5e0b687bdf82d70be6323bf2754d3fd9743d0f94e47940c437d2d1233",
++        "source/native-balanced/ascend_deepep/fsdp2_bridge.py": "6e975d521b63727fbc3e2e14fe727eba5840be088866495e6ceb8dd41c6a4a2e",
++        "source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py": "a9590a864841ba7a9b6ab5b59361b172f867a68f50b1e3f04608da01b1f8b86d",
++        "source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h": "2785d208e6dac7f1259d459c6596d54f16cfb070f5d16267fec9a14c52d045ce"
++      },
++      "max_relative_l2": {
++        "output": 0.00030363924452103674,
++        "dx": 0.002616159152239561,
++        "dp": 0.0027591867838054895,
++        "dw1": 0.0023487729486078024,
++        "dw2": 0.00234860903583467
++      }
++    },
++    {
++      "tag": "priority-math-sparse_remote-v1",
++      "passed": true,
++      "records": 64,
++      "runtime_sources": {
++        "tools/lifetime_device.py": "de87a2450164081acdb30ac4421076308e6d07a495f62539affe064b2045458f",
++        "tools/step_lifetime.py": "651c34aac14992f31453665b02109328c98e8637ff16aa6cf9b7e61da8c6f647",
++        "tools/train.py": "de6fae05b8ef5aa042f27f0250d1b4842580ddbeaf599af8050548a0ce2e412f",
++        "tools/grouped_experts.py": "fe7836797ec17ff21e004119a205974775bfa1afce4067b30144eb9b00ccbcf4",
++        "tools/temporal_model.py": "268a45148684dd52ebea8782bcff792ab791c723d5422afafa460b38550ffe50",
++        "tools/temporal_prefix_reuse.py": "2dba99a5e0b687bdf82d70be6323bf2754d3fd9743d0f94e47940c437d2d1233",
++        "source/native-balanced/ascend_deepep/fsdp2_bridge.py": "6e975d521b63727fbc3e2e14fe727eba5840be088866495e6ceb8dd41c6a4a2e",
++        "source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py": "a9590a864841ba7a9b6ab5b59361b172f867a68f50b1e3f04608da01b1f8b86d",
++        "source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h": "2785d208e6dac7f1259d459c6596d54f16cfb070f5d16267fec9a14c52d045ce"
++      },
++      "max_relative_l2": {
++        "output": 0.0003091024118475616,
++        "dx": 0.002631195355206728,
++        "dp": 0.002766405465081334,
++        "dw1": 0.002350255846977234,
++        "dw2": 0.002351734321564436
++      }
++    }
++  ],
++  "new_planner": false,
++  "passed": true
++}
+diff --git a/research/step_lifetime/priority_cache/model-comparison.json b/research/step_lifetime/priority_cache/model-comparison.json
+new file mode 100644
+index 0000000..e97077d
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/model-comparison.json
+@@ -0,0 +1,463 @@
++{
++  "identities_equal": {
++    "initial": true,
++    "input-identity": true,
++    "route-identity": true
++  },
++  "categories": {
++    "embedding_head_norm": {
++      "reference_squared": 0.16994946761835072,
++      "error_squared": 1.0749775231970315e-06,
++      "numel": 33556992,
++      "relative_l2": 0.002515010413412676,
++      "passed": true
++    },
++    "attention": {
++      "reference_squared": 0.44300963074685024,
++      "error_squared": 1.2008683350803633e-06,
++      "numel": 103945280,
++      "relative_l2": 0.0016464218189146359,
++      "passed": true
++    },
++    "router": {
++      "reference_squared": 1.4254210136568275e-05,
++      "error_squared": 1.1840725532037458e-11,
++      "numel": 262144,
++      "relative_l2": 0.0009114179523270958,
++      "passed": true
++    },
++    "routed": {
++      "reference_squared": 0.002044753563002092,
++      "error_squared": 4.767953053033555e-09,
++      "numel": 402653184,
++      "relative_l2": 0.0015270227187513786,
++      "passed": true
++    },
++    "shared": {
++      "reference_squared": 0.0035186258001563314,
++      "error_squared": 1.8664381472360834e-09,
++      "numel": 1572864,
++      "relative_l2": 0.00072831668564238,
++      "passed": true
++    },
++    "hc": {
++      "reference_squared": 0.0008113859452635142,
++      "error_squared": 7.050435972728849e-09,
++      "numel": 34863,
++      "relative_l2": 0.0029477744222306088,
++      "passed": true
++    }
++  },
++  "parameters": {
++    "model.model.embed_tokens.weight": {
++      "reference_squared": 0.10708652083083435,
++      "error_squared": 1.07438120730887e-06,
++      "numel": 16777216,
++      "relative_l2": 0.0031674647992645496,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.sinks": {
++      "reference_squared": 1.0151785989620521e-07,
++      "error_squared": 2.782774011222955e-13,
++      "numel": 32,
++      "relative_l2": 0.001655646984592202,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.q_a_proj.weight": {
++      "reference_squared": 0.019949343620929177,
++      "error_squared": 1.3099020160880961e-07,
++      "numel": 786432,
++      "relative_l2": 0.0025624482290635795,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.q_a_norm.weight": {
++      "reference_squared": 8.18231602584007e-06,
++      "error_squared": 5.5603459336861505e-11,
++      "numel": 1536,
++      "relative_l2": 0.0026068304259316616,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.q_b_proj.weight": {
++      "reference_squared": 0.019982506634375737,
++      "error_squared": 1.1286622056339677e-07,
++      "numel": 25165824,
++      "relative_l2": 0.002376605010196567,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.kv_proj.weight": {
++      "reference_squared": 0.08914489213220073,
++      "error_squared": 7.428498911342765e-07,
++      "numel": 262144,
++      "relative_l2": 0.0028867043065337254,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.kv_norm.weight": {
++      "reference_squared": 3.5690324513349805e-05,
++      "error_squared": 2.5175162487718703e-10,
++      "numel": 512,
++      "relative_l2": 0.0026558949475306987,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.o_a_proj.weight": {
++      "reference_squared": 0.07120677630463743,
++      "error_squared": 1.3028320757765642e-07,
++      "numel": 16777216,
++      "relative_l2": 0.0013526441507515222,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.o_b_proj.weight": {
++      "reference_squared": 0.07123077072238126,
++      "error_squared": 8.235130919804009e-08,
++      "numel": 8388608,
++      "relative_l2": 0.0010752301462195728,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.compressor.position_bias": {
++      "reference_squared": 7.802614770733574e-08,
++      "error_squared": 2.2070286633685313e-13,
++      "numel": 65536,
++      "relative_l2": 0.0016818370053000898,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.compressor.kv_proj.weight": {
++      "reference_squared": 0.00020627890539921654,
++      "error_squared": 5.96540380574207e-10,
++      "numel": 262144,
++      "relative_l2": 0.00170056217259051,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.compressor.gate_proj.weight": {
++      "reference_squared": 4.754296659643706e-05,
++      "error_squared": 1.3914192913500122e-10,
++      "numel": 262144,
++      "relative_l2": 0.001710747332348568,
++      "passed": true
++    },
++    "model.model.layers.0.self_attn.compressor.kv_norm.weight": {
++      "reference_squared": 7.938512208300887e-08,
++      "error_squared": 1.787164437706129e-13,
++      "numel": 512,
++      "relative_l2": 0.0015004194955398232,
++      "passed": true
++    },
++    "model.model.layers.0.mlp.gate.weight": {
++      "reference_squared": 1.0134311487270132e-05,
++      "error_squared": 1.1840725532037458e-11,
++      "numel": 131072,
++      "relative_l2": 0.001080916217571037,
++      "passed": true
++    },
++    "model.model.layers.0.mlp.experts.gate_up_proj": {
++      "reference_squared": 0.0009916580509769393,
++      "error_squared": 4.713630695074753e-09,
++      "numel": 134217728,
++      "relative_l2": 0.0021802023607906612,
++      "passed": true
++    },
++    "model.model.layers.0.mlp.experts.down_proj": {
++      "reference_squared": 0.0004884230581880626,
++      "error_squared": 5.432235795880182e-11,
++      "numel": 67108864,
++      "relative_l2": 0.0003334964591524216,
++      "passed": true
++    },
++    "model.model.layers.0.mlp.shared_experts.gate_proj.weight": {
++      "reference_squared": 0.0009220327452252569,
++      "error_squared": 8.354566319985263e-10,
++      "numel": 262144,
++      "relative_l2": 0.000951894424328181,
++      "passed": true
++    },
++    "model.model.layers.0.mlp.shared_experts.up_proj.weight": {
++      "reference_squared": 0.0009411053792708727,
++      "error_squared": 8.378866772837932e-10,
++      "numel": 262144,
++      "relative_l2": 0.000943568675111353,
++      "passed": true
++    },
++    "model.model.layers.0.mlp.shared_experts.down_proj.weight": {
++      "reference_squared": 0.0009505797176261522,
++      "error_squared": 1.9309483795376388e-10,
++      "numel": 262144,
++      "relative_l2": 0.00045070363436593494,
++      "passed": true
++    },
++    "model.model.layers.0.input_layernorm.weight": {
++      "reference_squared": 4.625314791814692e-05,
++      "error_squared": 5.905413042253671e-10,
++      "numel": 512,
++      "relative_l2": 0.0035731766861011663,
++      "passed": true
++    },
++    "model.model.layers.0.post_attention_layernorm.weight": {
++      "reference_squared": 1.1090409176937183e-06,
++      "error_squared": 3.7637479938235074e-12,
++      "numel": 512,
++      "relative_l2": 0.0018421987518448132,
++      "passed": true
++    },
++    "model.model.layers.0.attn_hc.fn": {
++      "reference_squared": 0.0003278108917282479,
++      "error_squared": 7.016764962365658e-09,
++      "numel": 8192,
++      "relative_l2": 0.0046265448340374726,
++      "passed": true
++    },
++    "model.model.layers.0.attn_hc.base": {
++      "reference_squared": 9.756317206136263e-07,
++      "error_squared": 1.4171679560127065e-12,
++      "numel": 8,
++      "relative_l2": 0.0012052238183905477,
++      "passed": true
++    },
++    "model.model.layers.0.attn_hc.scale": {
++      "reference_squared": 2.1634442457124998e-07,
++      "error_squared": 5.303924817518278e-13,
++      "numel": 3,
++      "relative_l2": 0.0015657622781289095,
++      "passed": true
++    },
++    "model.model.layers.0.ffn_hc.fn": {
++      "reference_squared": 4.932165652205695e-05,
++      "error_squared": 2.8562482668806907e-11,
++      "numel": 8192,
++      "relative_l2": 0.0007609903502593649,
++      "passed": true
++    },
++    "model.model.layers.0.ffn_hc.base": {
++      "reference_squared": 4.391771674964765e-09,
++      "error_squared": 4.0885740196827107e-14,
++      "numel": 8,
++      "relative_l2": 0.003051167541205478,
++      "passed": true
++    },
++    "model.model.layers.0.ffn_hc.scale": {
++      "reference_squared": 3.153652472505789e-10,
++      "error_squared": 5.1128531593612125e-15,
++      "numel": 3,
++      "relative_l2": 0.0040264725572726435,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.sinks": {
++      "reference_squared": 3.32140936388451e-08,
++      "error_squared": 0.0,
++      "numel": 32,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.q_a_proj.weight": {
++      "reference_squared": 0.004090870237852483,
++      "error_squared": 0.0,
++      "numel": 786432,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.q_a_norm.weight": {
++      "reference_squared": 1.6810559776033168e-06,
++      "error_squared": 0.0,
++      "numel": 1536,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.q_b_proj.weight": {
++      "reference_squared": 0.004109719247690795,
++      "error_squared": 0.0,
++      "numel": 25165824,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.kv_proj.weight": {
++      "reference_squared": 0.056149354071576604,
++      "error_squared": 4.83595411328655e-10,
++      "numel": 262144,
++      "relative_l2": 9.280442907989666e-05,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.kv_norm.weight": {
++      "reference_squared": 2.4980582845987587e-05,
++      "error_squared": 1.865174681370263e-14,
++      "numel": 512,
++      "relative_l2": 2.732489313982641e-05,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.o_a_proj.weight": {
++      "reference_squared": 0.05333298794669277,
++      "error_squared": 0.0,
++      "numel": 16777216,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.o_b_proj.weight": {
++      "reference_squared": 0.05341797577133947,
++      "error_squared": 0.0,
++      "numel": 8388608,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.compressor.position_bias": {
++      "reference_squared": 7.97087370127089e-10,
++      "error_squared": 1.737176480083333e-18,
++      "numel": 65536,
++      "relative_l2": 4.6684101699820544e-05,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.compressor.kv_proj.weight": {
++      "reference_squared": 6.90964388277556e-05,
++      "error_squared": 1.744782102339735e-13,
++      "numel": 262144,
++      "relative_l2": 5.0250775270161696e-05,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.compressor.gate_proj.weight": {
++      "reference_squared": 6.621637513408387e-07,
++      "error_squared": 1.309015264893967e-15,
++      "numel": 262144,
++      "relative_l2": 4.4462067557555384e-05,
++      "passed": true
++    },
++    "model.model.layers.1.self_attn.compressor.kv_norm.weight": {
++      "reference_squared": 2.636292558072616e-08,
++      "error_squared": 5.551115123125783e-17,
++      "numel": 512,
++      "relative_l2": 4.588738564629865e-05,
++      "passed": true
++    },
++    "model.model.layers.1.mlp.gate.weight": {
++      "reference_squared": 4.119898649298142e-06,
++      "error_squared": 0.0,
++      "numel": 131072,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.mlp.experts.gate_up_proj": {
++      "reference_squared": 0.0003781604607596938,
++      "error_squared": 0.0,
++      "numel": 134217728,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.mlp.experts.down_proj": {
++      "reference_squared": 0.0001865119930773959,
++      "error_squared": 0.0,
++      "numel": 67108864,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.mlp.shared_experts.gate_proj.weight": {
++      "reference_squared": 0.00024114472903045563,
++      "error_squared": 0.0,
++      "numel": 262144,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.mlp.shared_experts.up_proj.weight": {
++      "reference_squared": 0.00022963708070373497,
++      "error_squared": 0.0,
++      "numel": 262144,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.mlp.shared_experts.down_proj.weight": {
++      "reference_squared": 0.00023412614829985943,
++      "error_squared": 0.0,
++      "numel": 262144,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.input_layernorm.weight": {
++      "reference_squared": 2.3912769998573648e-05,
++      "error_squared": 2.0108359422010835e-12,
++      "numel": 512,
++      "relative_l2": 0.0002899835594161308,
++      "passed": true
++    },
++    "model.model.layers.1.post_attention_layernorm.weight": {
++      "reference_squared": 3.7130921052972625e-07,
++      "error_squared": 0.0,
++      "numel": 512,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.attn_hc.fn": {
++      "reference_squared": 0.0004134099888847655,
++      "error_squared": 3.1146648752777986e-12,
++      "numel": 8192,
++      "relative_l2": 8.6799091520704e-05,
++      "passed": true
++    },
++    "model.model.layers.1.attn_hc.base": {
++      "reference_squared": 1.1346749604938494e-06,
++      "error_squared": 2.9657968270897974e-16,
++      "numel": 8,
++      "relative_l2": 1.616720564534471e-05,
++      "passed": true
++    },
++    "model.model.layers.1.attn_hc.scale": {
++      "reference_squared": 7.946649089514658e-10,
++      "error_squared": 7.2083033206933e-18,
++      "numel": 3,
++      "relative_l2": 9.524112325004636e-05,
++      "passed": true
++    },
++    "model.model.layers.1.ffn_hc.fn": {
++      "reference_squared": 1.6209977751143982e-05,
++      "error_squared": 0.0,
++      "numel": 8192,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.ffn_hc.base": {
++      "reference_squared": 3.788196615311647e-08,
++      "error_squared": 0.0,
++      "numel": 8,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.layers.1.ffn_hc.scale": {
++      "reference_squared": 3.05263172814476e-10,
++      "error_squared": 0.0,
++      "numel": 3,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.norm.weight": {
++      "reference_squared": 0.0001112007219590018,
++      "error_squared": 0.0,
++      "numel": 512,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.hc_head.hc_fn": {
++      "reference_squared": 2.259758084343864e-06,
++      "error_squared": 0.0,
++      "numel": 2048,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.hc_head.hc_base": {
++      "reference_squared": 1.2501168693874956e-10,
++      "error_squared": 0.0,
++      "numel": 2,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.model.hc_head.hc_scale": {
++      "reference_squared": 3.2071444332612864e-09,
++      "error_squared": 0.0,
++      "numel": 1,
++      "relative_l2": 0.0,
++      "passed": true
++    },
++    "model.lm_head.weight": {
++      "reference_squared": 0.06268009979751242,
++      "error_squared": 0.0,
++      "numel": 16777216,
++      "relative_l2": 0.0,
++      "passed": true
++    }
++  },
++  "passed": true,
++  "threshold": 0.02,
++  "full_step0_unclipped_fp32_owner_gradients": true,
++  "identity_scope": "entire_run"
++}
+\ No newline at end of file
+diff --git a/research/step_lifetime/priority_cache/model-v1.json b/research/step_lifetime/priority_cache/model-v1.json
+new file mode 100644
+index 0000000..48bf936
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/model-v1.json
+@@ -0,0 +1,22 @@
++{
++  "stage": "complete",
++  "runs": [
++    {
++      "tag": "priority-model-v1",
++      "passed": true,
++      "runtime_sources": {
++        "tools/lifetime_device.py": "de87a2450164081acdb30ac4421076308e6d07a495f62539affe064b2045458f",
++        "tools/step_lifetime.py": "651c34aac14992f31453665b02109328c98e8637ff16aa6cf9b7e61da8c6f647",
++        "tools/train.py": "de6fae05b8ef5aa042f27f0250d1b4842580ddbeaf599af8050548a0ce2e412f",
++        "tools/grouped_experts.py": "fe7836797ec17ff21e004119a205974775bfa1afce4067b30144eb9b00ccbcf4",
++        "tools/temporal_model.py": "268a45148684dd52ebea8782bcff792ab791c723d5422afafa460b38550ffe50",
++        "tools/temporal_prefix_reuse.py": "2dba99a5e0b687bdf82d70be6323bf2754d3fd9743d0f94e47940c437d2d1233",
++        "source/native-balanced/ascend_deepep/fsdp2_bridge.py": "6e975d521b63727fbc3e2e14fe727eba5840be088866495e6ceb8dd41c6a4a2e",
++        "source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py": "a9590a864841ba7a9b6ab5b59361b172f867a68f50b1e3f04608da01b1f8b86d",
++        "source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h": "2785d208e6dac7f1259d459c6596d54f16cfb070f5d16267fec9a14c52d045ce"
++      }
++    }
++  ],
++  "new_planner": false,
++  "passed": true
++}
+diff --git a/research/step_lifetime/priority_cache/package_delivery.py b/research/step_lifetime/priority_cache/package_delivery.py
+new file mode 100644
+index 0000000..716b36d
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/package_delivery.py
+@@ -0,0 +1,62 @@
++"""Freeze a reviewable source delivery; raw data and large local deps stay outside git."""
++from pathlib import Path
++import hashlib
++import io
++import json
++import shutil
++import subprocess
++import tarfile
++import zipfile
++
++ROOT = Path(__file__).resolve().parent
++STACK = ROOT/'stack'
++load=lambda name: json.loads((ROOT/name).read_text())
++if not load('confirmation-v1.json').get('passed') or not (ROOT/'REPORT.md').exists():
++    raise SystemExit('Finish and report the actual bounded schedule before delivery.')
++destination = STACK/'research/step_lifetime/priority_cache'
++destination.mkdir(parents=True,exist_ok=True)
++small = sorted([path for path in ROOT.iterdir() if path.suffix in ('.py','.md')])
++for path in small:
++    shutil.copy2(path,destination/path.name)
++for name in ('summary.json','pilot-v1.json','math-v1.json','model-v1.json'):
++    shutil.copy2(ROOT/name,destination/name)
++for name in ('build-intervention-audit.json','model-comparison.json'):
++    shutil.copy2(ROOT/'diagnostics'/name,destination/name)
++# The confirmation has thousands of audit fields; the full authoritative JSON
++# stays in the project and is fingerprinted below instead of copied redundantly.
++subprocess.run(['git','-C',str(STACK),'add','configs/lifetime-runtime-freeze.json','research/step_lifetime/priority_cache'],check=True)
++staged=subprocess.check_output(['git','-C',str(STACK),'diff','--cached','--name-only'],text=True).splitlines()
++if any(not (name=='configs/lifetime-runtime-freeze.json' or name.startswith('research/step_lifetime/priority_cache/')) for name in staged):
++    raise SystemExit('Unexpected staged changes: '+str(staged))
++if staged:
++    subprocess.run(['git','-C',str(STACK),'diff','--cached','--check'],check=True)
++    subprocess.run(['git','-C',str(STACK),'commit','-m','Record priority-key intervention, repeated timing and matched controls'],check=True)
++head=subprocess.check_output(['git','-C',str(STACK),'rev-parse','HEAD'],text=True).strip()
++base='693f7fc4f9e7617c79ffbf69cc27268609bd99e2'
++with (ROOT/'implementation/source.diff').open('wb') as handle:
++    subprocess.run(['git','-C',str(STACK),'diff','--binary',base,head],stdout=handle,check=True)
++archive=subprocess.check_output(['git','-C',str(STACK),'archive',head])
++source_zip=ROOT/'implementation/source.zip'
++with zipfile.ZipFile(source_zip,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as output:
++    with tarfile.open(fileobj=io.BytesIO(archive)) as source:
++        for member in source:
++            if member.isfile():
++                with source.extractfile(member) as handle:
++                    output.writestr('stack/'+member.name,handle.read())
++    for path in small:
++        output.write(path,path.name)
++    for name in ('summary.json','pilot-v1.json','math-v1.json','model-v1.json'):
++        output.write(ROOT/name,name)
++selected = [path for path in ROOT.iterdir() if path.suffix in ('.py','.md','.json','.csv')]
++selected += [path for path in (ROOT/'implementation').iterdir() if path.is_file()]
++selected += [path for path in (ROOT/'figures').iterdir() if path.is_file()]
++selected += [path for path in (ROOT/'diagnostics').iterdir() if path.is_file() and path.suffix=='.json']
++index = dict(branch='research/step-lifetime-priority-cache',head=head,base=base,new_planner=False,
++             source_zip='implementation/source.zip',compiled_worker='implementation/worker.so',
++             build_compiled_source_audit='diagnostics/build-intervention-audit.json',
++             raw_data_scope='Per-run evidence metadata is local; qualification full tensors remain at receipt.large_tensors_remote. No new full plan dumps in timed runs.',
++             remote_project='/home/z00956592/megaflux/step-lifetime-priority-cache-20261116',
++             files={str(path.relative_to(ROOT)).replace('\\','/'):dict(bytes=path.stat().st_size,sha256=hashlib.sha256(path.read_bytes()).hexdigest())
++                    for path in selected if path.name!='SOURCE-INDEX.json'})
++(ROOT/'SOURCE-INDEX.json').write_text(json.dumps(index,indent=2)+'\n',newline='\n')
++print(json.dumps(dict(head=head,files=len(index['files']),source_zip_sha=index['files']['implementation/source.zip']['sha256']),indent=2))
+diff --git a/research/step_lifetime/priority_cache/pilot-v1.json b/research/step_lifetime/priority_cache/pilot-v1.json
+new file mode 100644
+index 0000000..3698923
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/pilot-v1.json
+@@ -0,0 +1,69 @@
++{
++  "stage": "complete",
++  "runs": [
++    {
++      "tag": "priority-pilot-reference-v1",
++      "name": "reference",
++      "variant": "ep8-cap64-lifetime-raw-control-v2",
++      "passed": true,
++      "median_step_ms": 4481.169239999999,
++      "measured_rank_max_step_ms": [
++        4392.54121,
++        4478.39499,
++        4455.64597,
++        4957.41803,
++        4483.94349,
++        4516.69047,
++        4513.55851,
++        4441.09738,
++        4420.35615,
++        4484.91188,
++        4519.21637,
++        4486.59637,
++        4963.52244,
++        4438.97215,
++        4426.70181,
++        4460.36592,
++        4438.85569,
++        4495.22804,
++        4443.22187,
++        4495.21289
++      ],
++      "peak_driver_MiB": 70786
++    },
++    {
++      "tag": "priority-pilot-cached_keys-v1",
++      "name": "cached_keys",
++      "variant": "ep8-cap64-lifetime-priority-cache-v1",
++      "passed": true,
++      "median_step_ms": 4203.33834,
++      "measured_rank_max_step_ms": [
++        4204.98261,
++        4201.69407,
++        4200.09976,
++        4694.62911,
++        4206.28781,
++        4232.42844,
++        4249.83228,
++        4187.7877,
++        4199.4393,
++        4205.50548,
++        4210.4573,
++        4197.65862,
++        4665.46529,
++        4188.79239,
++        4188.00997,
++        4178.01347,
++        4179.43742,
++        4214.00791,
++        4199.28114,
++        4228.26393
++      ],
++      "peak_driver_MiB": 71148
++    }
++  ],
++  "new_planner": false,
++  "reduction_pct": 6.199964453920048,
++  "independent_processes_per_point": 1,
++  "passed": true
++}
+diff --git a/research/step_lifetime/priority_cache/remote.py b/research/step_lifetime/priority_cache/remote.py
+new file mode 100644
+index 0000000..fb1cafd
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/remote.py
+@@ -0,0 +1,151 @@
++"""Deploy an isolated frozen checkout and execute finite, admitted study gates."""
++from pathlib import Path
++import argparse
++import hashlib
++import json
++import subprocess
++import tarfile
++import re
++from datetime import datetime, timezone
++
++ROOT = Path(__file__).resolve().parent
++STACK = ROOT / 'stack'
++HOST = 'pod6-1-root'
++REMOTE = '/home/z00956592/megaflux/step-lifetime-priority-cache-20261116'
++CONTAINER = 'step-lifetime-priority-cache-20261116'
++
++
++def call(arguments, **kwargs):
++    return subprocess.run(arguments, check=True, **kwargs)
++
++
++def deploy():
++    archive = ROOT / 'source.tar'
++    with archive.open('wb') as handle:
++        call(['git','-c','core.longpaths=true','-C',str(STACK),'archive','HEAD'], stdout=handle)
++    with tarfile.open(archive, 'a') as handle:
++        changed = subprocess.check_output(['git','-c','core.longpaths=true','-C',str(STACK),'diff','--name-only'],text=True).splitlines()
++        untracked = subprocess.check_output(['git','-c','core.longpaths=true','-C',str(STACK),'ls-files','--others','--exclude-standard'],text=True).splitlines()
++        for name in changed + untracked:
++            handle.add(STACK / name, arcname=name)
++    hashes = {name: hashlib.sha256((STACK/name).read_bytes()).hexdigest() for name in changed+untracked}
++    (ROOT/'source-overlay.json').write_text(json.dumps(hashes, indent=2))
++    call(['ssh', HOST, 'mkdir', '-p', REMOTE])
++    call(['scp', str(archive), f'{HOST}:{REMOTE}/source.tar'])
++    script = f'''set -euo pipefail
++task={REMOTE}
++exec 9>/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock
++flock -x 9
++base=/home/z00956592/megaflux/step-lifetime-raw-control-20261116/stack
++mkdir -p "$task/stack" "$task/evidence"
++if [ ! -d "$task/stack/source" ]; then
++ mkdir -p "$task/stack/source/native-balanced/ascend_deepep"
++ cp -a --reflink=auto "$base/source/native-balanced/ascend_deepep/lib" "$task/stack/source/native-balanced/ascend_deepep/"
++ cp -a --reflink=auto "$base/source/native-balanced/worker-variants" "$task/stack/source/native-balanced/"
++ cp -a --reflink=auto "$base/routes" "$task/stack/routes"
++ cp -a --reflink=auto /home/z00956592/megaflux/temporal-replica-study-20261114/stack/small-routes "$task/stack/small-routes"
++fi
++tar -xf "$task/source.tar" -C "$task/stack"
++python3 - "$base" "$task/stack" <<'STAGE'
++from pathlib import Path
++import json,shutil,sys
++base,dest=map(Path,sys.argv[1:])
++for name in ('runtime-freeze.json','temporal-scheduler-freeze.json'):
++ manifest=json.loads((dest/'configs'/name).read_text())
++ for relative in manifest['binaries']:
++  target=dest/relative
++  if not target.exists():
++   target.parent.mkdir(parents=True,exist_ok=True)
++   shutil.copy2(base/relative,target)
++STAGE
++if ! docker container inspect {CONTAINER} >/dev/null 2>&1; then
++ docker run -d --name {CONTAINER} --label codex.task=step-lifetime-priority-cache-20261116 --privileged --network host --ipc host -v /home:/home -v /usr/local/Ascend/driver:/usr/local/Ascend/driver -v /usr/local/dcmi:/usr/local/dcmi -v /etc/ascend_install.info:/etc/ascend_install.info --entrypoint /bin/bash planner-executor-ep8-runtime:20261114 -lc 'sleep infinity'
++fi
++test "$(docker inspect {CONTAINER} --format '{{{{index .Config.Labels "codex.task"}}}}')" = step-lifetime-priority-cache-20261116
++docker start {CONTAINER} >/dev/null
++'''
++    launcher = re.sub(r'^TASK=.*$', f'TASK={REMOTE}/stack', (STACK/'tools/launch.sh').read_text(), flags=re.M)
++    controller = re.sub(r"^TASK = pathlib.Path\(.*$", f"TASK = pathlib.Path('{REMOTE}/stack')", (STACK/'tools/controller.py').read_text(), flags=re.M)
++    controller = re.sub(r"^CONTAINER = .*$", f"CONTAINER = '{CONTAINER}'", controller, flags=re.M)
++    for name, contents in [('launch.sh',launcher), ('controller.py',controller)]:
++        path = ROOT/name
++        path.write_text(contents, encoding='utf-8', newline='\n')
++    call(['scp', str(ROOT/'launch.sh'), str(ROOT/'controller.py'), f'{HOST}:{REMOTE}/'])
++    script += '\ncp "$task/launch.sh" "$task/controller.py" "$task/stack/tools/"\n'
++    call(['ssh', HOST, 'bash', '-s'], input=script.encode())
++
++
++def gate(tag, extra, *, metadata_only=False):
++    script = f'''set -euo pipefail
++cd {REMOTE}/stack
++mkdir -p evidence/source-snapshots
++python3 tools/controller.py --backend balanced --tag {tag} --worker-variant ep8-cap64-aligned --seconds 900 {' '.join(extra)}
++'''
++    began = datetime.now(timezone.utc).isoformat()
++    with (ROOT/f'{tag}-remote.log').open('wb') as handle:
++        result = subprocess.run(['ssh', HOST, 'bash', '-s'], input=script.encode(), stdout=handle, stderr=subprocess.STDOUT)
++    receipt = dict(tag=tag, started=began, exit=result.returncode)
++    (ROOT/f'{tag}-receipt.json').write_text(json.dumps(receipt, indent=2))
++    if metadata_only:
++        # Full tensors remain in this run's project-owned remote directory.
++        # This avoids retransmitting multi-GiB PT files for every qualification.
++        bundle=f'{REMOTE}/stack/evidence/{tag}-metadata.tar.gz'
++        packed=subprocess.run(['ssh',HOST,'tar','-czf',bundle,'--exclude=*.pt','-C',
++                               f'{REMOTE}/stack/evidence',tag])
++        packed.check_returncode()
++        collected=subprocess.run(['scp',f'{HOST}:{bundle}',str(ROOT/'evidence')])
++        if collected.returncode==0:
++            with tarfile.open(ROOT/'evidence'/f'{tag}-metadata.tar.gz') as handle:
++                handle.extractall(ROOT/'evidence',filter='data')
++        receipt['large_tensors_remote']=f'{REMOTE}/stack/evidence/{tag}'
++    else:
++        collected = subprocess.run(['scp', '-r', f'{HOST}:{REMOTE}/stack/evidence/{tag}', str(ROOT/'evidence')])
++    receipt['collection_exit'] = collected.returncode
++    snapshots = ROOT/'evidence'/'source-snapshots'
++    snapshots.mkdir(exist_ok=True)
++    current=ROOT/'evidence'/tag/'source-identity.json'
++    duplicate=None
++    if current.exists():
++        identity=json.loads(current.read_text())
++        for candidate in (ROOT/'evidence').glob('*/source-identity.json'):
++            other=candidate.parent.name
++            other_receipt=ROOT/f'{other}-receipt.json'
++            if other==tag or not (snapshots/f'{other}.tar.gz').exists() or not other_receipt.exists():continue
++            if json.loads(other_receipt.read_text()).get('collection_exit')!=0:continue
++            if json.loads(candidate.read_text())==identity:
++                duplicate=other;break
++    if duplicate is None and current.exists():
++        copied=subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}.tar.gz',str(snapshots)])
++        receipt['snapshot_collection_exit']=copied.returncode
++    elif duplicate is not None:
++        (snapshots/f'{tag}-source-reference.json').write_text(json.dumps(dict(
++            same_guarded_files_as=duplicate,archive=f'{duplicate}.tar.gz'),indent=2))
++        receipt['source_snapshot_reused']=duplicate
++    suffixes=['-runtime.json']
++    if '--temporal-scheduler' in extra or 'scheduler' in extra:suffixes.append('-temporal-runtime.json')
++    if '--lifetime-mode' in extra:suffixes.append('-lifetime-runtime.json')
++    for suffix in suffixes:
++        if current.exists():
++            subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}{suffix}',str(snapshots)])
++    if '--diagnostic-timer' in extra and current.exists():
++        subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}-timer-worker-runtime.json',str(snapshots)])
++    (ROOT/f'{tag}-receipt.json').write_text(json.dumps(receipt, indent=2))
++    print(json.dumps(receipt), flush=True)
++    raise SystemExit(result.returncode)
++
++
++if __name__ == '__main__':
++    parser = argparse.ArgumentParser()
++    parser.add_argument('action', choices=('deploy','gate'))
++    parser.add_argument('--tag')
++    parser.add_argument('--metadata-only', action='store_true')
++    args, extra = parser.parse_known_args()
++    (ROOT/'evidence').mkdir(exist_ok=True)
++    if args.action == 'deploy':
++        deploy()
++    else:
++        if not args.tag or not all(character.isalnum() or character in '-_.' for character in args.tag):
++            parser.error('a safe run tag is required')
++        if any(not all(character.isalnum() or character in '-_./:' for character in item) for item in extra):
++            parser.error('unexpected shell metacharacter in gate arguments')
++        gate(args.tag, extra, metadata_only=args.metadata_only)
+diff --git a/research/step_lifetime/priority_cache/replay_case.py b/research/step_lifetime/priority_cache/replay_case.py
+new file mode 100644
+index 0000000..8f30f87
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/replay_case.py
+@@ -0,0 +1,20 @@
++"""Launch a fresh admitted main-shape case; existing evidence is never reused."""
++import argparse
++import remote
++
++parser=argparse.ArgumentParser()
++parser.add_argument('--case',required=True,choices=('reference','cached_keys','b0','b2','b3','anchor','fixed_home'))
++parser.add_argument('--tag',required=True)
++args=parser.parse_args()
++if not all(character.isalnum() or character in '-_.' for character in args.tag):parser.error('Safe unique tag required')
++variant='ep8-cap64-lifetime-raw-control-v2' if args.case=='reference' else 'ep8-cap64-lifetime-priority-cache-v1'
++policy='fixed_home' if args.case=='fixed_home' else 'fixed_native'
++extra=['--layers','4','--steps','25','--tokens','16384','--hidden','4096','--ffn','1024',
++       '--microbatches','4','--forward-window','2','--recv-capacity','262144','--maxvio','10',
++       '--planner','native','--temporal-pattern','same','--temporal-policy',policy,
++       '--worker-variant',variant,'--grad-sync','--hold-fsdp-forward','--temporal-prefix-reuse',
++       '--temporal-scheduler','ascendc','--temporal-scheduler-library',remote.REMOTE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so']
++if args.case not in ('anchor','fixed_home'):
++    mode=args.case if args.case in ('b0','b2','b3') else 'b1'
++    extra+=['--lifetime-mode',mode,'--lifetime-raw-schedule','preserve']
++remote.gate(args.tag,extra,metadata_only=True)
+diff --git a/research/step_lifetime/priority_cache/run_confirmations.py b/research/step_lifetime/priority_cache/run_confirmations.py
+new file mode 100644
+index 0000000..e5b4069
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/run_confirmations.py
+@@ -0,0 +1,60 @@
++"""Predeclared bounded confirmation and matched controls; no large matrix."""
++from pathlib import Path
++import json
++import remote
++from audit_runs import audit, load, WORKERS
++
++ROOT = Path(__file__).resolve().parent
++STATE = ROOT/'confirmation-v1.json'
++if STATE.exists():
++    raise SystemExit('Immutable confirmation state already exists; inspect it instead of restarting.')
++if not load(ROOT/'diagnostics/pilot-identity-audit.json')['passed']:
++    raise SystemExit('Actual initial pair identity audit required.')
++candidate = list(WORKERS)[1]
++reference = list(WORKERS)[0]
++schedule = [
++    ('repeat2-cached_keys', candidate, 'b1'),
++    ('repeat2-reference', reference, 'b1'),
++    ('repeat3-reference', reference, 'b1'),
++    ('repeat3-cached_keys', candidate, 'b1'),
++    ('control1-anchor', candidate, 'off'),
++    ('control1-fixed_home', candidate, 'off'),
++]
++state = dict(stage='running', predeclared_schedule=schedule, runs=[], new_planner=False,
++             note='Two more reversed-order pairs plus one fresh common-runtime anchor/home screen; no stable policy claim from controls N=1.')
++def save():
++    STATE.write_text(json.dumps(state, indent=2)+'\n', newline='\n')
++save()
++try:
++    for name, variant, lifetime in schedule:
++        tag = 'priority-'+name+'-v1'
++        policy = 'fixed_home' if name.endswith('fixed_home') else 'fixed_native'
++        args = ['--layers','4','--steps','25','--tokens','16384','--hidden','4096','--ffn','1024',
++                '--microbatches','4','--forward-window','2','--recv-capacity','262144','--maxvio','10',
++                '--planner','native','--temporal-pattern','same','--temporal-policy',policy,
++                '--worker-variant',variant,'--grad-sync','--hold-fsdp-forward','--temporal-prefix-reuse',
++                '--temporal-scheduler','ascendc','--temporal-scheduler-library',remote.REMOTE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so']
++        if lifetime != 'off':
++            args += ['--lifetime-mode', lifetime, '--lifetime-raw-schedule','preserve']
++        state['current'] = tag
++        save()
++        try:
++            remote.gate(tag, args, metadata_only=True)
++        except SystemExit as done:
++            code = done.code
++        if code != 0:
++            raise RuntimeError('Admitted run failed: '+tag)
++        result = audit(tag, variant, reference='priority-pilot-reference-v1', lifetime=lifetime)
++        result.update(name=name, variant=variant, lifetime=lifetime, temporal_policy=policy)
++        state['runs'].append(result)
++        save()
++        if not result['passed']:
++            raise RuntimeError('Identity/timing qualification failed: '+str(result['failed_checks']))
++    state['stage'] = 'complete'
++    state['passed'] = True
++    state.pop('current', None)
++    save()
++except BaseException as error:
++    state.update(stage='failed', error=str(error))
++    save()
++    raise
+diff --git a/research/step_lifetime/priority_cache/run_study.py b/research/step_lifetime/priority_cache/run_study.py
+new file mode 100644
+index 0000000..c9a4a18
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/run_study.py
+@@ -0,0 +1,110 @@
++"""Finite qualified intervention; incomplete jobs are never silently restarted."""
++from pathlib import Path
++import argparse,hashlib,json,math,statistics,subprocess
++import remote
++root=Path(__file__).resolve().parent
++candidate='ep8-cap64-lifetime-priority-cache-v1'
++reference='ep8-cap64-lifetime-raw-control-v2'
++p=argparse.ArgumentParser();p.add_argument('phase',choices=('math','model','pilot'));a=p.parse_args()
++state_path=root/(a.phase+'-v1.json')
++if state_path.exists():raise RuntimeError('Registered cohort exists; inspect its live/terminal state before making any new version')
++state=dict(stage=a.phase,runs=[],new_planner=False)
++def save():state_path.write_text(json.dumps(state,indent=2)+'\n',newline='\n')
++def gate(tag,args):
++ try:remote.gate(tag,args,metadata_only=True)
++ except SystemExit as done:code=done.code
++ folder=root/'evidence'/tag;status=json.loads((folder/'status.json').read_text())
++ passed=code==0 and all(status.get(k) for k in ('qualified','source_unchanged','exclusive_devices')) and status['peak_driver_MiB']<=90*1024
++ return folder,status,bool(passed)
++def require(phase):
++ proof=json.loads((root/(phase+'-v1.json')).read_text())
++ if not proof.get('passed'):raise RuntimeError('Prerequisite incomplete: '+phase)
++ for run in proof['runs']:
++  if 'runtime_sources' not in run:continue
++  for name,digest in run['runtime_sources'].items():
++   if hashlib.sha256((root/'stack'/name).read_bytes()).hexdigest()!=digest:raise RuntimeError('Stale correctness proof: '+name)
++ return proof
++core=('tools/lifetime_device.py','tools/step_lifetime.py','tools/train.py','tools/grouped_experts.py',
++ 'tools/temporal_model.py','tools/temporal_prefix_reuse.py','source/native-balanced/ascend_deepep/fsdp2_bridge.py',
++ 'source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py',
++ 'source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h')
++def runtime(folder):
++ source=json.loads((folder/'source-identity.json').read_text())
++ result={name:source[name] for name in core}
++ if not all(hashlib.sha256((root/'stack'/name).read_bytes()).hexdigest()==digest for name,digest in result.items()):raise RuntimeError('Local runtime differs from actual qualification')
++ return result
++save()
++try:
++ if a.phase=='math':
++  for route_case in ('bank','sparse_remote'):
++   tag='priority-math-'+route_case+'-v1'
++   folder,status,passed=gate(tag,['--mode','lifetime_math','--worker-variant',candidate,
++     '--lifetime-mode','all','--lifetime-raw-schedule','preserve','--route-case',route_case,
++     '--route-bank',remote.REMOTE+'/stack/small-routes'])
++   rows=[]
++   for rank in range(8):
++    path=folder/f'rank{rank}.json'
++    if path.exists():rows.extend(json.loads(path.read_text())['records'])
++   passed &= len(rows)==64 and all(row['passed'] and row['raw_schedule']=='preserve' and row['route_case']==route_case for row in rows)
++   if route_case=='sparse_remote':passed &= all(row['empty_home_experts']==32 for row in rows)
++   passed &= max((r['lifetime_stats']['gradient_remote_bytes'] for r in rows),default=0)>0
++   state['runs'].append(dict(tag=tag,passed=bool(passed),records=len(rows),runtime_sources=runtime(folder),
++     max_relative_l2={key:max((row['comparisons'][key]['relative_l2'] for row in rows),default=None) for key in ('output','dx','dp','dw1','dw2')}));save()
++   if not passed:raise RuntimeError('Priority math failed: '+route_case)
++ elif a.phase=='model':
++  require('math')
++  tag='priority-model-v1'
++  args=['--layers','2','--steps','3','--tokens','256','--hidden','512','--ffn','512',
++    '--microbatches','4','--forward-window','2','--recv-capacity','4096','--maxvio','10',
++    '--planner','moonep','--temporal-pattern','same','--temporal-policy','fixed_native',
++    '--worker-variant',candidate,'--grad-sync','--hold-fsdp-forward','--temporal-prefix-reuse',
++    '--lifetime-mode','b1','--lifetime-raw-schedule','preserve','--dump-grad-step0','--finite-diagnostics',
++    '--route-bank',remote.REMOTE+'/stack/small-routes']
++  folder,status,passed=gate(tag,args)
++  for rank in range(8):
++   updates=json.loads((folder/f'updates-rank{rank}.json').read_text())
++   steps=[json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()]
++   passed &= len(updates)==len(steps)==3 and all(row['changed'] for row in updates)
++   passed &= all(math.isfinite(row['loss']) and math.isfinite(row['grad_norm']) for row in steps)
++   for step in range(3):
++    finite=json.loads((folder/f'gradient-finite-step{step}-rank{rank}.json').read_text())
++    passed &= all(row.get('finite',True) for row in finite)
++   libraries=json.loads((folder/f'libraries-rank{rank}.json').read_text())
++   expected=set(json.loads((root/'stack/configs/lifetime-runtime-freeze.json').read_text())['binaries'].values())
++   loaded=[value['sha256'] for name,value in libraries['libraries'].items() if '/worker-variants/'+candidate+'/' in name]
++   passed &= bool(loaded) and set(loaded)<=expected and len(libraries['shmem'])==1
++  result_path=remote.REMOTE+'/stack/evidence/priority-model-comparison-v1.json'
++  command=['ssh',remote.HOST,'docker','exec',remote.CONTAINER,'/usr/local/python3.12.13/bin/python3',
++    remote.REMOTE+'/stack/tools/compare_temporal_gradients.py',
++    '/home/z00956592/megaflux/step-lifetime-raw-control-20261116/stack/evidence/raw-model-preserve-v1',
++    remote.REMOTE+'/stack/evidence/'+tag,'--out',result_path]
++  with (root/'diagnostics/model-comparison-driver.log').open('wb') as log:
++   comparison=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT)
++  subprocess.run(['scp',remote.HOST+':'+result_path,str(root/'diagnostics/model-comparison.json')],check=True)
++  passed &= comparison.returncode==0 and json.loads((root/'diagnostics/model-comparison.json').read_text())['passed']
++  state['runs'].append(dict(tag=tag,passed=bool(passed),runtime_sources=runtime(folder)));save()
++  if not passed:raise RuntimeError('Three-update full model qualification failed')
++ else:
++  require('math');require('model')
++  if not json.loads((root/'diagnostics/build-intervention-audit.json').read_text()).get('passed'):
++   raise RuntimeError('Compiled source/options intervention audit is required before timing')
++  for name,variant in (('reference',reference),('cached_keys',candidate)):
++   tag='priority-pilot-'+name+'-v1'
++   args=['--layers','4','--steps','25','--tokens','16384','--hidden','4096','--ffn','1024',
++     '--microbatches','4','--forward-window','2','--recv-capacity','262144','--maxvio','10',
++     '--planner','native','--temporal-pattern','same','--temporal-policy','fixed_native',
++     '--worker-variant',variant,'--grad-sync','--hold-fsdp-forward','--temporal-prefix-reuse',
++     '--lifetime-mode','b1','--lifetime-raw-schedule','preserve','--temporal-scheduler','ascendc',
++     '--temporal-scheduler-library',remote.REMOTE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so']
++   folder,status,passed=gate(tag,args)
++   records=[[json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()] for rank in range(8)]
++   passed &= all(len(rows)==25 for rows in records)
++   times=[max(rows[step]['milliseconds'] for rows in records) for step in range(5,25)]
++   state['runs'].append(dict(tag=tag,name=name,variant=variant,passed=bool(passed),
++      median_step_ms=statistics.median(times),measured_rank_max_step_ms=times,peak_driver_MiB=status['peak_driver_MiB']));save()
++   if not passed:raise RuntimeError('Unqualified pilot: '+name)
++  state['reduction_pct']=100*(1-state['runs'][1]['median_step_ms']/state['runs'][0]['median_step_ms'])
++  state['independent_processes_per_point']=1
++ state.update(stage='complete',passed=True);save()
++except BaseException as error:
++ state.update(stage='failed',error=str(error));save();raise
+diff --git a/research/step_lifetime/priority_cache/screen_lifetimes.py b/research/step_lifetime/priority_cache/screen_lifetimes.py
+new file mode 100644
+index 0000000..2f89207
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/screen_lifetimes.py
+@@ -0,0 +1,71 @@
++"""Repeat a bounded B0/B2/B3 screen on the now-qualified common executor.
++
++This is neither a new policy nor a large matrix. All three points are retained.
++"""
++from pathlib import Path
++import json
++import math
++import subprocess
++import remote
++from audit_runs import audit, load, WORKERS
++
++ROOT=Path(__file__).resolve().parent
++STATE=ROOT/'common-lifetime-screen-v1.json'
++if STATE.exists():raise SystemExit('Screen state exists; inspect instead of replacing it.')
++if not load(ROOT/'diagnostics/pilot-identity-audit.json')['passed']:
++    raise SystemExit('Initial pair source and identity audit required')
++variant=list(WORKERS)[1]
++state=dict(stage='small',runs=[],predeclared_modes=['b0','b2','b3'],independent_main_repeats=1,
++           new_planner=False,note='Old B controls used an older compute runtime. Requalify and rescreen them after the common key-cache intervention; no post-hoc point deletion or large matrix.')
++def save():STATE.write_text(json.dumps(state,indent=2)+'\n',newline='\n')
++save()
++try:
++    for small in (True,False):
++        if not small and not load(ROOT/'confirmation-v1.json').get('passed'):
++            raise RuntimeError('Common-runtime confirmation/anchor/home must complete before main screen')
++        state['stage']='small' if small else 'main';save()
++        for mode in state['predeclared_modes']:
++            tag='priority-'+('small' if small else 'screen')+'-'+mode+'-v1'
++            state['current']=tag;save()
++            args=['--layers','2' if small else '4','--steps','3' if small else '25',
++                  '--tokens','256' if small else '16384','--hidden','512' if small else '4096',
++                  '--ffn','512' if small else '1024','--microbatches','4','--forward-window','2',
++                  '--recv-capacity','4096' if small else '262144','--maxvio','10',
++                  '--planner','moonep' if small else 'native','--temporal-pattern','same',
++                  '--temporal-policy','fixed_native','--worker-variant',variant,'--grad-sync',
++                  '--hold-fsdp-forward','--temporal-prefix-reuse','--lifetime-mode',mode,
++                  '--lifetime-raw-schedule','preserve']
++            if small:args+=['--dump-grad-step0','--finite-diagnostics','--route-bank',remote.REMOTE+'/stack/small-routes']
++            else:args+=['--temporal-scheduler','ascendc','--temporal-scheduler-library',remote.REMOTE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so']
++            try:remote.gate(tag,args,metadata_only=True)
++            except SystemExit as done:code=done.code
++            folder=ROOT/'evidence'/tag;status=load(folder/'status.json')
++            passed=code==0 and all(status.get(key) for key in ('qualified','source_unchanged','exclusive_devices')) and status['peak_driver_MiB']<=90*1024
++            if not passed:
++                state['runs'].append(dict(tag=tag,small=small,mode=mode,passed=False,status=status));save()
++                raise RuntimeError('Unqualified screen run '+tag)
++            if small:
++                for rank in range(8):
++                    updates=load(folder/f'updates-rank{rank}.json')
++                    steps=[json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()]
++                    passed &= len(updates)==len(steps)==3 and all(row['changed'] for row in updates)
++                    passed &= all(math.isfinite(row['loss']) and math.isfinite(row['grad_norm']) for row in steps)
++                path=remote.REMOTE+'/stack/evidence/'+tag+'-gradient-comparison.json'
++                command=['ssh',remote.HOST,'docker','exec',remote.CONTAINER,'/usr/local/python3.12.13/bin/python3',
++                         remote.REMOTE+'/stack/tools/compare_temporal_gradients.py',
++                         '/home/z00956592/megaflux/step-lifetime-raw-control-20261116/stack/evidence/raw-model-preserve-v1',
++                         remote.REMOTE+'/stack/evidence/'+tag,'--out',path]
++                with (ROOT/'diagnostics'/(tag+'-comparison.log')).open('wb') as handle:
++                    comparison=subprocess.run(command,stdout=handle,stderr=subprocess.STDOUT)
++                local=ROOT/'diagnostics'/(tag+'-gradient-comparison.json')
++                subprocess.run(['scp',remote.HOST+':'+path,str(local)],check=True)
++                passed &= comparison.returncode==0 and load(local)['passed']
++                row=dict(tag=tag,small=True,mode=mode,passed=bool(passed),peak_driver_MiB=status['peak_driver_MiB'])
++            else:
++                row=audit(tag,variant,reference='priority-pilot-reference-v1',lifetime=mode)
++                row.update(small=False,mode=mode)
++            state['runs'].append(row);save()
++            if not row['passed']:raise RuntimeError('Screen verification failed '+tag)
++    state.update(stage='complete',passed=True);state.pop('current',None);save()
++except BaseException as error:
++    state.update(stage='failed',error=str(error));save();raise
+diff --git a/research/step_lifetime/priority_cache/setup_host_trace.py b/research/step_lifetime/priority_cache/setup_host_trace.py
+new file mode 100644
+index 0000000..60ebd74
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/setup_host_trace.py
+@@ -0,0 +1,56 @@
++"""Create a sibling diagnostic lane without touching the running confirmation source."""
++from pathlib import Path
++import json
++import shutil
++import subprocess
++
++BASE = Path(__file__).resolve().parent
++ROOT = BASE.parent/'host-boundary-20261116'
++ROOT.mkdir(exist_ok=True)
++STACK = ROOT/'stack'
++if STACK.exists():
++    # Resume only the just-created partial long-path checkout; never overwrite edits.
++    origin = subprocess.check_output(['git','-C',str(STACK),'remote','get-url','origin'],text=True).strip()
++    status = subprocess.check_output(['git','-C',str(STACK),'status','--porcelain'],text=True).splitlines()
++    index = subprocess.check_output(['git','-C',str(STACK),'ls-files','-z'])
++    head = subprocess.check_output(['git','-C',str(STACK),'rev-parse','HEAD'])
++    expected = subprocess.check_output(['git','-C',str(BASE/'stack'),'rev-parse','HEAD'])
++    if Path(origin).resolve() != (BASE/'stack').resolve() or index or head != expected or any(not row.startswith(('D  ', '?? ')) for row in status):
++        raise SystemExit('Existing sibling is not the fresh partial checkout; inspect it.')
++    subprocess.run(['git','-C',str(STACK),'config','core.longpaths','true'],check=True)
++    subprocess.run(['git','-C',str(STACK),'config','core.autocrlf','false'],check=True)
++    # Failed initial clone never wrote its index. Recreate it in this verified fresh
++    # task-owned checkout; this is not a reset of any existing research workspace.
++    subprocess.run(['git','-C',str(STACK),'read-tree','--reset','-u','HEAD'],check=True)
++else:
++    subprocess.run(['git','-c','core.longpaths=true','clone','--no-hardlinks',str(BASE/'stack'),str(STACK)],check=True)
++for args in (['config','core.longpaths','true'],['config','core.autocrlf','false'],
++             ['switch','-c','research/step-lifetime-host-boundary'],
++             ['remote','rename','origin','frozen-base'],
++             ['remote','set-url','--push','frozen-base','no-push']):
++    subprocess.run(['git','-C',str(STACK),*args],check=True)
++shutil.copy2(BASE/'stack/configs/lifetime-runtime-freeze.json',STACK/'configs/lifetime-runtime-freeze.json')
++for directory in ('evidence','diagnostics','implementation','figures'):
++    (ROOT/directory).mkdir(exist_ok=True)
++remote = (BASE/'remote.py').read_text().replace('step-lifetime-priority-cache-20261116','step-lifetime-host-boundary-20261116')
++remote = remote.replace('base=/home/z00956592/megaflux/step-lifetime-raw-control-20261116/stack',
++                        'base=/home/z00956592/megaflux/step-lifetime-priority-cache-20261116/stack')
++remote = remote.replace("controller = re.sub(r\"^CONTAINER = .*$\", f\"CONTAINER = '{CONTAINER}'\", controller, flags=re.M)",
++                        "controller = re.sub(r\"^CONTAINER = .*$\", f\"CONTAINER = '{CONTAINER}'\", controller, flags=re.M)\n    controller = controller.replace('29200 + int(time.time()) % 2000', '32200 + int(time.time()) % 2000')")
++(ROOT/'remote.py').write_text(remote,newline='\n')
++plan = '''# Host-only boundary diagnosis
++
++Independent sibling research/step-lifetime-host-boundary, based on b77bb06 and the explicitly frozen priority-cache worker e2868fd2. Old source, SOs and completed runs remain immutable. Same common node admission lock; isolated container/install/artifacts/port range.
++
++Question: do the old rich-capture 188–206ms cross-rank backward entry gaps persist after warmup with the TimerOFF worker and no new device Events/snapshots/synchronizations? Measure host calls before any diagnostic resource creation; do not infer device completion from host return.
++
++Implement explicit --host-boundary-trace, off by default. Buffer CPU timestamp records, dump after training only. Trace existing pool/operator, planner/publish, FSDP, optimizer, lifecycle/drain/P2P submission and Python GC boundaries. No tensor clone, CPU read or new device synchronization in the tracer.
++
++Gate: small L2 H512 F512 S256 GA4 W2, three complete Adam updates and full step0 per-parameter gradient comparison against retained qualified reference. Then bounded main-shape B1/B3 controls (11 updates, inspect warmed updates5–10); no traced wall time enters performance figures. Actual worker, guarded source, initial/input/route identity, finite updates, exclusive admission and90GiB budget must all pass.
++
++Do not implement a new gradient policy solely from pre-warmup rich-capture waits. Interpret a disappearing gap as a difference between measurement/run conditions, not proof of one specific Event-limit cause. This lane is diagnostic infrastructure, not a new planner.
++'''
++(ROOT/'PLAN.md').write_text(plan,newline='\n')
++(ROOT/'setup-provenance.json').write_text(json.dumps(dict(base_head=subprocess.check_output(['git','-C',str(BASE/'stack'),'rev-parse','HEAD'],text=True).strip(),
++    copied_freeze='configs/lifetime-runtime-freeze.json',isolated_branch='research/step-lifetime-host-boundary'),indent=2)+'\n',newline='\n')
++print(ROOT)
+diff --git a/research/step_lifetime/priority_cache/setup_lane.py b/research/step_lifetime/priority_cache/setup_lane.py
+new file mode 100644
+index 0000000..030ef87
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/setup_lane.py
+@@ -0,0 +1,24 @@
++"""Prepare independent deployment/build paths and retain the exact reference."""
++from pathlib import Path
++import json,hashlib
++root=Path(__file__).resolve().parent;base=root.parent/'raw-control-20261116'
++for folder in ('implementation','diagnostics','evidence'):(root/folder).mkdir(exist_ok=True)
++old='step-lifetime-raw-control-20261116';new='step-lifetime-priority-cache-20261116'
++baseline_variant='ep8-cap64-lifetime-raw-control-v2';candidate='ep8-cap64-lifetime-priority-cache-v1'
++remote=(base/'remote.py').read_text().replace(old,new)
++remote=remote.replace('/home/z00956592/megaflux/temporal-replica-frontier-20261115/stack',
++                      '/home/z00956592/megaflux/'+old+'/stack')
++(root/'remote.py').write_text(remote,newline='\n')
++for source,target in (
++ ('stack/configs/lifetime-runtime-freeze.json','stack/configs/priority-baseline-freeze.json'),
++ ('implementation/worker-build.json','implementation/baseline-worker-build.json')):
++ (root/target).write_bytes((base/source).read_bytes())
++script=(base/'implementation/build-raw-worker.sh').read_text().replace(old,new).replace(baseline_variant,candidate).replace('RAW_CONTROL_WORKER','PRIORITY_WORKER')
++(root/'implementation/build-priority-worker.sh').write_text(script,newline='\n')
++driver=(base/'build_worker.py').read_text().replace(old,new).replace(baseline_variant,candidate).replace('build-raw-worker.sh','build-priority-worker.sh')
++(root/'build_worker.py').write_text(driver,newline='\n')
++proof=root.parent/'causal-diagnostics-20261116/diagnostics/gradient-priority-key-oracle.json'
++data=json.loads(proof.read_text())
++(root/'diagnostics/order-oracle-reference.json').write_text(json.dumps(dict(
++ path=str(proof),sha256=hashlib.sha256(proof.read_bytes()).hexdigest(),passed=data['passed'],
++ plans=data['checked'],scope=data['scope']),indent=2)+'\n',newline='\n')
+diff --git a/research/step_lifetime/priority_cache/summary.json b/research/step_lifetime/priority_cache/summary.json
+new file mode 100644
+index 0000000..0146728
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/summary.json
+@@ -0,0 +1,50 @@
++{
++  "common_executor_optimization": true,
++  "new_planner": false,
++  "shape": "L4 EP8 E256 Top8 H4096 F1024 S16384/rank, MB1 GA4 W2",
++  "routing": "MaxVio10 / same / artificial controlled route bank",
++  "pairs": [
++    {
++      "repeat": 1,
++      "old_ms": 4481.169239999999,
++      "cached_ms": 4203.33834,
++      "reduction_pct": 6.199964453920048
++    },
++    {
++      "repeat": 2,
++      "old_ms": 4475.336235,
++      "cached_ms": 4196.07276,
++      "reduction_pct": 6.240055726226334
++    },
++    {
++      "repeat": 3,
++      "old_ms": 4472.87136,
++      "cached_ms": 4208.68574,
++      "reduction_pct": 5.906398792564427
++    }
++  ],
++  "old_run_median_ms": 4475.336235,
++  "cached_run_median_ms": 4203.33834,
++  "reduction_of_run_medians_pct": 6.07770859478225,
++  "minimum_paired_reduction_pct": 5.906398792564427,
++  "maximum_paired_reduction_pct": 6.240055726226334,
++  "all_three_same_direction": true,
++  "controls": [
++    {
++      "name": "control1-fixed_home",
++      "median_step_ms": 4127.910165,
++      "independent_processes": 1,
++      "b1_reduction_vs_control_pct": -1.8272726872679002
++    },
++    {
++      "name": "control1-anchor",
++      "median_step_ms": 4138.519935,
++      "independent_processes": 1,
++      "b1_reduction_vs_control_pct": -1.566221886520891
++    }
++  ],
++  "peak_driver_GiB": 69.48046875,
++  "independent_processes_per_key_variant": 3,
++  "control_processes_per_point": 1,
++  "caveat": "No natural routes, all-MaxVio validation, new planner or stable lifecycle-policy gain established."
++}
+diff --git a/research/step_lifetime/priority_cache/verify_build.py b/research/step_lifetime/priority_cache/verify_build.py
+new file mode 100644
+index 0000000..65ae245
+--- /dev/null
++++ b/research/step_lifetime/priority_cache/verify_build.py
+@@ -0,0 +1,33 @@
++"""Prove the compiled intervention's options and changed source scope."""
++from pathlib import Path
++import hashlib,json
++root=Path(__file__).resolve().parent
++base=json.loads((root/'implementation/baseline-worker-build.json').read_text())
++new=json.loads((root/'implementation/worker-build.json').read_text())
++excluded={'name','native_sha256','sources','build_files','compile_files','cmake_cache_sha256'}
++fields=(set(base)|set(new))-excluded
++option_changes={name:[base.get(name),new.get(name)] for name in sorted(fields) if base.get(name)!=new.get(name)}
++source_changes={name:[base.get('sources',{}).get(name),new.get('sources',{}).get(name)]
++ for name in sorted(set(base.get('sources',{}))|set(new.get('sources',{})))
++ if base.get('sources',{}).get(name)!=new.get('sources',{}).get(name)}
++header='kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h'
++expected=hashlib.sha256((root/'stack/source/native-balanced'/header).read_bytes()).hexdigest()
++generated=json.loads((root/'diagnostics/raw-build-options.json').read_text())
++def normalize(item):
++ result={}
++ for name,text in item['files'].items():
++  text=text.replace('/home/z00956592/megaflux/'+item['task']+'/stack','${TASK}')
++  text=text.replace('/build-worker-'+item['variant'],'/build-worker-${VARIANT}')
++  text=text.replace('/worker-variants/'+item['variant'],'/worker-variants/${VARIANT}')
++  result[name]=text
++ return result
++left,right=normalize(generated['reference']),normalize(generated['candidate'])
++generated_differences=[name for name in set(left)|set(right) if left.get(name)!=right.get(name)]
++passed=not option_changes and not generated_differences and set(source_changes)=={header} and new['sources'][header]==expected
++data=dict(passed=passed,option_changes=option_changes,compiled_source_changes=source_changes,
++ generated_build_input_differences=generated_differences,
++ path_normalization='Only explicit task-root and /build-worker or /worker-variants directory names; raw inputs retained and checked against frozen hashes',
++ baseline_sha256=base['native_sha256'],candidate_sha256=new['native_sha256'],
++ note='Compiled reference and candidate differ in one header; on-disk snapshot alone is not baseline build provenance')
++(root/'diagnostics/build-intervention-audit.json').write_text(json.dumps(data,indent=2)+'\n',newline='\n')
++print(json.dumps(data,indent=2));raise SystemExit(0 if passed else 1)
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h
+index 5342e75..bbe0a61 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h
++++ b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h
+@@ -203,11 +203,17 @@ public:
+     }
+     __aicore__ inline void EnableGradientPipe(uint64_t ready,uint64_t trace,int epoch) {
+         gradient_.replica=replica_;gradient_.ready=ready;gradient_.trace=trace;gradient_.epoch=epoch;
+-        for(int e=0;e<expertPerRank_;++e)gradientOrder_[e]=e;
++        // Placement is immutable for this invocation. Cache metadata keys,
++        // never the ready/epoch flags that must remain freshly observed.
++        int priority[MegaMoeBF16Training::kMaxLocalExperts];
++        for(int e=0;e<expertPerRank_;++e) {
++            gradientOrder_[e]=e;
++            priority[e]=GradientKey(e);
++        }
+         // Same global logical-expert priority on every participating rank.
+         for(int i=1;i<expertPerRank_;++i) {
+             int v=gradientOrder_[i],j=i-1;
+-            while(j>=0 && GradientKey(gradientOrder_[j])>GradientKey(v)) {
++            while(j>=0 && priority[gradientOrder_[j]]>priority[v]) {
+                 gradientOrder_[j+1]=gradientOrder_[j];--j;
+             }
+             gradientOrder_[j+1]=v;
+diff --git a/tools/controller.py b/tools/controller.py
+index 58a96ad..8715482 100644
+--- a/tools/controller.py
++++ b/tools/controller.py
+@@ -132,11 +132,15 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
+         subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
+             str(TASK/'configs/temporal-scheduler-freeze.json'),'--out',
+             str(snapshots/f'{tag}-temporal-runtime.json')],check=True)
+-    if '--lifetime-mode' in arguments:
+-        if worker!='ep8-cap64-lifetime-raw-control-v2':raise RuntimeError('Raw-control ABI2 must use its own frozen worker')
++    private_manifests={
++        'ep8-cap64-lifetime-raw-control-v2':'priority-baseline-freeze.json',
++        'ep8-cap64-lifetime-priority-cache-v1':'lifetime-runtime-freeze.json'}
++    if worker in private_manifests:
+         subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
+-            str(TASK/'configs/lifetime-runtime-freeze.json'),'--out',
++            str(TASK/'configs'/private_manifests[worker]),'--out',
+             str(snapshots/f'{tag}-lifetime-runtime.json')],check=True)
++    elif '--lifetime-mode' in arguments:
++        raise RuntimeError('Priority intervention must use an explicitly frozen ABI2 worker')
+     sources=source_identity(arguments)
+     (out/'source-identity.json').write_text(json.dumps(sources,indent=2))
+     # Cache only byte-identical, verified snapshots from unchanged prior runs.

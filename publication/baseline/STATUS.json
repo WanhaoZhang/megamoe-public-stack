@@ -1,0 +1,19 @@
+{
+  "status": "closed_at_user_request",
+  "stage": "closeout",
+  "ordinary_only": true,
+  "formal_attempted": 121,
+  "formal_completed": 108,
+  "formal_failed": 6,
+  "formal_planned_initial": 108,
+  "existing_policies_completed": 90,
+  "excluded_contention_attempts": 13,
+  "receive_capacity": 163840,
+  "hbm_gate_gib": 90,
+  "cpu_policy_cases_passed": 480,
+  "device_final_gates_passed": 7,
+  "full_model_capacity_gates_passed": 5,
+  "calibration_completed": true,
+  "step_time_qualified": true,
+  "updated_utc": "2026-11-14T10:16:03.158395+00:00"
+}

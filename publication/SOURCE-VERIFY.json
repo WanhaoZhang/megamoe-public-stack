@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "branch": "research/step-lifetime-priority-cache",
+  "input_commit": "68aacaeff575cb0081e7b6eef4163dcd770ad039",
+  "original_source_repository": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study\\priority-cache-20261116\\stack",
+  "original_project": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study\\priority-cache-20261116",
+  "source_files_exact": 7398,
+  "full_source_files": 7398,
+  "all_tracked_files": 7841,
+  "syntax_checked": 1986,
+  "syntax_warnings": 266,
+  "gitlinks": 0,
+  "raw_artifacts_published": false,
+  "new_device_runs": false,
+  "original_research_source_unchanged": true,
+  "manifest_sha256": "b4cea28f7194406bb760b19e92046c57a11d612118688aff25bd3f0b1eb3cca7",
+  "preserved_whitespace_warnings": true
+}
