@@ -37,6 +37,7 @@ def main():
     parser.add_argument('--serialized',action='store_true')
     parser.add_argument('--lifetime-mode',default='all')
     parser.add_argument('--lifetime-raw-schedule',choices=('legacy','preserve'),default='legacy')
+    parser.add_argument('--route-case',choices=('bank','sparse_remote'),default='bank')
     args=parser.parse_args()
     from fsdp_turbo.utils.device import set_accelerator_compatible
     set_accelerator_compatible()
@@ -69,7 +70,7 @@ def main():
             for source in range(ep):
                 for expert in range(ep*32):
                     rows=int(counts[source,expert]);owner=expert//32
-                    remote=rows//2 if expert in selected else 0
+                    remote=(rows if args.route_case=='sparse_remote' else rows//2) if expert in selected else 0
                     quota[source,expert,owner]=rows-remote
                     if remote:quota[source,expert,(owner+1)%ep]=remote
             return native.compile_proposal(context,DeviceProposal(
@@ -130,6 +131,12 @@ def main():
             values=[data((tokens,hidden)).to(torch.bfloat16) for _ in range(count)]
             probabilities=[data((tokens,topk),.01).sigmoid()*.2 for _ in range(count)]
             ids=[provider.routes[0,index,0] for index in range(count)]
+            if args.route_case=='sparse_remote':
+                # Eight active logical experts per owner; ALL their assignments
+                # run at its cyclic peer. Owners have zero local work but must
+                # receive a nonzero parameter gradient, with24 unused experts.
+                ids=[torch.arange(rank*32,rank*32+8,device=device,dtype=torch.int32)
+                     .expand(tokens,8).contiguous() for _ in range(count)]
             dys=[data((tokens,hidden),.1).to(torch.bfloat16) for _ in range(count)]
             expected_weights=[value.detach().clone().requires_grad_() for value in weights]
             reference_x=[value.detach().clone().requires_grad_() for value in values]
@@ -176,7 +183,11 @@ def main():
                 plans.append(dict(copies=active,unused_replicas=sum(rows==0 for _,_,rows in active)))
             retired=pool.retire_training_step(case)
             if retired!=count:raise RuntimeError('Math gate plan lifetime mismatch')
-            record=dict(policy=policy,tasks=count,forced_checked_replica_plan=True,comparisons=comparisons,plans=plans,lifetime_stats=dict(lifetime.stats),
+            zero_home_count=int((pool.module.last_exec_counts[:pool.home]==0).sum().item())
+            if args.route_case=='sparse_remote' and zero_home_count!=pool.home:
+                raise RuntimeError('Sparse qualification failed to exercise empty owners')
+            record=dict(policy=policy,tasks=count,raw_schedule=args.lifetime_raw_schedule,route_case=args.route_case,
+                        empty_home_experts=zero_home_count,forced_checked_replica_plan=True,comparisons=comparisons,plans=plans,lifetime_stats=dict(lifetime.stats),
                         passed=all(value['passed'] for value in comparisons.values()))
             records.append(record)
             args.out.mkdir(exist_ok=True,parents=True)
