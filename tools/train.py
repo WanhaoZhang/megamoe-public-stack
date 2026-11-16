@@ -81,6 +81,7 @@ def main():
     parser.add_argument('--recv-capacity',type=int,default=163840)
     parser.add_argument('--route-bank',type=Path)
     parser.add_argument('--diagnostic-timer',action='store_true')
+    parser.add_argument('--host-boundary-trace',action='store_true',help='Host-only function envelopes; diagnostic wall times, no new device Events')
     parser.add_argument('--interface',choices=('unified','legacy'),default='unified')
     parser.add_argument('--cost-model',type=str)
     parser.add_argument('--root', type=Path, required=True)
@@ -186,7 +187,8 @@ def main():
             temporal_prefix_reuse=args.temporal_prefix_reuse,
             prefix_diagnostic_sync=args.prefix_diagnostic_sync,
             prefix_stage_audit=args.prefix_stage_audit,
-            numerical_diagnostic_only=bool(args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only),
+            numerical_diagnostic_only=bool(args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only or args.host_boundary_trace),
+            host_boundary_trace=args.host_boundary_trace,
             rematerialization_partition=('prefix+ffn_shared_finish' if args.temporal_prefix_reuse else
                 'logical-layer-group' if args.temporal_policy and args.temporal_policy!='legacy' else 'layer'),
             execution_mode=('offline-task-selection-replay-diagnostic' if args.temporal_schedule_replay else
@@ -243,6 +245,12 @@ def main():
     from mindspeed_llm.fsdp2.features.ep8_imbalance import plan_invocation
     from ascend_deepep.plan_replay import install_replay_provider
     install_replay_provider(plan_invocation)
+    host_boundary_dump = None
+    if args.host_boundary_trace:
+        if args.diagnostic_timer or args.backend != 'balanced':
+            raise RuntimeError('Host boundary isolation requires the ordinary balanced TimerOFF worker')
+        from capture_host_boundary import install as install_host_boundary
+        host_boundary_dump = install_host_boundary(args.out,rank)
     if args.diagnostic_timer:
         from capture_diagnostics import install
         install(args.out,rank)
@@ -481,6 +489,8 @@ def main():
         with (args.out / f'steps-rank{rank}.jsonl').open('a') as handle:
             handle.write(json.dumps(row) + '\n')
         print(json.dumps(row), flush=True)
+    if host_boundary_dump is not None:
+        host_boundary_dump()
     expected_route_calls = (2 if args.temporal_prefix_reuse else
         3 if args.temporal_policy in ('easy_home','easy_independent') and not args.temporal_schedule_replay else 2)
     if lifetime is not None:lifetime.write_audit(args.out/f'lifetime-audit-rank{rank}.json')

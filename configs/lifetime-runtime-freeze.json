@@ -1,7 +1,7 @@
 {
   "scope": "private ABI2 TimerOFF raw-output schedule control",
   "binaries": {
-    "source/native-balanced/worker-variants/ep8-cap64-lifetime-raw-control-v2/libascend_deepep_megaflux_early_bf16.so": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf",
-    "source/native-balanced/worker-variants/ep8-cap64-lifetime-raw-control-v2/libascend_deepep_megaflux_worker_bf16.so": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf"
+    "source/native-balanced/worker-variants/ep8-cap64-lifetime-priority-cache-v1/libascend_deepep_megaflux_early_bf16.so": "e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed",
+    "source/native-balanced/worker-variants/ep8-cap64-lifetime-priority-cache-v1/libascend_deepep_megaflux_worker_bf16.so": "e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed"
   }
 }
