@@ -1,0 +1,69 @@
+{
+  "stage": "complete",
+  "runs": [
+    {
+      "tag": "priority-pilot-reference-v1",
+      "name": "reference",
+      "variant": "ep8-cap64-lifetime-raw-control-v2",
+      "passed": true,
+      "median_step_ms": 4481.169239999999,
+      "measured_rank_max_step_ms": [
+        4392.54121,
+        4478.39499,
+        4455.64597,
+        4957.41803,
+        4483.94349,
+        4516.69047,
+        4513.55851,
+        4441.09738,
+        4420.35615,
+        4484.91188,
+        4519.21637,
+        4486.59637,
+        4963.52244,
+        4438.97215,
+        4426.70181,
+        4460.36592,
+        4438.85569,
+        4495.22804,
+        4443.22187,
+        4495.21289
+      ],
+      "peak_driver_MiB": 70786
+    },
+    {
+      "tag": "priority-pilot-cached_keys-v1",
+      "name": "cached_keys",
+      "variant": "ep8-cap64-lifetime-priority-cache-v1",
+      "passed": true,
+      "median_step_ms": 4203.33834,
+      "measured_rank_max_step_ms": [
+        4204.98261,
+        4201.69407,
+        4200.09976,
+        4694.62911,
+        4206.28781,
+        4232.42844,
+        4249.83228,
+        4187.7877,
+        4199.4393,
+        4205.50548,
+        4210.4573,
+        4197.65862,
+        4665.46529,
+        4188.79239,
+        4188.00997,
+        4178.01347,
+        4179.43742,
+        4214.00791,
+        4199.28114,
+        4228.26393
+      ],
+      "peak_driver_MiB": 71148
+    }
+  ],
+  "new_planner": false,
+  "reduction_pct": 6.199964453920048,
+  "independent_processes_per_point": 1,
+  "passed": true
+}

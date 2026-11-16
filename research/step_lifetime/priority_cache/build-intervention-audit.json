@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "option_changes": {},
+  "compiled_source_changes": {
+    "kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h": [
+      "ef7544fd05996b6c0c38c26e5a09fa54e17721a130afc699b77c0953576ca97f",
+      "2785d208e6dac7f1259d459c6596d54f16cfb070f5d16267fec9a14c52d045ce"
+    ]
+  },
+  "generated_build_input_differences": [],
+  "path_normalization": "Only explicit task-root and /build-worker or /worker-variants directory names; raw inputs retained and checked against frozen hashes",
+  "baseline_sha256": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf",
+  "candidate_sha256": "e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed",
+  "note": "Compiled reference and candidate differ in one header; on-disk snapshot alone is not baseline build provenance"
+}

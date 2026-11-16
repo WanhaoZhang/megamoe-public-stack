@@ -1,0 +1,22 @@
+{
+  "stage": "complete",
+  "runs": [
+    {
+      "tag": "priority-model-v1",
+      "passed": true,
+      "runtime_sources": {
+        "tools/lifetime_device.py": "de87a2450164081acdb30ac4421076308e6d07a495f62539affe064b2045458f",
+        "tools/step_lifetime.py": "651c34aac14992f31453665b02109328c98e8637ff16aa6cf9b7e61da8c6f647",
+        "tools/train.py": "de6fae05b8ef5aa042f27f0250d1b4842580ddbeaf599af8050548a0ce2e412f",
+        "tools/grouped_experts.py": "fe7836797ec17ff21e004119a205974775bfa1afce4067b30144eb9b00ccbcf4",
+        "tools/temporal_model.py": "268a45148684dd52ebea8782bcff792ab791c723d5422afafa460b38550ffe50",
+        "tools/temporal_prefix_reuse.py": "2dba99a5e0b687bdf82d70be6323bf2754d3fd9743d0f94e47940c437d2d1233",
+        "source/native-balanced/ascend_deepep/fsdp2_bridge.py": "6e975d521b63727fbc3e2e14fe727eba5840be088866495e6ceb8dd41c6a4a2e",
+        "source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py": "a9590a864841ba7a9b6ab5b59361b172f867a68f50b1e3f04608da01b1f8b86d",
+        "source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h": "2785d208e6dac7f1259d459c6596d54f16cfb070f5d16267fec9a14c52d045ce"
+      }
+    }
+  ],
+  "new_planner": false,
+  "passed": true
+}
