@@ -70,7 +70,7 @@ def install(out: Path, rank: int):
 
         def __getattr__(self, name):
             value = getattr(self.native, name)
-            if name not in ('compute_train_replica', 'backward_replica', 'backward_replica_redispatch_with_timer'):
+            if name not in ('compute_train_replica', 'backward_replica', 'backward_replica_redispatch', 'backward_replica_redispatch_with_timer'):
                 return value
             phase = 'forward' if name == 'compute_train_replica' else 'backward'
             return wrapped(value, 'operator.'+phase)
