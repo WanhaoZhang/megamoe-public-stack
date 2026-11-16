@@ -203,11 +203,17 @@ public:
     }
     __aicore__ inline void EnableGradientPipe(uint64_t ready,uint64_t trace,int epoch) {
         gradient_.replica=replica_;gradient_.ready=ready;gradient_.trace=trace;gradient_.epoch=epoch;
-        for(int e=0;e<expertPerRank_;++e)gradientOrder_[e]=e;
+        // Placement is immutable for this invocation. Cache metadata keys,
+        // never the ready/epoch flags that must remain freshly observed.
+        int priority[MegaMoeBF16Training::kMaxLocalExperts];
+        for(int e=0;e<expertPerRank_;++e) {
+            gradientOrder_[e]=e;
+            priority[e]=GradientKey(e);
+        }
         // Same global logical-expert priority on every participating rank.
         for(int i=1;i<expertPerRank_;++i) {
             int v=gradientOrder_[i],j=i-1;
-            while(j>=0 && GradientKey(gradientOrder_[j])>GradientKey(v)) {
+            while(j>=0 && priority[gradientOrder_[j]]>priority[v]) {
                 gradientOrder_[j+1]=gradientOrder_[j];--j;
             }
             gradientOrder_[j+1]=v;

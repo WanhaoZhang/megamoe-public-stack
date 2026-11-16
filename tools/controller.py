@@ -132,11 +132,15 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
         subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
             str(TASK/'configs/temporal-scheduler-freeze.json'),'--out',
             str(snapshots/f'{tag}-temporal-runtime.json')],check=True)
-    if '--lifetime-mode' in arguments:
-        if worker!='ep8-cap64-lifetime-raw-control-v2':raise RuntimeError('Raw-control ABI2 must use its own frozen worker')
+    private_manifests={
+        'ep8-cap64-lifetime-raw-control-v2':'priority-baseline-freeze.json',
+        'ep8-cap64-lifetime-priority-cache-v1':'lifetime-runtime-freeze.json'}
+    if worker in private_manifests:
         subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
-            str(TASK/'configs/lifetime-runtime-freeze.json'),'--out',
+            str(TASK/'configs'/private_manifests[worker]),'--out',
             str(snapshots/f'{tag}-lifetime-runtime.json')],check=True)
+    elif '--lifetime-mode' in arguments:
+        raise RuntimeError('Priority intervention must use an explicitly frozen ABI2 worker')
     sources=source_identity(arguments)
     (out/'source-identity.json').write_text(json.dumps(sources,indent=2))
     # Cache only byte-identical, verified snapshots from unchanged prior runs.
