@@ -6,7 +6,7 @@
   "original_project": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study\\host-boundary-20261116",
   "source_files_exact": 7398,
   "full_source_files": 7398,
-  "all_tracked_files": 7801,
+  "all_tracked_files": 7805,
   "syntax_checked": 1967,
   "syntax_warnings": 266,
   "gitlinks": 0,
@@ -14,5 +14,6 @@
   "new_device_runs": false,
   "original_research_source_unchanged": true,
   "manifest_sha256": "652b19b031e7aa35ccfe5dea4d6ad7576b81d2022bef0ec951918918b8dd84f0",
-  "preserved_whitespace_warnings": true
+  "preserved_whitespace_warnings": true,
+  "supplementary_local_build_checkouts_excluded": true
 }

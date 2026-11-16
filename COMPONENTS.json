@@ -4,7 +4,7 @@
     {
       "component": "native-balanced",
       "upstream": "https://github.com/WanhaoZhang/megaflux",
-      "files": 788,
+      "files": 790,
       "dependencies": [
         {
           "path": "3rdparty/catccos",
@@ -20,7 +20,8 @@
         }
       ],
       "snapshot_parent_commit": "6820b2b582fdb0005db19dc22a9aaef491860869",
-      "source_tree": "49d0a946740ccc8534a50636136be172f0bdde8d"
+      "source_tree": "49d0a946740ccc8534a50636136be172f0bdde8d",
+      "exported_files": 4794
     },
     {
       "component": "FSDPTurbo",
@@ -28,7 +29,8 @@
       "files": 625,
       "dependencies": [],
       "snapshot_parent_commit": "6820b2b582fdb0005db19dc22a9aaef491860869",
-      "source_tree": "642a17ceafbbee143f25a2fa2f778bdd0f7a6389"
+      "source_tree": "642a17ceafbbee143f25a2fa2f778bdd0f7a6389",
+      "exported_files": 625
     },
     {
       "component": "MindSpeed-LLM",
@@ -49,7 +51,8 @@
         }
       ],
       "snapshot_parent_commit": "6820b2b582fdb0005db19dc22a9aaef491860869",
-      "source_tree": "caabcf2e696e8bcaa65e2236196854252eb61f56"
+      "source_tree": "caabcf2e696e8bcaa65e2236196854252eb61f56",
+      "exported_files": 1979
     },
     {
       "component": "native-balanced/3rdparty/catccos",
@@ -65,7 +68,8 @@
           "path": "3rdparty/shmem",
           "commit": "aa1e4c24f706a4f9d63975c77e527ef1eb37ca9f"
         }
-      ]
+      ],
+      "exported_files": 557
     },
     {
       "component": "native-balanced/3rdparty/catlass",
@@ -81,14 +85,16 @@
           "path": "python/tla_dsl/3rdparty/AscendNPU-IR",
           "commit": "a07821269ede7a5e683ac02c8a2d291608083741"
         }
-      ]
+      ],
+      "exported_files": 2493
     },
     {
       "component": "native-balanced/3rdparty/shmem",
       "commit": "f281664309cc09bf9b134ba4fe6803fa2ebc10e4",
       "upstream": "https://gitcode.com/bingobb/shmem_wuhan.git",
       "files": 954,
-      "optional_upstream_dependencies": []
+      "optional_upstream_dependencies": [],
+      "exported_files": 954
     }
   ],
   "full_component_blobs_exported": true,
