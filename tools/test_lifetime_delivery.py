@@ -1,6 +1,7 @@
 """Two-rank CPU oracle for exact raw-gradient accumulation and EP scaling."""
 from pathlib import Path
 from types import SimpleNamespace
+from itertools import product
 import tempfile
 import unittest
 import torch
@@ -12,7 +13,7 @@ from lifetime_device import LifetimeDevice
 def delivery_worker(rank, rendezvous):
     torch.set_num_threads(1)
     dist.init_process_group('gloo', init_method='file://' + rendezvous, rank=rank, world_size=2)
-    for mode in ('b0', 'b1', 'b2', 'b3'):
+    for mode, ready_scope in product(('b0', 'b1', 'b2', 'b3'), ('call_stream', 'bank_write')):
         experts = SimpleNamespace(gate_up_proj=torch.nn.Parameter(torch.ones(1, 8, 8)),
                                   down_proj=torch.nn.Parameter(torch.ones(1, 8, 4)))
         model = SimpleNamespace(model=SimpleNamespace(layers=[SimpleNamespace(mlp=SimpleNamespace(experts=experts))]))
@@ -24,7 +25,7 @@ def delivery_worker(rank, rendezvous):
                                  _worker_native=SimpleNamespace(megaflux_step_lifetime_version=lambda: 1))
         pool = SimpleNamespace(module=module, home=1, slots=1, group=dist.group.WORLD,
                                shmem=SimpleNamespace(rank=lambda: rank, world_size=lambda: 2))
-        adapter = LifetimeDevice(model, pool, mode, entries=1)
+        adapter = LifetimeDevice(model, pool, mode, entries=1, gradient_ready_scope=ready_scope)
         optimizer = torch.optim.AdamW([experts.gate_up_proj, experts.down_proj], lr=1e-5)
         for version in range(3):
             adapter.begin(version)

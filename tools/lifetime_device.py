@@ -9,6 +9,7 @@ import torch
 import torch.distributed as dist
 from torch.distributed.tensor import DTensor
 from step_lifetime import ExpertKey, UpdateContext
+from gradient_bank_ready import GradientBankReadyLedger
 
 
 def _local(value):
@@ -18,13 +19,15 @@ def _local(value):
 class LifetimeDevice:
     """Own bounded replica storage and return complete gradients to fixed owners."""
 
-    def __init__(self, model, pool, mode, entries=8, *, raw_schedule='legacy'):
+    def __init__(self, model, pool, mode, entries=8, *, raw_schedule='legacy', gradient_ready_scope='call_stream'):
         if mode not in ('anchor', 'b0', 'b1', 'b2', 'b3'):
             raise ValueError('Unknown lifetime mode')
         module = pool.module
         abi = getattr(module._worker_native, 'megaflux_step_lifetime_version', None)
         if raw_schedule not in ('legacy','preserve'):
             raise ValueError('Unknown raw dW compute schedule')
+        if gradient_ready_scope not in ('call_stream', 'bank_write'):
+            raise ValueError('Unknown gradient producer-ready scope')
         capability=0 if abi is None else int(abi())
         if capability not in (1,2) or (raw_schedule=='preserve' and capability<2):
             raise RuntimeError('Requested lifetime schedule requires a matching private ABI worker')
@@ -34,10 +37,12 @@ class LifetimeDevice:
         self.raw_schedule=raw_schedule
         self.raw_dw_mode=2 if raw_schedule=='preserve' else 1
         self.worker_capability=capability
+        self.gradient_ready_scope=gradient_ready_scope
         self.module, self.pool, self.mode = module, pool, mode
         self.rank, self.group = pool.shmem.rank(), pool.group
         self.ranks, self.entries = pool.shmem.world_size(), entries
         self.context = UpdateContext(entries, entries)
+        self.bank_ready = GradientBankReadyLedger(entries, self.rank) if gradient_ready_scope == 'bank_write' else None
         self.layer = None
         self.service = None
         self.flight = []
@@ -58,13 +63,16 @@ class LifetimeDevice:
         self.receive = tuple(torch.empty_like(value, dtype=torch.float32) for value in template)
         self.cache_addresses = torch.zeros((pool.slots, 2), device=module.w1.device, dtype=torch.int64)
         self.stats = dict(weight_remote_bytes=0, weight_hit_bytes=0, cache_local_copy_bytes=0,
-                          gradient_remote_bytes=0, gradient_deliveries=0, flushes=0)
+                          gradient_remote_bytes=0, gradient_deliveries=0, flushes=0,
+                          ready_bank_writes=0, ready_bank_waits=0)
         self._current = None
         if mode != 'anchor':
             module.lifetime = self
 
     def begin(self, version):
         self.context.begin(version)
+        if self.bank_ready is not None:
+            self.bank_ready.begin(version)
         if self.pending:
             raise RuntimeError('Pending gradients crossed an optimizer update')
         if self.mode!='anchor':
@@ -136,8 +144,21 @@ class LifetimeDevice:
     def _drain(self):
         for event, identities in self.flight:
             if event is not None:event.synchronize()
-            if identities:self.context.complete(identities)
+            if identities:
+                self.context.complete(identities)
+                if self.bank_ready is not None:self.bank_ready.complete(identities)
         self.flight.clear()
+
+    @contextmanager
+    def _flush_scope(self):
+        if self.gradient_ready_scope == 'call_stream' or self.service is None:
+            with self._delivery_scope():
+                yield
+        else:
+            # Home-gradient adds stay ordered on this same service stream.
+            # Source-bank reads wait their own last writer below.
+            with torch.accelerator.stream(self.service):
+                yield
 
     def _add_owner(self, layer, local_expert, first, second):
         with torch.no_grad():
@@ -194,6 +215,14 @@ class LifetimeDevice:
                                             expert // self.pool.home)
                     self.gradients_buffer[0][index].add_(first[self.pool.home + slot].float())
                     self.gradients_buffer[1][index].add_(second[self.pool.home + slot].float())
+                    if self.bank_ready is not None:
+                        ready = None
+                        if self.service is not None:
+                            ready = torch.accelerator.Event()
+                            ready.record(torch.accelerator.current_stream())
+                        self.bank_ready.publish(ExpertKey(self.context.version, layer, expert, source),
+                                                index, tuple(tickets), ready)
+                        self.stats['ready_bank_writes'] += 1
         if self.mode in ('b0', 'b1'):
             self.flush()
 
@@ -203,10 +232,21 @@ class LifetimeDevice:
             return
         self.stats['flushes'] += 1
         own_tickets=[]
-        with self._delivery_scope():
+        writes = {}
+        if self.bank_ready is not None:
+            requests = [(ExpertKey(self.context.version, layer, expert, source), index, tuple(tickets))
+                        for (source, layer, expert), (index, tickets) in sorted(self.pending.items())
+                        if source == self.rank]
+            writes = {record.key: record for record in self.bank_ready.take_many(requests)}
+        with self._flush_scope():
             for (source, layer, expert), (index, tickets) in sorted(self.pending.items()):
                 owner = expert // self.pool.home
                 if source == self.rank:
+                    if self.bank_ready is not None and self.service is not None:
+                        record = writes[ExpertKey(self.context.version, layer, expert, source)]
+                        if record.event is None:raise RuntimeError('Device bank has no producer-ready Event')
+                        self.service.wait_event(record.event)
+                        self.stats['ready_bank_waits'] += 1
                     self.context.submit(tuple(tickets))
                 if source == owner:
                     if source == self.rank:
@@ -245,10 +285,12 @@ class LifetimeDevice:
         self.flush()
         self._drain()
         self.context.finish()
+        if self.bank_ready is not None:self.bank_ready.finish()
 
     def write_audit(self, path):
         path.write_text(json.dumps(dict(mode=self.mode, entries=self.entries, **self.stats,
             raw_schedule=self.raw_schedule,worker_capability=self.worker_capability,
+            gradient_ready_scope=self.gradient_ready_scope,
             pending=len(self.pending), qualified_performance_path=False,
             control='observed_current_plan_cpu_metadata',
             transport='bounded_owner_service_stream_drain_before_bank_reuse',

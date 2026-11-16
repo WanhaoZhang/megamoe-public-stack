@@ -117,9 +117,12 @@ def main():
     parser.add_argument('--diagnose-memory', action='store_true')
     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
     parser.add_argument('--lifetime-raw-schedule',choices=('legacy','preserve'),default='legacy')
+    parser.add_argument('--gradient-ready-scope',choices=('call_stream','bank_write'),default='call_stream')
     args = parser.parse_args()
     if args.lifetime_raw_schedule!='legacy' and not args.lifetime_mode:
         parser.error('An explicit lifetime mode is required for the raw-schedule experiment')
+    if args.gradient_ready_scope!='call_stream' and not args.lifetime_mode:
+        parser.error('Bank writer readiness requires an explicit lifetime mode')
     if args.lifetime_mode and (args.temporal_policy!='fixed_native' or not args.temporal_prefix_reuse or args.diagnostic_timer):
         parser.error('Lifetime qualification requires fixed_native, prefix reuse and TimerOFF')
     if args.maxutil_rule=='upstream_first' and args.temporal_policy not in ('easy_home','easy_independent'):
@@ -284,9 +287,11 @@ def main():
     lifetime = None
     if args.lifetime_mode:
         from lifetime_device import LifetimeDevice
-        lifetime = LifetimeDevice(engine.model,temporal.legacy,args.lifetime_mode,raw_schedule=args.lifetime_raw_schedule)
+        lifetime = LifetimeDevice(engine.model,temporal.legacy,args.lifetime_mode,raw_schedule=args.lifetime_raw_schedule,
+                                  gradient_ready_scope=args.gradient_ready_scope)
         (args.out/f'lifetime-config-rank{rank}.json').write_text(json.dumps(dict(
-            mode=args.lifetime_mode,worker_capability=lifetime.worker_capability,raw_schedule=args.lifetime_raw_schedule,qualified_performance_path=False,
+            mode=args.lifetime_mode,worker_capability=lifetime.worker_capability,raw_schedule=args.lifetime_raw_schedule,
+            gradient_ready_scope=args.gradient_ready_scope,qualified_performance_path=False,
             routing_gradient_scaling='explicit_ep_once' if args.lifetime_mode!='anchor' else 'parameter_hook')))
     if args.finite_diagnostics:
         from torch.utils._pytree import tree_flatten
