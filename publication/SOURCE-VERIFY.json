@@ -6,7 +6,7 @@
   "original_project": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study\\causal-diagnostics-20261116",
   "source_files_exact": 7398,
   "full_source_files": 7398,
-  "all_tracked_files": 7798,
+  "all_tracked_files": 7802,
   "syntax_checked": 1971,
   "syntax_warnings": 266,
   "gitlinks": 0,
@@ -14,5 +14,6 @@
   "new_device_runs": false,
   "original_research_source_unchanged": true,
   "manifest_sha256": "7b54ed798e2c0752601c8eb1b7c17ad97cb89f5072393688a26c3ab8d9190b93",
-  "preserved_whitespace_warnings": true
+  "preserved_whitespace_warnings": true,
+  "supplementary_local_build_checkouts_excluded": true
 }
