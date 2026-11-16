@@ -40,13 +40,21 @@ rows=[dict(mode='Fixed home',milliseconds=controls['control1-fixed_home']['media
 for run in state['runs']:
     if run['small']:continue
     rows.append(dict(mode=run['mode'].upper(),milliseconds=run['median_step_ms'],n=1,tag=run['tag']))
+order={'Fixed home':0,'Native anchor':1,'B0':2,'B1 resident/immediate':3,'B2':4,'B3':5}
+rows.sort(key=lambda row:order[row['mode']])
 best=min(row['milliseconds'] for row in rows[:2])
-for row in rows:row['reduction_vs_strongest_control_pct']=100*(1-row['milliseconds']/best)
+for row in rows:
+    row['reduction_vs_strongest_control_pct']=100*(1-row['milliseconds']/best)
+    if row['mode'].startswith('B1'):
+        row['peak_driver_GiB']=max(load(ROOT/'evidence'/tag/'status.json')['peak_driver_MiB'] for tag in
+            ('priority-pilot-cached_keys-v1','priority-repeat2-cached_keys-v1','priority-repeat3-cached_keys-v1'))/1024
+    else:row['peak_driver_GiB']=load(ROOT/'evidence'/row['tag']/'status.json')['peak_driver_MiB']/1024
 counters=[]
-for run in state['runs']:
-    if run['small']:continue
-    all_ranks=[load(ROOT/'evidence'/run['tag']/f'lifetime-audit-rank{rank}.json') for rank in range(8)]
-    counters.append(dict(mode=run['mode'],scope='All 25 updates, includes 5 warmup; aggregates over all 8 ranks',
+counter_runs=[('b1',tag) for tag in ('priority-pilot-cached_keys-v1','priority-repeat2-cached_keys-v1','priority-repeat3-cached_keys-v1')]
+counter_runs += [(run['mode'],run['tag']) for run in state['runs'] if not run['small']]
+for mode,tag in counter_runs:
+    all_ranks=[load(ROOT/'evidence'/tag/f'lifetime-audit-rank{rank}.json') for rank in range(8)]
+    counters.append(dict(mode=mode,tag=tag,scope='All 25 updates, includes 5 warmup; aggregates over all 8 ranks',
         weight_remote_MiB=sum(row['weight_remote_bytes'] for row in all_ranks)/1024**2,
         weight_hit_MiB=sum(row['weight_hit_bytes'] for row in all_ranks)/1024**2,
         gradient_remote_MiB=sum(row['gradient_remote_bytes'] for row in all_ranks)/1024**2,
@@ -68,13 +76,13 @@ ax.grid(axis='y',alpha=.25);ax.set_axisbelow(True)
 fig.supxlabel('25 updates/process; 5 warmup + 20 measured; each update max over 8 ranks.\nBounded screen, synthetic routing, no new planner or stable policy gain claim.',fontsize=9)
 for suffix in ('png','svg','pdf'):fig.savefig(ROOT/'figures'/('common-lifetime-screen.'+suffix),dpi=180)
 plt.close(fig)
-table='\n'.join(f'|{row["mode"]}|{row["milliseconds"]/1000:.6f}|{row["n"]}|{row["reduction_vs_strongest_control_pct"]:+.2f}%|' for row in rows)
+table='\n'.join(f'|{row["mode"]}|{row["milliseconds"]/1000:.6f}|{row["n"]}|{row["reduction_vs_strongest_control_pct"]:+.2f}%|{row["peak_driver_GiB"]:.2f}|' for row in rows)
 report=f'''# 同一优化执行器上的生命周期复查
 
 完整更新联合规划目标仍未完成。这是预声明的B0/B2/B3三点有界复查，没有新策略。
 
-|方式|秒/完整更新|独立进程数|相对较强控制的耗时减少|
-|---|---:|---:|---:|
+|方式|秒/完整更新|独立进程数|相对较强控制的耗时减少|整卡峰值GiB|
+|---|---:|---:|---:|---:|
 {table}
 
 负号表示更慢。B0/B2/B3及两个控制各只有一个进程，B1为三进程中位；所有方法共同执行资源/模型/输入/路由/配额生成/公共数值与owner语义不变。正式TimerOFF，25更新、5预热＋20测量、每更新八rank最大wall。三个小形状完整模型资格和实际SO/数据身份补充审计均通过。
