@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "branch": "research/step-lifetime-causal",
+  "input_commit": "cc9f7733b35d46c576748a777842aee2992d5e4e",
+  "original_source_repository": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study\\causal-diagnostics-20261116\\stack",
+  "original_project": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study\\causal-diagnostics-20261116",
+  "source_files_exact": 7398,
+  "full_source_files": 7398,
+  "all_tracked_files": 7798,
+  "syntax_checked": 1971,
+  "syntax_warnings": 266,
+  "gitlinks": 0,
+  "raw_artifacts_published": false,
+  "new_device_runs": false,
+  "original_research_source_unchanged": true,
+  "manifest_sha256": "7b54ed798e2c0752601c8eb1b7c17ad97cb89f5072393688a26c3ab8d9190b93",
+  "preserved_whitespace_warnings": true
+}

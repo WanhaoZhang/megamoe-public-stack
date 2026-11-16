@@ -3,7 +3,6 @@
   "components": [
     {
       "component": "native-balanced",
-      "commit": "3ec836a8fe8d779508c278c18ad425a52ab2bed1",
       "upstream": "https://github.com/WanhaoZhang/megaflux",
       "files": 788,
       "dependencies": [
@@ -19,18 +18,20 @@
           "path": "3rdparty/shmem",
           "commit": "f281664309cc09bf9b134ba4fe6803fa2ebc10e4"
         }
-      ]
+      ],
+      "snapshot_parent_commit": "cc9f7733b35d46c576748a777842aee2992d5e4e",
+      "source_tree": "65cd42d4644ab7799cf78da040fa6e6b87e74733"
     },
     {
       "component": "FSDPTurbo",
-      "commit": "08d5caf721ed8bfa9b1fcf4fa5a9d8553b489657",
       "upstream": "https://gitcode.com/Ascend/FSDPTurbo",
       "files": 625,
-      "dependencies": []
+      "dependencies": [],
+      "snapshot_parent_commit": "cc9f7733b35d46c576748a777842aee2992d5e4e",
+      "source_tree": "642a17ceafbbee143f25a2fa2f778bdd0f7a6389"
     },
     {
       "component": "MindSpeed-LLM",
-      "commit": "fbc1ed7dd68694edc5f8b20e5f7369439c59061e",
       "upstream": "https://github.com/Ascend/MindSpeed-LLM",
       "files": 1979,
       "dependencies": [
@@ -46,7 +47,9 @@
           "path": "3rdparty/MindSpeed",
           "commit": "7969e1c6b61c44fdb09d20607561824675bb216f"
         }
-      ]
+      ],
+      "snapshot_parent_commit": "cc9f7733b35d46c576748a777842aee2992d5e4e",
+      "source_tree": "caabcf2e696e8bcaa65e2236196854252eb61f56"
     },
     {
       "component": "native-balanced/3rdparty/catccos",

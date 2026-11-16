@@ -1,0 +1,44 @@
+{
+  "base": "6e7dd58acc11b292b2b49185f6a8f082ea9d50b0",
+  "delivery_head": "cc9f7733b35d46c576748a777842aee2992d5e4e",
+  "branch": "research/step-lifetime-causal",
+  "runtime_source_commit": "abaf8e9",
+  "note": "Delivery adds reports/offline scripts and frozen configs; each evidence source-identity and runtime snapshots remain execution authority; no diagnostic timing is a performance score",
+  "artifacts": [
+    {
+      "path": "implementation\\source-cc9f7733b35d.zip",
+      "bytes": 79614512,
+      "sha256": "67de27671b8324daeea46bbacfb13fe71aaf6b5c3a3a63d0f1e1a73a2e7c4152"
+    },
+    {
+      "path": "implementation\\source-diff.patch",
+      "bytes": 130284,
+      "sha256": "d9dc6f8834e7f55ebf755e5d83ed74b8cb072c180b70fa95142365f7c6894fbf"
+    },
+    {
+      "path": "implementation\\causal-timer-worker.so",
+      "bytes": 4626352,
+      "sha256": "e0e18541b7faecb6a99d27a6e2ab3587bc8a93ed7d24768a40fbbbd7cf1fb49c"
+    },
+    {
+      "path": "implementation\\worker-build.json",
+      "bytes": 27985,
+      "sha256": "24b08f5060e88712f01291de72e060164408cc2c0f9aeddd240236eb0afce699"
+    },
+    {
+      "path": "causal-v1.json",
+      "bytes": 17119,
+      "sha256": "586c8a5c00c128c3286c046a8771b2906f0521a6f9b274737bde61808fbe301c"
+    },
+    {
+      "path": "diagnostics\\main-all-plan-equality.json",
+      "bytes": 1165,
+      "sha256": "dc1d3c832e4a86a71979281555883a21fb94b50608fb4f3b9decc3219debb1dc"
+    },
+    {
+      "path": "analysis\\causal-v1\\summary.json",
+      "bytes": 118455,
+      "sha256": "b70843c59b1f3d7aeb54ec676630e2e05ea908f391514adc3faa0dce33509118"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "components": [
+    {
+      "component": "native-balanced",
+      "commit": "3ec836a8fe8d779508c278c18ad425a52ab2bed1",
+      "upstream": "https://github.com/WanhaoZhang/megaflux",
+      "files": 788,
+      "dependencies": [
+        {
+          "path": "3rdparty/catccos",
+          "commit": "eae1338c51d0e8820ca75f7eb9d91bc4d58b1177"
+        },
+        {
+          "path": "3rdparty/catlass",
+          "commit": "d7d0bc2ac4cfcda6f59daa1fba11f1cce4f3c4bb"
+        },
+        {
+          "path": "3rdparty/shmem",
+          "commit": "f281664309cc09bf9b134ba4fe6803fa2ebc10e4"
+        }
+      ]
+    },
+    {
+      "component": "FSDPTurbo",
+      "commit": "08d5caf721ed8bfa9b1fcf4fa5a9d8553b489657",
+      "upstream": "https://gitcode.com/Ascend/FSDPTurbo",
+      "files": 625,
+      "dependencies": []
+    },
+    {
+      "component": "MindSpeed-LLM",
+      "commit": "fbc1ed7dd68694edc5f8b20e5f7369439c59061e",
+      "upstream": "https://github.com/Ascend/MindSpeed-LLM",
+      "files": 1979,
+      "dependencies": [
+        {
+          "path": "3rdparty/FSDPTurbo",
+          "commit": "89ec36b37a854926390515c8cc89d099add77f7c"
+        },
+        {
+          "path": "3rdparty/Megatron-LM",
+          "commit": "a845aa7e12b3a117e24c2352b9e3e60bad2e3a17"
+        },
+        {
+          "path": "3rdparty/MindSpeed",
+          "commit": "7969e1c6b61c44fdb09d20607561824675bb216f"
+        }
+      ]
+    },
+    {
+      "component": "native-balanced/3rdparty/catccos",
+      "commit": "eae1338c51d0e8820ca75f7eb9d91bc4d58b1177",
+      "upstream": "https://gitcode.com/bingobb/catccos_wuhan.git",
+      "files": 557,
+      "optional_upstream_dependencies": [
+        {
+          "path": "3rdparty/catlass",
+          "commit": "db93081ce9b0ad6c04e99b9ed5f2fba081ccdb00"
+        },
+        {
+          "path": "3rdparty/shmem",
+          "commit": "aa1e4c24f706a4f9d63975c77e527ef1eb37ca9f"
+        }
+      ]
+    },
+    {
+      "component": "native-balanced/3rdparty/catlass",
+      "commit": "d7d0bc2ac4cfcda6f59daa1fba11f1cce4f3c4bb",
+      "upstream": "https://gitcode.com/bingobb/catlass_wuhan.git",
+      "files": 2493,
+      "optional_upstream_dependencies": [
+        {
+          "path": "3rdparty/googletest",
+          "commit": "f8d7d77c06936315286eb55f8de22cd23c188571"
+        },
+        {
+          "path": "python/tla_dsl/3rdparty/AscendNPU-IR",
+          "commit": "a07821269ede7a5e683ac02c8a2d291608083741"
+        }
+      ]
+    },
+    {
+      "component": "native-balanced/3rdparty/shmem",
+      "commit": "f281664309cc09bf9b134ba4fe6803fa2ebc10e4",
+      "upstream": "https://gitcode.com/bingobb/shmem_wuhan.git",
+      "files": 954,
+      "optional_upstream_dependencies": []
+    }
+  ],
+  "full_component_blobs_exported": true,
+  "framework_submodules": false
+}
