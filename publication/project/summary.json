@@ -1,0 +1,14 @@
+{
+  "local_control_complete": true,
+  "persistent_goal": "paused",
+  "no_auto_expand": true,
+  "new_planner": false,
+  "baseline_seconds": 4.23805325,
+  "bank_write_seconds": 4.2079286300000005,
+  "reduction_pct": 0.7108126826863126,
+  "speedup_ratio": 1.0071590140063758,
+  "independent_processes_per_scope": 1,
+  "math_records": 256,
+  "peak_sampled_driver_GiB": 66.43359375,
+  "conclusion": "One matched process per scope; a screening signal or negative result, not a stable-gain claim."
+}

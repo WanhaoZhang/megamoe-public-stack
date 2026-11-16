@@ -1,0 +1,150 @@
+{
+  "stage": "complete",
+  "runs": [
+    {
+      "tag": "grad-ready-math-reference-bank-v1",
+      "phase": "math",
+      "passed": true,
+      "scope": "call_stream",
+      "route": "bank",
+      "entries": 8,
+      "records": 64,
+      "max_relative_l2": {
+        "output": 0.00030363924452103674,
+        "dx": 0.002616159152239561,
+        "dp": 0.0027591867838054895,
+        "dw1": 0.0023487729486078024,
+        "dw2": 0.00234860903583467
+      }
+    },
+    {
+      "tag": "grad-ready-math-bank-bank-v1",
+      "phase": "math",
+      "passed": true,
+      "scope": "bank_write",
+      "route": "bank",
+      "entries": 8,
+      "records": 64,
+      "max_relative_l2": {
+        "output": 0.00030363924452103674,
+        "dx": 0.002616159152239561,
+        "dp": 0.0027591867838054895,
+        "dw1": 0.0023487729486078024,
+        "dw2": 0.00234860903583467
+      }
+    },
+    {
+      "tag": "grad-ready-math-bank-sparse-v1",
+      "phase": "math",
+      "passed": true,
+      "scope": "bank_write",
+      "route": "sparse_remote",
+      "entries": 8,
+      "records": 64,
+      "max_relative_l2": {
+        "output": 0.0003091024118475616,
+        "dx": 0.002631195355206728,
+        "dp": 0.002766405465081334,
+        "dw1": 0.002350255846977234,
+        "dw2": 0.002351734321564436
+      }
+    },
+    {
+      "tag": "grad-ready-math-bank-capacity-v1",
+      "phase": "math",
+      "passed": true,
+      "scope": "bank_write",
+      "route": "sparse_remote",
+      "entries": 1,
+      "records": 64,
+      "max_relative_l2": {
+        "output": 0.0003091024118475616,
+        "dx": 0.002631195355206728,
+        "dp": 0.002766405465081334,
+        "dw1": 0.002350255846977234,
+        "dw2": 0.002351734321564436
+      }
+    },
+    {
+      "tag": "grad-ready-model-call_stream-v1",
+      "phase": "model",
+      "scope": "call_stream",
+      "passed": true,
+      "peak_driver_MiB": 8577
+    },
+    {
+      "tag": "grad-ready-model-bank_write-v1",
+      "phase": "model",
+      "scope": "bank_write",
+      "passed": true,
+      "peak_driver_MiB": 9231
+    },
+    {
+      "tag": "grad-ready-pilot-call_stream-v1",
+      "phase": "pilot",
+      "scope": "call_stream",
+      "passed": true,
+      "median_step_ms": 4238.05325,
+      "measured_rank_max_step_ms": [
+        4198.49422,
+        4217.72655,
+        4639.23875,
+        4633.91555,
+        4218.46223,
+        4289.41913,
+        4245.42204,
+        4192.47661,
+        4247.95047,
+        4259.89009,
+        4246.95859,
+        4239.33732,
+        4687.8002,
+        4216.18066,
+        4191.05816,
+        4207.97444,
+        4206.80366,
+        4277.57995,
+        4218.591,
+        4236.76918
+      ],
+      "peak_driver_MiB": 68028
+    },
+    {
+      "tag": "grad-ready-pilot-bank_write-v1",
+      "phase": "pilot",
+      "scope": "bank_write",
+      "passed": true,
+      "median_step_ms": 4207.92863,
+      "measured_rank_max_step_ms": [
+        4169.72029,
+        4174.67738,
+        4617.91521,
+        4595.32752,
+        4199.18451,
+        4269.8463,
+        4219.995,
+        4175.81907,
+        4252.15949,
+        4276.91974,
+        4243.3744,
+        4198.63208,
+        4686.63603,
+        4196.0222,
+        4170.6263,
+        4199.14993,
+        4185.60711,
+        4275.73858,
+        4192.15299,
+        4216.67275
+      ],
+      "peak_driver_MiB": 67688
+    }
+  ],
+  "persistent_goal": "paused",
+  "bounded_finish": true,
+  "new_planner": false,
+  "formal_repeats": 1,
+  "auto_expand": false,
+  "passed": true,
+  "reduction_pct": 0.7108126826863126
+}

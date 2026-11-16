@@ -1,0 +1,1964 @@
+diff --git a/research/step_lifetime/gradient_ready/IMPLEMENTATION-LOG.md b/research/step_lifetime/gradient_ready/IMPLEMENTATION-LOG.md
+new file mode 100644
+index 0000000..55f4423
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/IMPLEMENTATION-LOG.md
+@@ -0,0 +1,17 @@
++# Implementation log
++
++2026-11-16: independent clone from68aacae, core.longpaths enabled before checkout. Two inherited checkout EOL-only differences were verified with git diff --ignore-space-at-eol and restored from their exact Git blobs. Subsequent patch-tool Windows CRLF output is normalized only for this task's reviewed Python edits, matching frozen LF blobs; no old tree is written.
++
++Initial multi-file patch was rejected atomically because a train.py error string differed from the assumed context. Re-read actual lines, applied the concrete patch and compiled all changed Python modules. No remote job had started.
++
++Implemented tensor-independent bank write ledger with parameter version, source rank/expert/layer, slot generation and exact contribution list. Latest append replaces the pending marker; submission validates all records before moving them; strong references stay in the inflight batch until actual service completion. Three adversarial CPU ledger tests pass.
++
++call_stream remains default. Only flush's dependency selection differs under bank_write. Home FP32 adds, raw dW record_stream, existing drains, CPU counts/active gathering, copy plan and FP32 P2P format remain unchanged. Public CLI/config/audit expose the selected ready scope. Added both-scope CPU delivery and a two-layer/one-entry capacity oracle; actual remote/device qualification still pending.
++
++Final bounded qualification: CPU five tests passed in104.291s. Added a math-only capacity option and actual loaded-library audit before NPU runs; deployed those single-file patches under the common node lock with before/after hashes. Four admitted NPU math processes passed256records, including empty owners/all-remote gradients and single-entry mid-call flush. Both scopes passed three complete small-model Adam updates and full step0 per-parameter FP32 gradient comparison. Main pair completed25updates/scope,5warmup20measured:4.23805325s versus4.20792863s,0.71081268%lower in the single pair; no stable-benefit claim.
++
++Actual initial/persistent parameters, all25inputs/routes/replays/task groups, allrank loaded SO/SHMEM, common runtime source and weight/gradient traffic/delivery counts matched. Both scopes retired all gradient debt; maximum sampled driver HBM66.43GiB. Full per-step plan tensors were not separately dumped in timed runs. node-release.json observed8idle cards/noGPU processes after the pair; no other task was signalled.
++
++Local preflight issues retained: one patch was rejected on a CP936-encoded PLAN.md before any change; converted that newly created document toUTF8. CPU-proof guard then rejected local checkout newline mismatches before creating a device run. Git archive bytes were authoritative; tools/configs were aligned after EOL-only verification, no remote computation code changed. The first broad alignment attempt could not access a long vendor filename and wrote nothing; alignment was restricted to tools/configs. A dependent preflight was attempted before that yielded local process finished and also launched no device work. Finally156files were checked against Git blob IDs and their index metadata refreshed, with no staged content change. These are not omitted slow hardware trials.
++
++User paused the full research goal and authorized only this local finish. No repeats, fresh strong-control matrix, owner-stream change, quota metadata redesign or new joint planner was launched. Default remains call_stream; the opt-in bank_write control and evidence are retained for review. Stop after packaging/reporting this result.
+diff --git a/research/step_lifetime/gradient_ready/PLAN.md b/research/step_lifetime/gradient_ready/PLAN.md
+new file mode 100644
+index 0000000..d793214
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/PLAN.md
+@@ -0,0 +1,15 @@
++# Gradient-bank readiness control
++
++User steering2026-11-16: persistent research goal is PAUSED. Finish only this local control through numerical qualification and one main pair, report and stop. Do not automatically repeat or start another mechanism even if a signal appears. Original full objective is unchanged.
++
++Goal remains complete-update joint scheduling; this is a common runtime dependency intervention, not a new planner.
++
++Independent research/step-lifetime-grad-ready from68aacae. Original source, SOs and completed evidence stay read-only. Same e2868fd2 TimerOFF ABI2 worker, no C++ or model changes. Separate remote/container/artifacts, shared all-node admission lock and observed device checks; dual-stack non-ephemeral port probe reused from qualified host-boundary source.
++
++Only public gradient_ready_scope=call_stream/bank_write changes. Default call_stream preserves the current delivery fence. bank_write records each source bank's last write and waits only that record on the existing service stream. Retain local home-add service order, raw dW record_stream, exact same metadata gathering, cache, quota, owners, EP scaling, deterministic P2P order, drains and eight-entry budgets.
++
++Event records include parameter version, expert identity, physical slot generation and exact contribution identities. Keep strong references through actual service completion; stale/partial/reused bank records must be rejected. Capacity flush mid-call must have a ready record for every submitted local bank. Zero-task replicas have no obligation.
++
++Order: pure CPU ledger contracts; two-rank CPU delivery with repeated versions/capacity; independent NPU bank and sparse-remote math, W1/W2/B0–B3 for both scopes; small full-model three Adam updates and per-parameter FP32 gradient comparison; then a B3 matched main pair.
++
++Main frozen L4 EP8 E256 K8 H4096 F1024 S16384/rank GA4 W2 recv262144, FP32 persistent/BF16 experts, same MaxVio10/same bank and input identities. Each formal process25updates,5warmup20measured, eight-rank maximum full wall, no diagnostic tracing/Timer/profiler. If qualified gain appears, reverse-order repeats and fresh strong controls precede any policy claim. No108matrix without>=3% against strongest applicable common runtime in3 independent repeats. Host finish reduction alone is not success; all failures retained.
+diff --git a/research/step_lifetime/gradient_ready/REPORT.md b/research/step_lifetime/gradient_ready/REPORT.md
+new file mode 100644
+index 0000000..1ea33e0
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/REPORT.md
+@@ -0,0 +1,40 @@
++# 梯度bank就绪依赖：局部验收与一组完整更新配对
++
++本局部已完成，长期研究goal保持暂停。按用户要求，完成此项后汇报并停止，不增加独立重复、矩阵或其他机制。
++
++## 实测结果
++
++|方式|秒/完整optimizer更新|独立进程数|整卡driver采样峰值GiB|
++|---|---:|---:|---:|
++|call_stream：flush时等待当前流|4.238053|1|66.43|
++|bank_write：等待对应bank最后写入|4.207929|1|66.10|
++
++完整更新耗时减少+0.711%，加速比1.00716×。负数表示变慢。每方式只有一次新进程，此结果只作为当前条件的一轮局部筛查，不能称稳定收益或新的planner效果。
++
++![实际完成的配对](figures/gradient-bank-ready.png)
++
++## 修改了什么
++
++独立research/step-lifetime-grad-ready从68aacae建立。增加默认call_stream/可选bank_write的公开开关。新方式在实际FP32 bank最后一次写入后记录Event，绑定参数版本、layer/expert/source、槽位代次和完整贡献列表；提交时核对最新记录，Event随交付批次持有，直到service完成才回收。
++
++本地home梯度加法、raw dW的record_stream、现有drain、确定的全rank P2P顺序、FP32通信、固定owner/单次EP缩放和八条目预算沿用。计算内核、路由/配额算法、模型、输入和优化器不变。同一冻结TimerOFF ABI2 worker SHA e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed，未替换旧工程运行库。
++
++## 验证证据
++
++CPU五项通过：事件强引用与代次/重复拒绝、双rank三更新、跨层/空owner、单条目容量强制中途flush。设备独立参考共256项通过：基线与新方式、普通/空home全远端路由、W1/W2、B0–B3，以及新方式单条目容量。输出相对L2门槛0.004，其余dx/路由权重/专家梯度0.02；原始最大误差见study-v1.json。
++
++两种方式分别通过小形状L2/H512/F512/S256的三次完整Adam更新、step0逐参数未clip FP32梯度比较和三步有限性检查。主形状各25更新通过实际SO/单SHMEM、源码不变、独占、完成与内存门禁；前三更新参数抽样变化，全25更新loss/norm有限。
++
++配对额外核对全部rank的初始逻辑/持久参数、25更新输入、逻辑路由、重放次数、任务组、实际库及权重/梯度流量和交付次数一致。计时没有额外逐步导出全量计划张量；不能把这些身份与统计证据描述成不存在的全量实际计划快照。
++
++## 固定条件与计时
++
++L4 EP8/E256/Top8、H4096、routed/sharedFFN1024，每卡四条完整16K序列，MB1/GA4/W2，全局524288序列token/update。V4 attention/mHC2、vocab32768、Q-heads32、shared由框架计算。FP32参数/梯度/Adam，BF16专家计算，FSDP8/E-FSDP1固定owner；recv262144，无CPU offload，沿用AdamW恒定LR1e-5等原配方。
++
++MaxVio10/same受控人工路由和合法合成next-token数据。每进程25更新，前5预热、后20逐更新取八rank最大完整wall，覆盖GA4、在线规划、全部交付、clip、Adam与设备完成。Timer/profiler/额外主机诊断关闭。driver每秒采样峰值与各步allocator峰值原始记录都保留，不能当作无限时间分辨率的显存观测。
++
++## 结论范围与归档
++
++这是公共执行依赖控制，尚未实现新的任务/复制/驻留/梯度联合策略，也未证明论文创新性。本轮没有额外采集finish诊断封套，不能把旧诊断约160ms当作已节省时间。若单轮有收益，仍需独立重复和同底座强基线；用户已暂停长期目标，本次不继续展开。此前约6%的排序键公共优化及其负的生命周期筛查保持原记录。
++
++所有原始数据、日志、CSV/PNG/SVG/PDF、源码ZIP/diff/SO指纹与重放说明留本项目；小模型完整梯度PT在各receipt标注的独立远端目录。source身份/库/数值资格和pair-identity-audit分别是不同范围的证据。部署前置检查、Windows换行/checkout字节对齐等本地失败保留在实施日志，不算已启动的设备失败或被删除的慢轮。
+diff --git a/research/step_lifetime/gradient_ready/REPRODUCE.md b/research/step_lifetime/gradient_ready/REPRODUCE.md
+new file mode 100644
+index 0000000..66295ae
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/REPRODUCE.md
+@@ -0,0 +1,15 @@
++# 本局部的复查入口
++
++长期goal保持暂停，本交付不包含后台继续运行的任务。下面是供以后明确授权重放时使用的脚本。
++
++现有冻结节点可运行 `python replay_case.py --scope call_stream --tag new-unique-tag`，另一方式选bank_write。每次必须新tag；controller拒绝覆盖，使用本任务独立容器/安装目录和全节点准入锁、实际设备占用/双栈端口检查。默认条件固定为主报告中的L4/EP8/GA4/W2、MaxVio10/same、25更新（5预热＋20测量），不自动扩重复或矩阵。
++
++使用项目Python D:/megamoe_train/planner-executor-ep8-lab/.venv/Scripts/python.exe。remote.py含实际SSH别名及本任务目录。源码ZIP按stack/加同层辅助脚本布局解压；stack/research/step_lifetime/gradient_ready是脚本的版本化审阅副本，不要从该嵌套位置直接运行假定根目录布局的驱动。
++
++CPU及设备数学入口在stack/tools/test_gradient_bank_ready.py、test_lifetime_delivery.py、test_gradient_ready_capacity.py和gate_lifetime_math.py。run_cpu_gates.py/deploy_audit_patch.py记录本次分阶段部署历史，含一次性旧SHA前置检查，不能对已经部署的最终树反复套用。要在新节点复查，应先按冻结manifest重建完整环境，再直接运行相应测试；不能仅复制单SO就宣称复现。
++
++本轮没有新编译：两方式均复用priority-cache阶段e2868fd2的TimerOFF ABI2 SO。implementation/worker.so和worker-build.json保留对应二进制与原编译记录；SOURCE-INDEX、每run实际libraries记录和源码快照为审计入口。没有修改旧任务加载的SO。
++
++正式配对的20条rank-max原始步时见measured-updates.csv，进程中位见runs.csv。数值门禁及单轮状态见study-v1.json，身份/流量对照见diagnostics/pair-identity-audit.json。小模型完整梯度PT仍在每个receipt.large_tensors_remote指定的独立远端，当前本地只收集日志、元数据和比较结果，不将远端张量冒称已本地收集。
++
++本次主形状不是MoonEP官方九层/H20实验；它是此前共同裁剪的Ascend研究条件。单进程一轮配对不能证明稳定加速或新planner优越性。
+diff --git a/research/step_lifetime/gradient_ready/audit_local_pair.py b/research/step_lifetime/gradient_ready/audit_local_pair.py
+new file mode 100644
+index 0000000..34af4b9
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/audit_local_pair.py
+@@ -0,0 +1,53 @@
++"""Audit actual current runs; do not infer comparability from launch intent."""
++from pathlib import Path
++import json
++import math
++
++ROOT=Path(__file__).resolve().parent
++load=lambda path:json.loads(path.read_text())
++state=load(ROOT/'study-v1.json')
++if not state.get('passed'):raise SystemExit('Bounded study is not complete')
++runs=[row for row in state['runs'] if row['phase']=='pilot']
++if len(runs)!=2:raise RuntimeError('Need exactly one actual process per scope')
++old,new=[ROOT/'evidence'/row['tag'] for row in runs]
++checks={}
++checks['same_actual_sources']=load(old/'source-identity.json')==load(new/'source-identity.json')
++checks['same_effective_configuration']=load(old/'effective-config.json')==load(new/'effective-config.json')
++stats=('weight_remote_bytes','weight_hit_bytes','cache_local_copy_bytes','gradient_remote_bytes','gradient_deliveries','flushes')
++for rank in range(8):
++    for stem in ('initial','persistent-initial','input-identity','route-identity','route-calls'):
++        checks[f'rank{rank}:same_{stem}']=load(old/f'{stem}-rank{rank}.json')==load(new/f'{stem}-rank{rank}.json')
++    def groups(folder):
++        return [{name:row[name] for name in ('step','group','keys','ready_keys','native_waves')} for row in
++                (json.loads(line) for line in (folder/f'temporal-groups-rank{rank}.jsonl').read_text().splitlines())]
++    checks[f'rank{rank}:same_task_groups']=groups(old)==groups(new)
++    a,b=[load(folder/f'lifetime-audit-rank{rank}.json') for folder in (old,new)]
++    checks[f'rank{rank}:same_traffic_and_delivery_counts']=all(a[name]==b[name] for name in stats)
++    checks[f'rank{rank}:no_debt']=a['pending']==b['pending']==0
++    checks[f'rank{rank}:declared_scope']=a['gradient_ready_scope']=='call_stream' and b['gradient_ready_scope']=='bank_write'
++    checks[f'rank{rank}:baseline_no_extra_events']=a['ready_bank_writes']==a['ready_bank_waits']==0
++    for folder in (old,new):
++        tag=folder.name
++        route_calls=load(folder/f'route-calls-rank{rank}.json')
++        checks[f'{tag}:rank{rank}:replay']=len(route_calls)==400 and set(route_calls.values())=={2}
++        updates=load(folder/f'updates-rank{rank}.json')
++        checks[f'{tag}:rank{rank}:parameter_updates']=len(updates)==3 and all(row['changed'] for row in updates)
++        checks[f'{tag}:rank{rank}:complete']=load(folder/f'complete-rank{rank}.json')==dict(rank=rank,steps=25,exit=0)
++        config=load(folder/f'lifetime-config-rank{rank}.json')
++        checks[f'{tag}:rank{rank}:abi']=config['worker_capability']==2 and config['raw_schedule']=='preserve' and config['mode']=='b3'
++        libraries=load(folder/f'libraries-rank{rank}.json')
++        workers=[value['sha256'] for name,value in libraries['libraries'].items() if '/worker-variants/' in name and name.endswith('.so')]
++        checks[f'{tag}:rank{rank}:worker']=workers==['e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed'] and len(libraries['shmem'])==1
++        values=[json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()]
++        checks[f'{tag}:rank{rank}:finite']=len(values)==25 and all(all(math.isfinite(row[key]) for key in ('loss','grad_norm','milliseconds')) for row in values)
++    checks[f'rank{rank}:nonempty_bank_event_records']=b['ready_bank_writes']>=b['ready_bank_waits']
++checks['new_bank_events_exercised']=sum(load(new/f'lifetime-audit-rank{rank}.json')['ready_bank_waits'] for rank in range(8))>0
++for row in runs:
++    status=load(ROOT/'evidence'/row['tag']/'status.json')
++    checks[row['tag']+':admission_source_memory']=all(status.get(name) for name in ('qualified','source_unchanged','exclusive_devices')) and status['peak_driver_MiB']<=90*1024
++output=dict(passed=all(checks.values()),checks=checks,failed=[name for name,value in checks.items() if not value],
++    measured_scope='Initial parameters, all25 inputs/routes/replays/task groups, actual SO and traffic counters. No extra full per-step plan tensor dump in timed runs.',
++    independent_processes_per_scope=1,persistent_goal='paused')
++(ROOT/'diagnostics/pair-identity-audit.json').write_text(json.dumps(output,indent=2)+'\n',encoding='utf-8',newline='\n')
++print(json.dumps(dict(passed=output['passed'],failed=output['failed'])))
++raise SystemExit(0 if output['passed'] else 1)
+diff --git a/research/step_lifetime/gradient_ready/controller.py b/research/step_lifetime/gradient_ready/controller.py
+new file mode 100644
+index 0000000..2ddce2d
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/controller.py
+@@ -0,0 +1,267 @@
++"""Serialize task-owned EP8 jobs, driver HBM sampling, and admission checks."""
++from __future__ import annotations
++import argparse
++import fcntl
++import datetime
++import json
++import pathlib
++import re
++import subprocess
++import time
++import hashlib
++import os
++import socket
++from concurrent.futures import ThreadPoolExecutor
++
++TASK = pathlib.Path('/home/z00956592/megaflux/step-lifetime-gradient-ready-20261116/stack')
++CONTAINER = 'step-lifetime-gradient-ready-20261116'
++
++def source_identity(arguments=()):
++    paths={}
++    for component in ('native-balanced','FSDPTurbo','MindSpeed-LLM'):
++        root=TASK/'source'/component
++        for directory,children,names in os.walk(root):
++            children[:] = sorted(name for name in children if name not in
++                ('.git','__pycache__','3rdparty','worker-variants') and not name.startswith('build'))
++            for name in sorted(names):
++                path=pathlib.Path(directory)/name
++                if path.is_symlink():continue
++                if path.suffix in ('.py','.cpp','.h','.hpp','.cmake') or path.name=='CMakeLists.txt':
++                    paths[str(path.relative_to(TASK))]=path
++    for directory in ('tools','configs','routes'):
++        for path in sorted((TASK/directory).rglob('*')):
++            if path.is_file() and path.suffix in ('.py','.sh','.json','.yaml','.yml','.npy'):
++                paths[str(path.relative_to(TASK))]=path
++    if '--route-bank' in arguments:
++        bank=pathlib.Path(arguments[arguments.index('--route-bank')+1])
++        if not bank.is_absolute():bank=TASK/bank
++        for path in sorted(bank.iterdir()):
++            if path.is_file() and path.suffix in ('.json','.npy'):
++                key=str(path.relative_to(TASK)) if path.is_relative_to(TASK) else str(path)
++                paths[key]=path
++    if '--temporal-schedule-replay' in arguments:
++        replay=pathlib.Path(arguments[arguments.index('--temporal-schedule-replay')+1])
++        if not replay.is_absolute():replay=TASK/replay
++        paths[str(replay.relative_to(TASK)) if replay.is_relative_to(TASK) else str(replay)]=replay
++    def digest(item):
++        name,path=item
++        return name,hashlib.sha256(path.read_bytes()).hexdigest()
++    with ThreadPoolExecutor(max_workers=16) as readers:
++        return dict(readers.map(digest,sorted(paths.items())))
++
++def hbm_sample():
++    result = subprocess.run(['npu-smi', 'info'], capture_output=True, text=True, timeout=20)
++    cards = []
++    current_rank = None
++    for line in result.stdout.splitlines():
++        cells = [cell.strip() for cell in line.split('|')[1:-1]]
++        if len(cells) == 4 and cells[0].isdigit() and cells[1].startswith('Ascend'):
++            current_rank = int(cells[0])
++        if len(cells) != 4 or cells[2] != 'NA':
++            continue
++        numbers = cells[3].split()
++        if len(numbers) >= 3 and numbers[-2] == '/':
++            cards.append(dict(rank=current_rank, used_MiB=int(numbers[-3]), total_MiB=int(numbers[-1]),
++                              utilization=int(numbers[0])))
++    if len(cards) != 8:
++        raise RuntimeError('Could not parse eight driver HBM readings')
++    return dict(timestamp=time.time(), cards=cards, no_process_cards=result.stdout.count('No running processes found'))
++
++def idle():
++    owners = subprocess.run(['fuser', *[f'/dev/davinci{rank}' for rank in range(8)]],
++                            capture_output=True, text=True)
++    if owners.stdout.strip():
++        raise RuntimeError(f'GPUs occupied: {owners.stdout.strip()}')
++    sample = hbm_sample()
++    if sample['no_process_cards'] != 8:
++        raise RuntimeError('Driver reports GPU processes before admission')
++    if any(card['utilization'] > 0 for card in sample['cards']):
++        raise RuntimeError('GPU utilization is nonzero before admission')
++    return sample
++
++
++def foreign_device_owners(container_id):
++    """Observe overlap without signalling another project's processes."""
++    result=subprocess.run(['fuser',*[f'/dev/davinci{rank}' for rank in range(8)]],
++                          capture_output=True,text=True,timeout=10)
++    foreign=[]
++    for value in set(result.stdout.split()):
++        if not value.isdigit():continue
++        try:group=pathlib.Path(f'/proc/{value}/cgroup').read_text()
++        except (FileNotFoundError,PermissionError):continue
++        if container_id not in group and container_id[:12] not in group:
++            foreign.append(int(value))
++    return sorted(foreign)
++
++
++def probe_master_port(out):
++    """Probe a task-specific range without signalling existing CPU services.
++
++    TCPStore must bind the port itself, so this is a preflight, not a reservation.
++    A later EADDRINUSE remains an explicit failed run, never a silent restart.
++    """
++    # Stay below this host's ephemeral range; probe IPv6 as well as IPv4.
++    # A loopback IPv4-only bind misses an existing [::1] client socket.
++    start = 25100 + int(time.time()) % 2000
++    for offset in range(2000):
++        port = 25100 + (start - 25100 + offset) % 2000
++        available = True
++        for selected_port in (port, port + 1):
++            for family, address in ((socket.AF_INET6, ('::', selected_port)), (socket.AF_INET, ('0.0.0.0', selected_port))):
++                with socket.socket(family, socket.SOCK_STREAM) as probe:
++                    try:
++                        probe.bind(address)
++                    except OSError:
++                        available = False
++                        break
++            if not available:break
++        if not available:
++            continue
++        (out/'port-admission.json').write_text(json.dumps(dict(port=port,
++            checked_ns=time.monotonic_ns(), probe_only_not_reserved=True,
++            probed=['IPv6 wildcard', 'IPv4 wildcard'],ports=[port, port+1]),indent=2))
++        return port
++    raise RuntimeError('No free TCPStore port in this diagnostic range')
++
++def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
++    diagnostic='--diagnostic-timer' in arguments
++    if '--temporal-schedule-replay' in arguments and '--diagnostic-only' not in arguments:
++        raise RuntimeError('Offline task schedules cannot be submitted as online training performance')
++    if worker=='temporal-ep8-cap64-timer' and not diagnostic:
++        raise RuntimeError('TimerON worker is diagnostic-only, never a performance backend')
++    out = TASK / 'evidence' / tag
++    out.mkdir(parents=True, exist_ok=False)
++    deadline=time.monotonic()+3600
++    while True:
++        try:
++            admission = idle()
++            break
++        except (RuntimeError,subprocess.TimeoutExpired) as error:
++            (out/'queue.json').write_text(json.dumps(dict(state='waiting_for_idle_devices',
++                timestamp=time.time(),reason=str(error),admission_limit_seconds=3600),indent=2))
++            if time.monotonic()>=deadline:
++                status=dict(exit=1,qualified=False,source_unchanged=None,rank_completions=0,
++                            started=False,outcome='admission_timeout',reason=str(error),peak_driver_MiB=0)
++                (out/'status.json').write_text(json.dumps(status,indent=2))
++                return status
++            time.sleep(5)
++    (out / 'admission.json').write_text(json.dumps(admission, indent=2))
++    snapshots=TASK/'evidence'/'source-snapshots'
++    snapshots.mkdir(exist_ok=True)
++    subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
++                    str(TASK/'configs/runtime-freeze.json'),'--out',str(snapshots/f'{tag}-runtime.json')],check=True)
++    if diagnostic:
++        manifest=TASK/'configs/temporal-worker-timer-freeze.json'
++        entries=json.loads(manifest.read_text())['binaries']
++        prefix=f'source/native-balanced/worker-variants/{worker}/'
++        if not entries or any(not name.startswith(prefix) for name in entries):
++            raise RuntimeError('Diagnostic worker does not match its separately frozen TimerON build')
++        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',str(manifest),
++            '--out',str(snapshots/f'{tag}-timer-worker-runtime.json')],check=True)
++    if mode=='scheduler' or ('--temporal-scheduler' in arguments and
++            arguments[arguments.index('--temporal-scheduler')+1]=='ascendc'):
++        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
++            str(TASK/'configs/temporal-scheduler-freeze.json'),'--out',
++            str(snapshots/f'{tag}-temporal-runtime.json')],check=True)
++    private_manifests={
++        'ep8-cap64-lifetime-raw-control-v2':'priority-baseline-freeze.json',
++        'ep8-cap64-lifetime-priority-cache-v1':'lifetime-runtime-freeze.json'}
++    if worker in private_manifests:
++        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
++            str(TASK/'configs'/private_manifests[worker]),'--out',
++            str(snapshots/f'{tag}-lifetime-runtime.json')],check=True)
++    elif '--lifetime-mode' in arguments:
++        raise RuntimeError('Priority intervention must use an explicitly frozen ABI2 worker')
++    sources=source_identity(arguments)
++    (out/'source-identity.json').write_text(json.dumps(sources,indent=2))
++    # Cache only byte-identical, verified snapshots from unchanged prior runs.
++    from source_freeze import freeze_snapshot
++    freeze_snapshot(TASK,tag,sources)
++    # The source freeze may take time on NFS. Another project need not share
++    # this study's flock, so check hardware ownership again before launching.
++    final_admission=idle()
++    (out/'launch-admission.json').write_text(json.dumps(final_admission,indent=2))
++    container_id=subprocess.check_output(['docker','inspect',CONTAINER,'--format','{{.Id}}'],text=True).strip()
++    master_port = probe_master_port(out)
++    command = ['docker', 'exec', '-w', str(TASK), '-e', f'EP8_MASTER_PORT={master_port}',
++               CONTAINER, 'timeout', '-k', '30', str(seconds), 'bash', 'tools/launch.sh',
++               backend, mode, tag, *arguments]
++    if worker:
++        command[2:2] = ['-e', f'EP8_WORKER_VARIANT={worker}']
++    if capacity == 32:
++        command[2:2] = ['-e', 'EP8_CAPACITY=32', '-e', 'EP8_NATIVE_SUFFIX=32']
++    started = time.time()
++    max_hbm = max(card['used_MiB'] for card in admission['cards'])
++    overlap=set()
++    with (out / 'stdout.log').open('w') as log, (out / 'hbm.jsonl').open('w') as monitor:
++        process = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT)
++        while process.poll() is None:
++            try:
++                sample = hbm_sample()
++                owners=foreign_device_owners(container_id)
++                sample['foreign_device_owners']=owners
++                overlap.update(owners)
++            except (RuntimeError, subprocess.TimeoutExpired) as error:
++                monitor.write(json.dumps(dict(timestamp=time.time(), sample_error=str(error))) + '\n')
++                monitor.flush()
++                continue
++            max_hbm = max(max_hbm, *(card['used_MiB'] for card in sample['cards']))
++            monitor.write(json.dumps(sample) + '\n')
++            monitor.flush()
++            time.sleep(1)
++        status = dict(command=command, exit=process.returncode, start=started,
++                      finish=time.time(), peak_driver_MiB=max_hbm,
++                      foreign_device_owners=sorted(overlap),exclusive_devices=not overlap)
++    if mode == 'train':
++        status['rank_completions'] = len(list(out.glob('complete-rank*.json')))
++        status['qualified'] = status['exit'] == 0 and status['rank_completions'] == 8
++    else:
++        status['qualified'] = status['exit'] == 0
++    if overlap:status['qualified']=False
++    status['source_unchanged']=sources==source_identity(arguments)
++    if not status['source_unchanged']:status['qualified']=False
++    (out / 'status.json').write_text(json.dumps(status, indent=2))
++    print(json.dumps(dict(tag=tag, **status)), flush=True)
++    return status
++
++def run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
++    with pathlib.Path('/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock').open('a') as lock:
++        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
++        return _run_job(backend, mode, tag, arguments, seconds, worker, capacity)
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument('--backend', choices=['balanced', 'shared', 'moonep'])
++    parser.add_argument('--mode', default='train', choices=['train', 'validate', 'activation', 'scaling', 'pool', 'norm', 'moonpool', 'sharedpool','plan','links','scheduler','temporal_math','lifetime_math'])
++    parser.add_argument('--tag')
++    parser.add_argument('--worker-variant')
++    parser.add_argument('--capacity', type=int, choices=[32,64], default=64)
++    parser.add_argument('--campaign', action='store_true')
++    parser.add_argument('--layers', type=int, default=2)
++    parser.add_argument('--seconds', type=int, default=1800)
++    args, extra = parser.parse_known_args()
++    if not args.campaign:
++        if args.mode == 'train':
++            extra += ['--layers', str(args.layers)]
++        status = run_job(args.backend, args.mode, args.tag, extra, args.seconds, args.worker_variant, args.capacity)
++        raise SystemExit(0 if status['qualified'] else 1)
++    matrix = []
++    arms = ['moonep', 'balanced', 'shared']
++    for repeat in range(3):
++        ordered = arms[repeat:] + arms[:repeat]
++        for maxvio in (.2, 1, 5, 10, 15, 20):
++            for backend in ordered:
++                tag = f'formal-L{args.layers}-vio{maxvio:g}-{backend}-r{repeat+1}'
++                status = run_job(backend, 'train', tag,
++                         ['--maxvio', str(maxvio), '--layers', str(args.layers)], args.seconds, args.worker_variant, args.capacity)
++                matrix.append(dict(tag=tag, backend=backend, maxvio=maxvio, repeat=repeat+1, **status))
++                (TASK / 'evidence' / 'campaign.json').write_text(json.dumps(matrix, indent=2))
++                if not status['qualified']:
++                    raise RuntimeError(f'Unqualified run: {tag}')
++                if status['peak_driver_MiB'] > 90 * 1024:
++                    raise RuntimeError(f'Common shape memory gate exceeded: {tag}')
++    print('CAMPAIGN_COMPLETE', flush=True)
++
++if __name__ == '__main__':
++    main()
+diff --git a/research/step_lifetime/gradient_ready/cpu-v1.json b/research/step_lifetime/gradient_ready/cpu-v1.json
+new file mode 100644
+index 0000000..591dc3a
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/cpu-v1.json
+@@ -0,0 +1,64 @@
++{
++  "exit": 0,
++  "source_unchanged": true,
++  "admission": {
++    "timestamp": 1794800180.0573564,
++    "cards": [
++      {
++        "rank": 0,
++        "used_MiB": 4787,
++        "total_MiB": 98304,
++        "utilization": 0
++      },
++      {
++        "rank": 1,
++        "used_MiB": 4787,
++        "total_MiB": 98304,
++        "utilization": 0
++      },
++      {
++        "rank": 2,
++        "used_MiB": 4786,
++        "total_MiB": 98304,
++        "utilization": 0
++      },
++      {
++        "rank": 3,
++        "used_MiB": 4784,
++        "total_MiB": 98304,
++        "utilization": 0
++      },
++      {
++        "rank": 4,
++        "used_MiB": 4782,
++        "total_MiB": 98304,
++        "utilization": 0
++      },
++      {
++        "rank": 5,
++        "used_MiB": 4782,
++        "total_MiB": 98304,
++        "utilization": 0
++      },
++      {
++        "rank": 6,
++        "used_MiB": 4782,
++        "total_MiB": 98304,
++        "utilization": 0
++      },
++      {
++        "rank": 7,
++        "used_MiB": 4784,
++        "total_MiB": 98304,
++        "utilization": 0
++      }
++    ],
++    "no_process_cards": 8
++  },
++  "math_gate_patch": {
++    "before": "aa9c1183ad04d4aaa75de9e741d30ed7f1744051154dc868d82e9c12e9ecc98a",
++    "after": "bde612aac2975366e65c12cab90c1131515fb767d967c22f1a19007cf9f37e42"
++  },
++  "cpu_only": true,
++  "passed": true
++}
+diff --git a/research/step_lifetime/gradient_ready/deploy_audit_patch.py b/research/step_lifetime/gradient_ready/deploy_audit_patch.py
+new file mode 100644
+index 0000000..d646b1a
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/deploy_audit_patch.py
+@@ -0,0 +1,30 @@
++"""Add actual loaded-library records to the math gate before any NPU runs."""
++from pathlib import Path
++import hashlib
++import json
++import subprocess
++import remote
++
++ROOT=Path(__file__).resolve().parent
++relative='tools/gate_lifetime_math.py'
++old=hashlib.sha256(subprocess.check_output(['git','-C',str(ROOT/'stack'),'show','e82c74b:'+relative])).hexdigest()
++new=hashlib.sha256((ROOT/'stack'/relative).read_bytes()).hexdigest()
++payload=ROOT/'math-gate-audited.py'
++payload.write_bytes((ROOT/'stack'/relative).read_bytes())
++subprocess.run(['scp',str(payload),remote.HOST+':'+remote.REMOTE+'/math-gate-audited.py'],check=True)
++script=f'''import fcntl,hashlib,pathlib,json
++task=pathlib.Path({remote.REMOTE!r})
++with pathlib.Path('/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock').open('a') as lock:
++ fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
++ target=task/'stack'/{relative!r}
++ assert hashlib.sha256(target.read_bytes()).hexdigest()=={old!r}
++ data=(task/'math-gate-audited.py').read_bytes()
++ assert hashlib.sha256(data).hexdigest()=={new!r}
++ target.write_bytes(data)
++print(json.dumps(dict(passed=True,before={old!r},after={new!r})))
++'''
++result=subprocess.run(['ssh',remote.HOST,'python3','-'],input=script.encode(),capture_output=True)
++(ROOT/'diagnostics/math-library-audit-patch.json').write_text(json.dumps(dict(exit=result.returncode,before=old,after=new,
++    stdout=result.stdout.decode(),stderr=result.stderr.decode()),indent=2)+'\n',encoding='utf-8',newline='\n')
++result.check_returncode()
++print(result.stdout.decode())
+diff --git a/research/step_lifetime/gradient_ready/make_report.py b/research/step_lifetime/gradient_ready/make_report.py
+new file mode 100644
+index 0000000..8477e08
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/make_report.py
+@@ -0,0 +1,86 @@
++"""Report one audited complete-update pair; no extrapolation to stable gains."""
++from pathlib import Path
++import csv
++import json
++import matplotlib
++matplotlib.use('Agg')
++import matplotlib.pyplot as plt
++
++ROOT=Path(__file__).resolve().parent
++load=lambda path:json.loads(path.read_text())
++state=load(ROOT/'study-v1.json')
++proof=load(ROOT/'diagnostics/pair-identity-audit.json')
++if not state.get('passed') or not proof['passed']:raise SystemExit('Complete audited pair required')
++pair=[row for row in state['runs'] if row['phase']=='pilot']
++old,new=pair
++reduction=100*(1-new['median_step_ms']/old['median_step_ms'])
++ratio=old['median_step_ms']/new['median_step_ms']
++summary=dict(local_control_complete=True,persistent_goal='paused',no_auto_expand=True,new_planner=False,
++    baseline_seconds=old['median_step_ms']/1000,bank_write_seconds=new['median_step_ms']/1000,
++    reduction_pct=reduction,speedup_ratio=ratio,independent_processes_per_scope=1,
++    math_records=sum(row['records'] for row in state['runs'] if row['phase']=='math'),
++    peak_sampled_driver_GiB=max(row['peak_driver_MiB'] for row in pair)/1024,
++    conclusion='One matched process per scope; a screening signal or negative result, not a stable-gain claim.')
++(ROOT/'summary.json').write_text(json.dumps(summary,indent=2)+'\n',encoding='utf-8',newline='\n')
++with (ROOT/'runs.csv').open('w',newline='') as handle:
++    writer=csv.writer(handle);writer.writerow(['scope','median_rank_max_update_s','independent_processes','measured_updates','sampled_driver_peak_GiB'])
++    for row in pair:writer.writerow([row['scope'],row['median_step_ms']/1000,1,20,row['peak_driver_MiB']/1024])
++with (ROOT/'measured-updates.csv').open('w',newline='') as handle:
++    writer=csv.writer(handle);writer.writerow(['scope','optimizer_update','eight_rank_max_wall_s'])
++    for row in pair:
++        for step,value in enumerate(row['measured_rank_max_step_ms'],start=5):writer.writerow([row['scope'],step,value/1000])
++fig,axes=plt.subplots(1,2,figsize=(11,4.6),layout='constrained')
++values=[row['median_step_ms']/1000 for row in pair]
++bars=axes[0].bar([0,1],values,color=['#277da8','#f8961e'],width=.55)
++axes[0].set(xticks=[0,1],xticklabels=['Flush-time stream fence','Latest bank-write ready'],ylabel='Full optimizer update (s)',ylim=(0,max(values)*1.16),title=f'One matched pair: {reduction:+.2f}% time reduction')
++for bar,value in zip(bars,values):axes[0].text(bar.get_x()+bar.get_width()/2,value+.025,f'{value:.4f}',ha='center')
++for row in pair:axes[1].plot(range(5,25),[value/1000 for value in row['measured_rank_max_step_ms']],marker='.',label=row['scope'])
++axes[1].set(xlabel='Optimizer update',ylabel='Eight-rank max wall time (s)',title='All20 measured updates retained')
++axes[1].legend();axes[0].grid(axis='y',alpha=.2);axes[0].set_axisbelow(True);axes[1].grid(alpha=.2)
++fig.suptitle('B3 | EP8 L4 E256 K8 H4096 F1024 S16384/rank | GA4 W2 | MaxVio10 same',fontsize=11)
++fig.supxlabel('Same frozen worker e2868fd2; TimerOFF;25 updates/process,5 warmup +20 measured.\nN=1 process/scope. No stable planner benefit or generalization claim.',fontsize=9)
++for suffix in ('png','svg','pdf'):fig.savefig(ROOT/'figures'/('gradient-bank-ready.'+suffix),dpi=180)
++plt.close(fig)
++report=f'''# 梯度bank就绪依赖：局部验收与一组完整更新配对
++
++本局部已完成，长期研究goal保持暂停。按用户要求，完成此项后汇报并停止，不增加独立重复、矩阵或其他机制。
++
++## 实测结果
++
++|方式|秒/完整optimizer更新|独立进程数|整卡driver采样峰值GiB|
++|---|---:|---:|---:|
++|call_stream：flush时等待当前流|{values[0]:.6f}|1|{old['peak_driver_MiB']/1024:.2f}|
++|bank_write：等待对应bank最后写入|{values[1]:.6f}|1|{new['peak_driver_MiB']/1024:.2f}|
++
++完整更新耗时减少{reduction:+.3f}%，加速比{ratio:.5f}×。负数表示变慢。每方式只有一次新进程，此结果只作为当前条件的一轮局部筛查，不能称稳定收益或新的planner效果。
++
++![实际完成的配对](figures/gradient-bank-ready.png)
++
++## 修改了什么
++
++独立research/step-lifetime-grad-ready从68aacae建立。增加默认call_stream/可选bank_write的公开开关。新方式在实际FP32 bank最后一次写入后记录Event，绑定参数版本、layer/expert/source、槽位代次和完整贡献列表；提交时核对最新记录，Event随交付批次持有，直到service完成才回收。
++
++本地home梯度加法、raw dW的record_stream、现有drain、确定的全rank P2P顺序、FP32通信、固定owner/单次EP缩放和八条目预算沿用。计算内核、路由/配额算法、模型、输入和优化器不变。同一冻结TimerOFF ABI2 worker SHA e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed，未替换旧工程运行库。
++
++## 验证证据
++
++CPU五项通过：事件强引用与代次/重复拒绝、双rank三更新、跨层/空owner、单条目容量强制中途flush。设备独立参考共256项通过：基线与新方式、普通/空home全远端路由、W1/W2、B0–B3，以及新方式单条目容量。输出相对L2门槛0.004，其余dx/路由权重/专家梯度0.02；原始最大误差见study-v1.json。
++
++两种方式分别通过小形状L2/H512/F512/S256的三次完整Adam更新、step0逐参数未clip FP32梯度比较和三步有限性检查。主形状各25更新通过实际SO/单SHMEM、源码不变、独占、完成与内存门禁；前三更新参数抽样变化，全25更新loss/norm有限。
++
++配对额外核对全部rank的初始逻辑/持久参数、25更新输入、逻辑路由、重放次数、任务组、实际库及权重/梯度流量和交付次数一致。计时没有额外逐步导出全量计划张量；不能把这些身份与统计证据描述成不存在的全量实际计划快照。
++
++## 固定条件与计时
++
++L4 EP8/E256/Top8、H4096、routed/sharedFFN1024，每卡四条完整16K序列，MB1/GA4/W2，全局524288序列token/update。V4 attention/mHC2、vocab32768、Q-heads32、shared由框架计算。FP32参数/梯度/Adam，BF16专家计算，FSDP8/E-FSDP1固定owner；recv262144，无CPU offload，沿用AdamW恒定LR1e-5等原配方。
++
++MaxVio10/same受控人工路由和合法合成next-token数据。每进程25更新，前5预热、后20逐更新取八rank最大完整wall，覆盖GA4、在线规划、全部交付、clip、Adam与设备完成。Timer/profiler/额外主机诊断关闭。driver每秒采样峰值与各步allocator峰值原始记录都保留，不能当作无限时间分辨率的显存观测。
++
++## 结论范围与归档
++
++这是公共执行依赖控制，尚未实现新的任务/复制/驻留/梯度联合策略，也未证明论文创新性。本轮没有额外采集finish诊断封套，不能把旧诊断约160ms当作已节省时间。若单轮有收益，仍需独立重复和同底座强基线；用户已暂停长期目标，本次不继续展开。此前约6%的排序键公共优化及其负的生命周期筛查保持原记录。
++
++所有原始数据、日志、CSV/PNG/SVG/PDF、源码ZIP/diff/SO指纹与重放说明留本项目；小模型完整梯度PT在各receipt标注的独立远端目录。source身份/库/数值资格和pair-identity-audit分别是不同范围的证据。部署前置检查、Windows换行/checkout字节对齐等本地失败保留在实施日志，不算已启动的设备失败或被删除的慢轮。
++'''
++(ROOT/'REPORT.md').write_text(report,encoding='utf-8',newline='\n')
++print(json.dumps(summary,indent=2))
+diff --git a/research/step_lifetime/gradient_ready/math-gate-audited.py b/research/step_lifetime/gradient_ready/math-gate-audited.py
+new file mode 100644
+index 0000000..7c13f1b
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/math-gate-audited.py
+@@ -0,0 +1,217 @@
++"""Isolate grouped FFN math from FSDP, Attention and decoder checkpoint hooks."""
++import argparse
++from types import SimpleNamespace
++from lifetime_device import LifetimeDevice
++import gc
++from contextlib import contextmanager,nullcontext
++from contextvars import ContextVar
++import json
++import os
++from pathlib import Path
++
++import numpy as np
++import torch
++import torch.distributed as dist
++from torch.utils.checkpoint import checkpoint,set_checkpoint_early_stop
++from ascend_deepep import ShmemInstance
++from ascend_deepep.fsdp2_bridge import NativeFSDP2Pool
++from ascend_deepep.home_group_planner import FixedHomeGroupPlanner
++from ascend_deepep.plan_replay import install_replay_provider
++from fsdp_turbo.distributed.expert_parallel.dispatcher_mega_moe import _local_mem_bytes
++from grouped_experts import ExpertDomain,GroupedExpertsBridge
++from temporal_scheduler import TaskKey,compile_waves
++from mindspeed_llm.fsdp2.features.ep8_imbalance import RouteProvider
++
++
++def difference(actual,expected,forward=False):
++    actual,expected=actual.detach().float(),expected.detach().float()
++    error=float(torch.linalg.vector_norm(actual-expected)/torch.linalg.vector_norm(expected).clamp_min(1e-12))
++    return dict(relative_l2=error,passed=error<=(.004 if forward else .02))
++
++
++def main():
++    parser=argparse.ArgumentParser()
++    parser.add_argument('--backend')
++    parser.add_argument('--out',type=Path,required=True)
++    parser.add_argument('--route-bank',type=Path,required=True)
++    parser.add_argument('--serialized',action='store_true')
++    parser.add_argument('--lifetime-mode',default='all')
++    parser.add_argument('--lifetime-raw-schedule',choices=('legacy','preserve'),default='legacy')
++    parser.add_argument('--gradient-ready-scope',choices=('call_stream','bank_write'),default='call_stream')
++    parser.add_argument('--lifetime-entries',type=int,default=8)
++    parser.add_argument('--route-case',choices=('bank','sparse_remote'),default='bank')
++    args=parser.parse_args()
++    from fsdp_turbo.utils.device import set_accelerator_compatible
++    set_accelerator_compatible()
++    rank=int(os.environ['LOCAL_RANK']);ep=8;tokens=256;hidden=ffn=512;topk=8
++    torch.npu.set_device(rank);device=f'npu:{rank}'
++    dist.init_process_group('hccl')
++    shmem=ShmemInstance(rank,ep,'tcp://127.0.0.1:'+str(int(os.environ['MASTER_PORT'])+1))
++    shmem.set_data_op_engine_type(0x08);shmem.init(8*1024**3)
++    window=max(256*1024**2,_local_mem_bytes(tokens,hidden,topk,ep,64,4096))
++    pool=NativeFSDP2Pool(shmem,dist.group.WORLD,32,32,hidden,ffn,tokens,topk,
++                        window,4096,device,'native','panel',routed_input_mode='redispatch',
++                        defer_completion_checks=True)
++    native=pool.policy
++    class ForcedReplicaPlan:
++        def plan(self,context):
++            from ascend_deepep.unified_planner import DeviceProposal
++            local=torch.bincount(context.logical_ids.long().flatten(),minlength=ep*32).int()
++            peers=[torch.empty_like(local) for _ in range(ep)]
++            dist.all_gather(peers,local)
++            counts=torch.stack(peers).cpu().numpy()
++            total=counts.sum(0)
++            copies=np.full((ep,32),-1,dtype=np.int32)
++            selected=set()
++            for owner in range(ep):
++                hot=sorted(range(owner*32,(owner+1)*32),key=lambda expert:(-int(total[expert]),expert))[:8]
++                hot=[expert for expert in hot if total[expert]>0]
++                copies[(owner+1)%ep,:len(hot)]=hot
++                selected.update(hot)
++            quota=np.zeros((ep,ep*32,ep),dtype=np.int32)
++            for source in range(ep):
++                for expert in range(ep*32):
++                    rows=int(counts[source,expert]);owner=expert//32
++                    remote=(rows if args.route_case=='sparse_remote' else rows//2) if expert in selected else 0
++                    quota[source,expert,owner]=rows-remote
++                    if remote:quota[source,expert,(owner+1)%ep]=remote
++            return native.compile_proposal(context,DeviceProposal(
++                torch.from_numpy(copies).to(device),torch.from_numpy(quota).to(device)))
++    forced=ForcedReplicaPlan()
++    home=FixedHomeGroupPlanner(native.validator)
++    rng=np.random.default_rng(1234+rank)
++    def data(shape,scale=1.):
++        return torch.from_numpy((rng.standard_normal(shape)*scale).astype(np.float32)).to(device)
++    weights=[torch.nn.Parameter(data(shape,.02)) for shape in
++             ((32,2*ffn,hidden),(32,hidden,ffn))]
++    bridge=GroupedExpertsBridge(ExpertDomain((0,),32,8),pool,
++        {0:lambda:tuple(value.to(torch.bfloat16) for value in weights)})
++    provider=RouteProvider(args.route_bank/'maxvio-10.npy',rank,1,1,torch.device(device),microbatches=4)
++    replay=ContextVar('math_gate_replay',default=False)
++    install_replay_provider(None)
++    @contextmanager
++    def replay_context():
++        token=replay.set(True)
++        try:yield
++        finally:replay.reset(token)
++    def reference(value,ids,probability,reference_weights):
++        from torch.distributed.nn.functional import all_gather,all_reduce
++        import torch.nn.functional as functional
++        packed=torch.cat((value.float(),probability.to(torch.bfloat16).float()),dim=-1)
++        gathered=torch.cat(all_gather(packed),dim=0)
++        x,p=gathered[:,:hidden],gathered[:,hidden:]
++        all_ids=[torch.empty_like(ids) for _ in range(ep)];dist.all_gather(all_ids,ids)
++        all_ids=torch.cat(all_ids).long()
++        w1,w2=[weight.to(torch.bfloat16).float() for weight in reference_weights]
++        result=torch.zeros((ep*tokens*topk,hidden),device=device)
++        result=result+(w1.sum()+w2.sum()+gathered.sum())*0
++        for expert in range(32):
++            rows,choices=torch.where(all_ids==rank*32+expert)
++            if rows.numel()==0:continue
++            raw=functional.linear(x[rows],w1[expert]).to(torch.bfloat16).float()
++            gate,up=raw.chunk(2,dim=-1)
++            activation=(functional.silu(gate.clamp(max=10.))*up.clamp(-10.,10.)).to(torch.bfloat16).float()
++            # The frozen epilogue rounds SwiGLU to BF16, then applies the
++            # BF16 routing weight BEFORE GMM2 (block_epilogue_swiglu_bf16.h).
++            weighted=(activation*p[rows,choices,None]).to(torch.bfloat16).float()
++            output=functional.linear(weighted,w2[expert]).to(torch.bfloat16).float()
++            result=result.index_add(0,rows*topk+choices,output)
++        routes=all_reduce(result).to(torch.bfloat16).view(ep*tokens,topk,hidden)
++        # mega_moe_unpermute.h explicitly preserves per-route BF16 rounding
++        # and original TopK order, rather than a final FP32 reduction.
++        combined=routes[:,0]
++        for choice in range(1,topk):combined=combined+routes[:,choice]
++        return combined[rank*tokens:(rank+1)*tokens]
++    records=[];case=0
++    for policy in ('b0','b1','b2','b3'):
++        pool.policy=forced
++        experts=SimpleNamespace(gate_up_proj=weights[0],down_proj=weights[1])
++        model=SimpleNamespace(model=SimpleNamespace(layers=[SimpleNamespace(mlp=SimpleNamespace(experts=experts))]))
++        lifetime=LifetimeDevice(model,pool,policy,entries=args.lifetime_entries,raw_schedule=args.lifetime_raw_schedule,
++                                gradient_ready_scope=args.gradient_ready_scope)
++        for count in (1,2):
++            lifetime.begin(case)
++            values=[data((tokens,hidden)).to(torch.bfloat16) for _ in range(count)]
++            probabilities=[data((tokens,topk),.01).sigmoid()*.2 for _ in range(count)]
++            ids=[provider.routes[0,index,0] for index in range(count)]
++            if args.route_case=='sparse_remote':
++                # Eight active logical experts per owner; ALL their assignments
++                # run at its cyclic peer. Owners have zero local work but must
++                # receive a nonzero parameter gradient, with24 unused experts.
++                ids=[torch.arange(rank*32,rank*32+8,device=device,dtype=torch.int32)
++                     .expand(tokens,8).contiguous() for _ in range(count)]
++            dys=[data((tokens,hidden),.1).to(torch.bfloat16) for _ in range(count)]
++            expected_weights=[value.detach().clone().requires_grad_() for value in weights]
++            reference_x=[value.detach().clone().requires_grad_() for value in values]
++            reference_p=[value.detach().clone().requires_grad_() for value in probabilities]
++            expected=[reference(x,i,p,expected_weights) for x,i,p in zip(reference_x,ids,reference_p)]
++            sum((value.float()*dy.float()).sum()/count for value,dy in zip(expected,dys)).backward()
++            torch.accelerator.synchronize()
++            actual_x=[value.detach().clone().requires_grad_() for value in values]
++            actual_p=[value.detach().clone().requires_grad_() for value in probabilities]
++            waves=compile_waves(tuple(TaskKey(case,index,0) for index in range(count)),tokens)
++            bodies=[]
++            def execute(*inputs):
++                x,p=inputs[:count],inputs[count:]
++                parts=[[] for _ in range(count)]
++                order=torch.zeros((),device=device)
++                for wave_index,wave in enumerate(waves):
++                    key=(case,0,wave_index,1)
++                    outputs=bridge(tuple((0,x[index][begin:end],ids[index][begin:end],p[index][begin:end]+order*0)
++                        for index,begin,end in wave),key,recompute=replay.get())
++                    order=outputs[0].reshape(-1)[0].float()*0
++                    for (index,begin,_),output in zip(wave,outputs):parts[index].append((begin,output))
++                    if not replay.get():bodies.append(pool._plan_bodies[key].body)
++                    if args.serialized:torch.accelerator.synchronize()
++                return tuple(torch.cat([value for _,value in sorted(chunks)]) for chunks in parts)
++            with set_checkpoint_early_stop(False):
++                actual=checkpoint(execute,*actual_x,*actual_p,use_reentrant=False,
++                                  context_fn=lambda:(nullcontext(),replay_context()))
++            sum((value.float()*dy.float()).sum()/count for value,dy in zip(actual,dys)).backward()
++            lifetime.finish()
++            from ascend_deepep.deferred_completion import flush
++            flush()
++            torch.accelerator.synchronize()
++            comparisons={
++                'output':difference(torch.cat(actual),torch.cat(expected),True),
++                'dx':difference(torch.cat([x.grad for x in actual_x]),torch.cat([x.grad for x in reference_x])),
++                'dp':difference(torch.cat([p.grad for p in actual_p]),torch.cat([p.grad for p in reference_p])),
++                'dw1':difference(weights[0].grad,expected_weights[0].grad/ep),
++                'dw2':difference(weights[1].grad,expected_weights[1].grad/ep)}
++            plans=[]
++            for body in bodies:
++                copies=body.copies.cpu().tolist();quota=body.source_quota.sum(0).cpu()
++                active=[(destination,expert,int(quota[expert,destination])) for destination,row in
++                        enumerate(copies) for expert in row if expert>=0]
++                plans.append(dict(copies=active,unused_replicas=sum(rows==0 for _,_,rows in active)))
++            retired=pool.retire_training_step(case)
++            if retired!=count:raise RuntimeError('Math gate plan lifetime mismatch')
++            zero_home_count=int((pool.module.last_exec_counts[:pool.home]==0).sum().item())
++            if args.route_case=='sparse_remote' and zero_home_count!=pool.home:
++                raise RuntimeError('Sparse qualification failed to exercise empty owners')
++            record=dict(policy=policy,tasks=count,raw_schedule=args.lifetime_raw_schedule,
++                        gradient_ready_scope=args.gradient_ready_scope,lifetime_entries=args.lifetime_entries,route_case=args.route_case,
++                        empty_home_experts=zero_home_count,forced_checked_replica_plan=True,comparisons=comparisons,plans=plans,lifetime_stats=dict(lifetime.stats),
++                        passed=all(value['passed'] for value in comparisons.values()))
++            records.append(record)
++            args.out.mkdir(exist_ok=True,parents=True)
++            (args.out/f'rank{rank}.json').write_text(json.dumps(dict(rank=rank,records=records),indent=2))
++            print(json.dumps(dict(rank=rank,**record)),flush=True)
++            for weight in weights:weight.grad=None
++            case+=1
++    from run_audit import loaded_libraries
++    loaded_libraries(args.out,rank)
++    pool.close()
++    del bridge,pool
++    gc.collect();torch.accelerator.synchronize()
++    shmem.destroy();dist.destroy_process_group()
++    return all(record['passed'] for record in records)
++
++
++if __name__=='__main__':
++    try:raise SystemExit(0 if main() else 1)
++    except SystemExit:raise
++    except BaseException:
++        import traceback
++        traceback.print_exc()
++        os._exit(1)
+diff --git a/research/step_lifetime/gradient_ready/normalize_edit_line_endings.py b/research/step_lifetime/gradient_ready/normalize_edit_line_endings.py
+new file mode 100644
+index 0000000..bc16b57
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/normalize_edit_line_endings.py
+@@ -0,0 +1,8 @@
++"""Keep this lane's reviewed Python changes LF, matching the frozen source blobs."""
++from pathlib import Path
++root=Path(__file__).resolve().parent/'stack'
++names=('controller.py','lifetime_device.py','train.py','gate_lifetime_math.py',
++       'gradient_bank_ready.py','test_gradient_bank_ready.py','test_lifetime_delivery.py','test_gradient_ready_capacity.py')
++for name in names:
++    path=root/'tools'/name
++    path.write_bytes(path.read_bytes().replace(b'\r\n',b'\n'))
+diff --git a/research/step_lifetime/gradient_ready/package_delivery.py b/research/step_lifetime/gradient_ready/package_delivery.py
+new file mode 100644
+index 0000000..7cbe7c4
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/package_delivery.py
+@@ -0,0 +1,57 @@
++"""Freeze this bounded local result; do not launch more hardware work."""
++from pathlib import Path
++import hashlib
++import io
++import json
++import shutil
++import subprocess
++import tarfile
++import zipfile
++
++ROOT=Path(__file__).resolve().parent
++STACK=ROOT/'stack'
++load=lambda path:json.loads(path.read_text())
++if not load(ROOT/'study-v1.json').get('passed') or not load(ROOT/'diagnostics/pair-identity-audit.json')['passed']:
++    raise SystemExit('Finish actual qualification and pair before delivery')
++if not (ROOT/'REPORT.md').exists():raise SystemExit('Result report required')
++upstream=ROOT.parent/'priority-cache-20261116'
++for name in ('worker.so','worker-build.json'):
++    shutil.copy2(upstream/'implementation'/name,ROOT/'implementation'/name)
++if hashlib.sha256((ROOT/'implementation/worker.so').read_bytes()).hexdigest()!='e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed':
++    raise RuntimeError('Qualified reused binary differs')
++runtime_head=subprocess.check_output(['git','-C',str(STACK),'rev-parse','HEAD'],text=True).strip()
++dest=STACK/'research/step_lifetime/gradient_ready';dest.mkdir(parents=True,exist_ok=True)
++helpers=sorted(path for path in ROOT.iterdir() if path.suffix in ('.py','.md'))
++for path in helpers:shutil.copy2(path,dest/path.name)
++for name in ('summary.json','cpu-v1.json'):
++    shutil.copy2(ROOT/name,dest/name)
++subprocess.run(['git','-C',str(STACK),'add','research/step_lifetime/gradient_ready'],check=True)
++staged=subprocess.check_output(['git','-C',str(STACK),'diff','--cached','--name-only'],text=True).splitlines()
++if any(not name.startswith('research/step_lifetime/gradient_ready/') for name in staged):raise RuntimeError('Unexpected staged changes')
++if staged:
++    subprocess.run(['git','-C',str(STACK),'diff','--cached','--check'],check=True)
++    subprocess.run(['git','-C',str(STACK),'commit','-m','Archive gradient readiness qualifications and the bounded update-time pair'],check=True)
++head=subprocess.check_output(['git','-C',str(STACK),'rev-parse','HEAD'],text=True).strip()
++base='68aacaeff575cb0081e7b6eef4163dcd770ad039'
++with (ROOT/'implementation/source.diff').open('wb') as handle:
++    subprocess.run(['git','-C',str(STACK),'diff','--binary',base,head],stdout=handle,check=True)
++archive=subprocess.check_output(['git','-C',str(STACK),'archive',head])
++with zipfile.ZipFile(ROOT/'implementation/source.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6) as output:
++    with tarfile.open(fileobj=io.BytesIO(archive)) as source:
++        for member in source:
++            if member.isfile():
++                with source.extractfile(member) as handle:output.writestr('stack/'+member.name,handle.read())
++    for path in helpers:output.write(path,path.name)
++inventory={str(path.relative_to(ROOT)).replace('\\','/'):dict(bytes=path.stat().st_size,sha256=hashlib.sha256(path.read_bytes()).hexdigest())
++           for path in (ROOT/'evidence').rglob('*') if path.is_file() and path.suffix not in ('.tar','.gz')}
++(ROOT/'evidence-inventory.json').write_text(json.dumps(dict(scope='Local per-run collected files; full small-model tensors and CPU source archive remain at remote receipt/task paths.',files=inventory),indent=2)+'\n',encoding='utf-8',newline='\n')
++selected=[path for path in ROOT.iterdir() if path.suffix in ('.py','.md','.json','.csv')]
++selected += [path for name in ('implementation','figures','diagnostics') for path in (ROOT/name).iterdir() if path.is_file()]
++index=dict(branch='research/step-lifetime-grad-ready',head=head,qualified_runtime_head=runtime_head,base=base,
++    persistent_goal='paused',local_control_complete=True,new_planner=False,new_native_build=False,
++    reused_worker_source=str(upstream/'SOURCE-INDEX.json'),remote_project=__import__('remote').REMOTE,
++    source_zip='implementation/source.zip',source_diff='implementation/source.diff',
++    files={str(path.relative_to(ROOT)).replace('\\','/'):dict(bytes=path.stat().st_size,sha256=hashlib.sha256(path.read_bytes()).hexdigest())
++           for path in selected if path.name!='SOURCE-INDEX.json'})
++(ROOT/'SOURCE-INDEX.json').write_text(json.dumps(index,indent=2)+'\n',encoding='utf-8',newline='\n')
++print(json.dumps(dict(head=head,runtime_head=runtime_head,files=len(index['files']),local_raw_files=len(inventory)),indent=2))
+diff --git a/research/step_lifetime/gradient_ready/record_release.py b/research/step_lifetime/gradient_ready/record_release.py
+new file mode 100644
+index 0000000..333fcc5
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/record_release.py
+@@ -0,0 +1,21 @@
++"""Read-only release observation after the bounded local pair."""
++from pathlib import Path
++import json
++import subprocess
++import remote
++
++ROOT=Path(__file__).resolve().parent
++script=f'''import importlib.util,json,time
++spec=importlib.util.spec_from_file_location('local_controller',{(remote.REMOTE+'/stack/tools/controller.py')!r})
++module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
++try:
++ record=dict(timestamp=time.time(),devices_free=True,driver=module.idle(),no_signals_sent=True)
++except Exception as error:
++ record=dict(timestamp=time.time(),devices_free=False,reason=str(error),no_signals_sent=True)
++print(json.dumps(record))
++'''
++result=subprocess.run(['ssh',remote.HOST,'python3','-'],input=script.encode(),capture_output=True)
++result.check_returncode()
++value=json.loads(result.stdout)
++(ROOT/'node-release.json').write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8',newline='\n')
++print(json.dumps(value,indent=2))
+diff --git a/research/step_lifetime/gradient_ready/refresh_archive_index.py b/research/step_lifetime/gradient_ready/refresh_archive_index.py
+new file mode 100644
+index 0000000..a1058c9
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/refresh_archive_index.py
+@@ -0,0 +1,30 @@
++"""Refresh only verified byte-identical task files; never alter their contents."""
++from pathlib import Path
++import hashlib
++import json
++import subprocess
++
++ROOT=Path(__file__).resolve().parent
++STACK=ROOT/'stack'
++if subprocess.check_output(['git','-C',str(STACK),'branch','--show-current'],text=True).strip()!='research/step-lifetime-grad-ready':
++    raise SystemExit('Unexpected independent checkout')
++if subprocess.check_output(['git','-C',str(STACK),'diff','--cached','--name-only'],text=True).strip():
++    raise SystemExit('Unexpected staged changes')
++entries=subprocess.check_output(['git','-C',str(STACK),'ls-tree','-rz','HEAD'])
++head={}
++for entry in entries.split(b'\0'):
++    if not entry:continue
++    fields,name=entry.split(b'\t',1)
++    head[name.decode()]=fields.split()[2].decode()
++selected=json.loads((ROOT/'diagnostics/checkout-byte-alignment.json').read_text())['files']
++selected=sorted(set(selected+['tools/write_report.py','tools/write_planner_report.py']))
++for name in selected:
++    data=(STACK/name).read_bytes()
++    digest=hashlib.sha1(('blob '+str(len(data))+'\0').encode()+data).hexdigest()
++    if digest!=head[name]:raise RuntimeError('Actual content differs from HEAD; do not stage '+name)
++subprocess.run(['git','-C',str(STACK),'add','--',*selected],check=True)
++changed=subprocess.check_output(['git','-C',str(STACK),'diff','--cached','--name-only'],text=True).splitlines()
++result=dict(files_checked=len(selected),contents_changed=False,unexpected_staged=changed)
++(ROOT/'diagnostics/index-refresh.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8',newline='\n')
++if changed:raise RuntimeError('Inspect unexpected index changes '+str(changed))
++print(json.dumps(result))
+diff --git a/research/step_lifetime/gradient_ready/remote.py b/research/step_lifetime/gradient_ready/remote.py
+new file mode 100644
+index 0000000..0184636
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/remote.py
+@@ -0,0 +1,152 @@
++"""Deploy an isolated frozen checkout and execute finite, admitted study gates."""
++from pathlib import Path
++import argparse
++import hashlib
++import json
++import subprocess
++import tarfile
++import re
++from datetime import datetime, timezone
++
++ROOT = Path(__file__).resolve().parent
++STACK = ROOT / 'stack'
++HOST = 'pod6-1-root'
++REMOTE = '/home/z00956592/megaflux/step-lifetime-gradient-ready-20261116'
++CONTAINER = 'step-lifetime-gradient-ready-20261116'
++
++
++def call(arguments, **kwargs):
++    return subprocess.run(arguments, check=True, **kwargs)
++
++
++def deploy():
++    archive = ROOT / 'source.tar'
++    with archive.open('wb') as handle:
++        call(['git','-c','core.longpaths=true','-C',str(STACK),'archive','HEAD'], stdout=handle)
++    with tarfile.open(archive, 'a') as handle:
++        changed = subprocess.check_output(['git','-c','core.longpaths=true','-C',str(STACK),'diff','--name-only'],text=True).splitlines()
++        untracked = subprocess.check_output(['git','-c','core.longpaths=true','-C',str(STACK),'ls-files','--others','--exclude-standard'],text=True).splitlines()
++        for name in changed + untracked:
++            handle.add(STACK / name, arcname=name)
++    hashes = {name: hashlib.sha256((STACK/name).read_bytes()).hexdigest() for name in changed+untracked}
++    (ROOT/'source-overlay.json').write_text(json.dumps(hashes, indent=2))
++    call(['ssh', HOST, 'mkdir', '-p', REMOTE])
++    call(['scp', str(archive), f'{HOST}:{REMOTE}/source.tar'])
++    script = f'''set -euo pipefail
++task={REMOTE}
++exec 9>/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock
++flock -x 9
++base=/home/z00956592/megaflux/step-lifetime-priority-cache-20261116/stack
++mkdir -p "$task/stack" "$task/evidence"
++if [ ! -d "$task/stack/source" ]; then
++ mkdir -p "$task/stack/source/native-balanced/ascend_deepep"
++ cp -a --reflink=auto "$base/source/native-balanced/ascend_deepep/lib" "$task/stack/source/native-balanced/ascend_deepep/"
++ cp -a --reflink=auto "$base/source/native-balanced/worker-variants" "$task/stack/source/native-balanced/"
++ cp -a --reflink=auto "$base/routes" "$task/stack/routes"
++ cp -a --reflink=auto /home/z00956592/megaflux/temporal-replica-study-20261114/stack/small-routes "$task/stack/small-routes"
++fi
++tar -xf "$task/source.tar" -C "$task/stack"
++python3 - "$base" "$task/stack" <<'STAGE'
++from pathlib import Path
++import json,shutil,sys
++base,dest=map(Path,sys.argv[1:])
++for name in ('runtime-freeze.json','temporal-scheduler-freeze.json'):
++ manifest=json.loads((dest/'configs'/name).read_text())
++ for relative in manifest['binaries']:
++  target=dest/relative
++  if not target.exists():
++   target.parent.mkdir(parents=True,exist_ok=True)
++   shutil.copy2(base/relative,target)
++STAGE
++if ! docker container inspect {CONTAINER} >/dev/null 2>&1; then
++ docker run -d --name {CONTAINER} --label codex.task=step-lifetime-gradient-ready-20261116 --privileged --network host --ipc host -v /home:/home -v /usr/local/Ascend/driver:/usr/local/Ascend/driver -v /usr/local/dcmi:/usr/local/dcmi -v /etc/ascend_install.info:/etc/ascend_install.info --entrypoint /bin/bash planner-executor-ep8-runtime:20261114 -lc 'sleep infinity'
++fi
++test "$(docker inspect {CONTAINER} --format '{{{{index .Config.Labels "codex.task"}}}}')" = step-lifetime-gradient-ready-20261116
++docker start {CONTAINER} >/dev/null
++'''
++    launcher = re.sub(r'^TASK=.*$', f'TASK={REMOTE}/stack', (STACK/'tools/launch.sh').read_text(), flags=re.M)
++    controller = re.sub(r"^TASK = pathlib.Path\(.*$", f"TASK = pathlib.Path('{REMOTE}/stack')", (STACK/'tools/controller.py').read_text(), flags=re.M)
++    controller = re.sub(r"^CONTAINER = .*$", f"CONTAINER = '{CONTAINER}'", controller, flags=re.M)
++    controller = controller.replace('29200 + int(time.time()) % 2000', '32200 + int(time.time()) % 2000')
++    for name, contents in [('launch.sh',launcher), ('controller.py',controller)]:
++        path = ROOT/name
++        path.write_text(contents, encoding='utf-8', newline='\n')
++    call(['scp', str(ROOT/'launch.sh'), str(ROOT/'controller.py'), f'{HOST}:{REMOTE}/'])
++    script += '\ncp "$task/launch.sh" "$task/controller.py" "$task/stack/tools/"\n'
++    call(['ssh', HOST, 'bash', '-s'], input=script.encode())
++
++
++def gate(tag, extra, *, metadata_only=False):
++    script = f'''set -euo pipefail
++cd {REMOTE}/stack
++mkdir -p evidence/source-snapshots
++python3 tools/controller.py --backend balanced --tag {tag} --worker-variant ep8-cap64-aligned --seconds 900 {' '.join(extra)}
++'''
++    began = datetime.now(timezone.utc).isoformat()
++    with (ROOT/f'{tag}-remote.log').open('wb') as handle:
++        result = subprocess.run(['ssh', HOST, 'bash', '-s'], input=script.encode(), stdout=handle, stderr=subprocess.STDOUT)
++    receipt = dict(tag=tag, started=began, exit=result.returncode)
++    (ROOT/f'{tag}-receipt.json').write_text(json.dumps(receipt, indent=2))
++    if metadata_only:
++        # Full tensors remain in this run's project-owned remote directory.
++        # This avoids retransmitting multi-GiB PT files for every qualification.
++        bundle=f'{REMOTE}/stack/evidence/{tag}-metadata.tar.gz'
++        packed=subprocess.run(['ssh',HOST,'tar','-czf',bundle,'--exclude=*.pt','-C',
++                               f'{REMOTE}/stack/evidence',tag])
++        packed.check_returncode()
++        collected=subprocess.run(['scp',f'{HOST}:{bundle}',str(ROOT/'evidence')])
++        if collected.returncode==0:
++            with tarfile.open(ROOT/'evidence'/f'{tag}-metadata.tar.gz') as handle:
++                handle.extractall(ROOT/'evidence',filter='data')
++        receipt['large_tensors_remote']=f'{REMOTE}/stack/evidence/{tag}'
++    else:
++        collected = subprocess.run(['scp', '-r', f'{HOST}:{REMOTE}/stack/evidence/{tag}', str(ROOT/'evidence')])
++    receipt['collection_exit'] = collected.returncode
++    snapshots = ROOT/'evidence'/'source-snapshots'
++    snapshots.mkdir(exist_ok=True)
++    current=ROOT/'evidence'/tag/'source-identity.json'
++    duplicate=None
++    if current.exists():
++        identity=json.loads(current.read_text())
++        for candidate in (ROOT/'evidence').glob('*/source-identity.json'):
++            other=candidate.parent.name
++            other_receipt=ROOT/f'{other}-receipt.json'
++            if other==tag or not (snapshots/f'{other}.tar.gz').exists() or not other_receipt.exists():continue
++            if json.loads(other_receipt.read_text()).get('collection_exit')!=0:continue
++            if json.loads(candidate.read_text())==identity:
++                duplicate=other;break
++    if duplicate is None and current.exists():
++        copied=subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}.tar.gz',str(snapshots)])
++        receipt['snapshot_collection_exit']=copied.returncode
++    elif duplicate is not None:
++        (snapshots/f'{tag}-source-reference.json').write_text(json.dumps(dict(
++            same_guarded_files_as=duplicate,archive=f'{duplicate}.tar.gz'),indent=2))
++        receipt['source_snapshot_reused']=duplicate
++    suffixes=['-runtime.json']
++    if '--temporal-scheduler' in extra or 'scheduler' in extra:suffixes.append('-temporal-runtime.json')
++    if '--lifetime-mode' in extra:suffixes.append('-lifetime-runtime.json')
++    for suffix in suffixes:
++        if current.exists():
++            subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}{suffix}',str(snapshots)])
++    if '--diagnostic-timer' in extra and current.exists():
++        subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}-timer-worker-runtime.json',str(snapshots)])
++    (ROOT/f'{tag}-receipt.json').write_text(json.dumps(receipt, indent=2))
++    print(json.dumps(receipt), flush=True)
++    raise SystemExit(result.returncode)
++
++
++if __name__ == '__main__':
++    parser = argparse.ArgumentParser()
++    parser.add_argument('action', choices=('deploy','gate'))
++    parser.add_argument('--tag')
++    parser.add_argument('--metadata-only', action='store_true')
++    args, extra = parser.parse_known_args()
++    (ROOT/'evidence').mkdir(exist_ok=True)
++    if args.action == 'deploy':
++        deploy()
++    else:
++        if not args.tag or not all(character.isalnum() or character in '-_.' for character in args.tag):
++            parser.error('a safe run tag is required')
++        if any(not all(character.isalnum() or character in '-_./:' for character in item) for item in extra):
++            parser.error('unexpected shell metacharacter in gate arguments')
++        gate(args.tag, extra, metadata_only=args.metadata_only)
+diff --git a/research/step_lifetime/gradient_ready/replay_case.py b/research/step_lifetime/gradient_ready/replay_case.py
+new file mode 100644
+index 0000000..8ba477c
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/replay_case.py
+@@ -0,0 +1,15 @@
++"""Explicit fresh-process replay only; no automatic campaign or repeat."""
++import argparse
++import remote
++
++parser=argparse.ArgumentParser()
++parser.add_argument('--scope',required=True,choices=('call_stream','bank_write'))
++parser.add_argument('--tag',required=True)
++args=parser.parse_args()
++if not args.tag or not all(value.isalnum() or value in '-_.' for value in args.tag):parser.error('Safe unique tag required')
++remote.gate(args.tag,['--layers','4','--steps','25','--tokens','16384','--hidden','4096','--ffn','1024',
++    '--microbatches','4','--forward-window','2','--recv-capacity','262144','--maxvio','10','--planner','native',
++    '--temporal-pattern','same','--temporal-policy','fixed_native','--worker-variant','ep8-cap64-lifetime-priority-cache-v1',
++    '--grad-sync','--hold-fsdp-forward','--temporal-prefix-reuse','--lifetime-mode','b3','--lifetime-raw-schedule','preserve',
++    '--gradient-ready-scope',args.scope,'--temporal-scheduler','ascendc','--temporal-scheduler-library',
++    remote.REMOTE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so'],metadata_only=True)
+diff --git a/research/step_lifetime/gradient_ready/restore_archive_bytes.py b/research/step_lifetime/gradient_ready/restore_archive_bytes.py
+new file mode 100644
+index 0000000..d59af02
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/restore_archive_bytes.py
+@@ -0,0 +1,29 @@
++"""Align tools/config text to deployed archive bytes; leave vendor paths alone."""
++from pathlib import Path
++import io
++import json
++import subprocess
++import tarfile
++
++ROOT=Path(__file__).resolve().parent
++STACK=ROOT/'stack'
++branch=subprocess.check_output(['git','-C',str(STACK),'branch','--show-current'],text=True).strip()
++if branch!='research/step-lifetime-grad-ready':raise SystemExit('Unexpected checkout')
++archive=subprocess.check_output(['git','-C',str(STACK),'archive','HEAD'])
++changes=[]
++with tarfile.open(fileobj=io.BytesIO(archive)) as bundle:
++    for member in bundle:
++        if not member.isfile():continue
++        if not member.name.startswith(('tools/','configs/')):continue
++        path=STACK/member.name
++        content=bundle.extractfile(member).read()
++        actual=path.read_bytes()
++        if content==actual:continue
++        if actual.replace(b'\r\n',b'\n')!=content.replace(b'\r\n',b'\n'):
++            raise RuntimeError('Non-EOL modification must be reviewed: '+member.name)
++        changes.append((path,content))
++for path,content in changes:path.write_bytes(content)
++(ROOT/'diagnostics/checkout-byte-alignment.json').write_text(json.dumps(dict(
++    branch=branch,eol_only=True,files=[str(path.relative_to(STACK)).replace('\\','/') for path,_ in changes],
++    reason='Initial checkout inherited autocrlf before local config; deployed git archive was authoritative. No remote computation code changed.'),indent=2)+'\n',encoding='utf-8',newline='\n')
++print(json.dumps(dict(eol_only=True,files=len(changes))))
+diff --git a/research/step_lifetime/gradient_ready/restore_clone_line_endings.py b/research/step_lifetime/gradient_ready/restore_clone_line_endings.py
+new file mode 100644
+index 0000000..0450fe4
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/restore_clone_line_endings.py
+@@ -0,0 +1,9 @@
++"""Restore two verified EOL-only checkout changes in this newly created clone."""
++from pathlib import Path
++import subprocess
++
++root=Path(__file__).resolve().parent/'stack'
++names=('tools/write_planner_report.py','tools/write_report.py')
++subprocess.run(['git','-C',str(root),'diff','--ignore-space-at-eol','--exit-code','--',*names],check=True)
++for name in names:
++    (root/name).write_bytes(subprocess.check_output(['git','-C',str(root),'show','HEAD:'+name]))
+diff --git a/research/step_lifetime/gradient_ready/run_cpu_gates.py b/research/step_lifetime/gradient_ready/run_cpu_gates.py
+new file mode 100644
+index 0000000..c099a49
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/run_cpu_gates.py
+@@ -0,0 +1,52 @@
++"""Apply one math-gate patch, then run locked CPU correctness oracles."""
++from pathlib import Path
++import hashlib
++import json
++import subprocess
++import tarfile
++import remote
++
++ROOT=Path(__file__).resolve().parent
++TAG='gradient-ready-cpu-v1'
++if (ROOT/'evidence'/TAG).exists():raise SystemExit('CPU qualification already exists')
++relative='tools/gate_lifetime_math.py'
++before=hashlib.sha256(subprocess.check_output(['git','-C',str(ROOT/'stack'),'show','78a9c39:'+relative])).hexdigest()
++after=hashlib.sha256((ROOT/'stack'/relative).read_bytes()).hexdigest()
++bundle=ROOT/'math-gate-patch.tar'
++with tarfile.open(bundle,'w') as archive:archive.add(ROOT/'stack'/relative,arcname=relative)
++subprocess.run(['scp',str(bundle),remote.HOST+':'+remote.REMOTE+'/math-gate-patch.tar'],check=True)
++script=f'''import fcntl,hashlib,importlib.util,json,pathlib,subprocess,sys,tarfile
++task=pathlib.Path({remote.REMOTE!r})/'stack';out=task/'evidence'/{TAG!r}
++with pathlib.Path('/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock').open('a') as lock:
++ fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
++ target=task/{relative!r}
++ assert hashlib.sha256(target.read_bytes()).hexdigest()=={before!r}
++ with tarfile.open(task.parent/'math-gate-patch.tar') as archive:
++  assert archive.getnames()==[{relative!r}]
++  payload=archive.extractfile({relative!r}).read()
++ assert hashlib.sha256(payload).hexdigest()=={after!r}
++ target.write_bytes(payload)
++ spec=importlib.util.spec_from_file_location('controller',str(task/'tools/controller.py'))
++ module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
++ out.mkdir(exist_ok=False,parents=True)
++ admission=module.idle();sources=module.source_identity()
++ (out/'source-identity.json').write_text(json.dumps(sources,indent=2))
++ sys.path.insert(0,str(task/'tools'))
++ from source_freeze import freeze_snapshot
++ freeze_snapshot(task,{TAG!r},sources)
++ command="source /home/pkg/b070/ascend-toolkit/set_env.sh; source /home/pkg/b070/cann-9.2.0/set_env.sh; export PATH=/usr/local/python3.12.13/bin:$PATH; export PYTHONPATH="+str(task/'tools')+"; export LD_PRELOAD=/home/z00956592/v4pro-lab/operator/a8e809a/libstdc++/libstdc++.so.6.0.35; export OMP_NUM_THREADS=1; python3 -m unittest -v test_gradient_bank_ready test_lifetime_delivery test_gradient_ready_capacity"
++ with (out/'stdout.log').open('w') as log:
++  result=subprocess.run(['docker','exec','-w',str(task),{remote.CONTAINER!r},'timeout','-k','10','240','bash','-lc',command],stdout=log,stderr=subprocess.STDOUT)
++ status=dict(exit=result.returncode,source_unchanged=sources==module.source_identity(),admission=admission,math_gate_patch=dict(before={before!r},after={after!r}),cpu_only=True)
++ status['passed']=status['exit']==0 and status['source_unchanged']
++ (out/'status.json').write_text(json.dumps(status,indent=2))
++ print(json.dumps(status))
++ raise SystemExit(0 if status['passed'] else 1)
++'''
++with (ROOT/'diagnostics/cpu-driver.log').open('wb') as handle:
++    result=subprocess.run(['ssh',remote.HOST,'python3','-'],input=script.encode(),stdout=handle,stderr=subprocess.STDOUT)
++subprocess.run(['scp','-r',remote.HOST+':'+remote.REMOTE+'/stack/evidence/'+TAG,str(ROOT/'evidence')],check=True)
++state=json.loads((ROOT/'evidence'/TAG/'status.json').read_text())
++(ROOT/'cpu-v1.json').write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8',newline='\n')
++print(json.dumps(state,indent=2))
++raise SystemExit(result.returncode)
+diff --git a/research/step_lifetime/gradient_ready/run_local_study.py b/research/step_lifetime/gradient_ready/run_local_study.py
+new file mode 100644
+index 0000000..a5442a8
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/run_local_study.py
+@@ -0,0 +1,110 @@
++"""Bounded user-authorized finish: numeric gates and one B3 pair, then stop."""
++from pathlib import Path
++import hashlib
++import json
++import math
++import statistics
++import subprocess
++import remote
++
++ROOT=Path(__file__).resolve().parent
++STATE=ROOT/'study-v1.json'
++WORKER='ep8-cap64-lifetime-priority-cache-v1'
++SO='e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed'
++if STATE.exists():raise SystemExit('Study already started; inspect its live handle/state instead of restarting')
++load=lambda path:json.loads(path.read_text())
++if not load(ROOT/'cpu-v1.json')['passed']:raise SystemExit('CPU qualification required')
++cpu_sources=load(ROOT/'evidence/gradient-ready-cpu-v1/source-identity.json')
++cpu_core=('gradient_bank_ready.py','step_lifetime.py','lifetime_device.py','test_gradient_bank_ready.py',
++          'test_lifetime_delivery.py','test_gradient_ready_capacity.py')
++if not all(hashlib.sha256((ROOT/'stack/tools'/name).read_bytes()).hexdigest()==cpu_sources['tools/'+name] for name in cpu_core):
++    raise SystemExit('CPU qualification core changed')
++state=dict(stage='math',runs=[],persistent_goal='paused',bounded_finish=True,new_planner=False,
++           formal_repeats=1,auto_expand=False)
++def save():STATE.write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8',newline='\n')
++
++def gate(tag,args):
++    state['current']=tag;save()
++    try:remote.gate(tag,args,metadata_only=True)
++    except SystemExit as done:code=done.code
++    folder=ROOT/'evidence'/tag;status=load(folder/'status.json')
++    passed=code==0 and all(status.get(key) for key in ('qualified','source_unchanged','exclusive_devices')) and status['peak_driver_MiB']<=90*1024
++    if not passed:raise RuntimeError('Unqualified run '+tag+' actual exit '+str(status.get('exit')))
++    for rank in range(8):
++        libraries=load(folder/f'libraries-rank{rank}.json')
++        workers=[value['sha256'] for path,value in libraries['libraries'].items() if '/worker-variants/' in path and path.endswith('.so')]
++        if workers!=[SO] or len(libraries['shmem'])!=1:raise RuntimeError('Actual worker/SHMEM mismatch '+tag)
++    return folder,status
++
++save()
++try:
++    math_cases=[('reference-bank','call_stream','bank',8),('bank-bank','bank_write','bank',8),
++                ('bank-sparse','bank_write','sparse_remote',8),('bank-capacity','bank_write','sparse_remote',1)]
++    for name,scope,route,entries in math_cases:
++        tag='grad-ready-math-'+name+'-v1'
++        folder,status=gate(tag,['--mode','lifetime_math','--worker-variant',WORKER,
++            '--lifetime-mode','all','--lifetime-raw-schedule','preserve','--gradient-ready-scope',scope,
++            '--lifetime-entries',str(entries),'--route-case',route,'--route-bank',remote.REMOTE+'/stack/small-routes'])
++        rows=[row for rank in range(8) for row in load(folder/f'rank{rank}.json')['records']]
++        passed=len(rows)==64 and all(row['passed'] and row['gradient_ready_scope']==scope and row['lifetime_entries']==entries for row in rows)
++        if route=='sparse_remote':passed &= all(row['empty_home_experts']==32 for row in rows)
++        if scope=='bank_write':passed &= all(row['lifetime_stats']['ready_bank_writes']>0 and row['lifetime_stats']['ready_bank_waits']>0 for row in rows)
++        state['runs'].append(dict(tag=tag,phase='math',passed=bool(passed),scope=scope,route=route,entries=entries,
++            records=len(rows),max_relative_l2={key:max(row['comparisons'][key]['relative_l2'] for row in rows) for key in ('output','dx','dp','dw1','dw2')}));save()
++        if not passed:raise RuntimeError('Independent NPU math failed '+tag)
++    state['stage']='model';save()
++    for scope in ('call_stream','bank_write'):
++        tag='grad-ready-model-'+scope+'-v1'
++        folder,status=gate(tag,['--layers','2','--steps','3','--tokens','256','--hidden','512','--ffn','512',
++            '--microbatches','4','--forward-window','2','--recv-capacity','4096','--maxvio','10','--planner','moonep',
++            '--temporal-pattern','same','--temporal-policy','fixed_native','--worker-variant',WORKER,'--grad-sync',
++            '--hold-fsdp-forward','--temporal-prefix-reuse','--lifetime-mode','b3','--lifetime-raw-schedule','preserve',
++            '--gradient-ready-scope',scope,'--dump-grad-step0','--finite-diagnostics',
++            '--route-bank',remote.REMOTE+'/stack/small-routes'])
++        passed=True
++        for rank in range(8):
++            updates=load(folder/f'updates-rank{rank}.json')
++            steps=[json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()]
++            passed &= len(updates)==len(steps)==3 and all(row['changed'] for row in updates)
++            passed &= all(math.isfinite(row['loss']) and math.isfinite(row['grad_norm']) for row in steps)
++            config=load(folder/f'lifetime-config-rank{rank}.json')
++            passed &= config['gradient_ready_scope']==scope and config['raw_schedule']=='preserve' and config['worker_capability']==2
++            passed &= load(folder/f'lifetime-audit-rank{rank}.json')['pending']==0
++            for step in range(3):
++                finite=load(folder/f'gradient-finite-step{step}-rank{rank}.json')
++                passed &= bool(finite) and all(row.get('finite',True) for row in finite)
++        result_path=remote.REMOTE+'/stack/evidence/'+tag+'-comparison.json'
++        command=['ssh',remote.HOST,'docker','exec',remote.CONTAINER,'/usr/local/python3.12.13/bin/python3',
++            remote.REMOTE+'/stack/tools/compare_temporal_gradients.py',
++            '/home/z00956592/megaflux/step-lifetime-raw-control-20261116/stack/evidence/raw-model-preserve-v1',
++            remote.REMOTE+'/stack/evidence/'+tag,'--out',result_path]
++        with (ROOT/'diagnostics'/(tag+'-comparison.log')).open('wb') as handle:
++            comparison=subprocess.run(command,stdout=handle,stderr=subprocess.STDOUT)
++        local=ROOT/'diagnostics'/(tag+'-comparison.json')
++        subprocess.run(['scp',remote.HOST+':'+result_path,str(local)],check=True)
++        passed &= comparison.returncode==0 and load(local)['passed']
++        state['runs'].append(dict(tag=tag,phase='model',scope=scope,passed=bool(passed),peak_driver_MiB=status['peak_driver_MiB']));save()
++        if not passed:raise RuntimeError('Full small-model qualification failed '+tag)
++    state['stage']='pilot';save()
++    for scope in ('call_stream','bank_write'):
++        tag='grad-ready-pilot-'+scope+'-v1'
++        folder,status=gate(tag,['--layers','4','--steps','25','--tokens','16384','--hidden','4096','--ffn','1024',
++            '--microbatches','4','--forward-window','2','--recv-capacity','262144','--maxvio','10','--planner','native',
++            '--temporal-pattern','same','--temporal-policy','fixed_native','--worker-variant',WORKER,'--grad-sync',
++            '--hold-fsdp-forward','--temporal-prefix-reuse','--lifetime-mode','b3','--lifetime-raw-schedule','preserve',
++            '--gradient-ready-scope',scope,'--temporal-scheduler','ascendc',
++            '--temporal-scheduler-library',remote.REMOTE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so'])
++        all_steps=[[json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()] for rank in range(8)]
++        passed=all(len(rows)==25 and all(math.isfinite(row['loss']) and math.isfinite(row['grad_norm']) for row in rows) for rows in all_steps)
++        for rank in range(8):
++            config=load(folder/f'lifetime-config-rank{rank}.json');audit=load(folder/f'lifetime-audit-rank{rank}.json')
++            passed &= config['gradient_ready_scope']==scope and audit['pending']==0
++        times=[max(rows[step]['milliseconds'] for rows in all_steps) for step in range(5,25)]
++        state['runs'].append(dict(tag=tag,phase='pilot',scope=scope,passed=bool(passed),median_step_ms=statistics.median(times),
++            measured_rank_max_step_ms=times,peak_driver_MiB=status['peak_driver_MiB']));save()
++        if not passed:raise RuntimeError('Formal pair verification failed '+tag)
++    pair=[row for row in state['runs'] if row['phase']=='pilot']
++    state.update(stage='complete',passed=True,reduction_pct=100*(1-pair[1]['median_step_ms']/pair[0]['median_step_ms']))
++    state.pop('current',None);save()
++except BaseException as error:
++    state.update(stage='failed',error=str(error));save();raise
+diff --git a/research/step_lifetime/gradient_ready/summary.json b/research/step_lifetime/gradient_ready/summary.json
+new file mode 100644
+index 0000000..2d96f22
+--- /dev/null
++++ b/research/step_lifetime/gradient_ready/summary.json
+@@ -0,0 +1,14 @@
++{
++  "local_control_complete": true,
++  "persistent_goal": "paused",
++  "no_auto_expand": true,
++  "new_planner": false,
++  "baseline_seconds": 4.23805325,
++  "bank_write_seconds": 4.2079286300000005,
++  "reduction_pct": 0.7108126826863126,
++  "speedup_ratio": 1.0071590140063758,
++  "independent_processes_per_scope": 1,
++  "math_records": 256,
++  "peak_sampled_driver_GiB": 66.43359375,
++  "conclusion": "One matched process per scope; a screening signal or negative result, not a stable-gain claim."
++}
+diff --git a/tools/controller.py b/tools/controller.py
+index 8715482..2085913 100644
+--- a/tools/controller.py
++++ b/tools/controller.py
+@@ -10,6 +10,7 @@ import subprocess
+ import time
+ import hashlib
+ import os
++import socket
+ from concurrent.futures import ThreadPoolExecutor
+ 
+ TASK = pathlib.Path('/home/z00956592/megaflux/step-lifetime-study-20261115/stack')
+@@ -92,6 +93,36 @@ def foreign_device_owners(container_id):
+             foreign.append(int(value))
+     return sorted(foreign)
+ 
++
++def probe_master_port(out):
++    """Probe a task-specific range without signalling existing CPU services.
++
++    TCPStore must bind the port itself, so this is a preflight, not a reservation.
++    A later EADDRINUSE remains an explicit failed run, never a silent restart.
++    """
++    # Stay below this host's ephemeral range; probe IPv6 as well as IPv4.
++    # A loopback IPv4-only bind misses an existing [::1] client socket.
++    start = 25100 + int(time.time()) % 2000
++    for offset in range(2000):
++        port = 25100 + (start - 25100 + offset) % 2000
++        available = True
++        for selected_port in (port, port + 1):
++            for family, address in ((socket.AF_INET6, ('::', selected_port)), (socket.AF_INET, ('0.0.0.0', selected_port))):
++                with socket.socket(family, socket.SOCK_STREAM) as probe:
++                    try:
++                        probe.bind(address)
++                    except OSError:
++                        available = False
++                        break
++            if not available:break
++        if not available:
++            continue
++        (out/'port-admission.json').write_text(json.dumps(dict(port=port,
++            checked_ns=time.monotonic_ns(), probe_only_not_reserved=True,
++            probed=['IPv6 wildcard', 'IPv4 wildcard'],ports=[port, port+1]),indent=2))
++        return port
++    raise RuntimeError('No free TCPStore port in this diagnostic range')
++
+ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
+     diagnostic='--diagnostic-timer' in arguments
+     if '--temporal-schedule-replay' in arguments and '--diagnostic-only' not in arguments:
+@@ -151,7 +182,8 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
+     final_admission=idle()
+     (out/'launch-admission.json').write_text(json.dumps(final_admission,indent=2))
+     container_id=subprocess.check_output(['docker','inspect',CONTAINER,'--format','{{.Id}}'],text=True).strip()
+-    command = ['docker', 'exec', '-w', str(TASK), '-e', f'EP8_MASTER_PORT={29200 + int(time.time()) % 2000}',
++    master_port = probe_master_port(out)
++    command = ['docker', 'exec', '-w', str(TASK), '-e', f'EP8_MASTER_PORT={master_port}',
+                CONTAINER, 'timeout', '-k', '30', str(seconds), 'bash', 'tools/launch.sh',
+                backend, mode, tag, *arguments]
+     if worker:
+diff --git a/tools/gate_lifetime_math.py b/tools/gate_lifetime_math.py
+index 5a077f3..7c13f1b 100644
+--- a/tools/gate_lifetime_math.py
++++ b/tools/gate_lifetime_math.py
+@@ -37,6 +37,8 @@ def main():
+     parser.add_argument('--serialized',action='store_true')
+     parser.add_argument('--lifetime-mode',default='all')
+     parser.add_argument('--lifetime-raw-schedule',choices=('legacy','preserve'),default='legacy')
++    parser.add_argument('--gradient-ready-scope',choices=('call_stream','bank_write'),default='call_stream')
++    parser.add_argument('--lifetime-entries',type=int,default=8)
+     parser.add_argument('--route-case',choices=('bank','sparse_remote'),default='bank')
+     args=parser.parse_args()
+     from fsdp_turbo.utils.device import set_accelerator_compatible
+@@ -125,7 +127,8 @@ def main():
+         pool.policy=forced
+         experts=SimpleNamespace(gate_up_proj=weights[0],down_proj=weights[1])
+         model=SimpleNamespace(model=SimpleNamespace(layers=[SimpleNamespace(mlp=SimpleNamespace(experts=experts))]))
+-        lifetime=LifetimeDevice(model,pool,policy,raw_schedule=args.lifetime_raw_schedule)
++        lifetime=LifetimeDevice(model,pool,policy,entries=args.lifetime_entries,raw_schedule=args.lifetime_raw_schedule,
++                                gradient_ready_scope=args.gradient_ready_scope)
+         for count in (1,2):
+             lifetime.begin(case)
+             values=[data((tokens,hidden)).to(torch.bfloat16) for _ in range(count)]
+@@ -186,7 +189,8 @@ def main():
+             zero_home_count=int((pool.module.last_exec_counts[:pool.home]==0).sum().item())
+             if args.route_case=='sparse_remote' and zero_home_count!=pool.home:
+                 raise RuntimeError('Sparse qualification failed to exercise empty owners')
+-            record=dict(policy=policy,tasks=count,raw_schedule=args.lifetime_raw_schedule,route_case=args.route_case,
++            record=dict(policy=policy,tasks=count,raw_schedule=args.lifetime_raw_schedule,
++                        gradient_ready_scope=args.gradient_ready_scope,lifetime_entries=args.lifetime_entries,route_case=args.route_case,
+                         empty_home_experts=zero_home_count,forced_checked_replica_plan=True,comparisons=comparisons,plans=plans,lifetime_stats=dict(lifetime.stats),
+                         passed=all(value['passed'] for value in comparisons.values()))
+             records.append(record)
+@@ -195,6 +199,8 @@ def main():
+             print(json.dumps(dict(rank=rank,**record)),flush=True)
+             for weight in weights:weight.grad=None
+             case+=1
++    from run_audit import loaded_libraries
++    loaded_libraries(args.out,rank)
+     pool.close()
+     del bridge,pool
+     gc.collect();torch.accelerator.synchronize()
+diff --git a/tools/gradient_bank_ready.py b/tools/gradient_bank_ready.py
+new file mode 100644
+index 0000000..9955505
+--- /dev/null
++++ b/tools/gradient_bank_ready.py
+@@ -0,0 +1,101 @@
++"""Tensor-independent identity and lifetime of a gradient bank's last writer."""
++from dataclasses import dataclass
++from step_lifetime import ExpertKey
++
++
++@dataclass(frozen=True)
++class GradientBankWrite:
++    key: ExpertKey
++    slot: int
++    generation: int
++    identities: tuple
++    event: object
++
++
++class GradientBankReadyLedger:
++    """Keep last-write Events alive until the matching delivery actually retires."""
++
++    def __init__(self, entries, rank):
++        if entries < 1:
++            raise ValueError('Positive bank capacity required')
++        self.entries, self.rank = entries, rank
++        self.version = None
++        self.generation = 0
++        self.pending = {}
++        self.slots = {}
++        self.batches = {}
++        self.seen = set()
++
++    def begin(self, version):
++        self.finish()
++        if self.version is not None and version <= self.version:
++            raise ValueError('Bank version must increase')
++        self.version = version
++        self.seen.clear()
++
++    def publish(self, key, slot, identities, event):
++        identities = tuple(identities)
++        if key.version != self.version or key.rank != self.rank or min(key.layer, key.expert) < 0:
++            raise ValueError('Stale or foreign bank writer')
++        if not 0 <= slot < self.entries or not identities or len(set(identities)) != len(identities):
++            raise ValueError('Invalid bank slot or contribution list')
++        if any(len(identity) != 5 or identity[0] != self.version or identity[2:] != (key.layer, key.expert, key.rank)
++               for identity in identities):
++            raise ValueError('Bank writer does not match contribution identity')
++        previous = self.pending.get(key)
++        prefix = () if previous is None else previous.identities
++        if previous is not None and (previous.slot != slot or identities[:len(prefix)] != prefix):
++            raise ValueError('Bank append changed slot or dropped prior contributions')
++        added = identities[len(prefix):]
++        if not added or any(identity in self.seen for identity in added):
++            raise ValueError('Duplicate bank write contribution')
++        occupied = self.slots.get(slot)
++        if occupied is not None and occupied is not previous:
++            raise RuntimeError('Bank slot still pending or in flight')
++        if previous is None:
++            self.generation += 1
++        generation = self.generation if previous is None else previous.generation
++        write = GradientBankWrite(key, slot, generation, identities, event)
++        self.pending[key] = write
++        self.slots[slot] = write
++        self.seen.update(added)
++        return write
++
++    def take_many(self, requests):
++        """Validate the complete local submission before changing any binding."""
++        requests = tuple(requests)
++        if not requests:
++            return ()
++        keys = [key for key, _, _ in requests]
++        if len(set(keys)) != len(keys):
++            raise ValueError('Duplicate bank submission')
++        records = []
++        for key, slot, identities in requests:
++            write = self.pending.get(key)
++            if (write is None or key.version != self.version or write.slot != slot
++                    or write.identities != tuple(identities) or self.slots.get(slot) is not write):
++                raise ValueError('Missing, stale or incomplete bank ready')
++            records.append(write)
++        identities = tuple(identity for write in records for identity in write.identities)
++        if identities in self.batches:
++            raise ValueError('Duplicate bank delivery batch')
++        for write in records:
++            del self.pending[write.key]
++        self.batches[identities] = tuple(records)
++        return tuple(records)
++
++    def complete(self, identities):
++        """Caller must first observe the service completion event."""
++        identities = tuple(identities)
++        records = self.batches.get(identities)
++        if records is None:
++            raise ValueError('Unknown or already completed bank delivery')
++        if any(write.key.version != self.version or self.slots.get(write.slot) is not write for write in records):
++            raise ValueError('Expired bank generation on completion')
++        for write in records:
++            del self.slots[write.slot]
++        del self.batches[identities]
++
++    def finish(self):
++        if self.pending or self.batches or self.slots:
++            raise RuntimeError('Bank ready or delivery still live')
+diff --git a/tools/lifetime_device.py b/tools/lifetime_device.py
+index 22b9c39..a5af66d 100644
+--- a/tools/lifetime_device.py
++++ b/tools/lifetime_device.py
+@@ -9,6 +9,7 @@ import torch
+ import torch.distributed as dist
+ from torch.distributed.tensor import DTensor
+ from step_lifetime import ExpertKey, UpdateContext
++from gradient_bank_ready import GradientBankReadyLedger
+ 
+ 
+ def _local(value):
+@@ -18,13 +19,15 @@ def _local(value):
+ class LifetimeDevice:
+     """Own bounded replica storage and return complete gradients to fixed owners."""
+ 
+-    def __init__(self, model, pool, mode, entries=8, *, raw_schedule='legacy'):
++    def __init__(self, model, pool, mode, entries=8, *, raw_schedule='legacy', gradient_ready_scope='call_stream'):
+         if mode not in ('anchor', 'b0', 'b1', 'b2', 'b3'):
+             raise ValueError('Unknown lifetime mode')
+         module = pool.module
+         abi = getattr(module._worker_native, 'megaflux_step_lifetime_version', None)
+         if raw_schedule not in ('legacy','preserve'):
+             raise ValueError('Unknown raw dW compute schedule')
++        if gradient_ready_scope not in ('call_stream', 'bank_write'):
++            raise ValueError('Unknown gradient producer-ready scope')
+         capability=0 if abi is None else int(abi())
+         if capability not in (1,2) or (raw_schedule=='preserve' and capability<2):
+             raise RuntimeError('Requested lifetime schedule requires a matching private ABI worker')
+@@ -34,10 +37,12 @@ class LifetimeDevice:
+         self.raw_schedule=raw_schedule
+         self.raw_dw_mode=2 if raw_schedule=='preserve' else 1
+         self.worker_capability=capability
++        self.gradient_ready_scope=gradient_ready_scope
+         self.module, self.pool, self.mode = module, pool, mode
+         self.rank, self.group = pool.shmem.rank(), pool.group
+         self.ranks, self.entries = pool.shmem.world_size(), entries
+         self.context = UpdateContext(entries, entries)
++        self.bank_ready = GradientBankReadyLedger(entries, self.rank) if gradient_ready_scope == 'bank_write' else None
+         self.layer = None
+         self.service = None
+         self.flight = []
+@@ -58,13 +63,16 @@ class LifetimeDevice:
+         self.receive = tuple(torch.empty_like(value, dtype=torch.float32) for value in template)
+         self.cache_addresses = torch.zeros((pool.slots, 2), device=module.w1.device, dtype=torch.int64)
+         self.stats = dict(weight_remote_bytes=0, weight_hit_bytes=0, cache_local_copy_bytes=0,
+-                          gradient_remote_bytes=0, gradient_deliveries=0, flushes=0)
++                          gradient_remote_bytes=0, gradient_deliveries=0, flushes=0,
++                          ready_bank_writes=0, ready_bank_waits=0)
+         self._current = None
+         if mode != 'anchor':
+             module.lifetime = self
+ 
+     def begin(self, version):
+         self.context.begin(version)
++        if self.bank_ready is not None:
++            self.bank_ready.begin(version)
+         if self.pending:
+             raise RuntimeError('Pending gradients crossed an optimizer update')
+         if self.mode!='anchor':
+@@ -136,9 +144,22 @@ class LifetimeDevice:
+     def _drain(self):
+         for event, identities in self.flight:
+             if event is not None:event.synchronize()
+-            if identities:self.context.complete(identities)
++            if identities:
++                self.context.complete(identities)
++                if self.bank_ready is not None:self.bank_ready.complete(identities)
+         self.flight.clear()
+ 
++    @contextmanager
++    def _flush_scope(self):
++        if self.gradient_ready_scope == 'call_stream' or self.service is None:
++            with self._delivery_scope():
++                yield
++        else:
++            # Home-gradient adds stay ordered on this same service stream.
++            # Source-bank reads wait their own last writer below.
++            with torch.accelerator.stream(self.service):
++                yield
++
+     def _add_owner(self, layer, local_expert, first, second):
+         with torch.no_grad():
+             for parameter, contribution in zip(self.parameters[layer], (first, second)):
+@@ -194,6 +215,14 @@ class LifetimeDevice:
+                                             expert // self.pool.home)
+                     self.gradients_buffer[0][index].add_(first[self.pool.home + slot].float())
+                     self.gradients_buffer[1][index].add_(second[self.pool.home + slot].float())
++                    if self.bank_ready is not None:
++                        ready = None
++                        if self.service is not None:
++                            ready = torch.accelerator.Event()
++                            ready.record(torch.accelerator.current_stream())
++                        self.bank_ready.publish(ExpertKey(self.context.version, layer, expert, source),
++                                                index, tuple(tickets), ready)
++                        self.stats['ready_bank_writes'] += 1
+         if self.mode in ('b0', 'b1'):
+             self.flush()
+ 
+@@ -203,10 +232,21 @@ class LifetimeDevice:
+             return
+         self.stats['flushes'] += 1
+         own_tickets=[]
+-        with self._delivery_scope():
++        writes = {}
++        if self.bank_ready is not None:
++            requests = [(ExpertKey(self.context.version, layer, expert, source), index, tuple(tickets))
++                        for (source, layer, expert), (index, tickets) in sorted(self.pending.items())
++                        if source == self.rank]
++            writes = {record.key: record for record in self.bank_ready.take_many(requests)}
++        with self._flush_scope():
+             for (source, layer, expert), (index, tickets) in sorted(self.pending.items()):
+                 owner = expert // self.pool.home
+                 if source == self.rank:
++                    if self.bank_ready is not None and self.service is not None:
++                        record = writes[ExpertKey(self.context.version, layer, expert, source)]
++                        if record.event is None:raise RuntimeError('Device bank has no producer-ready Event')
++                        self.service.wait_event(record.event)
++                        self.stats['ready_bank_waits'] += 1
+                     self.context.submit(tuple(tickets))
+                 if source == owner:
+                     if source == self.rank:
+@@ -245,10 +285,12 @@ class LifetimeDevice:
+         self.flush()
+         self._drain()
+         self.context.finish()
++        if self.bank_ready is not None:self.bank_ready.finish()
+ 
+     def write_audit(self, path):
+         path.write_text(json.dumps(dict(mode=self.mode, entries=self.entries, **self.stats,
+             raw_schedule=self.raw_schedule,worker_capability=self.worker_capability,
++            gradient_ready_scope=self.gradient_ready_scope,
+             pending=len(self.pending), qualified_performance_path=False,
+             control='observed_current_plan_cpu_metadata',
+             transport='bounded_owner_service_stream_drain_before_bank_reuse',
+diff --git a/tools/test_gradient_bank_ready.py b/tools/test_gradient_bank_ready.py
+new file mode 100644
+index 0000000..b512116
+--- /dev/null
++++ b/tools/test_gradient_bank_ready.py
+@@ -0,0 +1,60 @@
++"""Adversarial lifetime contracts, independent of device/tensor implementation."""
++import gc
++import unittest
++import weakref
++from gradient_bank_ready import GradientBankReadyLedger
++from step_lifetime import ExpertKey
++
++
++class Event:
++    pass
++
++
++class BankReadyTests(unittest.TestCase):
++    def test_latest_append_and_inflight_event_ownership(self):
++        ledger = GradientBankReadyLedger(1, 2); ledger.begin(0)
++        key = ExpertKey(0, 3, 7, 2)
++        first, second = (0, 1, 3, 7, 2), (0, 2, 3, 7, 2)
++        old = ledger.publish(key, 0, (first,), Event())
++        event = Event(); reference = weakref.ref(event)
++        latest = ledger.publish(key, 0, (first, second), event)
++        self.assertEqual(old.generation, latest.generation)
++        with self.assertRaises(ValueError): ledger.take_many(((key, 0, (first,)),))
++        ledger.take_many(((key, 0, (first, second)),))
++        del event, latest; gc.collect()
++        self.assertIsNotNone(reference())
++        with self.assertRaises(RuntimeError): ledger.begin(1)
++        with self.assertRaises(RuntimeError): ledger.publish(ExpertKey(0, 4, 8, 2), 0, ((0, 3, 4, 8, 2),), Event())
++        ledger.complete((first, second)); gc.collect()
++        self.assertIsNone(reference())
++        with self.assertRaises(ValueError): ledger.complete((first, second))
++        ledger.finish(); ledger.begin(1)
++        new = ledger.publish(ExpertKey(1, 3, 7, 2), 0, ((1, 1, 3, 7, 2),), Event())
++        self.assertGreater(new.generation, old.generation)
++        with self.assertRaises(ValueError): ledger.take_many(((key, 0, (first, second)),))
++
++    def test_invalid_multi_submission_has_no_partial_effect(self):
++        ledger = GradientBankReadyLedger(2, 0); ledger.begin(4)
++        one, two = ExpertKey(4, 0, 1, 0), ExpertKey(4, 1, 2, 0)
++        a, b = (4, 1, 0, 1, 0), (4, 2, 1, 2, 0)
++        ledger.publish(one, 0, (a,), Event()); ledger.publish(two, 1, (b,), Event())
++        with self.assertRaises(ValueError): ledger.take_many(((one, 0, (a,)), (two, 0, (b,))))
++        self.assertEqual(set(ledger.pending), {one, two}); self.assertFalse(ledger.batches)
++        records = ledger.take_many(((one, 0, (a,)), (two, 1, (b,))))
++        self.assertEqual(len(records), 2)
++        ledger.complete((a, b)); ledger.finish()
++
++    def test_zero_work_foreign_version_and_duplicate_contribution(self):
++        ledger = GradientBankReadyLedger(1, 0); ledger.begin(0)
++        self.assertEqual(ledger.take_many(()), ()); ledger.finish()
++        key = ExpertKey(0, 0, 0, 0); identity = (0, 1, 0, 0, 0)
++        with self.assertRaises(ValueError): ledger.publish(ExpertKey(1, 0, 0, 0), 0, (identity,), Event())
++        with self.assertRaises(ValueError): ledger.publish(key, 0, (), Event())
++        ledger.publish(key, 0, (identity,), Event())
++        with self.assertRaises(ValueError): ledger.publish(key, 0, (identity,), Event())
++        ledger.take_many(((key, 0, (identity,)),)); ledger.complete((identity,))
++        with self.assertRaises(ValueError): ledger.publish(key, 0, (identity,), Event())
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tools/test_gradient_ready_capacity.py b/tools/test_gradient_ready_capacity.py
+new file mode 100644
+index 0000000..141e650
+--- /dev/null
++++ b/tools/test_gradient_ready_capacity.py
+@@ -0,0 +1,61 @@
++"""Two-rank exact oracle: capacity flush inside a call, empty owners and layers."""
++from itertools import product
++from pathlib import Path
++from types import SimpleNamespace
++import tempfile
++import unittest
++import torch
++import torch.distributed as dist
++import torch.multiprocessing as mp
++from lifetime_device import LifetimeDevice
++
++
++def run(rank, rendezvous):
++    torch.set_num_threads(1)
++    dist.init_process_group('gloo',init_method='file://'+rendezvous,rank=rank,world_size=2)
++    for mode,scope in product(('b0','b1','b2','b3'),('call_stream','bank_write')):
++        pairs=[(torch.nn.Parameter(torch.ones(2,8,8)),torch.nn.Parameter(torch.ones(2,8,4))) for _ in range(2)]
++        layers=[SimpleNamespace(mlp=SimpleNamespace(experts=SimpleNamespace(gate_up_proj=a,down_proj=b))) for a,b in pairs]
++        model=SimpleNamespace(model=SimpleNamespace(layers=layers))
++        module=SimpleNamespace(w1=torch.zeros(2,8,8,dtype=torch.bfloat16),w2=torch.zeros(2,8,4,dtype=torch.bfloat16),
++            replica_w1=torch.ones(2,8,8,dtype=torch.bfloat16),replica_w2=torch.ones(2,8,4,dtype=torch.bfloat16),
++            last_exec_counts=torch.tensor([0,0,1,1]),
++            _worker_native=SimpleNamespace(megaflux_step_lifetime_version=lambda:1))
++        pool=SimpleNamespace(module=module,home=2,slots=2,group=dist.group.WORLD,
++            shmem=SimpleNamespace(rank=lambda:rank,world_size=lambda:2))
++        adapter=LifetimeDevice(model,pool,mode,entries=1,gradient_ready_scope=scope)
++        optimizer=torch.optim.AdamW([value for pair in pairs for value in pair],lr=1e-5)
++        for version in range(3):
++            adapter.begin(version)
++            expected=[[torch.zeros_like(a),torch.zeros_like(b)] for a,b in pairs]
++            for call,layer in enumerate((0,1,0,1)):
++                adapter.layer=layer
++                plan=SimpleNamespace(copies=torch.tensor([[2,3],[0,1]],dtype=torch.int32))
++                adapter.prepare(plan)
++                first=torch.stack([torch.zeros(8,8),torch.zeros(8,8),
++                    torch.full((8,8),float(10+rank+call)),torch.full((8,8),float(20+rank+call))])
++                second=torch.stack([torch.zeros(8,4),torch.zeros(8,4),
++                    torch.full((8,4),float(30+rank+call)),torch.full((8,4),float(40+rank+call))])
++                adapter.gradients(plan,first,second)
++                for expert in range(2):
++                    expected[layer][0][expert].add_((10+10*expert+(1-rank)+call)/2)
++                    expected[layer][1][expert].add_((30+10*expert+(1-rank)+call)/2)
++                if call%2:adapter.window_boundary()
++            adapter.finish()
++            for pair,reference in zip(pairs,expected):
++                for parameter,wanted in zip(pair,reference):torch.testing.assert_close(parameter.grad,wanted)
++            if adapter.bank_ready is not None:adapter.bank_ready.finish()
++            optimizer.step();optimizer.zero_grad()
++        # Every call forced at least one capacity flush even with step-end policy.
++        assert adapter.stats['flushes']>=3*4
++        if scope=='bank_write':assert adapter.stats['ready_bank_writes']==3*4*2
++    dist.destroy_process_group()
++
++
++class CapacityTests(unittest.TestCase):
++    def test_mid_call_capacity_layers_and_empty_owners(self):
++        with tempfile.TemporaryDirectory() as directory:
++            mp.spawn(run,args=(str(Path(directory)/'rendezvous'),),nprocs=2,join=True)
++
++
++if __name__=='__main__':unittest.main()
+diff --git a/tools/test_lifetime_delivery.py b/tools/test_lifetime_delivery.py
+index 9e52e49..2929601 100644
+--- a/tools/test_lifetime_delivery.py
++++ b/tools/test_lifetime_delivery.py
+@@ -1,6 +1,7 @@
+ """Two-rank CPU oracle for exact raw-gradient accumulation and EP scaling."""
+ from pathlib import Path
+ from types import SimpleNamespace
++from itertools import product
+ import tempfile
+ import unittest
+ import torch
+@@ -12,7 +13,7 @@ from lifetime_device import LifetimeDevice
+ def delivery_worker(rank, rendezvous):
+     torch.set_num_threads(1)
+     dist.init_process_group('gloo', init_method='file://' + rendezvous, rank=rank, world_size=2)
+-    for mode in ('b0', 'b1', 'b2', 'b3'):
++    for mode, ready_scope in product(('b0', 'b1', 'b2', 'b3'), ('call_stream', 'bank_write')):
+         experts = SimpleNamespace(gate_up_proj=torch.nn.Parameter(torch.ones(1, 8, 8)),
+                                   down_proj=torch.nn.Parameter(torch.ones(1, 8, 4)))
+         model = SimpleNamespace(model=SimpleNamespace(layers=[SimpleNamespace(mlp=SimpleNamespace(experts=experts))]))
+@@ -24,7 +25,7 @@ def delivery_worker(rank, rendezvous):
+                                  _worker_native=SimpleNamespace(megaflux_step_lifetime_version=lambda: 1))
+         pool = SimpleNamespace(module=module, home=1, slots=1, group=dist.group.WORLD,
+                                shmem=SimpleNamespace(rank=lambda: rank, world_size=lambda: 2))
+-        adapter = LifetimeDevice(model, pool, mode, entries=1)
++        adapter = LifetimeDevice(model, pool, mode, entries=1, gradient_ready_scope=ready_scope)
+         optimizer = torch.optim.AdamW([experts.gate_up_proj, experts.down_proj], lr=1e-5)
+         for version in range(3):
+             adapter.begin(version)
+diff --git a/tools/train.py b/tools/train.py
+index 92d1ead..a9d0cc2 100644
+--- a/tools/train.py
++++ b/tools/train.py
+@@ -117,9 +117,12 @@ def main():
+     parser.add_argument('--diagnose-memory', action='store_true')
+     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
+     parser.add_argument('--lifetime-raw-schedule',choices=('legacy','preserve'),default='legacy')
++    parser.add_argument('--gradient-ready-scope',choices=('call_stream','bank_write'),default='call_stream')
+     args = parser.parse_args()
+     if args.lifetime_raw_schedule!='legacy' and not args.lifetime_mode:
+         parser.error('An explicit lifetime mode is required for the raw-schedule experiment')
++    if args.gradient_ready_scope!='call_stream' and not args.lifetime_mode:
++        parser.error('Bank writer readiness requires an explicit lifetime mode')
+     if args.lifetime_mode and (args.temporal_policy!='fixed_native' or not args.temporal_prefix_reuse or args.diagnostic_timer):
+         parser.error('Lifetime qualification requires fixed_native, prefix reuse and TimerOFF')
+     if args.maxutil_rule=='upstream_first' and args.temporal_policy not in ('easy_home','easy_independent'):
+@@ -284,9 +287,11 @@ def main():
+     lifetime = None
+     if args.lifetime_mode:
+         from lifetime_device import LifetimeDevice
+-        lifetime = LifetimeDevice(engine.model,temporal.legacy,args.lifetime_mode,raw_schedule=args.lifetime_raw_schedule)
++        lifetime = LifetimeDevice(engine.model,temporal.legacy,args.lifetime_mode,raw_schedule=args.lifetime_raw_schedule,
++                                  gradient_ready_scope=args.gradient_ready_scope)
+         (args.out/f'lifetime-config-rank{rank}.json').write_text(json.dumps(dict(
+-            mode=args.lifetime_mode,worker_capability=lifetime.worker_capability,raw_schedule=args.lifetime_raw_schedule,qualified_performance_path=False,
++            mode=args.lifetime_mode,worker_capability=lifetime.worker_capability,raw_schedule=args.lifetime_raw_schedule,
++            gradient_ready_scope=args.gradient_ready_scope,qualified_performance_path=False,
+             routing_gradient_scaling='explicit_ep_once' if args.lifetime_mode!='anchor' else 'parameter_hook')))
+     if args.finite_diagnostics:
+         from torch.utils._pytree import tree_flatten

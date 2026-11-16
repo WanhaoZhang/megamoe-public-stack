@@ -1,0 +1,224 @@
+{
+  "branch": "research/step-lifetime-grad-ready",
+  "head": "39c579487d7dadb36557a874f09d41ffd873a3f5",
+  "qualified_runtime_head": "bd1d311471aae4ae7cb25171de17d6a8b32e8331",
+  "base": "68aacaeff575cb0081e7b6eef4163dcd770ad039",
+  "persistent_goal": "paused",
+  "local_control_complete": true,
+  "new_planner": false,
+  "new_native_build": false,
+  "reused_worker_source": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study\\priority-cache-20261116\\SOURCE-INDEX.json",
+  "remote_project": "/home/z00956592/megaflux/step-lifetime-gradient-ready-20261116",
+  "source_zip": "implementation/source.zip",
+  "source_diff": "implementation/source.diff",
+  "files": {
+    "audit_local_pair.py": {
+      "bytes": 4276,
+      "sha256": "69d5a133cb7e597b593422af3305c19770fd3d7e58e4ad9f802cfc4a96254fa3"
+    },
+    "controller.py": {
+      "bytes": 14285,
+      "sha256": "330b0d2e0948ff4d13e707603485840cc1d32a5568a749faa5ae67def44476c2"
+    },
+    "cpu-v1.json": {
+      "bytes": 1298,
+      "sha256": "2ab1c7983607f0db8517709aad41f29778a033b8af8e3d83fd37436dff6c0023"
+    },
+    "deploy_audit_patch.py": {
+      "bytes": 1555,
+      "sha256": "e33d54f6078601c1e29f9c8813cd9ddf9e446c0e377b08425c79338cbdb8a3a7"
+    },
+    "evidence-inventory.json": {
+      "bytes": 170534,
+      "sha256": "fada7ce28aa653f2bd54102c2a283e2f5f44e6e47c4c24e7f82f1e72411844c3"
+    },
+    "grad-ready-math-bank-bank-v1-receipt.json": {
+      "bytes": 337,
+      "sha256": "7eaefff4182d248d4edff75f1fbf64475fe04ca7a8d9515fa6751fa84cf5b31d"
+    },
+    "grad-ready-math-bank-capacity-v1-receipt.json": {
+      "bytes": 345,
+      "sha256": "753135e34175e2a51497a6cb5b349dbbdd134a65280ede79836474ab7e52c5da"
+    },
+    "grad-ready-math-bank-sparse-v1-receipt.json": {
+      "bytes": 341,
+      "sha256": "5ecb7580ff25a039bd24fa8a21651372ab210114cd2450357bcb61461e4d2748"
+    },
+    "grad-ready-math-reference-bank-v1-receipt.json": {
+      "bytes": 315,
+      "sha256": "666f6bb9e40ccb81f7184159479e12f552a39ea519fff36849957cf7d0179025"
+    },
+    "grad-ready-model-bank_write-v1-receipt.json": {
+      "bytes": 341,
+      "sha256": "f88f402d7d881dab62ce79386e8a0c8a3fefdeba233a89fe202dfb66ca44bf97"
+    },
+    "grad-ready-model-call_stream-v1-receipt.json": {
+      "bytes": 343,
+      "sha256": "40da2ba77274876ba4ce656a51a54dc786229fcad4db365973bc564f09e43b0a"
+    },
+    "grad-ready-pilot-bank_write-v1-receipt.json": {
+      "bytes": 339,
+      "sha256": "67e7b563e0461b606d212af9d2b8508ec3cc043c7dd08af270f83ea5e3500081"
+    },
+    "grad-ready-pilot-call_stream-v1-receipt.json": {
+      "bytes": 311,
+      "sha256": "25d26ea583db0184bed502b54fc5138478df534f526d7ea1f58079dab2bd54cc"
+    },
+    "IMPLEMENTATION-LOG.md": {
+      "bytes": 3550,
+      "sha256": "8424706d8e5816060e898feab70fc69efa5addca3cf3c5f173db899a43c44c60"
+    },
+    "make_report.py": {
+      "bytes": 7470,
+      "sha256": "2e3691abd67a3f47cb9b66ac3f48c201ad1d962c65e56c63d025d7160903e8e7"
+    },
+    "math-gate-audited.py": {
+      "bytes": 12871,
+      "sha256": "5ecd0bd2586a99bf74784f05c45571207d022eb24e9b9ae75e5240ae514cde16"
+    },
+    "measured-updates.csv": {
+      "bytes": 1178,
+      "sha256": "3ff4cf255a1e35a79d1009bcf57d7c58f739fb5efa640afc10c56a612de91050"
+    },
+    "node-release.json": {
+      "bytes": 1112,
+      "sha256": "c77642f6c3cdc6e2aee41227003ee5600400b8602c0cf72a3db9781b4635a8e3"
+    },
+    "normalize_edit_line_endings.py": {
+      "bytes": 469,
+      "sha256": "c1944ff267dfd462e53c1cc1a39c4b6bf6ff53bec11ab85f04af8eb82970e922"
+    },
+    "package_delivery.py": {
+      "bytes": 4252,
+      "sha256": "9c3cd2c64014779f2a162aa16c35fcd0cd6cd3669badd8ef72414897cf6ca0ab"
+    },
+    "PLAN.md": {
+      "bytes": 2349,
+      "sha256": "7a2346ea8ef222d0e0cf854fab79e822f3b339bc8d5dcd5ac72ecf775ff221b7"
+    },
+    "record_release.py": {
+      "bytes": 950,
+      "sha256": "aa2c03e975350848a52aa195ffc0b51fdb5969cf867cb1bd48de559e59ceed11"
+    },
+    "refresh_archive_index.py": {
+      "bytes": 1705,
+      "sha256": "cbde450daec976ddfb0deabf5a7f3cef10a000e3c4fcd0cdcf32b4c1472d10f6"
+    },
+    "remote.py": {
+      "bytes": 8467,
+      "sha256": "aaedd877597524159f8eb14889b20fcaf45b0d76e0a11b6fc718b8a30a4fc2e6"
+    },
+    "replay_case.py": {
+      "bytes": 1121,
+      "sha256": "edaa06896d835f91f8dd276cba20b4f71221280c12abf9564521f90c602b8353"
+    },
+    "REPORT.md": {
+      "bytes": 4057,
+      "sha256": "917642da258ec49f149dfa178a2909ed381e54c77b1e7d6345557065186931bd"
+    },
+    "REPRODUCE.md": {
+      "bytes": 2204,
+      "sha256": "a13377186b36ccf6ba19055a470a3948da5f70d4ad715b5fe0fdf70311dddca4"
+    },
+    "restore_archive_bytes.py": {
+      "bytes": 1528,
+      "sha256": "81b81aadfb1367c54d8cf97dac0452d6a471f7e7ec61bc9fe68d3706bf208c69"
+    },
+    "restore_clone_line_endings.py": {
+      "bytes": 458,
+      "sha256": "29f8a4dfc70be24f48f1ba39bac83b5ab900dc937d3877dbb858612a60ccb919"
+    },
+    "runs.csv": {
+      "bytes": 183,
+      "sha256": "dbcf3694ac7fcaf69337bb2b00cdc8f19106aa119dc5d6c011065231ffc6768d"
+    },
+    "run_cpu_gates.py": {
+      "bytes": 3437,
+      "sha256": "effad05bfb7c2022422f27445144d36bcab940f7fda5559cb68ee46cd95bde61"
+    },
+    "run_local_study.py": {
+      "bytes": 8326,
+      "sha256": "625280bff6f0db08617b49703bf7af840c85f2d05d664b90c9bd9c45ba0a4989"
+    },
+    "setup-provenance.json": {
+      "bytes": 247,
+      "sha256": "80879247118f1079cecefc601d7d50d6d6d69881ea6b1517301d04d8a1512fdb"
+    },
+    "source-overlay.json": {
+      "bytes": 2,
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    "study-v1.json": {
+      "bytes": 3548,
+      "sha256": "54fe85e3823a2a5c9bbfc6eaba8add1c96fdccf4d0b6382c270027f27db235f9"
+    },
+    "summary.json": {
+      "bytes": 493,
+      "sha256": "b2993e52f4e3ad7e4595d29f59a0b3d487adb7d39ee241422cbbfac2e9bead8c"
+    },
+    "implementation/source.diff": {
+      "bytes": 120602,
+      "sha256": "b83492e8f26001ade361e79941622db4ff5fc3159ea1df10b9e4753c999e65ae"
+    },
+    "implementation/source.zip": {
+      "bytes": 79329461,
+      "sha256": "864d302f0e5c36988a33514beca93e7835cd448a03725b31261f050806ace9ed"
+    },
+    "implementation/worker-build.json": {
+      "bytes": 27987,
+      "sha256": "ebb2e03eb5b14ee52bb052aeeee2e46b87f40b39b87f823f4755504d3cf76dde"
+    },
+    "implementation/worker.so": {
+      "bytes": 4078528,
+      "sha256": "e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed"
+    },
+    "figures/gradient-bank-ready.pdf": {
+      "bytes": 25820,
+      "sha256": "20c67d3a4e38dedf203c8ce35bd346fc5d8b85f4f0bdf9d0131c6b5ed6f3624e"
+    },
+    "figures/gradient-bank-ready.png": {
+      "bytes": 155164,
+      "sha256": "3e74e8caabef89e4ef6d646b6858de3c3019001c14172b80c250dce8b9ce56f9"
+    },
+    "figures/gradient-bank-ready.svg": {
+      "bytes": 85593,
+      "sha256": "4e65b01097dfbe40ada4ecd7c9a782acda473de5f90e77f36197ace4043564f3"
+    },
+    "diagnostics/checkout-byte-alignment.json": {
+      "bytes": 5827,
+      "sha256": "5407fc759830bc0134676264d799a44fe2e4e39cf7d3cf6363abcbc203208634"
+    },
+    "diagnostics/cpu-driver.log": {
+      "bytes": 954,
+      "sha256": "2de509b19de8afea9075053c9d85177bd884b97d6a10d53aebb0071056788c9d"
+    },
+    "diagnostics/grad-ready-model-bank_write-v1-comparison.json": {
+      "bytes": 14911,
+      "sha256": "acb1497353e3cc62ca16e9611678238d34138eb11562e1620e797388fa2c638f"
+    },
+    "diagnostics/grad-ready-model-bank_write-v1-comparison.log": {
+      "bytes": 1240,
+      "sha256": "ee645e8e0ee911fc0b6360f682de5ea92f5063b278a66b451f60f36963e0b8ac"
+    },
+    "diagnostics/grad-ready-model-call_stream-v1-comparison.json": {
+      "bytes": 14914,
+      "sha256": "1afa6502173784534c225843682af4a206836de16dde0aee298114b85d4406df"
+    },
+    "diagnostics/grad-ready-model-call_stream-v1-comparison.log": {
+      "bytes": 1239,
+      "sha256": "36c5bb49efbc124df110eb356e32f84cba36a72078a7b1cdfbd5496932ced898"
+    },
+    "diagnostics/index-refresh.json": {
+      "bytes": 83,
+      "sha256": "ef2b5b48cf4ba942684895dc4c888645b02df9c35cb8c493ee9a6dd8884c2d85"
+    },
+    "diagnostics/math-library-audit-patch.json": {
+      "bytes": 466,
+      "sha256": "b4f08e0e903c09beffbc766fbe5ebc2b47daf0e762d9f216151ec014575b793f"
+    },
+    "diagnostics/pair-identity-audit.json": {
+      "bytes": 9660,
+      "sha256": "8a0b8385388a624e880f440d5ff11ac50abeed1e5ef793874d7170c0cccca1fb"
+    }
+  }
+}

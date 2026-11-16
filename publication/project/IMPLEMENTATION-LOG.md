@@ -1,0 +1,17 @@
+# Implementation log
+
+2026-11-16: independent clone from68aacae, core.longpaths enabled before checkout. Two inherited checkout EOL-only differences were verified with git diff --ignore-space-at-eol and restored from their exact Git blobs. Subsequent patch-tool Windows CRLF output is normalized only for this task's reviewed Python edits, matching frozen LF blobs; no old tree is written.
+
+Initial multi-file patch was rejected atomically because a train.py error string differed from the assumed context. Re-read actual lines, applied the concrete patch and compiled all changed Python modules. No remote job had started.
+
+Implemented tensor-independent bank write ledger with parameter version, source rank/expert/layer, slot generation and exact contribution list. Latest append replaces the pending marker; submission validates all records before moving them; strong references stay in the inflight batch until actual service completion. Three adversarial CPU ledger tests pass.
+
+call_stream remains default. Only flush's dependency selection differs under bank_write. Home FP32 adds, raw dW record_stream, existing drains, CPU counts/active gathering, copy plan and FP32 P2P format remain unchanged. Public CLI/config/audit expose the selected ready scope. Added both-scope CPU delivery and a two-layer/one-entry capacity oracle; actual remote/device qualification still pending.
+
+Final bounded qualification: CPU five tests passed in104.291s. Added a math-only capacity option and actual loaded-library audit before NPU runs; deployed those single-file patches under the common node lock with before/after hashes. Four admitted NPU math processes passed256records, including empty owners/all-remote gradients and single-entry mid-call flush. Both scopes passed three complete small-model Adam updates and full step0 per-parameter FP32 gradient comparison. Main pair completed25updates/scope,5warmup20measured:4.23805325s versus4.20792863s,0.71081268%lower in the single pair; no stable-benefit claim.
+
+Actual initial/persistent parameters, all25inputs/routes/replays/task groups, allrank loaded SO/SHMEM, common runtime source and weight/gradient traffic/delivery counts matched. Both scopes retired all gradient debt; maximum sampled driver HBM66.43GiB. Full per-step plan tensors were not separately dumped in timed runs. node-release.json observed8idle cards/noGPU processes after the pair; no other task was signalled.
+
+Local preflight issues retained: one patch was rejected on a CP936-encoded PLAN.md before any change; converted that newly created document toUTF8. CPU-proof guard then rejected local checkout newline mismatches before creating a device run. Git archive bytes were authoritative; tools/configs were aligned after EOL-only verification, no remote computation code changed. The first broad alignment attempt could not access a long vendor filename and wrote nothing; alignment was restricted to tools/configs. A dependent preflight was attempted before that yielded local process finished and also launched no device work. Finally156files were checked against Git blob IDs and their index metadata refreshed, with no staged content change. These are not omitted slow hardware trials.
+
+User paused the full research goal and authorized only this local finish. No repeats, fresh strong-control matrix, owner-stream change, quota metadata redesign or new joint planner was launched. Default remains call_stream; the opt-in bank_write control and evidence are retained for review. Stop after packaging/reporting this result.
