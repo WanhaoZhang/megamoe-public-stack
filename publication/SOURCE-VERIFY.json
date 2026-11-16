@@ -14,5 +14,6 @@
   "new_device_runs": false,
   "original_research_source_unchanged": true,
   "manifest_sha256": "80f198a5fca22b20df6a21755f9fe291861f865d4f5faac1ee88cab2c56b8a8d",
-  "preserved_whitespace_warnings": true
+  "preserved_whitespace_warnings": true,
+  "supplementary_local_build_checkouts_excluded": true
 }
