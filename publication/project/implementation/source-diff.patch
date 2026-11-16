@@ -1,0 +1,1002 @@
+diff --git a/configs/lifetime-runtime-freeze.json b/configs/lifetime-runtime-freeze.json
+index 289fea6..d9fb5c1 100644
+--- a/configs/lifetime-runtime-freeze.json
++++ b/configs/lifetime-runtime-freeze.json
+@@ -1,6 +1,7 @@
+ {
+-  "capability": 1,
++  "scope": "private ABI2 TimerOFF raw-output schedule control",
+   "binaries": {
+-    "source/native-balanced/worker-variants/ep8-cap64-lifetime-v1/libascend_deepep_megaflux_early_bf16.so": "7023c5d860ba49a7104d6d76502ea22e3eb30ad7a47c2fa422242d626556b88b"
++    "source/native-balanced/worker-variants/ep8-cap64-lifetime-raw-control-v2/libascend_deepep_megaflux_early_bf16.so": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf",
++    "source/native-balanced/worker-variants/ep8-cap64-lifetime-raw-control-v2/libascend_deepep_megaflux_worker_bf16.so": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf"
+   }
+-}
+\ No newline at end of file
++}
+diff --git a/research/step_lifetime/raw_control/PLAN.md b/research/step_lifetime/raw_control/PLAN.md
+new file mode 100644
+index 0000000..b70a962
+--- /dev/null
++++ b/research/step_lifetime/raw_control/PLAN.md
+@@ -0,0 +1,11 @@
++# Preserve native compute schedule while exporting raw dW
++
++Independent ordinary MegaMoE child branch from research/step-lifetime@6e7dd58. The parent pilot and causal-v1 source/results stay read-only. No new policy or positive result is assumed.
++
++Confirmed issue: legacy raw dW sets gradient_.ready=0. That also switches ExpertAt, prefix bookkeeping and eligibility of native early/cooperative scheduling. We need an independent raw-output flag to isolate external gradient delivery from computation order. Preserve gradient ready publication while disabling native owner consumption, direct replica raw outputs to torch-owned dW, and clear empty outputs safely.
++
++Private ABI2 supports both sidecar7=1 (legacy) and sidecar7=2 (preserved schedule) in the SAME new SO. Compare these modes on identical copies/quota, numerical data, owners and budgets. Old ABI1 may be used only with legacy mode. Main current worker forward/back flags remain0; unsupported cooperative variants must reject raw-preserve until explicitly implemented and qualified.
++
++Sequence: source change -> all raw/owner/release call-site audit -> CPU contracts -> isolated new build -> forced-replica output/dx/dp/dW gates with both schedules and empty experts -> >=3 full-model updates with matched gradients -> bounded same-shape paired diagnostic/performance. Never submit TimerON time as performance. Device admission uses the shared lock plus actual ownership checks. No other task's processes, SOs or paths are changed.
++
++Success is correctness plus evidence of which schedule dependency changes. Any speedup is common executor groundwork available to all B lifecycle strategies, not a claimed new planner contribution. The full research goal remains online joint task/replica/gradient lifetime optimization.
+diff --git a/research/step_lifetime/raw_control/REPORT.md b/research/step_lifetime/raw_control/REPORT.md
+new file mode 100644
+index 0000000..681125a
+--- /dev/null
++++ b/research/step_lifetime/raw_control/REPORT.md
+@@ -0,0 +1,36 @@
++# raw dW计算排布解耦：实现与匹配筛查
++
++本子实验位于 `D:\megamoe_train\planner-executor-ep8-lab\step-lifetime-study\raw-control-20261116`，独立分支 `research/step-lifetime-raw-control`。只修改普通MegaMoE，框架shared expert保留原计算。旧33点性能结果与causal-v1诊断均不覆盖。
++
++## 实现
++
++ABI2同一个worker内，sidecar7=1保留legacy行为，sidecar7=2独立选择raw输出，保留原专家优先顺序和行前缀处理；单独关闭核内owner Reduce，并将replica dW写入返回张量。raw输出不发布未写入SHMEM partial的ready，空owner可正常清零。没有删除原执行池串行保护。cooperative backward构建在preserve模式下显式拒绝，尚未验收的组合不视为支持。
++
++本轮资格仅覆盖EP8、32home＋32replica、worker前/后向flags0、panel restore2的普通路径。early DW1仍受原形状条件限制，不因新增开关就宣称它已经在全部形状生效。
++
++TimerOFF worker SHA256：`72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf`。构建记录在implementation。首次构建在部署未就绪时被前置检查拒绝，未开始编译；失败记录保留，部署完成后构建成功。
++
++## 正确性
++
++- 两种schedule×bank/sparse_remote×B0-B3×W1/W2×8rank，共256项独立FFN输出、dx、dp、dW比较全部通过。sparse_remote强制所有owner无本地任务，梯度仅由远端副本交付；每rank32个空home、含24个完全未路由逻辑专家。
++- 完整模型L2/H512/F512/S256、GA4/W2、MoonEP正副本规划，两种schedule各完成3次Adam更新，参数实际变化，逐参数梯度finite检查通过；初始参数、输入和整轮路由身份相同。完整step0逐参数FP32梯度最大相对L2为0.00778248，门槛0.02。
++- 后续参数数值轨迹未逐元素导出比较；不能将三更新完成与step0梯度资格说成所有参数全程逐位一致。自然训练路由仍未验证。
++
++## TimerOFF匹配筛查
++
++主形状保持L4 EP8/E256/Top8 H4096/F1024，每卡16K完整序列×GA4，W2，recv262144，FP32持久状态/BF16计算，固定owner、原AdamW，无CPU offload。固定Native规划与同层分组、same模式MaxVio10，两个新进程各25次更新，5预热＋20测量；每步取8rank最大完整wall time。
++
++|模式|完整更新中位数|整卡采样HBM峰值|
++|---|---:|---:|
++|legacy|4.469495s|68.932GiB|
++|preserve|4.472070s|69.283GiB|
++
++preserve相对legacy的步时变化（正数表示减少）：-0.058%。每点只有一个独立进程，20个更新不是20次独立重复。本轮只检查执行器修正是否影响性能，没有用同SO重跑最强fixed_home/anchor，也没有证明超过它们，更没有建立新planner收益。
++
++## 下一步边界
++
++当前没有实现新的联合planner。排布开关解耦未带来收益，停止扩展这一候选的重复或大矩阵。先检验反向优先级排序中重复扫描的公共开销；再结合causal诊断中的来源同步等待，判断是否需要“Native进入前完成旧服务”及“同一group反向wave合并后交付”两个小干预。它们也必须超过普通固定分组/公共累积等强对照，才继续新策略。不得仅凭减少原型开销或移动等待位置宣称论文创新。
++
++重放单个冻结case可用replay_case.py，必须给出未使用的新标签。例如在本子项目根运行：`replay_case.py pilot --tag raw-preserve-replay-r2 --schedule preserve`。脚本保留全部正确性前置校验，使用公共准入锁且拒绝覆盖已有证据。开发型run_*_v1登记原始cohort，不覆盖重跑。
++
++正确性回执见raw-gates-v1.json、raw-sparse-gates-v1.json、raw-model-gates-v1.json；正式筛查登记和每步数据见schedule-pilot-v1.json/CSV，图为figures/schedule-pilot-v1.png/svg/pdf。所有原始梯度张量留在对应独立远端项目，未上传报告仓库。
+diff --git a/research/step_lifetime/raw_control/archive_source.py b/research/step_lifetime/raw_control/archive_source.py
+new file mode 100644
+index 0000000..664c9ce
+--- /dev/null
++++ b/research/step_lifetime/raw_control/archive_source.py
+@@ -0,0 +1,18 @@
++"""Freeze the delivery commit and index source, SO, proofs and negative data."""
++from pathlib import Path
++import hashlib,json,subprocess
++root=Path(__file__).resolve().parent
++head=subprocess.check_output(['git','-C',str(root/'stack'),'rev-parse','HEAD'],text=True).strip()
++archive=root/'implementation'/('source-'+head[:12]+'.zip')
++subprocess.run(['git','-C',str(root/'stack'),'archive','--format=zip','--output',str(archive),'HEAD'],check=True)
++patch=root/'implementation/source-diff.patch'
++with patch.open('wb') as handle:subprocess.run(['git','-C',str(root/'stack'),'diff','6e7dd58','HEAD'],stdout=handle,check=True)
++files=[archive,patch,root/'implementation/worker.so',root/'implementation/worker-build.json',
++ root/'raw-gates-v1.json',root/'raw-sparse-gates-v1.json',root/'raw-model-gates-v1.json',
++ root/'diagnostics/raw-model-comparison-v1.json',root/'diagnostics/pilot-identity-audit.json',
++ root/'schedule-pilot-v1.json',root/'schedule-pilot-v1.csv',root/'REPORT.md']
++data=dict(branch='research/step-lifetime-raw-control',delivery_head=head,runtime_source_commit='1536db9',
++ note='Build manifest plus per-run source snapshots are execution authority; later commits add the independent sparse oracle, frozen config and offline reporting. No new planner or stable gain.',
++ files=[dict(path=str(path.relative_to(root)),bytes=path.stat().st_size,sha256=hashlib.sha256(path.read_bytes()).hexdigest()) for path in files])
++(root/'SOURCE-INDEX.json').write_text(json.dumps(data,indent=2)+'\n')
++print(json.dumps(dict(head=head,files=len(files),archive_bytes=archive.stat().st_size)))
+diff --git a/research/step_lifetime/raw_control/audit_pilot.py b/research/step_lifetime/raw_control/audit_pilot.py
+new file mode 100644
+index 0000000..c0c70da
+--- /dev/null
++++ b/research/step_lifetime/raw_control/audit_pilot.py
+@@ -0,0 +1,31 @@
++"""Verify process identities, actual library hashes, schedules and finite steps."""
++from pathlib import Path
++import json,math
++root=Path(__file__).resolve().parent
++state=json.loads((root/'schedule-pilot-v1.json').read_text())
++reference=root/'evidence'/state['runs'][0]['tag']
++manifest=json.loads((root/'stack/configs/lifetime-runtime-freeze.json').read_text())
++expected=set(manifest['binaries'].values())
++rows=[]
++for item in state['runs']:
++ folder=root/'evidence'/item['tag'];identities={}
++ for name in ('initial','input-identity','route-identity'):
++  identities[name]=all(json.loads((folder/f'{name}-rank{rank}.json').read_text())==
++    json.loads((reference/f'{name}-rank{rank}.json').read_text()) for rank in range(8))
++ same_source=json.loads((folder/'source-identity.json').read_text())==json.loads((reference/'source-identity.json').read_text())
++ configs=[json.loads((folder/f'lifetime-config-rank{rank}.json').read_text()) for rank in range(8)]
++ steps=[[json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()] for rank in range(8)]
++ finite=all(len(values)==25 and all(math.isfinite(row['loss']) and math.isfinite(row['grad_norm']) for row in values) for values in steps)
++ libraries=[json.loads((folder/f'libraries-rank{rank}.json').read_text())['libraries'] for rank in range(8)]
++ selected=[[row['sha256'] for name,row in values.items() if '/worker-variants/ep8-cap64-lifetime-raw-control-v2/' in name]
++           for values in libraries]
++ rows.append(dict(schedule=item['schedule'],identities=identities,same_source=same_source,
++   all_ranks_private_abi2=all(row['worker_capability']==2 for row in configs),
++   requested_schedule_loaded=all(row['raw_schedule']==item['schedule'] for row in configs),
++   loaded_private_worker_sha_match=all(values and set(values)<=expected for values in selected),finite=finite))
++passed=state['passed'] and all(all(row['identities'].values()) and all(row[k] for k in ('same_source','all_ranks_private_abi2','requested_schedule_loaded','loaded_private_worker_sha_match','finite')) for row in rows)
++data=dict(passed=bool(passed),rows=rows,worker_sha256=sorted(expected),
++    library_verification='controller separately verified frozen runtime and private worker before every process; lifetime actual ABI getter checked on every rank',
++    scope='TimerOFF pilot, entire25-update controlled input/route identity; not equality of all trained parameter values')
++(root/'diagnostics/pilot-identity-audit.json').write_text(json.dumps(data,indent=2)+'\n')
++print(json.dumps(data,indent=2));raise SystemExit(0 if passed else 1)
+diff --git a/research/step_lifetime/raw_control/build-raw-worker.sh b/research/step_lifetime/raw_control/build-raw-worker.sh
+new file mode 100644
+index 0000000..5b47484
+--- /dev/null
++++ b/research/step_lifetime/raw_control/build-raw-worker.sh
+@@ -0,0 +1,24 @@
++set -euo pipefail
++cd /home/z00956592/megaflux/step-lifetime-raw-control-20261116/stack
++source /home/pkg/b070/ascend-toolkit/set_env.sh
++source /home/pkg/b070/cann-9.2.0/set_env.sh
++export PATH=/usr/local/python3.12.13/bin:$PATH
++export LD_PRELOAD=/home/z00956592/v4pro-lab/operator/a8e809a/libstdc++/libstdc++.so.6.0.35
++export SHMEM_HOME_PATH=/home/z00956592/megaflux/shared-host-progress-20261110/inputs-c15/frozen-runtime/dependencies/sdk
++export ASCEND_DEEPEP_MAX_LOCAL_EXPERTS=64 MEGAFLUX_BACKWARD_RESTORE=2 MEGAFLUX_SHARED_EXPERT_BACKWARD=1
++export MAX_JOBS=2 MEGAFLUX_CALIBRATION_TIMER=OFF
++bash source/native-balanced/scripts/build_megaflux_worker_pipeline.sh ep8-cap64-lifetime-raw-control-v2 0 0 0
++
++python3 - <<'PYFREEZE'
++import hashlib,json,pathlib,shutil
++root=pathlib.Path.cwd()
++variant='ep8-cap64-lifetime-raw-control-v2'
++folder=root/'source/native-balanced/worker-variants'/variant
++first=folder/'libascend_deepep_megaflux_early_bf16.so'
++shutil.copy2(first,folder/'libascend_deepep_megaflux_worker_bf16.so')
++sha=hashlib.sha256(first.read_bytes()).hexdigest()
++manifest=dict(scope='private ABI2 TimerOFF raw-output schedule control',binaries={str(p.relative_to(root)):sha for p in folder.glob('*.so')})
++for name in ('lifetime-runtime-freeze.json',):
++ (root/'configs'/name).write_text(json.dumps(manifest,indent=2)+'\n')
++print('RAW_CONTROL_WORKER',sha)
++PYFREEZE
+diff --git a/research/step_lifetime/raw_control/build_worker.py b/research/step_lifetime/raw_control/build_worker.py
+new file mode 100644
+index 0000000..29e8632
+--- /dev/null
++++ b/research/step_lifetime/raw_control/build_worker.py
+@@ -0,0 +1,28 @@
++"""Build the isolated ABI2 worker under the common task lock, then freeze it."""
++from pathlib import Path
++import hashlib,json,subprocess
++root=Path(__file__).resolve().parent
++lane='/home/z00956592/megaflux/step-lifetime-raw-control-20261116'
++container='step-lifetime-raw-control-20261116'
++variant='ep8-cap64-lifetime-raw-control-v2'
++script=root/'implementation/build-raw-worker.sh'
++subprocess.run(['scp',str(script),'pod6-1-root:'+lane+'/build-raw-worker.sh'],check=True)
++command=f'''set -euo pipefail
++exec 9>/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock
++flock -x 9
++test -f {lane}/stack/tools/controller.py
++docker exec {container} bash {lane}/build-raw-worker.sh
++'''
++with (root/'implementation/build.log').open('wb') as log:
++ result=subprocess.run(['ssh','pod6-1-root','bash','-s'],input=command.encode(),stdout=log,stderr=subprocess.STDOUT)
++(root/'implementation/build-status.json').write_text(json.dumps(dict(exit=result.returncode,variant=variant))+'\n')
++if result.returncode:raise SystemExit(result.returncode)
++for remote,local in (
++ ('stack/configs/lifetime-runtime-freeze.json','stack/configs/lifetime-runtime-freeze.json'),
++ ('stack/source/native-balanced/worker-variants/'+variant+'/build.json','implementation/worker-build.json'),
++ ('stack/source/native-balanced/worker-variants/'+variant+'/libascend_deepep_megaflux_early_bf16.so','implementation/worker.so')):
++ subprocess.run(['scp','pod6-1-root:'+lane+'/'+remote,str(root/local)],check=True)
++manifest=json.loads((root/'stack/configs/lifetime-runtime-freeze.json').read_text())
++sha=hashlib.sha256((root/'implementation/worker.so').read_bytes()).hexdigest()
++if set(manifest['binaries'].values())!={sha}:raise RuntimeError('Collected ABI2 SO mismatch')
++print(json.dumps(dict(variant=variant,sha256=sha,build_passed=True)))
+diff --git a/research/step_lifetime/raw_control/finish_report.py b/research/step_lifetime/raw_control/finish_report.py
+new file mode 100644
+index 0000000..0264034
+--- /dev/null
++++ b/research/step_lifetime/raw_control/finish_report.py
+@@ -0,0 +1,71 @@
++"""Render completed screening data only, with process-repeat limits explicit."""
++from pathlib import Path
++import csv,hashlib,json,statistics,subprocess
++root=Path(__file__).resolve().parent
++state=json.loads((root/'schedule-pilot-v1.json').read_text())
++if state.get('stage')!='complete' or not state.get('passed'):raise RuntimeError('No completed qualified pair')
++out=root/'figures';out.mkdir(exist_ok=True)
++import matplotlib
++matplotlib.use('Agg')
++import matplotlib.pyplot as plt
++fig,axes=plt.subplots(1,2,figsize=(12,4))
++colors=('tab:blue','tab:orange');rows=[]
++for item,color in zip(state['runs'],colors):
++ values=[value/1000 for value in item['measured_rank_max_step_ms']]
++ axes[0].plot(range(6,26),values,'.-',label=item['schedule'],color=color,linewidth=1)
++ for step,value in enumerate(values,6):rows.append(dict(schedule=item['schedule'],optimizer_update=step,rank_max_seconds=value))
++values=[item['median_step_ms']/1000 for item in state['runs']]
++axes[1].barh([r['schedule'] for r in state['runs']],values,color=colors)
++axes[1].set_xlim(0,max(values)*1.18)
++for index,value in enumerate(values):axes[1].text(value+.03,index,f'{value:.4f}s',va='center')
++axes[0].set_xlabel('Optimizer update (5 warmup updates excluded)');axes[0].set_ylabel('Max over8 ranks, complete update (s)')
++axes[0].legend();axes[0].grid(alpha=.2);axes[1].set_xlabel('Median of20 measured updates (s)')
++fig.suptitle('Raw dW schedule control / L4 EP8 E256 K8 H4096 F1024 S16K GA4 W2')
++fig.text(.5,.015,'One independent process per mode; same ABI2 SO; TimerOFF. No stability or strongest-baseline claim.',ha='center',fontsize=9)
++fig.tight_layout(rect=(0,.04,1,.94))
++for suffix in ('png','svg','pdf'):fig.savefig(out/('schedule-pilot-v1.'+suffix),dpi=160)
++plt.close(fig)
++with (root/'schedule-pilot-v1.csv').open('w',newline='') as handle:
++ writer=csv.DictWriter(handle,fieldnames=rows[0].keys());writer.writeheader();writer.writerows(rows)
++math_gates=[json.loads((root/name).read_text()) for name in ('raw-gates-v1.json','raw-sparse-gates-v1.json')]
++model=json.loads((root/'diagnostics/raw-model-comparison-v1.json').read_text())
++sha=hashlib.sha256((root/'implementation/worker.so').read_bytes()).hexdigest()
++text=f'''# raw dW计算排布解耦：实现与匹配筛查
++
++本子实验位于 `{root}`，独立分支 `research/step-lifetime-raw-control`。只修改普通MegaMoE，框架shared expert保留原计算。旧33点性能结果与causal-v1诊断均不覆盖。
++
++## 实现
++
++ABI2同一个worker内，sidecar7=1保留legacy行为，sidecar7=2独立选择raw输出，保留原专家优先顺序和行前缀处理；单独关闭核内owner Reduce，并将replica dW写入返回张量。raw输出不发布未写入SHMEM partial的ready，空owner可正常清零。没有删除原执行池串行保护。cooperative backward构建在preserve模式下显式拒绝，尚未验收的组合不视为支持。
++
++本轮资格仅覆盖EP8、32home＋32replica、worker前/后向flags0、panel restore2的普通路径。early DW1仍受原形状条件限制，不因新增开关就宣称它已经在全部形状生效。
++
++TimerOFF worker SHA256：`{sha}`。构建记录在implementation。首次构建在部署未就绪时被前置检查拒绝，未开始编译；失败记录保留，部署完成后构建成功。
++
++## 正确性
++
++- 两种schedule×bank/sparse_remote×B0-B3×W1/W2×8rank，共{sum(row['records'] for gate in math_gates for row in gate['runs'])}项独立FFN输出、dx、dp、dW比较全部通过。sparse_remote强制所有owner无本地任务，梯度仅由远端副本交付；每rank32个空home、含24个完全未路由逻辑专家。
++- 完整模型L2/H512/F512/S256、GA4/W2、MoonEP正副本规划，两种schedule各完成3次Adam更新，参数实际变化，逐参数梯度finite检查通过；初始参数、输入和整轮路由身份相同。完整step0逐参数FP32梯度最大相对L2为{max(row['relative_l2'] for row in model['parameters'].values()):.8f}，门槛0.02。
++- 后续参数数值轨迹未逐元素导出比较；不能将三更新完成与step0梯度资格说成所有参数全程逐位一致。自然训练路由仍未验证。
++
++## TimerOFF匹配筛查
++
++主形状保持L4 EP8/E256/Top8 H4096/F1024，每卡16K完整序列×GA4，W2，recv262144，FP32持久状态/BF16计算，固定owner、原AdamW，无CPU offload。固定Native规划与同层分组、same模式MaxVio10，两个新进程各25次更新，5预热＋20测量；每步取8rank最大完整wall time。
++
++|模式|完整更新中位数|整卡采样HBM峰值|
++|---|---:|---:|
++'''
++for item in state['runs']:text+=f"|{item['schedule']}|{item['median_step_ms']/1000:.6f}s|{item['peak_driver_MiB']/1024:.3f}GiB|\n"
++text+=f'''
++preserve相对legacy的步时变化（正数表示减少）：{state['reduction_vs_legacy_pct']:.3f}%。每点只有一个独立进程，20个更新不是20次独立重复。本轮只检查执行器修正是否影响性能，没有用同SO重跑最强fixed_home/anchor，也没有证明超过它们，更没有建立新planner收益。
++
++## 下一步边界
++
++当前没有实现新的联合planner。排布开关解耦未带来收益，停止扩展这一候选的重复或大矩阵。先检验反向优先级排序中重复扫描的公共开销；再结合causal诊断中的来源同步等待，判断是否需要“Native进入前完成旧服务”及“同一group反向wave合并后交付”两个小干预。它们也必须超过普通固定分组/公共累积等强对照，才继续新策略。不得仅凭减少原型开销或移动等待位置宣称论文创新。
++
++重放单个冻结case可用replay_case.py，必须给出未使用的新标签。例如在本子项目根运行：`replay_case.py pilot --tag raw-preserve-replay-r2 --schedule preserve`。脚本保留全部正确性前置校验，使用公共准入锁且拒绝覆盖已有证据。开发型run_*_v1登记原始cohort，不覆盖重跑。
++
++正确性回执见raw-gates-v1.json、raw-sparse-gates-v1.json、raw-model-gates-v1.json；正式筛查登记和每步数据见schedule-pilot-v1.json/CSV，图为figures/schedule-pilot-v1.png/svg/pdf。所有原始梯度张量留在对应独立远端项目，未上传报告仓库。
++'''
++(root/'REPORT.md').write_text(text,encoding='utf-8',newline='\n')
++print(json.dumps(dict(reduction_pct=state['reduction_vs_legacy_pct'],report=str(root/'REPORT.md'))))
+diff --git a/research/step_lifetime/raw_control/prepare_sparse_driver.py b/research/step_lifetime/raw_control/prepare_sparse_driver.py
+new file mode 100644
+index 0000000..b451374
+--- /dev/null
++++ b/research/step_lifetime/raw_control/prepare_sparse_driver.py
+@@ -0,0 +1,9 @@
++from pathlib import Path
++root=Path(__file__).resolve().parent
++source=(root/'run_raw_gates.py').read_text()
++source=source.replace('raw-gates-v1.json','raw-sparse-gates-v1.json').replace('raw-control-math-','raw-control-sparse-')
++source=source.replace("'--lifetime-raw-schedule',schedule,'--route-bank'",
++    "'--lifetime-raw-schedule',schedule,'--route-case','sparse_remote','--route-bank'")
++source=source.replace("and active_hits>0 and gradient_bytes>0 and matches)",
++    "and active_hits>0 and gradient_bytes>0 and matches and all(r['route_case']=='sparse_remote' and r['raw_schedule']==schedule and r['empty_home_experts']==32 for r in records))")
++(root/'run_sparse_gates.py').write_text(source,newline='\n')
+diff --git a/research/step_lifetime/raw_control/publish.py b/research/step_lifetime/raw_control/publish.py
+new file mode 100644
+index 0000000..eff2356
+--- /dev/null
++++ b/research/step_lifetime/raw_control/publish.py
+@@ -0,0 +1,26 @@
++"""Publish selected diagnostic files atomically under the common device lock."""
++from pathlib import Path
++import hashlib,json,subprocess,sys
++root=Path(__file__).resolve().parent
++lane='/home/z00956592/megaflux/step-lifetime-raw-control-20261116'
++files=sys.argv[1:]
++if not files:raise SystemExit('Pass stack-relative diagnostic files')
++manifest={}
++for name in files:
++ source=(root/'stack'/name).resolve()
++ if not source.is_relative_to((root/'stack').resolve()) or name=='tools/controller.py':raise ValueError('Unsafe or unrewritten path')
++ manifest[name]=hashlib.sha256(source.read_bytes()).hexdigest()
++stage=lane+'/staging/'+hashlib.sha256(json.dumps(manifest,sort_keys=True).encode()).hexdigest()[:12]
++subprocess.run(['ssh','pod6-1-root','mkdir','-p',stage],check=True)
++for i,name in enumerate(files):subprocess.run(['scp',str(root/'stack'/name),'pod6-1-root:'+stage+'/'+str(i)],check=True)
++script='''import pathlib,fcntl,hashlib,shutil,os
++lane=pathlib.Path(LANE);stage=pathlib.Path(STAGE)
++with pathlib.Path('/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock').open('a') as lock:
++ fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
++ for index,(name,digest) in enumerate(MANIFEST.items()):
++  source=stage/str(index);assert hashlib.sha256(source.read_bytes()).hexdigest()==digest
++  target=(lane/'stack'/name).resolve();assert target.is_relative_to((lane/'stack').resolve())
++  temp=target.with_name(target.name+'.incoming');shutil.copy2(source,temp);os.replace(temp,target)
++ print('Published',len(MANIFEST),'diagnostic files')
++'''.replace('LANE',repr(lane)).replace('STAGE',repr(stage)).replace('MANIFEST',repr(manifest))
++subprocess.run(['ssh','pod6-1-root','python3','-'],input=script.encode(),check=True)
+diff --git a/research/step_lifetime/raw_control/remote.py b/research/step_lifetime/raw_control/remote.py
+new file mode 100644
+index 0000000..072a7ec
+--- /dev/null
++++ b/research/step_lifetime/raw_control/remote.py
+@@ -0,0 +1,151 @@
++"""Deploy an isolated frozen checkout and execute finite, admitted study gates."""
++from pathlib import Path
++import argparse
++import hashlib
++import json
++import subprocess
++import tarfile
++import re
++from datetime import datetime, timezone
++
++ROOT = Path(__file__).resolve().parent
++STACK = ROOT / 'stack'
++HOST = 'pod6-1-root'
++REMOTE = '/home/z00956592/megaflux/step-lifetime-raw-control-20261116'
++CONTAINER = 'step-lifetime-raw-control-20261116'
++
++
++def call(arguments, **kwargs):
++    return subprocess.run(arguments, check=True, **kwargs)
++
++
++def deploy():
++    archive = ROOT / 'source.tar'
++    with archive.open('wb') as handle:
++        call(['git','-c','core.longpaths=true','-C',str(STACK),'archive','HEAD'], stdout=handle)
++    with tarfile.open(archive, 'a') as handle:
++        changed = subprocess.check_output(['git','-c','core.longpaths=true','-C',str(STACK),'diff','--name-only'],text=True).splitlines()
++        untracked = subprocess.check_output(['git','-c','core.longpaths=true','-C',str(STACK),'ls-files','--others','--exclude-standard'],text=True).splitlines()
++        for name in changed + untracked:
++            handle.add(STACK / name, arcname=name)
++    hashes = {name: hashlib.sha256((STACK/name).read_bytes()).hexdigest() for name in changed+untracked}
++    (ROOT/'source-overlay.json').write_text(json.dumps(hashes, indent=2))
++    call(['ssh', HOST, 'mkdir', '-p', REMOTE])
++    call(['scp', str(archive), f'{HOST}:{REMOTE}/source.tar'])
++    script = f'''set -euo pipefail
++task={REMOTE}
++exec 9>/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock
++flock -x 9
++base=/home/z00956592/megaflux/temporal-replica-frontier-20261115/stack
++mkdir -p "$task/stack" "$task/evidence"
++if [ ! -d "$task/stack/source" ]; then
++ mkdir -p "$task/stack/source/native-balanced/ascend_deepep"
++ cp -a --reflink=auto "$base/source/native-balanced/ascend_deepep/lib" "$task/stack/source/native-balanced/ascend_deepep/"
++ cp -a --reflink=auto "$base/source/native-balanced/worker-variants" "$task/stack/source/native-balanced/"
++ cp -a --reflink=auto "$base/routes" "$task/stack/routes"
++ cp -a --reflink=auto /home/z00956592/megaflux/temporal-replica-study-20261114/stack/small-routes "$task/stack/small-routes"
++fi
++tar -xf "$task/source.tar" -C "$task/stack"
++python3 - "$base" "$task/stack" <<'STAGE'
++from pathlib import Path
++import json,shutil,sys
++base,dest=map(Path,sys.argv[1:])
++for name in ('runtime-freeze.json','temporal-scheduler-freeze.json'):
++ manifest=json.loads((dest/'configs'/name).read_text())
++ for relative in manifest['binaries']:
++  target=dest/relative
++  if not target.exists():
++   target.parent.mkdir(parents=True,exist_ok=True)
++   shutil.copy2(base/relative,target)
++STAGE
++if ! docker container inspect {CONTAINER} >/dev/null 2>&1; then
++ docker run -d --name {CONTAINER} --label codex.task=step-lifetime-raw-control-20261116 --privileged --network host --ipc host -v /home:/home -v /usr/local/Ascend/driver:/usr/local/Ascend/driver -v /usr/local/dcmi:/usr/local/dcmi -v /etc/ascend_install.info:/etc/ascend_install.info --entrypoint /bin/bash planner-executor-ep8-runtime:20261114 -lc 'sleep infinity'
++fi
++test "$(docker inspect {CONTAINER} --format '{{{{index .Config.Labels "codex.task"}}}}')" = step-lifetime-raw-control-20261116
++docker start {CONTAINER} >/dev/null
++'''
++    launcher = re.sub(r'^TASK=.*$', f'TASK={REMOTE}/stack', (STACK/'tools/launch.sh').read_text(), flags=re.M)
++    controller = re.sub(r"^TASK = pathlib.Path\(.*$", f"TASK = pathlib.Path('{REMOTE}/stack')", (STACK/'tools/controller.py').read_text(), flags=re.M)
++    controller = re.sub(r"^CONTAINER = .*$", f"CONTAINER = '{CONTAINER}'", controller, flags=re.M)
++    for name, contents in [('launch.sh',launcher), ('controller.py',controller)]:
++        path = ROOT/name
++        path.write_text(contents, encoding='utf-8', newline='\n')
++    call(['scp', str(ROOT/'launch.sh'), str(ROOT/'controller.py'), f'{HOST}:{REMOTE}/'])
++    script += '\ncp "$task/launch.sh" "$task/controller.py" "$task/stack/tools/"\n'
++    call(['ssh', HOST, 'bash', '-s'], input=script.encode())
++
++
++def gate(tag, extra, *, metadata_only=False):
++    script = f'''set -euo pipefail
++cd {REMOTE}/stack
++mkdir -p evidence/source-snapshots
++python3 tools/controller.py --backend balanced --tag {tag} --worker-variant ep8-cap64-aligned --seconds 900 {' '.join(extra)}
++'''
++    began = datetime.now(timezone.utc).isoformat()
++    with (ROOT/f'{tag}-remote.log').open('wb') as handle:
++        result = subprocess.run(['ssh', HOST, 'bash', '-s'], input=script.encode(), stdout=handle, stderr=subprocess.STDOUT)
++    receipt = dict(tag=tag, started=began, exit=result.returncode)
++    (ROOT/f'{tag}-receipt.json').write_text(json.dumps(receipt, indent=2))
++    if metadata_only:
++        # Full tensors remain in this run's project-owned remote directory.
++        # This avoids retransmitting multi-GiB PT files for every qualification.
++        bundle=f'{REMOTE}/stack/evidence/{tag}-metadata.tar.gz'
++        packed=subprocess.run(['ssh',HOST,'tar','-czf',bundle,'--exclude=*.pt','-C',
++                               f'{REMOTE}/stack/evidence',tag])
++        packed.check_returncode()
++        collected=subprocess.run(['scp',f'{HOST}:{bundle}',str(ROOT/'evidence')])
++        if collected.returncode==0:
++            with tarfile.open(ROOT/'evidence'/f'{tag}-metadata.tar.gz') as handle:
++                handle.extractall(ROOT/'evidence',filter='data')
++        receipt['large_tensors_remote']=f'{REMOTE}/stack/evidence/{tag}'
++    else:
++        collected = subprocess.run(['scp', '-r', f'{HOST}:{REMOTE}/stack/evidence/{tag}', str(ROOT/'evidence')])
++    receipt['collection_exit'] = collected.returncode
++    snapshots = ROOT/'evidence'/'source-snapshots'
++    snapshots.mkdir(exist_ok=True)
++    current=ROOT/'evidence'/tag/'source-identity.json'
++    duplicate=None
++    if current.exists():
++        identity=json.loads(current.read_text())
++        for candidate in (ROOT/'evidence').glob('*/source-identity.json'):
++            other=candidate.parent.name
++            other_receipt=ROOT/f'{other}-receipt.json'
++            if other==tag or not (snapshots/f'{other}.tar.gz').exists() or not other_receipt.exists():continue
++            if json.loads(other_receipt.read_text()).get('collection_exit')!=0:continue
++            if json.loads(candidate.read_text())==identity:
++                duplicate=other;break
++    if duplicate is None and current.exists():
++        copied=subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}.tar.gz',str(snapshots)])
++        receipt['snapshot_collection_exit']=copied.returncode
++    elif duplicate is not None:
++        (snapshots/f'{tag}-source-reference.json').write_text(json.dumps(dict(
++            same_guarded_files_as=duplicate,archive=f'{duplicate}.tar.gz'),indent=2))
++        receipt['source_snapshot_reused']=duplicate
++    suffixes=['-runtime.json']
++    if '--temporal-scheduler' in extra or 'scheduler' in extra:suffixes.append('-temporal-runtime.json')
++    if '--lifetime-mode' in extra:suffixes.append('-lifetime-runtime.json')
++    for suffix in suffixes:
++        if current.exists():
++            subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}{suffix}',str(snapshots)])
++    if '--diagnostic-timer' in extra and current.exists():
++        subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}-timer-worker-runtime.json',str(snapshots)])
++    (ROOT/f'{tag}-receipt.json').write_text(json.dumps(receipt, indent=2))
++    print(json.dumps(receipt), flush=True)
++    raise SystemExit(result.returncode)
++
++
++if __name__ == '__main__':
++    parser = argparse.ArgumentParser()
++    parser.add_argument('action', choices=('deploy','gate'))
++    parser.add_argument('--tag')
++    parser.add_argument('--metadata-only', action='store_true')
++    args, extra = parser.parse_known_args()
++    (ROOT/'evidence').mkdir(exist_ok=True)
++    if args.action == 'deploy':
++        deploy()
++    else:
++        if not args.tag or not all(character.isalnum() or character in '-_.' for character in args.tag):
++            parser.error('a safe run tag is required')
++        if any(not all(character.isalnum() or character in '-_./:' for character in item) for item in extra):
++            parser.error('unexpected shell metacharacter in gate arguments')
++        gate(args.tag, extra, metadata_only=args.metadata_only)
+diff --git a/research/step_lifetime/raw_control/replay_case.py b/research/step_lifetime/raw_control/replay_case.py
+new file mode 100644
+index 0000000..d2e7964
+--- /dev/null
++++ b/research/step_lifetime/raw_control/replay_case.py
+@@ -0,0 +1,38 @@
++"""Replay one frozen case using a NEW explicit tag; never overwrite evidence."""
++from pathlib import Path
++import argparse,hashlib,json,re
++import remote
++p=argparse.ArgumentParser()
++p.add_argument('phase',choices=('math','model','pilot'))
++p.add_argument('--tag',required=True)
++p.add_argument('--schedule',choices=('legacy','preserve'),required=True)
++p.add_argument('--route-case',choices=('bank','sparse_remote'),default='bank')
++a=p.parse_args();root=Path(__file__).resolve().parent
++if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*',a.tag):p.error('Use a safe new tag')
++if (root/'evidence'/a.tag).exists() or (root/(a.tag+'-receipt.json')).exists():p.error('Tag already registered')
++for name in ('raw-gates-v1.json','raw-sparse-gates-v1.json'):
++ proof=json.loads((root/name).read_text())
++ if not proof.get('passed'):raise RuntimeError('Independent math prerequisites missing')
++ for row in proof['runs']:
++  for source,digest in row['runtime_sources'].items():
++   if source=='tools/gate_lifetime_math.py':continue
++   if hashlib.sha256((root/'stack'/source).read_bytes()).hexdigest()!=digest:raise RuntimeError('Stale runtime qualification: '+source)
++if a.phase=='math':
++ args=['--mode','lifetime_math','--lifetime-mode','all','--route-case',a.route_case,
++       '--route-bank',remote.REMOTE+'/stack/small-routes']
++else:
++ if a.route_case!='bank':p.error('Sparse forced IDs are an independent FFN qualification only')
++ main=a.phase=='pilot'
++ if main and not json.loads((root/'raw-model-gates-v1.json').read_text()).get('passed'):raise RuntimeError('Three-update model qualification missing')
++ args=['--layers','4' if main else '2','--steps','25' if main else '3',
++   '--tokens','16384' if main else '256','--hidden','4096' if main else '512',
++   '--ffn','1024' if main else '512','--microbatches','4','--forward-window','2',
++   '--recv-capacity','262144' if main else '4096','--maxvio','10',
++   '--planner','native' if main else 'moonep','--temporal-pattern','same',
++   '--temporal-policy','fixed_native','--grad-sync','--hold-fsdp-forward',
++   '--temporal-prefix-reuse','--lifetime-mode','b1']
++ if main:args+=['--temporal-scheduler','ascendc','--temporal-scheduler-library',
++   remote.REMOTE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so']
++ else:args+=['--route-bank',remote.REMOTE+'/stack/small-routes','--dump-grad-step0','--finite-diagnostics']
++args+=['--worker-variant','ep8-cap64-lifetime-raw-control-v2','--lifetime-raw-schedule',a.schedule]
++remote.gate(a.tag,args,metadata_only=True)
+diff --git a/research/step_lifetime/raw_control/run_model_gates.py b/research/step_lifetime/raw_control/run_model_gates.py
+new file mode 100644
+index 0000000..f12d855
+--- /dev/null
++++ b/research/step_lifetime/raw_control/run_model_gates.py
+@@ -0,0 +1,55 @@
++"""Three Adam updates and complete step0 gradients; never a performance score."""
++from pathlib import Path
++import hashlib,json,math,subprocess
++import remote
++root=Path(__file__).resolve().parent
++path=root/'raw-model-gates-v1.json'
++if path.exists():raise RuntimeError('Keep prior registration and use new versioned tags')
++for name in ('raw-gates-v1.json','raw-sparse-gates-v1.json'):
++ proof=json.loads((root/name).read_text())
++ if not proof.get('passed'):raise RuntimeError('Both independent math qualifications must pass first')
++ for row in proof['runs']:
++  for source,digest in row['runtime_sources'].items():
++   if source=='tools/gate_lifetime_math.py':continue  # immutable oracle snapshots retained per gate
++   if hashlib.sha256((root/'stack'/source).read_bytes()).hexdigest()!=digest:
++    raise RuntimeError('Independent math proof is stale for runtime source: '+source)
++state=dict(stage='model',runs=[],performance=False)
++def save():path.write_text(json.dumps(state,indent=2)+'\n')
++save()
++try:
++ for schedule in ('legacy','preserve'):
++  tag='raw-model-'+schedule+'-v1'
++  args=['--layers','2','--steps','3','--tokens','256','--hidden','512','--ffn','512',
++    '--microbatches','4','--forward-window','2','--recv-capacity','4096','--maxvio','10',
++    '--planner','moonep','--temporal-pattern','same','--temporal-policy','fixed_native',
++    '--worker-variant','ep8-cap64-lifetime-raw-control-v2','--grad-sync','--hold-fsdp-forward',
++    '--temporal-prefix-reuse','--lifetime-mode','b1','--lifetime-raw-schedule',schedule,
++    '--route-bank',remote.REMOTE+'/stack/small-routes','--dump-grad-step0','--finite-diagnostics']
++  try:remote.gate(tag,args,metadata_only=True)
++  except SystemExit as done:code=done.code
++  folder=root/'evidence'/tag;status=json.loads((folder/'status.json').read_text())
++  passed=code==0 and all(status.get(k) for k in ('qualified','source_unchanged','exclusive_devices')) and status['peak_driver_MiB']<=90*1024
++  for rank in range(8):
++   updates=json.loads((folder/f'updates-rank{rank}.json').read_text())
++   steps=[json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()]
++   passed &= len(updates)==len(steps)==3 and all(row['changed'] for row in updates)
++   passed &= all(math.isfinite(row['loss']) and math.isfinite(row['grad_norm']) for row in steps)
++   passed &= all(any('.mlp.experts.' in name for name in row['changed']) for row in updates)
++   for step in range(3):
++    finite=json.loads((folder/f'gradient-finite-step{step}-rank{rank}.json').read_text())
++    passed &= all(row.get('finite',True) for row in finite)
++  state['runs'].append(dict(tag=tag,schedule=schedule,exit=code,passed=bool(passed)));save()
++  if not passed:raise RuntimeError('Three-update gate failed: '+schedule)
++ output=remote.REMOTE+'/stack/evidence/raw-model-comparison-v1.json'
++ command=['ssh',remote.HOST,'docker','exec',remote.CONTAINER,'/usr/local/python3.12.13/bin/python3',
++  remote.REMOTE+'/stack/tools/compare_temporal_gradients.py',
++  remote.REMOTE+'/stack/evidence/raw-model-legacy-v1',remote.REMOTE+'/stack/evidence/raw-model-preserve-v1',
++  '--out',output]
++ with (root/'diagnostics/raw-model-comparison-v1.log').open('wb') as log:
++  result=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT)
++ subprocess.run(['scp',remote.HOST+':'+output,str(root/'diagnostics/raw-model-comparison-v1.json')],check=True)
++ compared=json.loads((root/'diagnostics/raw-model-comparison-v1.json').read_text())
++ if result.returncode or not compared['passed']:raise RuntimeError('Full-model per-parameter FP32 gradient gate failed')
++ state.update(stage='complete',passed=True,comparison='diagnostics/raw-model-comparison-v1.json');save()
++except BaseException as error:
++ state.update(stage='failed',error=str(error));save();raise
+diff --git a/research/step_lifetime/raw_control/run_raw_gates.py b/research/step_lifetime/raw_control/run_raw_gates.py
+new file mode 100644
+index 0000000..625c0a6
+--- /dev/null
++++ b/research/step_lifetime/raw_control/run_raw_gates.py
+@@ -0,0 +1,45 @@
++"""Independent math qualification of BOTH schedule modes in one ABI2 binary."""
++from pathlib import Path
++import hashlib,json,subprocess,sys
++import remote
++root=Path(__file__).resolve().parent
++variant='ep8-cap64-lifetime-raw-control-v2'
++state_path=root/'raw-gates-v1.json'
++if state_path.exists():raise RuntimeError('Keep gate registration; choose a versioned new script/tag after any source fix')
++state=dict(stage='math',runs=[],performance=False)
++def save():state_path.write_text(json.dumps(state,indent=2)+'\n')
++save()
++try:
++ for schedule in ('legacy','preserve'):
++  tag='raw-control-math-'+schedule+'-v1'
++  try:
++   remote.gate(tag,['--mode','lifetime_math','--worker-variant',variant,'--lifetime-mode','all',
++       '--lifetime-raw-schedule',schedule,'--route-bank',remote.REMOTE+'/stack/small-routes'],metadata_only=True)
++  except SystemExit as done:code=done.code
++  folder=root/'evidence'/tag
++  status=json.loads((folder/'status.json').read_text())
++  records=[]
++  for rank in range(8):
++   path=folder/f'rank{rank}.json'
++   if path.exists():records.extend(json.loads(path.read_text())['records'])
++  active_hits=max((r['lifetime_stats']['weight_hit_bytes'] for r in records),default=0)
++  gradient_bytes=max((r['lifetime_stats']['gradient_remote_bytes'] for r in records),default=0)
++  sources=json.loads((folder/'source-identity.json').read_text())
++  checked=('tools/gate_lifetime_math.py','tools/lifetime_device.py','tools/step_lifetime.py',
++    'source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h',
++    'source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp',
++    'source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py')
++  matches=all(hashlib.sha256((root/'stack'/name).read_bytes()).hexdigest()==sources[name] for name in checked)
++  passed=(code==0 and all(status.get(k) for k in ('qualified','source_unchanged','exclusive_devices'))
++      and status['peak_driver_MiB']<=90*1024 and len(records)==64 and all(r['passed'] for r in records)
++      and active_hits>0 and gradient_bytes>0 and matches)
++  item=dict(tag=tag,schedule=schedule,passed=bool(passed),exit=code,records=len(records),
++    active_cache_hit_bytes=active_hits,gradient_remote_bytes=gradient_bytes,
++    max_relative_l2={name:max((r['comparisons'][name]['relative_l2'] for r in records),default=None)
++      for name in ('output','dx','dp','dw1','dw2')},
++    runtime_sources={name:sources[name] for name in checked},peak_driver_MiB=status['peak_driver_MiB'])
++  state['runs'].append(item);save()
++  if not passed:raise RuntimeError('Independent raw schedule math gate failed: '+schedule)
++ state.update(stage='complete',passed=True);save()
++except BaseException as error:
++ state.update(stage='failed',error=str(error));save();raise
+diff --git a/research/step_lifetime/raw_control/run_schedule_pilot.py b/research/step_lifetime/raw_control/run_schedule_pilot.py
+new file mode 100644
+index 0000000..90fc0bf
+--- /dev/null
++++ b/research/step_lifetime/raw_control/run_schedule_pilot.py
+@@ -0,0 +1,40 @@
++"""One matched TimerOFF pair to test the executor correction, not a new planner."""
++from pathlib import Path
++import json,statistics
++import remote
++root=Path(__file__).resolve().parent
++state_path=root/'schedule-pilot-v1.json'
++if state_path.exists():raise RuntimeError('Keep previous pilot registration')
++for name in ('raw-gates-v1.json','raw-sparse-gates-v1.json','raw-model-gates-v1.json'):
++ if not json.loads((root/name).read_text()).get('passed'):raise RuntimeError('Missing correctness gate: '+name)
++state=dict(stage='screening',runs=[],independent_repeats_per_point=1,new_planner=False,
++           scope='same ABI2 SO, only raw compute-schedule flag differs; common executor correction, not policy gain')
++def save():state_path.write_text(json.dumps(state,indent=2)+'\n')
++save()
++try:
++ for schedule in ('legacy','preserve'):
++  tag='raw-schedule-'+schedule+'-same-v1'
++  args=['--layers','4','--steps','25','--tokens','16384','--hidden','4096','--ffn','1024',
++   '--microbatches','4','--forward-window','2','--recv-capacity','262144','--maxvio','10',
++   '--planner','native','--temporal-pattern','same','--temporal-policy','fixed_native',
++   '--worker-variant','ep8-cap64-lifetime-raw-control-v2','--grad-sync','--hold-fsdp-forward',
++   '--temporal-prefix-reuse','--lifetime-mode','b1','--lifetime-raw-schedule',schedule,
++   '--temporal-scheduler','ascendc','--temporal-scheduler-library',
++   remote.REMOTE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so']
++  try:remote.gate(tag,args,metadata_only=True)
++  except SystemExit as done:code=done.code
++  folder=root/'evidence'/tag;status=json.loads((folder/'status.json').read_text())
++  rank_steps=[[json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()] for rank in range(8)]
++  passed=code==0 and all(status.get(k) for k in ('qualified','source_unchanged','exclusive_devices'))
++  passed &= status['peak_driver_MiB']<=90*1024 and all(len(rows)==25 for rows in rank_steps)
++  times=[max(rows[step]['milliseconds'] for rows in rank_steps) for step in range(5,25)]
++  state['runs'].append(dict(tag=tag,schedule=schedule,passed=bool(passed),median_step_ms=statistics.median(times),
++      measured_rank_max_step_ms=times,peak_driver_MiB=status['peak_driver_MiB']));save()
++  if not passed:raise RuntimeError('Unqualified schedule pilot: '+schedule)
++ reference,candidate=state['runs']
++ state.update(stage='complete',passed=True,
++    reduction_vs_legacy_pct=100*(1-candidate['median_step_ms']/reference['median_step_ms']),
++    conclusion='single-process-pair screening only; no stable gain or stronger-baseline win established')
++ save()
++except BaseException as error:
++ state.update(stage='failed',error=str(error));save();raise
+diff --git a/research/step_lifetime/raw_control/run_sparse_gates.py b/research/step_lifetime/raw_control/run_sparse_gates.py
+new file mode 100644
+index 0000000..ff89f71
+--- /dev/null
++++ b/research/step_lifetime/raw_control/run_sparse_gates.py
+@@ -0,0 +1,45 @@
++"""Independent math qualification of BOTH schedule modes in one ABI2 binary."""
++from pathlib import Path
++import hashlib,json,subprocess,sys
++import remote
++root=Path(__file__).resolve().parent
++variant='ep8-cap64-lifetime-raw-control-v2'
++state_path=root/'raw-sparse-gates-v1.json'
++if state_path.exists():raise RuntimeError('Keep gate registration; choose a versioned new script/tag after any source fix')
++state=dict(stage='math',runs=[],performance=False)
++def save():state_path.write_text(json.dumps(state,indent=2)+'\n')
++save()
++try:
++ for schedule in ('legacy','preserve'):
++  tag='raw-control-sparse-'+schedule+'-v1'
++  try:
++   remote.gate(tag,['--mode','lifetime_math','--worker-variant',variant,'--lifetime-mode','all',
++       '--lifetime-raw-schedule',schedule,'--route-case','sparse_remote','--route-bank',remote.REMOTE+'/stack/small-routes'],metadata_only=True)
++  except SystemExit as done:code=done.code
++  folder=root/'evidence'/tag
++  status=json.loads((folder/'status.json').read_text())
++  records=[]
++  for rank in range(8):
++   path=folder/f'rank{rank}.json'
++   if path.exists():records.extend(json.loads(path.read_text())['records'])
++  active_hits=max((r['lifetime_stats']['weight_hit_bytes'] for r in records),default=0)
++  gradient_bytes=max((r['lifetime_stats']['gradient_remote_bytes'] for r in records),default=0)
++  sources=json.loads((folder/'source-identity.json').read_text())
++  checked=('tools/gate_lifetime_math.py','tools/lifetime_device.py','tools/step_lifetime.py',
++    'source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h',
++    'source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp',
++    'source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py')
++  matches=all(hashlib.sha256((root/'stack'/name).read_bytes()).hexdigest()==sources[name] for name in checked)
++  passed=(code==0 and all(status.get(k) for k in ('qualified','source_unchanged','exclusive_devices'))
++      and status['peak_driver_MiB']<=90*1024 and len(records)==64 and all(r['passed'] for r in records)
++      and active_hits>0 and gradient_bytes>0 and matches and all(r['route_case']=='sparse_remote' and r['raw_schedule']==schedule and r['empty_home_experts']==32 for r in records))
++  item=dict(tag=tag,schedule=schedule,passed=bool(passed),exit=code,records=len(records),
++    active_cache_hit_bytes=active_hits,gradient_remote_bytes=gradient_bytes,
++    max_relative_l2={name:max((r['comparisons'][name]['relative_l2'] for r in records),default=None)
++      for name in ('output','dx','dp','dw1','dw2')},
++    runtime_sources={name:sources[name] for name in checked},peak_driver_MiB=status['peak_driver_MiB'])
++  state['runs'].append(item);save()
++  if not passed:raise RuntimeError('Independent raw schedule math gate failed: '+schedule)
++ state.update(stage='complete',passed=True);save()
++except BaseException as error:
++ state.update(stage='failed',error=str(error));save();raise
+diff --git a/research/step_lifetime/raw_control/setup_lane.py b/research/step_lifetime/raw_control/setup_lane.py
+new file mode 100644
+index 0000000..1515a15
+--- /dev/null
++++ b/research/step_lifetime/raw_control/setup_lane.py
+@@ -0,0 +1,16 @@
++"""Prepare isolated deployment helpers without touching either predecessor."""
++from pathlib import Path
++root=Path(__file__).resolve().parent
++for name in ('implementation','diagnostics','evidence'):(root/name).mkdir(exist_ok=True)
++source=(root.parent/'remote.py').read_text()
++(root/'remote.py').write_text(source.replace('step-lifetime-study-20261115','step-lifetime-raw-control-20261116'),newline='\n')
++source=(root.parent/'causal-diagnostics-20261116/implementation/build-causal-timer.sh').read_text()
++for before,after in (
++ ('step-lifetime-causal-20261116','step-lifetime-raw-control-20261116'),
++ ('ep8-cap64-lifetime-timer-causal-v1','ep8-cap64-lifetime-raw-control-v2'),
++ ('MEGAFLUX_CALIBRATION_TIMER=ON','MEGAFLUX_CALIBRATION_TIMER=OFF'),
++ ('v2 0 0 1','v2 0 0 0'),
++ ("for name in ('temporal-worker-timer-freeze.json','lifetime-timer-runtime-freeze.json'):","for name in ('lifetime-runtime-freeze.json',):"),
++ ('causal-diagnostic-only ABI1 original-Timer schema9','private ABI2 TimerOFF raw-output schedule control'),
++ ('CAUSAL_WORKER','RAW_CONTROL_WORKER')):source=source.replace(before,after)
++(root/'implementation/build-raw-worker.sh').write_text(source,newline='\n')
+diff --git a/source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py b/source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py
+index 5bf3959..ac80e8a 100644
+--- a/source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py
++++ b/source/native-balanced/ascend_deepep/megaflux_worker_pipeline.py
+@@ -65,7 +65,7 @@ class MegaFluxBF16WorkerPipelineTrain(MegaFluxBF16EarlyTrain):
+             self.worker_sidecar=self.worker_sidecar.detach().clone()
+             cache=lifetime.prepare(plan)
+             self.worker_sidecar[6].fill_(cache.data_ptr())
+-            self.worker_sidecar[7].fill_(1)
++            self.worker_sidecar[7].fill_(lifetime.raw_dw_mode)
+         descriptor[20]=self.worker_sidecar.data_ptr()
+         return descriptor
+ 
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h
+index e46fef8..5342e75 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h
++++ b/source/native-balanced/kernels/mega_moe_bf16/include/mega_moe_bf16_backward.h
+@@ -196,7 +196,10 @@ public:
+     __aicore__ inline void EnableLifetime(uint64_t side) {
+         if(!side)return;
+         lifetimeCache_=MegaFluxWorker::Field(side,6);
++        // ABI2: exporting dW is independent from compute-order eligibility.
++        // Keep mode1 for a matched legacy control in the very same binary.
+         if(MegaFluxWorker::Field(side,7)==1)gradient_.ready=0;
++        rawGradientOutput_=MegaFluxWorker::Field(side,7)==2;
+     }
+     __aicore__ inline void EnableGradientPipe(uint64_t ready,uint64_t trace,int epoch) {
+         gradient_.replica=replica_;gradient_.ready=ready;gradient_.trace=trace;gradient_.epoch=epoch;
+@@ -255,6 +258,7 @@ private:
+ #if defined(DEEPEP_BF16_REPLICA)
+     MegaMoeReplicaDescriptor replica_{};
+     uint64_t lifetimeCache_=0;
++    bool rawGradientOutput_=false;
+ #if defined(DEEPEP_BF16_GRADIENT_PIPE)
+     MegaFluxGradient::Context gradient_{};
+ #if defined(DEEPEP_BF16_EARLY_REDUCE)
+@@ -1337,7 +1341,7 @@ __aicore__ inline void MegaMoeBF16Backward::ClearEmptyExpertGradWeights()
+         if (effectiveRows == 0) {
+ #if defined(DEEPEP_BF16_EARLY_REDUCE)
+             // Do not overwrite a shared empty owner's early tile SUM.
+-            if(gradient_.ready && expertIdx<replica_.home) {
++            if(gradient_.ready && !rawGradientOutput_ && expertIdx<replica_.home) {
+                 bool shared=false;
+                 for(int i=0;i<replica_.ranks*replica_.slots;++i)
+                     if(MegaFluxMixed::Fresh((__gm__ int32_t*)replica_.plan+i)==replica_.rank*replica_.home+expertIdx)shared=true;
+@@ -1393,7 +1397,8 @@ __aicore__ inline void MegaMoeBF16Backward::UpdateGlobalBuffer(
+     const int64_t base = cumMRows_;
+     const uint64_t bf16 = sizeof(bfloat16_t);
+ #if defined(DEEPEP_BF16_GRADIENT_PIPE)
+-    gmmAddrInfo.gradientReady=gradient_.ready;gmmAddrInfo.gradientEpoch=gradient_.epoch;
++    // A raw output does not publish a ready flag for an unwritten SHMEM partial.
++    gmmAddrInfo.gradientReady=rawGradientOutput_?0:gradient_.ready;gmmAddrInfo.gradientEpoch=gradient_.epoch;
+     gmmAddrInfo.gradientTrace=gradient_.trace;
+     gmmAddrInfo.gradientHidden=k_;gmmAddrInfo.gradientFfn=n_/2;
+ #endif
+@@ -1451,7 +1456,7 @@ __aicore__ inline void MegaMoeBF16Backward::UpdateGlobalBuffer(
+         }
+         gmmAddrInfo.cGlobal = gradWeight1GmAddr_ + static_cast<uint64_t>(expertIdx) * n_ * k_ * bf16;
+ #if defined(DEEPEP_BF16_GRADIENT_PIPE)
+-        if(gradient_.ready && expertIdx>=replica_.home)
++        if(gradient_.ready && !rawGradientOutput_ && expertIdx>=replica_.home)
+             gmmAddrInfo.cGlobal=(GM_ADDR)replica_.partial1+(expertIdx-replica_.home)*(n_ * k_)*bf16;
+ #endif
+     } else if (phase == BW_PHASE_DW2) {
+@@ -1466,7 +1471,7 @@ __aicore__ inline void MegaMoeBF16Backward::UpdateGlobalBuffer(
+         }
+         gmmAddrInfo.cGlobal = gradWeight2GmAddr_ + static_cast<uint64_t>(expertIdx) * k_ * (n_ / 2) * bf16;
+ #if defined(DEEPEP_BF16_GRADIENT_PIPE)
+-        if(gradient_.ready && expertIdx>=replica_.home)
++        if(gradient_.ready && !rawGradientOutput_ && expertIdx>=replica_.home)
+             gmmAddrInfo.cGlobal=(GM_ADDR)replica_.partial2+(expertIdx-replica_.home)*(k_ * (n_ / 2))*bf16;
+ #endif
+     }
+@@ -2392,7 +2397,7 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
+     const bool aiv1TakesTail = gmOutput && savedGateUpMode_ == MegaMoeBF16Training::kSaveBf16;
+ #endif
+ #if MEGAFLUX_WORKER_BACKWARD
+-    cooperativeBackward_=gmOutput && gradient_.ready;
++    cooperativeBackward_=gmOutput && gradient_.ready && !rawGradientOutput_;
+     if(cooperativeBackward_) {
+         if(params_.tilingData->transW)WorkerBackward<true>();else WorkerBackward<false>();
+     } else {
+@@ -2440,7 +2445,7 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
+ 
+ #if defined(DEEPEP_BF16_EARLY_REDUCE)
+     if constexpr(g_coreType==AscendC::AIV) {
+-        if(gmOutput && gradient_.ready && subBlockIdx_==1) {
++        if(gmOutput && gradient_.ready && !rawGradientOutput_ && subBlockIdx_==1) {
+             // P1 arrival counts are published. GM P2 needs only AIC/AIV0.
+             int32_t localRows[32];
+             for(int e=0;e<replica_.home;++e) {
+@@ -2539,7 +2544,7 @@ __aicore__ inline void MegaMoeBF16Backward::Process()
+         ClearEmptyExpertGradWeights();
+         MEGAFLUX_STAGE_END(stageEmptyClear);
+ #if defined(DEEPEP_BF16_GRADIENT_PIPE)
+-        if(gradient_.ready) {
++        if(gradient_.ready && !rawGradientOutput_) {
+             PipeBarrier<PIPE_ALL>();
+ #if defined(DEEPEP_BF16_EARLY_REDUCE)
+             // In GM saved mode the odd workers already reduced their own
+diff --git a/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp b/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp
+index 7610a56..164dce4 100644
+--- a/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp
++++ b/source/native-balanced/kernels/mega_moe_bf16/megaflux_worker_bf16.cpp
+@@ -44,7 +44,7 @@ return 2;
+ }
+ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_shared_expert_tile_pipeline_version(){return 1;}
+ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_worker_pipeline_version(){return 3;}
+-extern "C" ASCEND_DEEPEP_EXPORT int megaflux_step_lifetime_version(){return 1;}
++extern "C" ASCEND_DEEPEP_EXPORT int megaflux_step_lifetime_version(){return 2;}
+ extern "C" ASCEND_DEEPEP_EXPORT int megaflux_shared_expert_forward_abi(){
+ #if defined(MEGAFLUX_SHARED_EXPERT_FORWARD) && MEGAFLUX_SHARED_EXPERT_FORWARD
+     return MegaMoeSharedExpertLayout::kAbi;
+diff --git a/tools/controller.py b/tools/controller.py
+index 2098daf..58a96ad 100644
+--- a/tools/controller.py
++++ b/tools/controller.py
+@@ -133,7 +133,7 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
+             str(TASK/'configs/temporal-scheduler-freeze.json'),'--out',
+             str(snapshots/f'{tag}-temporal-runtime.json')],check=True)
+     if '--lifetime-mode' in arguments:
+-        if worker!='ep8-cap64-lifetime-v1':raise RuntimeError('Lifetime ABI must use its own frozen worker')
++        if worker!='ep8-cap64-lifetime-raw-control-v2':raise RuntimeError('Raw-control ABI2 must use its own frozen worker')
+         subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
+             str(TASK/'configs/lifetime-runtime-freeze.json'),'--out',
+             str(snapshots/f'{tag}-lifetime-runtime.json')],check=True)
+diff --git a/tools/gate_lifetime_math.py b/tools/gate_lifetime_math.py
+index 35fce43..5a077f3 100644
+--- a/tools/gate_lifetime_math.py
++++ b/tools/gate_lifetime_math.py
+@@ -36,6 +36,8 @@ def main():
+     parser.add_argument('--route-bank',type=Path,required=True)
+     parser.add_argument('--serialized',action='store_true')
+     parser.add_argument('--lifetime-mode',default='all')
++    parser.add_argument('--lifetime-raw-schedule',choices=('legacy','preserve'),default='legacy')
++    parser.add_argument('--route-case',choices=('bank','sparse_remote'),default='bank')
+     args=parser.parse_args()
+     from fsdp_turbo.utils.device import set_accelerator_compatible
+     set_accelerator_compatible()
+@@ -68,7 +70,7 @@ def main():
+             for source in range(ep):
+                 for expert in range(ep*32):
+                     rows=int(counts[source,expert]);owner=expert//32
+-                    remote=rows//2 if expert in selected else 0
++                    remote=(rows if args.route_case=='sparse_remote' else rows//2) if expert in selected else 0
+                     quota[source,expert,owner]=rows-remote
+                     if remote:quota[source,expert,(owner+1)%ep]=remote
+             return native.compile_proposal(context,DeviceProposal(
+@@ -123,12 +125,18 @@ def main():
+         pool.policy=forced
+         experts=SimpleNamespace(gate_up_proj=weights[0],down_proj=weights[1])
+         model=SimpleNamespace(model=SimpleNamespace(layers=[SimpleNamespace(mlp=SimpleNamespace(experts=experts))]))
+-        lifetime=LifetimeDevice(model,pool,policy)
++        lifetime=LifetimeDevice(model,pool,policy,raw_schedule=args.lifetime_raw_schedule)
+         for count in (1,2):
+             lifetime.begin(case)
+             values=[data((tokens,hidden)).to(torch.bfloat16) for _ in range(count)]
+             probabilities=[data((tokens,topk),.01).sigmoid()*.2 for _ in range(count)]
+             ids=[provider.routes[0,index,0] for index in range(count)]
++            if args.route_case=='sparse_remote':
++                # Eight active logical experts per owner; ALL their assignments
++                # run at its cyclic peer. Owners have zero local work but must
++                # receive a nonzero parameter gradient, with24 unused experts.
++                ids=[torch.arange(rank*32,rank*32+8,device=device,dtype=torch.int32)
++                     .expand(tokens,8).contiguous() for _ in range(count)]
+             dys=[data((tokens,hidden),.1).to(torch.bfloat16) for _ in range(count)]
+             expected_weights=[value.detach().clone().requires_grad_() for value in weights]
+             reference_x=[value.detach().clone().requires_grad_() for value in values]
+@@ -175,7 +183,11 @@ def main():
+                 plans.append(dict(copies=active,unused_replicas=sum(rows==0 for _,_,rows in active)))
+             retired=pool.retire_training_step(case)
+             if retired!=count:raise RuntimeError('Math gate plan lifetime mismatch')
+-            record=dict(policy=policy,tasks=count,forced_checked_replica_plan=True,comparisons=comparisons,plans=plans,lifetime_stats=dict(lifetime.stats),
++            zero_home_count=int((pool.module.last_exec_counts[:pool.home]==0).sum().item())
++            if args.route_case=='sparse_remote' and zero_home_count!=pool.home:
++                raise RuntimeError('Sparse qualification failed to exercise empty owners')
++            record=dict(policy=policy,tasks=count,raw_schedule=args.lifetime_raw_schedule,route_case=args.route_case,
++                        empty_home_experts=zero_home_count,forced_checked_replica_plan=True,comparisons=comparisons,plans=plans,lifetime_stats=dict(lifetime.stats),
+                         passed=all(value['passed'] for value in comparisons.values()))
+             records.append(record)
+             args.out.mkdir(exist_ok=True,parents=True)
+diff --git a/tools/lifetime_device.py b/tools/lifetime_device.py
+index 3016cea..22b9c39 100644
+--- a/tools/lifetime_device.py
++++ b/tools/lifetime_device.py
+@@ -18,13 +18,22 @@ def _local(value):
+ class LifetimeDevice:
+     """Own bounded replica storage and return complete gradients to fixed owners."""
+ 
+-    def __init__(self, model, pool, mode, entries=8):
++    def __init__(self, model, pool, mode, entries=8, *, raw_schedule='legacy'):
+         if mode not in ('anchor', 'b0', 'b1', 'b2', 'b3'):
+             raise ValueError('Unknown lifetime mode')
+         module = pool.module
+         abi = getattr(module._worker_native, 'megaflux_step_lifetime_version', None)
+-        if abi is None or int(abi()) != 1:
+-            raise RuntimeError('Lifetime mode requires a rebuilt ABI1 worker')
++        if raw_schedule not in ('legacy','preserve'):
++            raise ValueError('Unknown raw dW compute schedule')
++        capability=0 if abi is None else int(abi())
++        if capability not in (1,2) or (raw_schedule=='preserve' and capability<2):
++            raise RuntimeError('Requested lifetime schedule requires a matching private ABI worker')
++        flags=getattr(module._worker_native,'megaflux_worker_pipeline_flags',lambda:0)
++        if raw_schedule=='preserve' and int(flags())&2:
++            raise RuntimeError('Preserved raw dW does not yet qualify cooperative backward variants')
++        self.raw_schedule=raw_schedule
++        self.raw_dw_mode=2 if raw_schedule=='preserve' else 1
++        self.worker_capability=capability
+         self.module, self.pool, self.mode = module, pool, mode
+         self.rank, self.group = pool.shmem.rank(), pool.group
+         self.ranks, self.entries = pool.shmem.world_size(), entries
+@@ -239,6 +248,7 @@ class LifetimeDevice:
+ 
+     def write_audit(self, path):
+         path.write_text(json.dumps(dict(mode=self.mode, entries=self.entries, **self.stats,
++            raw_schedule=self.raw_schedule,worker_capability=self.worker_capability,
+             pending=len(self.pending), qualified_performance_path=False,
+             control='observed_current_plan_cpu_metadata',
+             transport='bounded_owner_service_stream_drain_before_bank_reuse',
+diff --git a/tools/train.py b/tools/train.py
+index e648424..92d1ead 100644
+--- a/tools/train.py
++++ b/tools/train.py
+@@ -116,7 +116,10 @@ def main():
+     parser.add_argument('--skip-identity', action='store_true')
+     parser.add_argument('--diagnose-memory', action='store_true')
+     parser.add_argument('--whole-card-budget-gib', type=float, default=89.5)
++    parser.add_argument('--lifetime-raw-schedule',choices=('legacy','preserve'),default='legacy')
+     args = parser.parse_args()
++    if args.lifetime_raw_schedule!='legacy' and not args.lifetime_mode:
++        parser.error('An explicit lifetime mode is required for the raw-schedule experiment')
+     if args.lifetime_mode and (args.temporal_policy!='fixed_native' or not args.temporal_prefix_reuse or args.diagnostic_timer):
+         parser.error('Lifetime qualification requires fixed_native, prefix reuse and TimerOFF')
+     if args.maxutil_rule=='upstream_first' and args.temporal_policy not in ('easy_home','easy_independent'):
+@@ -281,9 +284,9 @@ def main():
+     lifetime = None
+     if args.lifetime_mode:
+         from lifetime_device import LifetimeDevice
+-        lifetime = LifetimeDevice(engine.model,temporal.legacy,args.lifetime_mode)
++        lifetime = LifetimeDevice(engine.model,temporal.legacy,args.lifetime_mode,raw_schedule=args.lifetime_raw_schedule)
+         (args.out/f'lifetime-config-rank{rank}.json').write_text(json.dumps(dict(
+-            mode=args.lifetime_mode,worker_capability=1,qualified_performance_path=False,
++            mode=args.lifetime_mode,worker_capability=lifetime.worker_capability,raw_schedule=args.lifetime_raw_schedule,qualified_performance_path=False,
+             routing_gradient_scaling='explicit_ep_once' if args.lifetime_mode!='anchor' else 'parameter_hook')))
+     if args.finite_diagnostics:
+         from torch.utils._pytree import tree_flatten

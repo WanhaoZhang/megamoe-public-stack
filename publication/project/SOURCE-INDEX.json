@@ -1,0 +1,68 @@
+{
+  "branch": "research/step-lifetime-raw-control",
+  "delivery_head": "693f7fc4f9e7617c79ffbf69cc27268609bd99e2",
+  "runtime_source_commit": "1536db9",
+  "note": "Build manifest plus per-run source snapshots are execution authority; later commits add the independent sparse oracle, frozen config and offline reporting. No new planner or stable gain.",
+  "files": [
+    {
+      "path": "implementation\\source-693f7fc4f9e7.zip",
+      "bytes": 79587074,
+      "sha256": "eb3582c3f0890dbadc8a40db4dab94cda7419f8c740f2a60225b309aebe35190"
+    },
+    {
+      "path": "implementation\\source-diff.patch",
+      "bytes": 67075,
+      "sha256": "f5ffc57a9258dbb9a884bdd129d93eb9681633a66a45d9f1d2b0432088dd8380"
+    },
+    {
+      "path": "implementation\\worker.so",
+      "bytes": 4083136,
+      "sha256": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf"
+    },
+    {
+      "path": "implementation\\worker-build.json",
+      "bytes": 27984,
+      "sha256": "5da8856e45730ccdc9160996eb6eae51d1cd05dbdb8cd28eb2e2566b5e873029"
+    },
+    {
+      "path": "raw-gates-v1.json",
+      "bytes": 2705,
+      "sha256": "5449d03616097be013a24bd2691c4223d8c5ff0f06f3db84b7fccd2cc460fb3c"
+    },
+    {
+      "path": "raw-sparse-gates-v1.json",
+      "bytes": 2705,
+      "sha256": "57e48ddab17d8ddee3784bed7ce6aa51ccec4d4a9daa1946df5f15fb7386cb28"
+    },
+    {
+      "path": "raw-model-gates-v1.json",
+      "bytes": 398,
+      "sha256": "652a2e1ff3cd708234de688db949a3bc7463ca5928c018f0f37880eda4b72a59"
+    },
+    {
+      "path": "diagnostics\\raw-model-comparison-v1.json",
+      "bytes": 14779,
+      "sha256": "e09aa3dc582e2edaee9f500b5f48d3aa06ba32292bc8a75e1a8275f90dc7afcb"
+    },
+    {
+      "path": "diagnostics\\pilot-identity-audit.json",
+      "bytes": 1129,
+      "sha256": "e17d45f19df5c1bb1bcd9f3f1519bddbd53654e4f6641a8caa2f44df01f89575"
+    },
+    {
+      "path": "schedule-pilot-v1.json",
+      "bytes": 1704,
+      "sha256": "fb30c144201c6e8d2d6965bb5e4ed59e24375af84bfb8a64f27becf9d02e972b"
+    },
+    {
+      "path": "schedule-pilot-v1.csv",
+      "bytes": 1014,
+      "sha256": "a2f7cf44090a3176502d25856ed2ad9fca7e53c05fb0fd01dd5706a25a70cdf3"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 3892,
+      "sha256": "0de9c5188c107af966cf69757536cdf010969da27588afe4875d72de55612f31"
+    }
+  ]
+}
