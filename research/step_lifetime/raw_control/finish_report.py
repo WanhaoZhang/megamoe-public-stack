@@ -67,5 +67,5 @@ preserve相对legacy的步时变化（正数表示减少）：{state['reduction_
 
 正确性回执见raw-gates-v1.json、raw-sparse-gates-v1.json、raw-model-gates-v1.json；正式筛查登记和每步数据见schedule-pilot-v1.json/CSV，图为figures/schedule-pilot-v1.png/svg/pdf。所有原始梯度张量留在对应独立远端项目，未上传报告仓库。
 '''
-(root/'REPORT.md').write_text(text,encoding='utf-8')
+(root/'REPORT.md').write_text(text,encoding='utf-8',newline='\n')
 print(json.dumps(dict(reduction_pct=state['reduction_vs_legacy_pct'],report=str(root/'REPORT.md'))))
