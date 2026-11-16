@@ -10,6 +10,7 @@ import subprocess
 import time
 import hashlib
 import os
+import socket
 from concurrent.futures import ThreadPoolExecutor
 
 TASK = pathlib.Path('/home/z00956592/megaflux/step-lifetime-study-20261115/stack')
@@ -92,6 +93,26 @@ def foreign_device_owners(container_id):
             foreign.append(int(value))
     return sorted(foreign)
 
+
+def probe_master_port(out):
+    """Probe a task-specific range without signalling existing CPU services.
+
+    TCPStore must bind the port itself, so this is a preflight, not a reservation.
+    A later EADDRINUSE remains an explicit failed run, never a silent restart.
+    """
+    start = 40100 + int(time.time()) % 2000
+    for offset in range(2000):
+        port = 40100 + (start - 40100 + offset) % 2000
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            try:
+                probe.bind(('127.0.0.1', port))
+            except OSError:
+                continue
+            (out/'port-admission.json').write_text(json.dumps(dict(port=port,
+                checked_ns=time.monotonic_ns(), probe_only_not_reserved=True),indent=2))
+            return port
+    raise RuntimeError('No free TCPStore port in this diagnostic range')
+
 def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
     diagnostic='--diagnostic-timer' in arguments
     if '--temporal-schedule-replay' in arguments and '--diagnostic-only' not in arguments:
@@ -151,7 +172,8 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
     final_admission=idle()
     (out/'launch-admission.json').write_text(json.dumps(final_admission,indent=2))
     container_id=subprocess.check_output(['docker','inspect',CONTAINER,'--format','{{.Id}}'],text=True).strip()
-    command = ['docker', 'exec', '-w', str(TASK), '-e', f'EP8_MASTER_PORT={29200 + int(time.time()) % 2000}',
+    master_port = probe_master_port(out)
+    command = ['docker', 'exec', '-w', str(TASK), '-e', f'EP8_MASTER_PORT={master_port}',
                CONTAINER, 'timeout', '-k', '30', str(seconds), 'bash', 'tools/launch.sh',
                backend, mode, tag, *arguments]
     if worker:
