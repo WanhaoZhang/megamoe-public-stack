@@ -1,0 +1,1502 @@
+diff --git a/configs/lifetime-runtime-freeze.json b/configs/lifetime-runtime-freeze.json
+index d9fb5c1..4f999f2 100644
+--- a/configs/lifetime-runtime-freeze.json
++++ b/configs/lifetime-runtime-freeze.json
+@@ -1,7 +1,7 @@
+ {
+   "scope": "private ABI2 TimerOFF raw-output schedule control",
+   "binaries": {
+-    "source/native-balanced/worker-variants/ep8-cap64-lifetime-raw-control-v2/libascend_deepep_megaflux_early_bf16.so": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf",
+-    "source/native-balanced/worker-variants/ep8-cap64-lifetime-raw-control-v2/libascend_deepep_megaflux_worker_bf16.so": "72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf"
++    "source/native-balanced/worker-variants/ep8-cap64-lifetime-priority-cache-v1/libascend_deepep_megaflux_early_bf16.so": "e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed",
++    "source/native-balanced/worker-variants/ep8-cap64-lifetime-priority-cache-v1/libascend_deepep_megaflux_worker_bf16.so": "e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed"
+   }
+ }
+diff --git a/research/step_lifetime/host_boundary/IMPLEMENTATION-LOG.md b/research/step_lifetime/host_boundary/IMPLEMENTATION-LOG.md
+new file mode 100644
+index 0000000..f451da9
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/IMPLEMENTATION-LOG.md
+@@ -0,0 +1,15 @@
++# 实现记录
++
++2026-11-16：新建独立clone，首次clone未在checkout前设置core.longpaths，Windows长路径导致checkout失败、index未写入。未触碰其他工作区。核对origin、HEAD和空index后，仅在刚创建的本任务目录设置longpaths/autocrlf并恢复初始tree；不复用或清理旧实验目录。随后独立分支runtime d974205。
++
++显式--host-boundary-trace默认关闭；仅包装已有函数，入口第一步取monotonic_ns，记录保存在CPU内存，训练循环结束后导出。不增加设备Event、tensor快照、device同步或autograd hooks。追踪本身仍有Python开销，wall time不进入性能结果。GC回调只记录CPU边界。
++
++诊断计划补充：先以B1 legacy、B3 legacy、B1 preserve＋排序键缓存三条小模型路径分别验证完整三更新/step0梯度；全部通过后，用对应三条主形状11更新观察updates0–4和5–10。前两条使用原72653a TimerOFF，第三条使用e2868f优化worker。与旧rich capture的差异不能单独归因于Event记录或特定硬件限制。
++
++生命周期策略、任务顺序、copies/quota、交付时机和资源预算未在此分支修改。实际SO、源文件和数值资格均写入每个独立run目录。诊断状态由diagnosis-v1.json记录；失败不会覆盖或当作完成。
++
++首次v1小模型在torchrun创建TCPStore时因33856端口EADDRINUSE失败，八rank训练均未开始，整卡峰值4788MiB，无外来GPU进程。状态/源码快照/stdout保留。runner随后读不存在的steps文件暴露了其失败处理缺陷；已改为先返回真实非资格状态，再访问训练产物。v2使用独立40100–42099范围并在全节点准入锁内实际bind探测空闲端口；此检查不保证长期保留端口，若再次冲突仍保留失败，不停止任何其他服务。v1不覆盖，所有新tag和状态用v2。
++
++v2仍在torchrun前因40740端口EADDRINUSE失败。只查LISTEN和IPv4 loopback探测不足：实际ss -tanp发现[::1]:40740→[::1]:6443是kube-apiserver(pid226946)的既有ESTAB客户端连接，不是GPU训练。未停止它。v3改用低于该节点ephemeral范围的25100–27099，并分别检查IPv6/IPv4 wildcard bind；仍不把探测当长期保留，失败继续独立记录。v1/v2训练均未开始，不能记为数值失败或诊断完成。
++
++v3成功训练三更新，但门禁发现operator.backward覆盖为0：记录器沿用rich捕获白名单，漏了实际TimerOFF入口backward_replica_redispatch，只包含with_timer版本。MegaMoE.backward封套和其他主机记录存在，未把缺失的operator数据当成通过。补一项包装名称，不改计算/返回值；v4新tag重新完整验收。v3记录保留为覆盖失败，尚未作为数值或因果证据使用。
+diff --git a/research/step_lifetime/host_boundary/NEXT-INTERVENTION.md b/research/step_lifetime/host_boundary/NEXT-INTERVENTION.md
+new file mode 100644
+index 0000000..901fa64
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/NEXT-INTERVENTION.md
+@@ -0,0 +1,32 @@
++# 下一项干预：对应梯度bank的ready，而非flush时的整个当前流
++
++目标仍是完整更新联合规划；以下是公共梯度路径的单变量因果控制，不预先称新策略。旧33点及优化后B0/B2/B3负结果保留，不启动大矩阵。
++
++## 当前依据与未证明项
++
++同一优化worker的B1/B2/B3已有正式25更新计时；B3通信字节和发送次数减少，却没有赢过强控制。预热后host-only诊断里B1的约200ms入口差距消失，不能再作为稳态机制。B3 legacy的finish封套约163ms，匹配当前preserve路径的B3诊断另补v5。
++
++源码flush调用_delivery_scope，在当时的整个当前流上record ready。原梯度bank可能更早已写完，随后已经排入Attention/FSDP等工作；服务流此时等待的是新record的广义fence。这个源码依赖值得干预，但尚未证明有多少可消除整步时间。
++
++## 独立实现边界
++
++从公共执行器交付68aacae建立新的独立clone/branch和远端目录，使用同一e2868f TimerOFF SO，不改C++、Native计划、FP32通信或owner。加入正交公开开关gradient_ready_scope=call_stream/bank_write，默认保持旧路径。所有B控制可用同一开关，不按planner名称改变执行器。
++
++bank_write方式在每个实际梯度bank最后一次写入后记录ready，按对应pending key/version/slot generation关联。flush仅等待它将读取的本地source bank的最新ready，不无条件等待flush时整个默认流。远端owner接收及FP32加法仍在原service顺序；本地home梯度也沿原service顺序，不同时改变raw输出读取流。
++
++保留现有drain、固定提交顺序和八条目资源，不删除串行保护。所有输入ready/完成Event与inflight ticket共同持有，直到服务完成后才释放；容量不足时的中途flush必须已经有对应最新ready，不能复用旧slot事件。零贡献副本不生成义务，Adam前全部ticket完成，EP缩放仍仅一次。
++
++依赖应为：zero/add bank→本bank ready→service wait→P2P/owner add→service done→lease release。owner.grad初始化及本地home add在同一service序列中先于对应远端add，防止跨流RMW丢更新。Event开销计入正式时间；无CPU参考/离线计划冒充在线成绩。
++
++## 验证与停止条件
++
++先过CPU票据/租约、同版本追加、容量flush、零owner、slot回收、更新切换；NPU小形状W1/W2、B0–B3、空专家/远端贡献，对独立输出/梯度参考；完整三次Adam及step0逐参数门槛不变。确保原call_stream控制数值与实际SO身份仍一致。
++
++再做B3 call_stream/bank_write一配对，保持当前主形状、MaxVio10/same、25更新/5预热/20测量。身份、实际计划/贡献者、源文件/实际SO、HBM和有限性全部检查。主指标仍八rank最大完整更新wall。若只是减少finish主机等待却不减少完整更新时间，保留负结果，不称成功；若有信号，补交换顺序独立重复，并再次与同底座anchor和fixed-home比较。新联合策略投入门槛仍为相对最强适用基线至少3%、三轮同向。
++
++## 另外两个控制，禁止混进本次首次干预
++
++1. raw dW的record_stream(service)可能让大输出缓冲存活到后续P2P完成；B1与B2/B3峰值不同只是线索。另行比较owner局部累积放置/真实最后读取位置，需保持owner.grad RMW顺序。不能在ready试验里同时修改。
++2. 现有quota→实际计数/贡献者推导的离线一致性已验证，后续可把不可变计划的元数据在执行前准备好，消除反向的重复CPU读回/对象all-gather。但需核对原始forward登记PlanTicket的时机，逐调用绑定相同计划；host梯度封套含真实核计算等待，不能把其全时长当作可省CPU开销。
++
++上述优化若有效，仍属于公共执行器/依赖修正，向所有适用基线开放。只有后续动态驻留/交付决策在此强公共底座上胜过固定分组、固定布局/归并和简单组合，才讨论新的planner贡献。
+diff --git a/research/step_lifetime/host_boundary/PLAN.md b/research/step_lifetime/host_boundary/PLAN.md
+new file mode 100644
+index 0000000..c1f4b53
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/PLAN.md
+@@ -0,0 +1,11 @@
++# Host-only boundary diagnosis
++
++Independent sibling research/step-lifetime-host-boundary, based on b77bb06 and the explicitly frozen priority-cache worker e2868fd2. Old source, SOs and completed runs remain immutable. Same common node admission lock; isolated container/install/artifacts/port range.
++
++Question: do the old rich-capture 188�C206ms cross-rank backward entry gaps persist after warmup with the TimerOFF worker and no new device Events/snapshots/synchronizations? Measure host calls before any diagnostic resource creation; do not infer device completion from host return.
++
++Implement explicit --host-boundary-trace, off by default. Buffer CPU timestamp records, dump after training only. Trace existing pool/operator, planner/publish, FSDP, optimizer, lifecycle/drain/P2P submission and Python GC boundaries. No tensor clone, CPU read or new device synchronization in the tracer.
++
++Gate: small L2 H512 F512 S256 GA4 W2, three complete Adam updates and full step0 per-parameter gradient comparison against retained qualified reference. Then bounded main-shape B1/B3 controls (11 updates, inspect warmed updates5�C10); no traced wall time enters performance figures. Actual worker, guarded source, initial/input/route identity, finite updates, exclusive admission and90GiB budget must all pass.
++
++Do not implement a new gradient policy solely from pre-warmup rich-capture waits. Interpret a disappearing gap as a difference between measurement/run conditions, not proof of one specific Event-limit cause. This lane is diagnostic infrastructure, not a new planner.
+diff --git a/research/step_lifetime/host_boundary/REPORT-v4.md b/research/step_lifetime/host_boundary/REPORT-v4.md
+new file mode 100644
+index 0000000..23485bf
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/REPORT-v4.md
+@@ -0,0 +1,39 @@
++# 主机边界诊断：先纠正预热与稳态的混用
++
++完整更新联合规划目标仍未完成。本分支只做诊断，没有新planner，也不提供正式性能分数。
++
++## 结果
++
++|方式|预热前最大入口差距ms|预热后最大入口差距ms|预热后大于100ms的调用组|预热后finish主机中位ms|
++|---|---:|---:|---:|---:|
++|b1_legacy|749.878|1.871|0|0.051|
++|b3_legacy|19.364|19.018|0|163.079|
++|b1_cached|672.083|1.936|0|0.052|
++
++每模式只有一个独立11更新进程，表中的入口差距按相同保存计划身份匹配八rank，以同一主机monotonic_ns计算最早/最晚进入真实反向C++调用的差。预热前为updates0–4的80组，预热后为updates5–10的96组；每组包含八rank，不把这些组当成独立重复。finish中位按六更新×八rank的48个主机封套统计，也不是48次独立运行。
++
++![主机入口差距](figures/host-entry-skew.png)
++
++B1 legacy在前几更新仍有约200ms差距，而预热后最大1.87ms。因此旧rich capture仅前三更新的来源发布等待不能直接解释正式25更新、5预热计时的稳态差距。新host-only路径也出现预热前差距，故不能将原因简单归于旧Event记录；确切启动原因仍未定位。
++
++B3预热后finish仍有约163ms主机等待。这个等待包括服务流依赖与同步，不等于纯通信耗时，也不是可直接节省的163ms。三组诊断的wall time均不进入正式性能图。
++
++## 方法与资格
++
++显式--host-boundary-trace默认关闭；入口第一步读取主机时钟，无新增设备Event、tensor快照、CPU tensor读取或设备同步；记录保存在CPU内存，训练循环结束后导出。它仍有Python包装/GC记录开销，不能认为零扰动。记录已有pool/真实operator、planner/publish、FSDP、优化器、lifetime/drain/flush/owner、P2P和GC主机封套；不拼接设备独立原点，不相加嵌套封套。
++
++三条小形状L2/H512/F512/S256路径分别通过三次完整Adam更新、step0逐参数FP32梯度相对L2≤0.02、实际SO/单SHMEM、全部入口覆盖和有限性检查。随后三条主形状L4/EP8/E256/K8/H4096/F1024/S16384/GA4/W2、MaxVio10/same各11更新通过：每rank每更新16次真实反向入口完整，各rank全部初始参数、11更新输入/路由/重放身份与正式冻结数据前缀一致，全部梯度交付完毕、源码不变、独占与90GiB门禁通过。
++
++B1/B3 legacy使用72653abf... TimerOFF worker，B1 cached使用e2868fd2... TimerOFF worker；两者ABI2且各进程只有匹配的一套SHMEM。实际完整SHA在每run的libraries-rank*.json、冻结manifest及SOURCE-INDEX。前两者与第三者不是单变量算法对比，仅用于在相应路径下检查诊断现象。
++
++## 失败与覆盖范围
++
++v1/v2在torchrun启动前因端口冲突失败，未开始八rank训练；v2 IPv4 loopback探测漏掉了既有IPv6 kube-apiserver客户端连接。v3改用实际ephemeral32768–60999以下并探测双栈后可训练三更新，但记录器漏包TimerOFF backward_replica_redispatch入口，覆盖门禁拒绝。v4只补该包装名称后重做全部资格。补丁首次发送还因Windows文本换行在bash set处退出，尚未改源文件；改为字节输入后部署，前后SHA核对通过。所有失败状态、stdout及源码快照保留；没有停止其他服务，也没有把它们放进成功曲线。
++
++大梯度PT仅保留在对应独立远端receipt.large_tensors_remote；完整主机JSONL和小模型数值比较、源文件快照在本项目。该诊断不是完整设备依赖DAG，自然路由、完整模型W1/W4、设备在线生命周期planner仍未验收。
++
++## 下一项有界干预
++
++源码中flush当前先在调用时对整个当前流record ready，可能把早已就绪的梯度bank排在随后无关Attention/FSDP工作之后。下一步应在独立分支比较“当前流fence”和“对应梯度bank最后一次写入的ready”，保持copies/quota、FP32格式、owner、已有drain/租约和确定提交顺序不变。必须覆盖中途容量flush、零任务、更新切换及三更新数值检查，再看完整更新是否实际减少；不能删同步或把主机等待搬地方就宣称收益。
++
++另一个待验证因素是raw dW record_stream与服务队列对大输出缓冲释放的影响；现有B1与B2/B3的整卡峰值不同仅是线索，尚未证明原因。公共quota推导实际贡献者可作为消除重复host元数据观察的独立控制，不能和ready/缓冲修改混在同一首次干预中。上述都不是已实现的新策略或论文创新点。
+diff --git a/research/step_lifetime/host_boundary/REPORT.md b/research/step_lifetime/host_boundary/REPORT.md
+new file mode 100644
+index 0000000..f199699
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/REPORT.md
+@@ -0,0 +1,40 @@
++# 主机边界诊断：先纠正预热与稳态的混用
++
++完整更新联合规划目标仍未完成。本分支只做诊断，没有新planner，也不提供正式性能分数。
++
++## 结果
++
++|方式|预热前最大入口差距ms|预热后最大入口差距ms|预热后大于100ms的调用组|预热后finish主机中位ms|
++|---|---:|---:|---:|---:|
++|b1_legacy|749.878|1.871|0|0.051|
++|b3_legacy|19.364|19.018|0|163.079|
++|b1_cached|672.083|1.936|0|0.052|
++|b3_cached|64.393|19.187|0|160.547|
++
++每模式只有一个独立11更新进程，表中的入口差距按相同保存计划身份匹配八rank，以同一主机monotonic_ns计算最早/最晚进入真实反向C++调用的差。预热前为updates0–4的80组，预热后为updates5–10的96组；每组包含八rank，不把这些组当成独立重复。finish中位按六更新×八rank的48个主机封套统计，也不是48次独立运行。
++
++![主机入口差距](figures/host-entry-skew.png)
++
++B1 legacy在前几更新仍有约200ms差距，而预热后最大1.87ms。因此旧rich capture仅前三更新的来源发布等待不能直接解释正式25更新、5预热计时的稳态差距。新host-only路径也出现预热前差距，故不能将原因简单归于旧Event记录；确切启动原因仍未定位。
++
++B3 legacy预热后finish仍有约163ms主机等待。这个等待包括服务流依赖与同步，不等于纯通信耗时，也不是可直接节省的163ms。四组诊断的wall time均不进入正式性能图。
++
++## 方法与资格
++
++显式--host-boundary-trace默认关闭；入口第一步读取主机时钟，无新增设备Event、tensor快照、CPU tensor读取或设备同步；记录保存在CPU内存，训练循环结束后导出。它仍有Python包装/GC记录开销，不能认为零扰动。记录已有pool/真实operator、planner/publish、FSDP、优化器、lifetime/drain/flush/owner、P2P和GC主机封套；不拼接设备独立原点，不相加嵌套封套。
++
++四条小形状L2/H512/F512/S256路径分别通过三次完整Adam更新、step0逐参数FP32梯度相对L2≤0.02、实际SO/单SHMEM、全部入口覆盖和有限性检查。随后四条主形状L4/EP8/E256/K8/H4096/F1024/S16384/GA4/W2、MaxVio10/same各11更新通过：每rank每更新16次真实反向入口完整，各rank全部初始参数、11更新输入/路由/重放身份与正式冻结数据前缀一致，全部梯度交付完毕、源码不变、独占与90GiB门禁通过。
++
++B1/B3 legacy使用72653abf... TimerOFF worker，B1/B3 cached使用e2868fd2... TimerOFF worker；两者ABI2且各进程只有匹配的一套SHMEM。实际完整SHA在每run的libraries-rank*.json、冻结manifest及SOURCE-INDEX。应在同一worker内比较生命周期；legacy与cached之间还改变raw schedule和排序开销，不当作单变量算法对比。v5额外B3 cached专为补齐当前正式B3路径的匹配诊断。
++
++## 失败与覆盖范围
++
++v1/v2在torchrun启动前因端口冲突失败，未开始八rank训练；v2 IPv4 loopback探测漏掉了既有IPv6 kube-apiserver客户端连接。v3改用实际ephemeral32768–60999以下并探测双栈后可训练三更新，但记录器漏包TimerOFF backward_replica_redispatch入口，覆盖门禁拒绝。v4只补该包装名称后重做全部资格。补丁首次发送还因Windows文本换行在bash set处退出，尚未改源文件；改为字节输入后部署，前后SHA核对通过。所有失败状态、stdout及源码快照保留；没有停止其他服务，也没有把它们放进成功曲线。
++
++大梯度PT仅保留在对应独立远端receipt.large_tensors_remote；完整主机JSONL和小模型数值比较、源文件快照在本项目。该诊断不是完整设备依赖DAG，自然路由、完整模型W1/W4、设备在线生命周期planner仍未验收。
++
++## 下一项有界干预
++
++源码中flush当前先在调用时对整个当前流record ready，可能把早已就绪的梯度bank排在随后无关Attention/FSDP工作之后。下一步应在独立分支比较“当前流fence”和“对应梯度bank最后一次写入的ready”，保持copies/quota、FP32格式、owner、已有drain/租约和确定提交顺序不变。必须覆盖中途容量flush、零任务、更新切换及三更新数值检查，再看完整更新是否实际减少；不能删同步或把主机等待搬地方就宣称收益。
++
++另一个待验证因素是raw dW record_stream与服务队列对大输出缓冲释放的影响；现有B1与B2/B3的整卡峰值不同仅是线索，尚未证明原因。公共quota推导实际贡献者可作为消除重复host元数据观察的独立控制，不能和ready/缓冲修改混在同一首次干预中。上述都不是已实现的新策略或论文创新点。
+diff --git a/research/step_lifetime/host_boundary/analyze_boundaries.py b/research/step_lifetime/host_boundary/analyze_boundaries.py
+new file mode 100644
+index 0000000..5266b2a
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/analyze_boundaries.py
+@@ -0,0 +1,63 @@
++"""Same-host envelopes only: no merging device origins or summing nested scopes."""
++from collections import defaultdict
++from pathlib import Path
++import json
++import statistics
++
++ROOT = Path(__file__).resolve().parent
++states = [json.loads(path.read_text()) for path in (ROOT/'diagnosis-v4.json', ROOT/'diagnosis-v5.json') if path.exists()]
++state = dict(runs=[run for stage in states for run in stage['runs']])
++results = []
++for run in state['runs']:
++    if not run['passed'] or not run['tag'].startswith('host-main-'):
++        continue
++    folder = ROOT/'evidence'/run['tag']
++    ranks = [[json.loads(line) for line in (folder/f'host-boundary-rank{rank}.jsonl').read_text().splitlines()] for rank in range(8)]
++    operators = defaultdict(dict)
++    durations = defaultdict(list)
++    for rank, rows in enumerate(ranks):
++        for row in rows:
++            if row['update'] is None:
++                continue
++            phase = 'warmed' if row['update'] >= 5 else 'prewarm'
++            durations[(phase,row['name'])].append((row['host_return_ns']-row['host_begin_ns'])/1e6)
++            if row['name'] == 'operator.backward':
++                key = (row['update'],tuple(row['invocation']))
++                if rank in operators[key]:
++                    raise RuntimeError('Duplicate actual backward identity')
++                operators[key][rank] = row
++    skews = []
++    outliers = []
++    for (step,key), records in sorted(operators.items()):
++        if set(records) != set(range(8)):
++            raise RuntimeError('Incomplete cross-rank operator match')
++        first = min(records, key=lambda rank: records[rank]['host_begin_ns'])
++        last = max(records, key=lambda rank: records[rank]['host_begin_ns'])
++        begin, end = records[first]['host_begin_ns'], records[last]['host_begin_ns']
++        skew = (end-begin)/1e6
++        skews.append(dict(update=step,invocation=list(key),skew_ms=skew,first_rank=first,last_rank=last))
++        if skew >= 10:
++            blockers = []
++            for row in ranks[last]:
++                overlap = (min(row['host_return_ns'],end)-max(row['host_begin_ns'],begin))/1e6
++                if overlap >= 1:
++                    blockers.append(dict(name=row['name'],invocation=row['invocation'],overlap_ms=overlap,
++                                         full_host_ms=(row['host_return_ns']-row['host_begin_ns'])/1e6))
++            outliers.append(dict(update=step,invocation=list(key),skew_ms=skew,first_rank=first,last_rank=last,
++                                 late_rank_overlapping_scopes=sorted(blockers,key=lambda row:-row['overlap_ms'])[:16]))
++    phases = {}
++    for phase in ('prewarm','warmed'):
++        values = [row['skew_ms'] for row in skews if (row['update']>=5) == (phase=='warmed')]
++        phases[phase] = dict(calls=len(values),median_ms=statistics.median(values),max_ms=max(values),
++                             over10ms=sum(value>=10 for value in values),over100ms=sum(value>=100 for value in values))
++    methods = [dict(phase=phase,name=name,calls=len(values),median_host_ms=statistics.median(values),max_host_ms=max(values))
++               for (phase,name),values in sorted(durations.items())]
++    results.append(dict(tag=run['tag'],phases=phases,per_update=[dict(update=step,
++        median_skew_ms=statistics.median([row['skew_ms'] for row in skews if row['update']==step]),
++        max_skew_ms=max(row['skew_ms'] for row in skews if row['update']==step)) for step in range(11)],
++        outliers=outliers,method_envelopes=methods,matched_operator_entries=skews))
++output = dict(diagnostic_only=True,results=results,
++              interpretation='Same host monotonic entry/return envelopes. Entry skew is not an additive step cost or proof of avoidable device wait. Overlapping nested methods are not summed.',
++              rich_capture_comparison_limit='Old rich captures use TimerON and additional GPU Events/snapshots, only updates0–2. A difference does not identify one Event limit or one causal factor.')
++(ROOT/'diagnostics/host-boundary-analysis.json').write_text(json.dumps(output,indent=2)+'\n',newline='\n')
++print(json.dumps([dict(tag=row['tag'],phases=row['phases']) for row in results],indent=2))
+diff --git a/research/step_lifetime/host_boundary/controller.py b/research/step_lifetime/host_boundary/controller.py
+new file mode 100644
+index 0000000..e513e6e
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/controller.py
+@@ -0,0 +1,265 @@
++"""Serialize task-owned EP8 jobs, driver HBM sampling, and admission checks."""
++from __future__ import annotations
++import argparse
++import fcntl
++import datetime
++import json
++import pathlib
++import re
++import subprocess
++import time
++import hashlib
++import os
++import socket
++from concurrent.futures import ThreadPoolExecutor
++
++TASK = pathlib.Path('/home/z00956592/megaflux/step-lifetime-host-boundary-20261116/stack')
++CONTAINER = 'step-lifetime-host-boundary-20261116'
++
++def source_identity(arguments=()):
++    paths={}
++    for component in ('native-balanced','FSDPTurbo','MindSpeed-LLM'):
++        root=TASK/'source'/component
++        for directory,children,names in os.walk(root):
++            children[:] = sorted(name for name in children if name not in
++                ('.git','__pycache__','3rdparty','worker-variants') and not name.startswith('build'))
++            for name in sorted(names):
++                path=pathlib.Path(directory)/name
++                if path.is_symlink():continue
++                if path.suffix in ('.py','.cpp','.h','.hpp','.cmake') or path.name=='CMakeLists.txt':
++                    paths[str(path.relative_to(TASK))]=path
++    for directory in ('tools','configs','routes'):
++        for path in sorted((TASK/directory).rglob('*')):
++            if path.is_file() and path.suffix in ('.py','.sh','.json','.yaml','.yml','.npy'):
++                paths[str(path.relative_to(TASK))]=path
++    if '--route-bank' in arguments:
++        bank=pathlib.Path(arguments[arguments.index('--route-bank')+1])
++        if not bank.is_absolute():bank=TASK/bank
++        for path in sorted(bank.iterdir()):
++            if path.is_file() and path.suffix in ('.json','.npy'):
++                key=str(path.relative_to(TASK)) if path.is_relative_to(TASK) else str(path)
++                paths[key]=path
++    if '--temporal-schedule-replay' in arguments:
++        replay=pathlib.Path(arguments[arguments.index('--temporal-schedule-replay')+1])
++        if not replay.is_absolute():replay=TASK/replay
++        paths[str(replay.relative_to(TASK)) if replay.is_relative_to(TASK) else str(replay)]=replay
++    def digest(item):
++        name,path=item
++        return name,hashlib.sha256(path.read_bytes()).hexdigest()
++    with ThreadPoolExecutor(max_workers=16) as readers:
++        return dict(readers.map(digest,sorted(paths.items())))
++
++def hbm_sample():
++    result = subprocess.run(['npu-smi', 'info'], capture_output=True, text=True, timeout=20)
++    cards = []
++    current_rank = None
++    for line in result.stdout.splitlines():
++        cells = [cell.strip() for cell in line.split('|')[1:-1]]
++        if len(cells) == 4 and cells[0].isdigit() and cells[1].startswith('Ascend'):
++            current_rank = int(cells[0])
++        if len(cells) != 4 or cells[2] != 'NA':
++            continue
++        numbers = cells[3].split()
++        if len(numbers) >= 3 and numbers[-2] == '/':
++            cards.append(dict(rank=current_rank, used_MiB=int(numbers[-3]), total_MiB=int(numbers[-1]),
++                              utilization=int(numbers[0])))
++    if len(cards) != 8:
++        raise RuntimeError('Could not parse eight driver HBM readings')
++    return dict(timestamp=time.time(), cards=cards, no_process_cards=result.stdout.count('No running processes found'))
++
++def idle():
++    owners = subprocess.run(['fuser', *[f'/dev/davinci{rank}' for rank in range(8)]],
++                            capture_output=True, text=True)
++    if owners.stdout.strip():
++        raise RuntimeError(f'GPUs occupied: {owners.stdout.strip()}')
++    sample = hbm_sample()
++    if sample['no_process_cards'] != 8:
++        raise RuntimeError('Driver reports GPU processes before admission')
++    if any(card['utilization'] > 0 for card in sample['cards']):
++        raise RuntimeError('GPU utilization is nonzero before admission')
++    return sample
++
++
++def foreign_device_owners(container_id):
++    """Observe overlap without signalling another project's processes."""
++    result=subprocess.run(['fuser',*[f'/dev/davinci{rank}' for rank in range(8)]],
++                          capture_output=True,text=True,timeout=10)
++    foreign=[]
++    for value in set(result.stdout.split()):
++        if not value.isdigit():continue
++        try:group=pathlib.Path(f'/proc/{value}/cgroup').read_text()
++        except (FileNotFoundError,PermissionError):continue
++        if container_id not in group and container_id[:12] not in group:
++            foreign.append(int(value))
++    return sorted(foreign)
++
++
++def probe_master_port(out):
++    """Probe a task-specific range without signalling existing CPU services.
++
++    TCPStore must bind the port itself, so this is a preflight, not a reservation.
++    A later EADDRINUSE remains an explicit failed run, never a silent restart.
++    """
++    # Stay below this host's ephemeral range; probe IPv6 as well as IPv4.
++    # A loopback IPv4-only bind misses an existing [::1] client socket.
++    start = 25100 + int(time.time()) % 2000
++    for offset in range(2000):
++        port = 25100 + (start - 25100 + offset) % 2000
++        available = True
++        for family, address in ((socket.AF_INET6, ('::', port)), (socket.AF_INET, ('0.0.0.0', port))):
++            with socket.socket(family, socket.SOCK_STREAM) as probe:
++                try:
++                    probe.bind(address)
++                except OSError:
++                    available = False
++                    break
++        if not available:
++            continue
++        (out/'port-admission.json').write_text(json.dumps(dict(port=port,
++            checked_ns=time.monotonic_ns(), probe_only_not_reserved=True,
++            probed=['IPv6 wildcard', 'IPv4 wildcard']),indent=2))
++        return port
++    raise RuntimeError('No free TCPStore port in this diagnostic range')
++
++def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
++    diagnostic='--diagnostic-timer' in arguments
++    if '--temporal-schedule-replay' in arguments and '--diagnostic-only' not in arguments:
++        raise RuntimeError('Offline task schedules cannot be submitted as online training performance')
++    if worker=='temporal-ep8-cap64-timer' and not diagnostic:
++        raise RuntimeError('TimerON worker is diagnostic-only, never a performance backend')
++    out = TASK / 'evidence' / tag
++    out.mkdir(parents=True, exist_ok=False)
++    deadline=time.monotonic()+3600
++    while True:
++        try:
++            admission = idle()
++            break
++        except (RuntimeError,subprocess.TimeoutExpired) as error:
++            (out/'queue.json').write_text(json.dumps(dict(state='waiting_for_idle_devices',
++                timestamp=time.time(),reason=str(error),admission_limit_seconds=3600),indent=2))
++            if time.monotonic()>=deadline:
++                status=dict(exit=1,qualified=False,source_unchanged=None,rank_completions=0,
++                            started=False,outcome='admission_timeout',reason=str(error),peak_driver_MiB=0)
++                (out/'status.json').write_text(json.dumps(status,indent=2))
++                return status
++            time.sleep(5)
++    (out / 'admission.json').write_text(json.dumps(admission, indent=2))
++    snapshots=TASK/'evidence'/'source-snapshots'
++    snapshots.mkdir(exist_ok=True)
++    subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
++                    str(TASK/'configs/runtime-freeze.json'),'--out',str(snapshots/f'{tag}-runtime.json')],check=True)
++    if diagnostic:
++        manifest=TASK/'configs/temporal-worker-timer-freeze.json'
++        entries=json.loads(manifest.read_text())['binaries']
++        prefix=f'source/native-balanced/worker-variants/{worker}/'
++        if not entries or any(not name.startswith(prefix) for name in entries):
++            raise RuntimeError('Diagnostic worker does not match its separately frozen TimerON build')
++        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',str(manifest),
++            '--out',str(snapshots/f'{tag}-timer-worker-runtime.json')],check=True)
++    if mode=='scheduler' or ('--temporal-scheduler' in arguments and
++            arguments[arguments.index('--temporal-scheduler')+1]=='ascendc'):
++        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
++            str(TASK/'configs/temporal-scheduler-freeze.json'),'--out',
++            str(snapshots/f'{tag}-temporal-runtime.json')],check=True)
++    private_manifests={
++        'ep8-cap64-lifetime-raw-control-v2':'priority-baseline-freeze.json',
++        'ep8-cap64-lifetime-priority-cache-v1':'lifetime-runtime-freeze.json'}
++    if worker in private_manifests:
++        subprocess.run(['python3',str(TASK/'tools/verify_frozen_runtime.py'),'--manifest',
++            str(TASK/'configs'/private_manifests[worker]),'--out',
++            str(snapshots/f'{tag}-lifetime-runtime.json')],check=True)
++    elif '--lifetime-mode' in arguments:
++        raise RuntimeError('Priority intervention must use an explicitly frozen ABI2 worker')
++    sources=source_identity(arguments)
++    (out/'source-identity.json').write_text(json.dumps(sources,indent=2))
++    # Cache only byte-identical, verified snapshots from unchanged prior runs.
++    from source_freeze import freeze_snapshot
++    freeze_snapshot(TASK,tag,sources)
++    # The source freeze may take time on NFS. Another project need not share
++    # this study's flock, so check hardware ownership again before launching.
++    final_admission=idle()
++    (out/'launch-admission.json').write_text(json.dumps(final_admission,indent=2))
++    container_id=subprocess.check_output(['docker','inspect',CONTAINER,'--format','{{.Id}}'],text=True).strip()
++    master_port = probe_master_port(out)
++    command = ['docker', 'exec', '-w', str(TASK), '-e', f'EP8_MASTER_PORT={master_port}',
++               CONTAINER, 'timeout', '-k', '30', str(seconds), 'bash', 'tools/launch.sh',
++               backend, mode, tag, *arguments]
++    if worker:
++        command[2:2] = ['-e', f'EP8_WORKER_VARIANT={worker}']
++    if capacity == 32:
++        command[2:2] = ['-e', 'EP8_CAPACITY=32', '-e', 'EP8_NATIVE_SUFFIX=32']
++    started = time.time()
++    max_hbm = max(card['used_MiB'] for card in admission['cards'])
++    overlap=set()
++    with (out / 'stdout.log').open('w') as log, (out / 'hbm.jsonl').open('w') as monitor:
++        process = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT)
++        while process.poll() is None:
++            try:
++                sample = hbm_sample()
++                owners=foreign_device_owners(container_id)
++                sample['foreign_device_owners']=owners
++                overlap.update(owners)
++            except (RuntimeError, subprocess.TimeoutExpired) as error:
++                monitor.write(json.dumps(dict(timestamp=time.time(), sample_error=str(error))) + '\n')
++                monitor.flush()
++                continue
++            max_hbm = max(max_hbm, *(card['used_MiB'] for card in sample['cards']))
++            monitor.write(json.dumps(sample) + '\n')
++            monitor.flush()
++            time.sleep(1)
++        status = dict(command=command, exit=process.returncode, start=started,
++                      finish=time.time(), peak_driver_MiB=max_hbm,
++                      foreign_device_owners=sorted(overlap),exclusive_devices=not overlap)
++    if mode == 'train':
++        status['rank_completions'] = len(list(out.glob('complete-rank*.json')))
++        status['qualified'] = status['exit'] == 0 and status['rank_completions'] == 8
++    else:
++        status['qualified'] = status['exit'] == 0
++    if overlap:status['qualified']=False
++    status['source_unchanged']=sources==source_identity(arguments)
++    if not status['source_unchanged']:status['qualified']=False
++    (out / 'status.json').write_text(json.dumps(status, indent=2))
++    print(json.dumps(dict(tag=tag, **status)), flush=True)
++    return status
++
++def run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
++    with pathlib.Path('/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock').open('a') as lock:
++        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
++        return _run_job(backend, mode, tag, arguments, seconds, worker, capacity)
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument('--backend', choices=['balanced', 'shared', 'moonep'])
++    parser.add_argument('--mode', default='train', choices=['train', 'validate', 'activation', 'scaling', 'pool', 'norm', 'moonpool', 'sharedpool','plan','links','scheduler','temporal_math','lifetime_math'])
++    parser.add_argument('--tag')
++    parser.add_argument('--worker-variant')
++    parser.add_argument('--capacity', type=int, choices=[32,64], default=64)
++    parser.add_argument('--campaign', action='store_true')
++    parser.add_argument('--layers', type=int, default=2)
++    parser.add_argument('--seconds', type=int, default=1800)
++    args, extra = parser.parse_known_args()
++    if not args.campaign:
++        if args.mode == 'train':
++            extra += ['--layers', str(args.layers)]
++        status = run_job(args.backend, args.mode, args.tag, extra, args.seconds, args.worker_variant, args.capacity)
++        raise SystemExit(0 if status['qualified'] else 1)
++    matrix = []
++    arms = ['moonep', 'balanced', 'shared']
++    for repeat in range(3):
++        ordered = arms[repeat:] + arms[:repeat]
++        for maxvio in (.2, 1, 5, 10, 15, 20):
++            for backend in ordered:
++                tag = f'formal-L{args.layers}-vio{maxvio:g}-{backend}-r{repeat+1}'
++                status = run_job(backend, 'train', tag,
++                         ['--maxvio', str(maxvio), '--layers', str(args.layers)], args.seconds, args.worker_variant, args.capacity)
++                matrix.append(dict(tag=tag, backend=backend, maxvio=maxvio, repeat=repeat+1, **status))
++                (TASK / 'evidence' / 'campaign.json').write_text(json.dumps(matrix, indent=2))
++                if not status['qualified']:
++                    raise RuntimeError(f'Unqualified run: {tag}')
++                if status['peak_driver_MiB'] > 90 * 1024:
++                    raise RuntimeError(f'Common shape memory gate exceeded: {tag}')
++    print('CAMPAIGN_COMPLETE', flush=True)
++
++if __name__ == '__main__':
++    main()
+diff --git a/research/step_lifetime/host_boundary/deploy_trace_patch.py b/research/step_lifetime/host_boundary/deploy_trace_patch.py
+new file mode 100644
+index 0000000..d99bb6f
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/deploy_trace_patch.py
+@@ -0,0 +1,30 @@
++"""Deploy one reviewed tracer-only patch after a terminal failed coverage run."""
++from pathlib import Path
++import hashlib
++import json
++import subprocess
++import tarfile
++import remote
++
++ROOT=Path(__file__).resolve().parent
++relative='tools/capture_host_boundary.py'
++old=subprocess.check_output(['git','-C',str(ROOT/'stack'),'show','35e1fb4:'+relative])
++old_sha=hashlib.sha256(old).hexdigest()
++new_sha=hashlib.sha256((ROOT/'stack'/relative).read_bytes()).hexdigest()
++bundle=ROOT/'trace-patch-v4.tar'
++with tarfile.open(bundle,'w') as archive:archive.add(ROOT/'stack'/relative,arcname=relative)
++subprocess.run(['scp',str(bundle),remote.HOST+':'+remote.REMOTE+'/trace-patch-v4.tar'],check=True)
++script=f'''set -euo pipefail
++task={remote.REMOTE}
++exec 9>/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock
++flock -x 9
++test "$(sha256sum "$task/stack/{relative}" | cut -d' ' -f1)" = {old_sha}
++test "$(tar -tf "$task/trace-patch-v4.tar")" = {relative}
++tar -xf "$task/trace-patch-v4.tar" -C "$task/stack"
++test "$(sha256sum "$task/stack/{relative}" | cut -d' ' -f1)" = {new_sha}
++'''
++result=subprocess.run(['ssh',remote.HOST,'bash','-s'],input=script.encode(),capture_output=True)
++(ROOT/'diagnostics/trace-patch-v4.json').write_text(json.dumps(dict(relative=relative,before=old_sha,after=new_sha,
++    exit=result.returncode,stdout=result.stdout.decode(),stderr=result.stderr.decode()),indent=2)+'\n',newline='\n')
++result.check_returncode()
++print(json.dumps(dict(passed=True,before=old_sha,after=new_sha)))
+diff --git a/research/step_lifetime/host_boundary/make_report.py b/research/step_lifetime/host_boundary/make_report.py
+new file mode 100644
+index 0000000..66dcebb
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/make_report.py
+@@ -0,0 +1,102 @@
++"""Report qualified host-only observations, never traced step-time performance."""
++from pathlib import Path
++import json
++import csv
++import statistics
++import matplotlib
++matplotlib.use('Agg')
++import matplotlib.pyplot as plt
++
++ROOT=Path(__file__).resolve().parent
++load=lambda path:json.loads(path.read_text())
++states=[load(ROOT/name) for name in ('diagnosis-v4.json','diagnosis-v5.json')]
++state=dict(passed=all(stage.get('passed') for stage in states),runs=[run for stage in states for run in stage['runs']])
++analysis=load(ROOT/'diagnostics/host-boundary-analysis.json')
++if not state.get('passed') or len(analysis['results'])!=4:
++    raise SystemExit('All four qualified small gates and main diagnoses must finish.')
++reference=ROOT.parent/'priority-cache-20261116/evidence/priority-pilot-cached_keys-v1'
++checks={}
++identity_fields=('initial','persistent-initial','input-identity','route-identity','route-calls')
++for run in state['runs']:
++    if not run['tag'].startswith('host-main-'):continue
++    folder=ROOT/'evidence'/run['tag']
++    for rank in range(8):
++        for stem in identity_fields:
++            actual=load(folder/f'{stem}-rank{rank}.json')
++            other=load(reference/f'{stem}-rank{rank}.json')
++            if stem in ('initial','persistent-initial'):
++                equal=actual==other
++            else:
++                equal=bool(actual) and all(key in other and value==other[key] for key,value in actual.items())
++            checks[run['tag']+f':rank{rank}:'+stem]=equal
++        config=load(folder/'effective-config.json')
++        checks[run['tag']+':explicit_diagnostic']=config['host_boundary_trace'] and config['numerical_diagnostic_only']
++proof=dict(passed=all(checks.values()),checks=checks,failed=[name for name,value in checks.items() if not value],
++           reference=str(reference),scope='All initial tensors and all11 updates input/route/replay prefix, across all8 ranks')
++(ROOT/'diagnostics/main-identity-audit.json').write_text(json.dumps(proof,indent=2)+'\n',newline='\n')
++if not proof['passed']:raise SystemExit('Identity mismatch '+str(proof['failed']))
++fig,ax=plt.subplots(figsize=(10.5,4.8),layout='constrained')
++table=[]
++for result in analysis['results']:
++    label=result['tag'].removeprefix('host-main-').removesuffix('-v4').removesuffix('-v5')
++    ax.plot([row['update'] for row in result['per_update']], [row['max_skew_ms'] for row in result['per_update']],marker='o',label=label)
++    finish=next(row for row in result['method_envelopes'] if row['phase']=='warmed' and row['name']=='lifetime.finish')
++    table.append(dict(name=label,prewarm=result['phases']['prewarm'],warmed=result['phases']['warmed'],
++                      median_warmed_finish_host_ms=finish['median_host_ms'],finish_samples=finish['calls']))
++ax.axvspan(4.5,10.3,color='#2b9348',alpha=.08,label='Updates5–10: warmed observation')
++ax.set(yscale='log',xticks=range(11),xlabel='Optimizer update',ylabel='Max cross-rank backward entry skew (ms; log scale)',
++       title='Host-only diagnostic on TimerOFF workers; one process per mode, eight ranks')
++ax.grid(axis='y',alpha=.25);ax.legend(fontsize=9)
++fig.supxlabel('Same-host monotonic function entry times. No device Event origins are merged.\nEntry skew is not a step-time reduction or additive communication cost.',fontsize=9)
++for suffix in ('png','svg','pdf'):fig.savefig(ROOT/'figures'/('host-entry-skew.'+suffix),dpi=180)
++plt.close(fig)
++summary=dict(diagnostic_only=True,runs=table,new_planner=False,identity_audit_passed=True,
++             observation_scope='4 independent modes, one admitted11-update process each; updates0–4 vs5–10; each matched call contains8 ranks',
++             next_control='Tensor-specific gradient bank readiness versus blanket current-stream fence; not implemented in this lane.')
++(ROOT/'summary.json').write_text(json.dumps(summary,indent=2)+'\n',newline='\n')
++with (ROOT/'host-entry-skew.csv').open('w',newline='') as handle:
++    writer=csv.DictWriter(handle,fieldnames=['tag','update','median_skew_ms','max_skew_ms'])
++    writer.writeheader()
++    for result in analysis['results']:
++        for row in result['per_update']:writer.writerow(dict(tag=result['tag'],**row))
++lines='\n'.join(f'|{row["name"]}|{row["prewarm"]["max_ms"]:.3f}|{row["warmed"]["max_ms"]:.3f}|{row["warmed"]["over100ms"]}|{row["median_warmed_finish_host_ms"]:.3f}|' for row in table)
++report=f'''# 主机边界诊断：先纠正预热与稳态的混用
++
++完整更新联合规划目标仍未完成。本分支只做诊断，没有新planner，也不提供正式性能分数。
++
++## 结果
++
++|方式|预热前最大入口差距ms|预热后最大入口差距ms|预热后大于100ms的调用组|预热后finish主机中位ms|
++|---|---:|---:|---:|---:|
++{lines}
++
++每模式只有一个独立11更新进程，表中的入口差距按相同保存计划身份匹配八rank，以同一主机monotonic_ns计算最早/最晚进入真实反向C++调用的差。预热前为updates0–4的80组，预热后为updates5–10的96组；每组包含八rank，不把这些组当成独立重复。finish中位按六更新×八rank的48个主机封套统计，也不是48次独立运行。
++
++![主机入口差距](figures/host-entry-skew.png)
++
++B1 legacy在前几更新仍有约200ms差距，而预热后最大1.87ms。因此旧rich capture仅前三更新的来源发布等待不能直接解释正式25更新、5预热计时的稳态差距。新host-only路径也出现预热前差距，故不能将原因简单归于旧Event记录；确切启动原因仍未定位。
++
++B3 legacy预热后finish仍有约163ms主机等待。这个等待包括服务流依赖与同步，不等于纯通信耗时，也不是可直接节省的163ms。四组诊断的wall time均不进入正式性能图。
++
++## 方法与资格
++
++显式--host-boundary-trace默认关闭；入口第一步读取主机时钟，无新增设备Event、tensor快照、CPU tensor读取或设备同步；记录保存在CPU内存，训练循环结束后导出。它仍有Python包装/GC记录开销，不能认为零扰动。记录已有pool/真实operator、planner/publish、FSDP、优化器、lifetime/drain/flush/owner、P2P和GC主机封套；不拼接设备独立原点，不相加嵌套封套。
++
++四条小形状L2/H512/F512/S256路径分别通过三次完整Adam更新、step0逐参数FP32梯度相对L2≤0.02、实际SO/单SHMEM、全部入口覆盖和有限性检查。随后四条主形状L4/EP8/E256/K8/H4096/F1024/S16384/GA4/W2、MaxVio10/same各11更新通过：每rank每更新16次真实反向入口完整，各rank全部初始参数、11更新输入/路由/重放身份与正式冻结数据前缀一致，全部梯度交付完毕、源码不变、独占与90GiB门禁通过。
++
++B1/B3 legacy使用72653abf... TimerOFF worker，B1/B3 cached使用e2868fd2... TimerOFF worker；两者ABI2且各进程只有匹配的一套SHMEM。实际完整SHA在每run的libraries-rank*.json、冻结manifest及SOURCE-INDEX。应在同一worker内比较生命周期；legacy与cached之间还改变raw schedule和排序开销，不当作单变量算法对比。v5额外B3 cached专为补齐当前正式B3路径的匹配诊断。
++
++## 失败与覆盖范围
++
++v1/v2在torchrun启动前因端口冲突失败，未开始八rank训练；v2 IPv4 loopback探测漏掉了既有IPv6 kube-apiserver客户端连接。v3改用实际ephemeral32768–60999以下并探测双栈后可训练三更新，但记录器漏包TimerOFF backward_replica_redispatch入口，覆盖门禁拒绝。v4只补该包装名称后重做全部资格。补丁首次发送还因Windows文本换行在bash set处退出，尚未改源文件；改为字节输入后部署，前后SHA核对通过。所有失败状态、stdout及源码快照保留；没有停止其他服务，也没有把它们放进成功曲线。
++
++大梯度PT仅保留在对应独立远端receipt.large_tensors_remote；完整主机JSONL和小模型数值比较、源文件快照在本项目。该诊断不是完整设备依赖DAG，自然路由、完整模型W1/W4、设备在线生命周期planner仍未验收。
++
++## 下一项有界干预
++
++源码中flush当前先在调用时对整个当前流record ready，可能把早已就绪的梯度bank排在随后无关Attention/FSDP工作之后。下一步应在独立分支比较“当前流fence”和“对应梯度bank最后一次写入的ready”，保持copies/quota、FP32格式、owner、已有drain/租约和确定提交顺序不变。必须覆盖中途容量flush、零任务、更新切换及三更新数值检查，再看完整更新是否实际减少；不能删同步或把主机等待搬地方就宣称收益。
++
++另一个待验证因素是raw dW record_stream与服务队列对大输出缓冲释放的影响；现有B1与B2/B3的整卡峰值不同仅是线索，尚未证明原因。公共quota推导实际贡献者可作为消除重复host元数据观察的独立控制，不能和ready/缓冲修改混在同一首次干预中。上述都不是已实现的新策略或论文创新点。
++'''
++(ROOT/'REPORT.md').write_text(report,encoding='utf-8',newline='\n')
++print(json.dumps(summary,indent=2))
+diff --git a/research/step_lifetime/host_boundary/package_delivery.py b/research/step_lifetime/host_boundary/package_delivery.py
+new file mode 100644
+index 0000000..2de66dc
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/package_delivery.py
+@@ -0,0 +1,61 @@
++"""Freeze diagnostic source, actual SO references and raw local evidence inventory."""
++from pathlib import Path
++import hashlib
++import io
++import json
++import shutil
++import subprocess
++import tarfile
++import zipfile
++
++ROOT=Path(__file__).resolve().parent
++STACK=ROOT/'stack'
++for name in ('diagnosis-v4.json','diagnosis-v5.json'):
++    if not json.loads((ROOT/name).read_text()).get('passed'):raise SystemExit('Pending diagnostic '+name)
++if not (ROOT/'REPORT.md').exists():raise SystemExit('Report required')
++proof=json.loads((ROOT/'diagnostics/main-identity-audit.json').read_text())
++if not proof['passed']:raise SystemExit('Main identity audit required')
++upstream=ROOT.parent/'priority-cache-20261116'
++for name in ('worker.so','reference-worker.so','worker-build.json','baseline-worker-build.json'):
++    shutil.copy2(upstream/'implementation'/name,ROOT/'implementation'/name)
++copied={name:hashlib.sha256((ROOT/'implementation'/name).read_bytes()).hexdigest() for name in ('worker.so','reference-worker.so')}
++if copied!={'worker.so':'e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed',
++             'reference-worker.so':'72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf'}:
++    raise RuntimeError('Actual SO copy differs from qualified libraries')
++helpers=sorted(path for path in ROOT.iterdir() if path.suffix in ('.py','.md'))
++dest=STACK/'research/step_lifetime/host_boundary';dest.mkdir(parents=True,exist_ok=True)
++for path in helpers:shutil.copy2(path,dest/path.name)
++for name in ('summary.json','setup-provenance.json'):
++    shutil.copy2(ROOT/name,dest/name)
++subprocess.run(['git','-C',str(STACK),'add','research/step_lifetime/host_boundary'],check=True)
++staged=subprocess.check_output(['git','-C',str(STACK),'diff','--cached','--name-only'],text=True).splitlines()
++if any(not name.startswith('research/step_lifetime/host_boundary/') for name in staged):raise RuntimeError('Unexpected staged changes')
++if staged:
++    subprocess.run(['git','-C',str(STACK),'diff','--cached','--check'],check=True)
++    subprocess.run(['git','-C',str(STACK),'commit','-m','Archive qualified host boundaries, startup failures and matched runtime diagnosis'],check=True)
++head=subprocess.check_output(['git','-C',str(STACK),'rev-parse','HEAD'],text=True).strip()
++base=json.loads((ROOT/'setup-provenance.json').read_text())['base_head']
++with (ROOT/'implementation/source.diff').open('wb') as handle:
++    subprocess.run(['git','-C',str(STACK),'diff','--binary',base,head],stdout=handle,check=True)
++archive=subprocess.check_output(['git','-C',str(STACK),'archive',head])
++with zipfile.ZipFile(ROOT/'implementation/source.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6) as output:
++    with tarfile.open(fileobj=io.BytesIO(archive)) as source:
++        for member in source:
++            if member.isfile():
++                with source.extractfile(member) as handle:output.writestr('stack/'+member.name,handle.read())
++    for path in helpers:output.write(path,path.name)
++inventory={}
++for path in sorted((ROOT/'evidence').rglob('*')):
++    if path.is_file() and path.suffix not in ('.tar','.gz'):
++        inventory[str(path.relative_to(ROOT)).replace('\\','/')]=dict(bytes=path.stat().st_size,sha256=hashlib.sha256(path.read_bytes()).hexdigest())
++(ROOT/'evidence-inventory.json').write_text(json.dumps(dict(scope='All local collected per-run files; full small-model PT remain remote, receipts record paths. Tar duplicates excluded.',files=inventory),indent=2)+'\n',newline='\n')
++selected=[path for path in ROOT.iterdir() if path.suffix in ('.py','.md','.json','.csv')]
++selected += [path for directory in ('implementation','figures','diagnostics') for path in (ROOT/directory).iterdir() if path.is_file() and path.suffix not in ('.log',)]
++index=dict(branch='research/step-lifetime-host-boundary',head=head,base=base,diagnostic_only=True,new_planner=False,
++           compiled_native_changed=False,compiled_worker_source=str(upstream/'SOURCE-INDEX.json'),
++           remote_project='/home/z00956592/megaflux/step-lifetime-host-boundary-20261116',
++           source_zip='implementation/source.zip',source_diff='implementation/source.diff',
++           raw_local_inventory='evidence-inventory.json',
++           files={str(path.relative_to(ROOT)).replace('\\','/'):dict(bytes=path.stat().st_size,sha256=hashlib.sha256(path.read_bytes()).hexdigest()) for path in selected if path.name!='SOURCE-INDEX.json'})
++(ROOT/'SOURCE-INDEX.json').write_text(json.dumps(index,indent=2)+'\n',newline='\n')
++print(json.dumps(dict(head=head,files=len(index['files']),local_raw_files=len(inventory)),indent=2))
+diff --git a/research/step_lifetime/host_boundary/prepare_current_b3.py b/research/step_lifetime/host_boundary/prepare_current_b3.py
+new file mode 100644
+index 0000000..54c6e51
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/prepare_current_b3.py
+@@ -0,0 +1,25 @@
++"""Add the missing current-runtime B3 control without overwriting v4 records."""
++from pathlib import Path
++import ast
++import hashlib
++import json
++
++ROOT=Path(__file__).resolve().parent
++path=ROOT/'run_diagnosis.py'
++tree=ast.parse(path.read_text())
++changed_version=changed_schedule=0
++for node in ast.walk(tree):
++    if isinstance(node,ast.Assign) and any(isinstance(name,ast.Name) and name.id=='VERSION' for name in node.targets):
++        node.value=ast.Constant(value='v5');changed_version+=1
++    if isinstance(node,ast.keyword) and node.arg=='schedule':
++        node.value=ast.parse("[['b3_cached','b3','preserve','ep8-cap64-lifetime-priority-cache-v1']]",mode='eval').body
++        changed_schedule+=1
++if changed_version!=1 or changed_schedule!=1:raise RuntimeError('Unexpected runner structure')
++target=ROOT/'run_current_b3.py'
++if target.exists():raise SystemExit('Do not regenerate an existing supplemental runner')
++target.write_text(ast.unparse(ast.fix_missing_locations(tree))+'\n',newline='\n')
++(ROOT/'diagnostics/current-b3-runner-provenance.json').write_text(json.dumps(dict(
++    source=path.name,source_sha=hashlib.sha256(path.read_bytes()).hexdigest(),
++    target=target.name,target_sha=hashlib.sha256(target.read_bytes()).hexdigest(),
++    edits=['VERSION v4→v5','schedule only current b3/preserve/cached-key worker'],
++    reason='Match the actual common-optimized B3 formal path; legacy B3 trace cannot substitute for it.'),indent=2)+'\n',newline='\n')
+diff --git a/research/step_lifetime/host_boundary/record_port_diagnosis.py b/research/step_lifetime/host_boundary/record_port_diagnosis.py
+new file mode 100644
+index 0000000..11f24e6
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/record_port_diagnosis.py
+@@ -0,0 +1,18 @@
++"""Read-only evidence for the pre-worker rendezvous failures."""
++from pathlib import Path
++import json
++import subprocess
++import remote
++
++ROOT=Path(__file__).resolve().parent
++script='''import json,pathlib,subprocess,time
++lines=subprocess.check_output(['ss','-Htanp'],text=True).splitlines()
++selected=[line[:360] for line in lines if ':40740 ' in line or ':33856 ' in line]
++print(json.dumps(dict(timestamp=time.time(),ephemeral_range=pathlib.Path('/proc/sys/net/ipv4/ip_local_port_range').read_text().strip(),
++ selected_socket_rows=selected,read_only=True,no_signals_sent=True)))
++'''
++result=subprocess.run(['ssh',remote.HOST,'python3','-'],input=script,text=True,capture_output=True)
++result.check_returncode()
++parsed=json.loads(result.stdout)
++(ROOT/'diagnostics/port-collision-evidence.json').write_text(json.dumps(parsed,indent=2)+'\n',newline='\n')
++print(json.dumps(parsed,indent=2))
+diff --git a/research/step_lifetime/host_boundary/remote.py b/research/step_lifetime/host_boundary/remote.py
+new file mode 100644
+index 0000000..d380a00
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/remote.py
+@@ -0,0 +1,152 @@
++"""Deploy an isolated frozen checkout and execute finite, admitted study gates."""
++from pathlib import Path
++import argparse
++import hashlib
++import json
++import subprocess
++import tarfile
++import re
++from datetime import datetime, timezone
++
++ROOT = Path(__file__).resolve().parent
++STACK = ROOT / 'stack'
++HOST = 'pod6-1-root'
++REMOTE = '/home/z00956592/megaflux/step-lifetime-host-boundary-20261116'
++CONTAINER = 'step-lifetime-host-boundary-20261116'
++
++
++def call(arguments, **kwargs):
++    return subprocess.run(arguments, check=True, **kwargs)
++
++
++def deploy():
++    archive = ROOT / 'source.tar'
++    with archive.open('wb') as handle:
++        call(['git','-c','core.longpaths=true','-C',str(STACK),'archive','HEAD'], stdout=handle)
++    with tarfile.open(archive, 'a') as handle:
++        changed = subprocess.check_output(['git','-c','core.longpaths=true','-C',str(STACK),'diff','--name-only'],text=True).splitlines()
++        untracked = subprocess.check_output(['git','-c','core.longpaths=true','-C',str(STACK),'ls-files','--others','--exclude-standard'],text=True).splitlines()
++        for name in changed + untracked:
++            handle.add(STACK / name, arcname=name)
++    hashes = {name: hashlib.sha256((STACK/name).read_bytes()).hexdigest() for name in changed+untracked}
++    (ROOT/'source-overlay.json').write_text(json.dumps(hashes, indent=2))
++    call(['ssh', HOST, 'mkdir', '-p', REMOTE])
++    call(['scp', str(archive), f'{HOST}:{REMOTE}/source.tar'])
++    script = f'''set -euo pipefail
++task={REMOTE}
++exec 9>/home/z00956592/megaflux/temporal-replica-study-20261114/stack/evidence/device-jobs.lock
++flock -x 9
++base=/home/z00956592/megaflux/step-lifetime-priority-cache-20261116/stack
++mkdir -p "$task/stack" "$task/evidence"
++if [ ! -d "$task/stack/source" ]; then
++ mkdir -p "$task/stack/source/native-balanced/ascend_deepep"
++ cp -a --reflink=auto "$base/source/native-balanced/ascend_deepep/lib" "$task/stack/source/native-balanced/ascend_deepep/"
++ cp -a --reflink=auto "$base/source/native-balanced/worker-variants" "$task/stack/source/native-balanced/"
++ cp -a --reflink=auto "$base/routes" "$task/stack/routes"
++ cp -a --reflink=auto /home/z00956592/megaflux/temporal-replica-study-20261114/stack/small-routes "$task/stack/small-routes"
++fi
++tar -xf "$task/source.tar" -C "$task/stack"
++python3 - "$base" "$task/stack" <<'STAGE'
++from pathlib import Path
++import json,shutil,sys
++base,dest=map(Path,sys.argv[1:])
++for name in ('runtime-freeze.json','temporal-scheduler-freeze.json'):
++ manifest=json.loads((dest/'configs'/name).read_text())
++ for relative in manifest['binaries']:
++  target=dest/relative
++  if not target.exists():
++   target.parent.mkdir(parents=True,exist_ok=True)
++   shutil.copy2(base/relative,target)
++STAGE
++if ! docker container inspect {CONTAINER} >/dev/null 2>&1; then
++ docker run -d --name {CONTAINER} --label codex.task=step-lifetime-host-boundary-20261116 --privileged --network host --ipc host -v /home:/home -v /usr/local/Ascend/driver:/usr/local/Ascend/driver -v /usr/local/dcmi:/usr/local/dcmi -v /etc/ascend_install.info:/etc/ascend_install.info --entrypoint /bin/bash planner-executor-ep8-runtime:20261114 -lc 'sleep infinity'
++fi
++test "$(docker inspect {CONTAINER} --format '{{{{index .Config.Labels "codex.task"}}}}')" = step-lifetime-host-boundary-20261116
++docker start {CONTAINER} >/dev/null
++'''
++    launcher = re.sub(r'^TASK=.*$', f'TASK={REMOTE}/stack', (STACK/'tools/launch.sh').read_text(), flags=re.M)
++    controller = re.sub(r"^TASK = pathlib.Path\(.*$", f"TASK = pathlib.Path('{REMOTE}/stack')", (STACK/'tools/controller.py').read_text(), flags=re.M)
++    controller = re.sub(r"^CONTAINER = .*$", f"CONTAINER = '{CONTAINER}'", controller, flags=re.M)
++    controller = controller.replace('29200 + int(time.time()) % 2000', '32200 + int(time.time()) % 2000')
++    for name, contents in [('launch.sh',launcher), ('controller.py',controller)]:
++        path = ROOT/name
++        path.write_text(contents, encoding='utf-8', newline='\n')
++    call(['scp', str(ROOT/'launch.sh'), str(ROOT/'controller.py'), f'{HOST}:{REMOTE}/'])
++    script += '\ncp "$task/launch.sh" "$task/controller.py" "$task/stack/tools/"\n'
++    call(['ssh', HOST, 'bash', '-s'], input=script.encode())
++
++
++def gate(tag, extra, *, metadata_only=False):
++    script = f'''set -euo pipefail
++cd {REMOTE}/stack
++mkdir -p evidence/source-snapshots
++python3 tools/controller.py --backend balanced --tag {tag} --worker-variant ep8-cap64-aligned --seconds 900 {' '.join(extra)}
++'''
++    began = datetime.now(timezone.utc).isoformat()
++    with (ROOT/f'{tag}-remote.log').open('wb') as handle:
++        result = subprocess.run(['ssh', HOST, 'bash', '-s'], input=script.encode(), stdout=handle, stderr=subprocess.STDOUT)
++    receipt = dict(tag=tag, started=began, exit=result.returncode)
++    (ROOT/f'{tag}-receipt.json').write_text(json.dumps(receipt, indent=2))
++    if metadata_only:
++        # Full tensors remain in this run's project-owned remote directory.
++        # This avoids retransmitting multi-GiB PT files for every qualification.
++        bundle=f'{REMOTE}/stack/evidence/{tag}-metadata.tar.gz'
++        packed=subprocess.run(['ssh',HOST,'tar','-czf',bundle,'--exclude=*.pt','-C',
++                               f'{REMOTE}/stack/evidence',tag])
++        packed.check_returncode()
++        collected=subprocess.run(['scp',f'{HOST}:{bundle}',str(ROOT/'evidence')])
++        if collected.returncode==0:
++            with tarfile.open(ROOT/'evidence'/f'{tag}-metadata.tar.gz') as handle:
++                handle.extractall(ROOT/'evidence',filter='data')
++        receipt['large_tensors_remote']=f'{REMOTE}/stack/evidence/{tag}'
++    else:
++        collected = subprocess.run(['scp', '-r', f'{HOST}:{REMOTE}/stack/evidence/{tag}', str(ROOT/'evidence')])
++    receipt['collection_exit'] = collected.returncode
++    snapshots = ROOT/'evidence'/'source-snapshots'
++    snapshots.mkdir(exist_ok=True)
++    current=ROOT/'evidence'/tag/'source-identity.json'
++    duplicate=None
++    if current.exists():
++        identity=json.loads(current.read_text())
++        for candidate in (ROOT/'evidence').glob('*/source-identity.json'):
++            other=candidate.parent.name
++            other_receipt=ROOT/f'{other}-receipt.json'
++            if other==tag or not (snapshots/f'{other}.tar.gz').exists() or not other_receipt.exists():continue
++            if json.loads(other_receipt.read_text()).get('collection_exit')!=0:continue
++            if json.loads(candidate.read_text())==identity:
++                duplicate=other;break
++    if duplicate is None and current.exists():
++        copied=subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}.tar.gz',str(snapshots)])
++        receipt['snapshot_collection_exit']=copied.returncode
++    elif duplicate is not None:
++        (snapshots/f'{tag}-source-reference.json').write_text(json.dumps(dict(
++            same_guarded_files_as=duplicate,archive=f'{duplicate}.tar.gz'),indent=2))
++        receipt['source_snapshot_reused']=duplicate
++    suffixes=['-runtime.json']
++    if '--temporal-scheduler' in extra or 'scheduler' in extra:suffixes.append('-temporal-runtime.json')
++    if '--lifetime-mode' in extra:suffixes.append('-lifetime-runtime.json')
++    for suffix in suffixes:
++        if current.exists():
++            subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}{suffix}',str(snapshots)])
++    if '--diagnostic-timer' in extra and current.exists():
++        subprocess.run(['scp',f'{HOST}:{REMOTE}/stack/evidence/source-snapshots/{tag}-timer-worker-runtime.json',str(snapshots)])
++    (ROOT/f'{tag}-receipt.json').write_text(json.dumps(receipt, indent=2))
++    print(json.dumps(receipt), flush=True)
++    raise SystemExit(result.returncode)
++
++
++if __name__ == '__main__':
++    parser = argparse.ArgumentParser()
++    parser.add_argument('action', choices=('deploy','gate'))
++    parser.add_argument('--tag')
++    parser.add_argument('--metadata-only', action='store_true')
++    args, extra = parser.parse_known_args()
++    (ROOT/'evidence').mkdir(exist_ok=True)
++    if args.action == 'deploy':
++        deploy()
++    else:
++        if not args.tag or not all(character.isalnum() or character in '-_.' for character in args.tag):
++            parser.error('a safe run tag is required')
++        if any(not all(character.isalnum() or character in '-_./:' for character in item) for item in extra):
++            parser.error('unexpected shell metacharacter in gate arguments')
++        gate(args.tag, extra, metadata_only=args.metadata_only)
+diff --git a/research/step_lifetime/host_boundary/run_current_b3.py b/research/step_lifetime/host_boundary/run_current_b3.py
+new file mode 100644
+index 0000000..0092a2f
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/run_current_b3.py
+@@ -0,0 +1,82 @@
++"""Numerically qualify host-only wrappers, then inspect warm host boundaries."""
++from pathlib import Path
++import json
++import math
++import subprocess
++import remote
++ROOT = Path(__file__).resolve().parent
++VERSION = 'v5'
++STATE = ROOT / ('diagnosis-' + VERSION + '.json')
++if STATE.exists():
++    raise SystemExit('Immutable diagnosis already started; inspect its state.')
++state = dict(stage='small', runs=[], diagnostic_only=True, new_planner=False, schedule=[['b3_cached', 'b3', 'preserve', 'ep8-cap64-lifetime-priority-cache-v1']])
++
++def save():
++    STATE.write_text(json.dumps(state, indent=2) + '\n', newline='\n')
++
++def gate(tag, args, steps, layers):
++    try:
++        remote.gate(tag, args, metadata_only=True)
++    except SystemExit as done:
++        code = done.code
++    folder = ROOT / 'evidence' / tag
++    status = json.loads((folder / 'status.json').read_text())
++    checks = {key: bool(status.get(key)) for key in ('qualified', 'source_unchanged', 'exclusive_devices')}
++    checks['exit_and_memory'] = code == 0 and status['peak_driver_MiB'] <= 90 * 1024
++    if not all(checks.values()):
++        return (folder, dict(tag=tag, passed=False, failed_checks=[key for key, value in checks.items() if not value], peak_driver_MiB=status['peak_driver_MiB'], diagnostic_only=True, actual_exit=status['exit']))
++    for rank in range(8):
++        records = [json.loads(line) for line in (folder / f'steps-rank{rank}.jsonl').read_text().splitlines()]
++        checks[f'rank{rank}:finite_steps'] = len(records) == steps and all((math.isfinite(row['loss']) and math.isfinite(row['grad_norm']) for row in records))
++        updates = json.loads((folder / f'updates-rank{rank}.json').read_text())
++        checks[f'rank{rank}:three_adam_updates'] = len(updates) == 3 and all((row['changed'] for row in updates))
++        contract = json.loads((folder / f'host-boundary-contract-rank{rank}.json').read_text())
++        checks[f'rank{rank}:trace_contract'] = all((contract[key] for key in ('diagnostic_only', 'no_new_device_events', 'no_new_device_syncs', 'no_tensor_snapshots', 'dump_after_training'))) and (not contract['host_return_is_device_completion'])
++        trace = [json.loads(line) for line in (folder / f'host-boundary-rank{rank}.jsonl').read_text().splitlines()]
++        checks[f'rank{rank}:paired_scopes'] = len(trace) == contract['records'] and len(set((row['sequence'] for row in trace))) == len(trace) and all((row['host_return_ns'] >= row['host_begin_ns'] and (not row['failed']) for row in trace))
++        for step in range(steps):
++            calls = [row for row in trace if row['name'] == 'operator.backward' and row['update'] == step]
++            checks[f'rank{rank}:step{step}_backward_coverage'] = len(calls) == layers * 4
++        libraries = json.loads((folder / f'libraries-rank{rank}.json').read_text())
++        variant = args[args.index('--worker-variant') + 1]
++        digest = '72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf' if variant.endswith('raw-control-v2') else 'e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed'
++        workers = [info['sha256'] for name, info in libraries['libraries'].items() if '/worker-variants/' in name and name.endswith('.so')]
++        checks[f'rank{rank}:actual_worker'] = workers == [digest] and len(libraries['shmem']) == 1
++    return (folder, dict(tag=tag, passed=all(checks.values()), failed_checks=[key for key, value in checks.items() if not value], peak_driver_MiB=status['peak_driver_MiB'], diagnostic_only=True))
++save()
++try:
++    for phase in ('small', 'main'):
++        state['stage'] = phase
++        save()
++        for name, mode, raw, variant in state['schedule']:
++            tag = 'host-' + phase + '-' + name + '-' + VERSION
++            state['current'] = tag
++            save()
++            small = phase == 'small'
++            steps, layers = (3, 2) if small else (11, 4)
++            args = ['--layers', str(layers), '--steps', str(steps), '--tokens', '256' if small else '16384', '--hidden', '512' if small else '4096', '--ffn', '512' if small else '1024', '--microbatches', '4', '--forward-window', '2', '--recv-capacity', '4096' if small else '262144', '--maxvio', '10', '--planner', 'moonep' if small else 'native', '--temporal-pattern', 'same', '--temporal-policy', 'fixed_native', '--worker-variant', variant, '--grad-sync', '--hold-fsdp-forward', '--temporal-prefix-reuse', '--lifetime-mode', mode, '--lifetime-raw-schedule', raw, '--host-boundary-trace']
++            if small:
++                args += ['--dump-grad-step0', '--finite-diagnostics', '--route-bank', remote.REMOTE + '/stack/small-routes']
++            else:
++                args += ['--temporal-scheduler', 'ascendc', '--temporal-scheduler-library', remote.REMOTE + '/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so']
++            folder, result = gate(tag, args, steps, layers)
++            if small and result['passed']:
++                path = remote.REMOTE + '/stack/evidence/' + tag + '-gradient-comparison.json'
++                command = ['ssh', remote.HOST, 'docker', 'exec', remote.CONTAINER, '/usr/local/python3.12.13/bin/python3', remote.REMOTE + '/stack/tools/compare_temporal_gradients.py', '/home/z00956592/megaflux/step-lifetime-raw-control-20261116/stack/evidence/raw-model-preserve-v1', remote.REMOTE + '/stack/evidence/' + tag, '--out', path]
++                with (ROOT / 'diagnostics' / (tag + '-comparison.log')).open('wb') as handle:
++                    comparison = subprocess.run(command, stdout=handle, stderr=subprocess.STDOUT)
++                local = ROOT / 'diagnostics' / (tag + '-gradient-comparison.json')
++                subprocess.run(['scp', remote.HOST + ':' + path, str(local)], check=True)
++                result['passed'] &= comparison.returncode == 0 and json.loads(local.read_text())['passed']
++                result['full_step0_gradient_reference'] = 'raw-model-preserve-v1'
++            state['runs'].append(result)
++            save()
++            if not result['passed']:
++                raise RuntimeError('Host-only qualification failed: ' + tag + ' ' + str(result['failed_checks']))
++    state.update(stage='complete', passed=True)
++    state.pop('current', None)
++    save()
++except BaseException as error:
++    state.update(stage='failed', error=str(error))
++    save()
++    raise
+diff --git a/research/step_lifetime/host_boundary/run_diagnosis.py b/research/step_lifetime/host_boundary/run_diagnosis.py
+new file mode 100644
+index 0000000..a3a4501
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/run_diagnosis.py
+@@ -0,0 +1,102 @@
++"""Numerically qualify host-only wrappers, then inspect warm host boundaries."""
++from pathlib import Path
++import json
++import math
++import subprocess
++import remote
++
++ROOT = Path(__file__).resolve().parent
++VERSION = 'v4'
++STATE = ROOT/('diagnosis-'+VERSION+'.json')
++if STATE.exists():
++    raise SystemExit('Immutable diagnosis already started; inspect its state.')
++state = dict(stage='small', runs=[], diagnostic_only=True, new_planner=False,
++             schedule=[['b1_legacy','b1','legacy','ep8-cap64-lifetime-raw-control-v2'],
++                       ['b3_legacy','b3','legacy','ep8-cap64-lifetime-raw-control-v2'],
++                       ['b1_cached','b1','preserve','ep8-cap64-lifetime-priority-cache-v1']])
++
++def save():
++    STATE.write_text(json.dumps(state, indent=2)+'\n',newline='\n')
++
++def gate(tag, args, steps, layers):
++    try:
++        remote.gate(tag, args, metadata_only=True)
++    except SystemExit as done:
++        code = done.code
++    folder = ROOT/'evidence'/tag
++    status = json.loads((folder/'status.json').read_text())
++    checks = {key: bool(status.get(key)) for key in ('qualified','source_unchanged','exclusive_devices')}
++    checks['exit_and_memory'] = code == 0 and status['peak_driver_MiB'] <= 90*1024
++    if not all(checks.values()):
++        return folder, dict(tag=tag,passed=False,failed_checks=[key for key,value in checks.items() if not value],
++                            peak_driver_MiB=status['peak_driver_MiB'],diagnostic_only=True,actual_exit=status['exit'])
++    for rank in range(8):
++        records = [json.loads(line) for line in (folder/f'steps-rank{rank}.jsonl').read_text().splitlines()]
++        checks[f'rank{rank}:finite_steps'] = len(records) == steps and all(
++            math.isfinite(row['loss']) and math.isfinite(row['grad_norm']) for row in records)
++        updates = json.loads((folder/f'updates-rank{rank}.json').read_text())
++        checks[f'rank{rank}:three_adam_updates'] = len(updates) == 3 and all(row['changed'] for row in updates)
++        contract = json.loads((folder/f'host-boundary-contract-rank{rank}.json').read_text())
++        checks[f'rank{rank}:trace_contract'] = all(contract[key] for key in
++            ('diagnostic_only','no_new_device_events','no_new_device_syncs','no_tensor_snapshots','dump_after_training')) and not contract['host_return_is_device_completion']
++        trace = [json.loads(line) for line in (folder/f'host-boundary-rank{rank}.jsonl').read_text().splitlines()]
++        checks[f'rank{rank}:paired_scopes'] = len(trace) == contract['records'] and len(set(row['sequence'] for row in trace)) == len(trace) and all(
++            row['host_return_ns'] >= row['host_begin_ns'] and not row['failed'] for row in trace)
++        for step in range(steps):
++            calls = [row for row in trace if row['name'] == 'operator.backward' and row['update'] == step]
++            checks[f'rank{rank}:step{step}_backward_coverage'] = len(calls) == layers*4
++        libraries = json.loads((folder/f'libraries-rank{rank}.json').read_text())
++        variant = args[args.index('--worker-variant')+1]
++        digest = ('72653abf3c22fb951624dd5dc420c488d2511d1c22e5e605a3621cb4210502bf'
++                  if variant.endswith('raw-control-v2') else 'e2868fd2fef49e089513191c9ccbb0ca3c39c857ac9a07d8f6bce255d6f946ed')
++        workers = [info['sha256'] for name,info in libraries['libraries'].items() if '/worker-variants/' in name and name.endswith('.so')]
++        checks[f'rank{rank}:actual_worker'] = workers == [digest] and len(libraries['shmem']) == 1
++    return folder, dict(tag=tag, passed=all(checks.values()), failed_checks=[key for key,value in checks.items() if not value],
++                        peak_driver_MiB=status['peak_driver_MiB'], diagnostic_only=True)
++
++save()
++try:
++    for phase in ('small','main'):
++        state['stage'] = phase
++        save()
++        for name, mode, raw, variant in state['schedule']:
++            tag = 'host-'+phase+'-'+name+'-'+VERSION
++            state['current'] = tag
++            save()
++            small = phase == 'small'
++            steps, layers = (3,2) if small else (11,4)
++            args = ['--layers',str(layers),'--steps',str(steps),'--tokens','256' if small else '16384',
++                    '--hidden','512' if small else '4096','--ffn','512' if small else '1024',
++                    '--microbatches','4','--forward-window','2','--recv-capacity','4096' if small else '262144',
++                    '--maxvio','10','--planner','moonep' if small else 'native','--temporal-pattern','same',
++                    '--temporal-policy','fixed_native','--worker-variant',variant,'--grad-sync','--hold-fsdp-forward',
++                    '--temporal-prefix-reuse','--lifetime-mode',mode,'--lifetime-raw-schedule',raw,
++                    '--host-boundary-trace']
++            if small:
++                args += ['--dump-grad-step0','--finite-diagnostics','--route-bank',remote.REMOTE+'/stack/small-routes']
++            else:
++                args += ['--temporal-scheduler','ascendc','--temporal-scheduler-library',remote.REMOTE+'/stack/source/native-balanced/ascend_deepep/lib/libascend_deepep_temporal_scheduler_v4.so']
++            folder, result = gate(tag, args, steps, layers)
++            if small and result['passed']:
++                path = remote.REMOTE+'/stack/evidence/'+tag+'-gradient-comparison.json'
++                command = ['ssh',remote.HOST,'docker','exec',remote.CONTAINER,'/usr/local/python3.12.13/bin/python3',
++                           remote.REMOTE+'/stack/tools/compare_temporal_gradients.py',
++                           '/home/z00956592/megaflux/step-lifetime-raw-control-20261116/stack/evidence/raw-model-preserve-v1',
++                           remote.REMOTE+'/stack/evidence/'+tag,'--out',path]
++                with (ROOT/'diagnostics'/(tag+'-comparison.log')).open('wb') as handle:
++                    comparison = subprocess.run(command,stdout=handle,stderr=subprocess.STDOUT)
++                local = ROOT/'diagnostics'/(tag+'-gradient-comparison.json')
++                subprocess.run(['scp',remote.HOST+':'+path,str(local)],check=True)
++                result['passed'] &= comparison.returncode == 0 and json.loads(local.read_text())['passed']
++                result['full_step0_gradient_reference'] = 'raw-model-preserve-v1'
++            state['runs'].append(result)
++            save()
++            if not result['passed']:
++                raise RuntimeError('Host-only qualification failed: '+tag+' '+str(result['failed_checks']))
++    state.update(stage='complete',passed=True)
++    state.pop('current',None)
++    save()
++except BaseException as error:
++    state.update(stage='failed',error=str(error))
++    save()
++    raise
+diff --git a/research/step_lifetime/host_boundary/setup-provenance.json b/research/step_lifetime/host_boundary/setup-provenance.json
+new file mode 100644
+index 0000000..23194d3
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/setup-provenance.json
+@@ -0,0 +1,5 @@
++{
++  "base_head": "b77bb06c55f40f4490ac34d72f81d1447e35c01d",
++  "copied_freeze": "configs/lifetime-runtime-freeze.json",
++  "isolated_branch": "research/step-lifetime-host-boundary"
++}
+diff --git a/research/step_lifetime/host_boundary/summary.json b/research/step_lifetime/host_boundary/summary.json
+new file mode 100644
+index 0000000..8ce5000
+--- /dev/null
++++ b/research/step_lifetime/host_boundary/summary.json
+@@ -0,0 +1,85 @@
++{
++  "diagnostic_only": true,
++  "runs": [
++    {
++      "name": "b1_legacy",
++      "prewarm": {
++        "calls": 80,
++        "median_ms": 0.22402499999999997,
++        "max_ms": 749.87799,
++        "over10ms": 9,
++        "over100ms": 9
++      },
++      "warmed": {
++        "calls": 96,
++        "median_ms": 0.26963,
++        "max_ms": 1.8708,
++        "over10ms": 0,
++        "over100ms": 0
++      },
++      "median_warmed_finish_host_ms": 0.051445,
++      "finish_samples": 48
++    },
++    {
++      "name": "b3_legacy",
++      "prewarm": {
++        "calls": 80,
++        "median_ms": 0.24081999999999998,
++        "max_ms": 19.36395,
++        "over10ms": 2,
++        "over100ms": 0
++      },
++      "warmed": {
++        "calls": 96,
++        "median_ms": 0.24461,
++        "max_ms": 19.01844,
++        "over10ms": 1,
++        "over100ms": 0
++      },
++      "median_warmed_finish_host_ms": 163.079125,
++      "finish_samples": 48
++    },
++    {
++      "name": "b1_cached",
++      "prewarm": {
++        "calls": 80,
++        "median_ms": 0.25802499999999995,
++        "max_ms": 672.08306,
++        "over10ms": 9,
++        "over100ms": 9
++      },
++      "warmed": {
++        "calls": 96,
++        "median_ms": 0.28015999999999996,
++        "max_ms": 1.93607,
++        "over10ms": 0,
++        "over100ms": 0
++      },
++      "median_warmed_finish_host_ms": 0.052385,
++      "finish_samples": 48
++    },
++    {
++      "name": "b3_cached",
++      "prewarm": {
++        "calls": 80,
++        "median_ms": 0.25843,
++        "max_ms": 64.39258,
++        "over10ms": 3,
++        "over100ms": 0
++      },
++      "warmed": {
++        "calls": 96,
++        "median_ms": 0.24126999999999998,
++        "max_ms": 19.18692,
++        "over10ms": 1,
++        "over100ms": 0
++      },
++      "median_warmed_finish_host_ms": 160.5469,
++      "finish_samples": 48
++    }
++  ],
++  "new_planner": false,
++  "identity_audit_passed": true,
++  "observation_scope": "4 independent modes, one admitted11-update process each; updates0\u20134 vs5\u201310; each matched call contains8 ranks",
++  "next_control": "Tensor-specific gradient bank readiness versus blanket current-stream fence; not implemented in this lane."
++}
+diff --git a/tools/capture_host_boundary.py b/tools/capture_host_boundary.py
+new file mode 100644
+index 0000000..4b35c68
+--- /dev/null
++++ b/tools/capture_host_boundary.py
+@@ -0,0 +1,152 @@
++"""Explicit host-only diagnostic: no new device Events, tensor reads or syncs.
++
++Timestamps are same-host monotonic_ns function envelopes, not device completion.
++Records stay in CPU memory until training ends; traced wall times are diagnostic.
++"""
++import functools
++import gc
++import json
++from pathlib import Path
++import sys
++import time
++
++
++def install(out: Path, rank: int):
++    from ascend_deepep.fsdp2_bridge import NativeFSDP2Pool
++    from ascend_deepep.plan_replay import invocation as plan_invocation
++    from ascend_deepep.unified_planner import CommonOnlinePlanner
++    from lifetime_device import LifetimeDevice
++    from fsdp_turbo.distributed.fine_grained_fully_shard.param_group import FSDPParamGroup
++    from mindspeed_llm.fsdp2.optim.optimizer import FunctionalFusedAdamW
++    import torch.distributed as dist
++
++    rows = []
++    contexts = []
++    update = [None]
++    sequence = [0]
++    gc_starts = {}
++
++    def identity():
++        request = contexts[-1] if contexts else plan_invocation()
++        if request is None:
++            return None, False
++        key, recompute = request
++        return tuple(key), bool(recompute)
++
++    def save(name, start, finish, key, recompute, seq, failed):
++        rows.append(dict(rank=rank, sequence=seq, name=name, update=update[0],
++                         invocation=None if key is None else list(key), recompute=recompute,
++                         host_begin_ns=start, host_return_ns=finish, failed=failed))
++
++    def call(fn, name, args, kwargs, *, start=None, key=None, recompute=None):
++        # First operation at wrapper entry is the host clock read. In particular,
++        # no stream query/Event creation occurs before this timestamp.
++        start = time.monotonic_ns() if start is None else start
++        seq = sequence[0]
++        sequence[0] += 1
++        if key is None:
++            key, observed_recompute = identity()
++            recompute = observed_recompute if recompute is None else recompute
++        failed = False
++        try:
++            return fn(*args, **kwargs)
++        except BaseException:
++            failed = True
++            raise
++        finally:
++            finish = time.monotonic_ns()
++            save(name, start, finish, key, bool(recompute), seq, failed)
++
++    def wrapped(fn, name):
++        @functools.wraps(fn)
++        def invoke(*args, **kwargs):
++            start = time.monotonic_ns()
++            return call(fn, name, args, kwargs, start=start)
++        return invoke
++
++    class OperatorBoundary:
++        def __init__(self, native):
++            self.native = native
++
++        def __getattr__(self, name):
++            value = getattr(self.native, name)
++            if name not in ('compute_train_replica', 'backward_replica', 'backward_replica_redispatch', 'backward_replica_redispatch_with_timer'):
++                return value
++            phase = 'forward' if name == 'compute_train_replica' else 'backward'
++            return wrapped(value, 'operator.'+phase)
++
++    original_forward = NativeFSDP2Pool.forward
++    original_backward = NativeFSDP2Pool.backward
++
++    def forward(pool, *args, **kwargs):
++        start = time.monotonic_ns()
++        if not isinstance(pool.module.op, OperatorBoundary):
++            pool.module.op = OperatorBoundary(pool.module.op)
++        request = plan_invocation()
++        if request is None:
++            return call(original_forward, 'MegaMoE.forward', (pool, *args), kwargs, start=start)
++        contexts.append(request)
++        try:
++            return call(original_forward, 'MegaMoE.forward', (pool, *args), kwargs, start=start)
++        finally:
++            contexts.pop()
++
++    def backward(pool, *args, **kwargs):
++        start = time.monotonic_ns()
++        placement = args[5] if len(args) > 5 else kwargs['placement']
++        # data_ptr reads host metadata only; it does not materialize tensor data.
++        matches = [key for key, ticket in pool._plan_bodies.items()
++                   if placement[0].data_ptr() == ticket.logical_ids.data_ptr()]
++        if len(matches) != 1:
++            raise RuntimeError('Host diagnostic backward has no unique saved plan')
++        contexts.append((matches[0], False))
++        try:
++            return call(original_backward, 'MegaMoE.backward', (pool, *args), kwargs, start=start)
++        finally:
++            contexts.pop()
++
++    NativeFSDP2Pool.forward = forward
++    NativeFSDP2Pool.backward = backward
++    NativeFSDP2Pool._publish = wrapped(NativeFSDP2Pool._publish, 'owner.publish')
++    CommonOnlinePlanner._compile = wrapped(CommonOnlinePlanner._compile, 'planner.compile')
++    for method in ('begin', 'prepare', 'commit', 'gradients', '_drain', '_add_owner',
++                   'flush', 'window_boundary', 'finish'):
++        setattr(LifetimeDevice, method, wrapped(getattr(LifetimeDevice, method), 'lifetime.'+method))
++    for method in ('unshard', 'wait_for_unshard', 'post_backward', 'finalize_backward'):
++        if hasattr(FSDPParamGroup, method):
++            setattr(FSDPParamGroup, method, wrapped(getattr(FSDPParamGroup, method), 'FSDP.'+method))
++    dist.batch_isend_irecv = wrapped(dist.batch_isend_irecv, 'P2P.submit')
++    dist.all_gather_object = wrapped(dist.all_gather_object, 'collective.all_gather_object')
++    FunctionalFusedAdamW.step = wrapped(FunctionalFusedAdamW.step, 'optimizer.AdamW')
++    main = sys.modules['__main__']
++    main.clip_grad_norm = wrapped(main.clip_grad_norm, 'optimizer.global_clip')
++    original_set_step = main.set_step
++
++    def set_step(step):
++        update[0] = step
++        return original_set_step(step)
++
++    main.set_step = set_step
++
++    def gc_event(phase, info):
++        stamp = time.monotonic_ns()
++        generation = info['generation']
++        if phase == 'start':
++            gc_starts[generation] = (stamp, identity(), sequence[0])
++            sequence[0] += 1
++        elif generation in gc_starts:
++            began, (key, recompute), seq = gc_starts.pop(generation)
++            save('python.gc'+str(generation), began, stamp, key, recompute, seq, False)
++
++    gc.callbacks.append(gc_event)
++
++    def dump():
++        gc.callbacks.remove(gc_event)
++        with (out/f'host-boundary-rank{rank}.jsonl').open('w') as handle:
++            for row in sorted(rows, key=lambda row: row['sequence']):
++                handle.write(json.dumps(row)+'\n')
++        (out/f'host-boundary-contract-rank{rank}.json').write_text(json.dumps(dict(
++            diagnostic_only=True, records=len(rows), clock='same-host monotonic_ns',
++            no_new_device_events=True, no_new_device_syncs=True, no_tensor_snapshots=True,
++            dump_after_training=True, host_return_is_device_completion=False), indent=2))
++    return dump
+diff --git a/tools/controller.py b/tools/controller.py
+index 8715482..ca2513e 100644
+--- a/tools/controller.py
++++ b/tools/controller.py
+@@ -10,6 +10,7 @@ import subprocess
+ import time
+ import hashlib
+ import os
++import socket
+ from concurrent.futures import ThreadPoolExecutor
+ 
+ TASK = pathlib.Path('/home/z00956592/megaflux/step-lifetime-study-20261115/stack')
+@@ -92,6 +93,34 @@ def foreign_device_owners(container_id):
+             foreign.append(int(value))
+     return sorted(foreign)
+ 
++
++def probe_master_port(out):
++    """Probe a task-specific range without signalling existing CPU services.
++
++    TCPStore must bind the port itself, so this is a preflight, not a reservation.
++    A later EADDRINUSE remains an explicit failed run, never a silent restart.
++    """
++    # Stay below this host's ephemeral range; probe IPv6 as well as IPv4.
++    # A loopback IPv4-only bind misses an existing [::1] client socket.
++    start = 25100 + int(time.time()) % 2000
++    for offset in range(2000):
++        port = 25100 + (start - 25100 + offset) % 2000
++        available = True
++        for family, address in ((socket.AF_INET6, ('::', port)), (socket.AF_INET, ('0.0.0.0', port))):
++            with socket.socket(family, socket.SOCK_STREAM) as probe:
++                try:
++                    probe.bind(address)
++                except OSError:
++                    available = False
++                    break
++        if not available:
++            continue
++        (out/'port-admission.json').write_text(json.dumps(dict(port=port,
++            checked_ns=time.monotonic_ns(), probe_only_not_reserved=True,
++            probed=['IPv6 wildcard', 'IPv4 wildcard']),indent=2))
++        return port
++    raise RuntimeError('No free TCPStore port in this diagnostic range')
++
+ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=64):
+     diagnostic='--diagnostic-timer' in arguments
+     if '--temporal-schedule-replay' in arguments and '--diagnostic-only' not in arguments:
+@@ -151,7 +180,8 @@ def _run_job(backend, mode, tag, arguments, seconds=1800, worker=None, capacity=
+     final_admission=idle()
+     (out/'launch-admission.json').write_text(json.dumps(final_admission,indent=2))
+     container_id=subprocess.check_output(['docker','inspect',CONTAINER,'--format','{{.Id}}'],text=True).strip()
+-    command = ['docker', 'exec', '-w', str(TASK), '-e', f'EP8_MASTER_PORT={29200 + int(time.time()) % 2000}',
++    master_port = probe_master_port(out)
++    command = ['docker', 'exec', '-w', str(TASK), '-e', f'EP8_MASTER_PORT={master_port}',
+                CONTAINER, 'timeout', '-k', '30', str(seconds), 'bash', 'tools/launch.sh',
+                backend, mode, tag, *arguments]
+     if worker:
+diff --git a/tools/train.py b/tools/train.py
+index 92d1ead..17ad200 100644
+--- a/tools/train.py
++++ b/tools/train.py
+@@ -81,6 +81,7 @@ def main():
+     parser.add_argument('--recv-capacity',type=int,default=163840)
+     parser.add_argument('--route-bank',type=Path)
+     parser.add_argument('--diagnostic-timer',action='store_true')
++    parser.add_argument('--host-boundary-trace',action='store_true',help='Host-only function envelopes; diagnostic wall times, no new device Events')
+     parser.add_argument('--interface',choices=('unified','legacy'),default='unified')
+     parser.add_argument('--cost-model',type=str)
+     parser.add_argument('--root', type=Path, required=True)
+@@ -186,7 +187,8 @@ def main():
+             temporal_prefix_reuse=args.temporal_prefix_reuse,
+             prefix_diagnostic_sync=args.prefix_diagnostic_sync,
+             prefix_stage_audit=args.prefix_stage_audit,
+-            numerical_diagnostic_only=bool(args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only),
++            numerical_diagnostic_only=bool(args.prefix_stage_audit or args.prefix_diagnostic_sync!='none' or args.diagnostic_only or args.host_boundary_trace),
++            host_boundary_trace=args.host_boundary_trace,
+             rematerialization_partition=('prefix+ffn_shared_finish' if args.temporal_prefix_reuse else
+                 'logical-layer-group' if args.temporal_policy and args.temporal_policy!='legacy' else 'layer'),
+             execution_mode=('offline-task-selection-replay-diagnostic' if args.temporal_schedule_replay else
+@@ -243,6 +245,12 @@ def main():
+     from mindspeed_llm.fsdp2.features.ep8_imbalance import plan_invocation
+     from ascend_deepep.plan_replay import install_replay_provider
+     install_replay_provider(plan_invocation)
++    host_boundary_dump = None
++    if args.host_boundary_trace:
++        if args.diagnostic_timer or args.backend != 'balanced':
++            raise RuntimeError('Host boundary isolation requires the ordinary balanced TimerOFF worker')
++        from capture_host_boundary import install as install_host_boundary
++        host_boundary_dump = install_host_boundary(args.out,rank)
+     if args.diagnostic_timer:
+         from capture_diagnostics import install
+         install(args.out,rank)
+@@ -481,6 +489,8 @@ def main():
+         with (args.out / f'steps-rank{rank}.jsonl').open('a') as handle:
+             handle.write(json.dumps(row) + '\n')
+         print(json.dumps(row), flush=True)
++    if host_boundary_dump is not None:
++        host_boundary_dump()
+     expected_route_calls = (2 if args.temporal_prefix_reuse else
+         3 if args.temporal_policy in ('easy_home','easy_independent') and not args.temporal_schedule_replay else 2)
+     if lifetime is not None:lifetime.write_audit(args.out/f'lifetime-audit-rank{rank}.json')

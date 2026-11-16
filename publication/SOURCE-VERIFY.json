@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "branch": "research/step-lifetime-host-boundary",
+  "input_commit": "6820b2b582fdb0005db19dc22a9aaef491860869",
+  "original_source_repository": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study\\host-boundary-20261116\\stack",
+  "original_project": "D:\\megamoe_train\\planner-executor-ep8-lab\\step-lifetime-study\\host-boundary-20261116",
+  "source_files_exact": 7398,
+  "full_source_files": 7398,
+  "all_tracked_files": 7801,
+  "syntax_checked": 1967,
+  "syntax_warnings": 266,
+  "gitlinks": 0,
+  "raw_artifacts_published": false,
+  "new_device_runs": false,
+  "original_research_source_unchanged": true,
+  "manifest_sha256": "652b19b031e7aa35ccfe5dea4d6ad7576b81d2022bef0ec951918918b8dd84f0",
+  "preserved_whitespace_warnings": true
+}
