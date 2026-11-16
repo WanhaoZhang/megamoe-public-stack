@@ -1,0 +1,5 @@
+label,tag,repeat,hold_fsdp_forward,prefix_reuse,mean_wall_seconds,median_wall_seconds,peak_sampled_gib,speedup_vs_fresh_original,speedup_vs_common_resident,independent_repeats,measured_updates,formal,new_planner
+native_resident,resident-v3-pilot-native_resident,1,True,False,4.3192096965,4.279931715,75.3310546875,,1.0,1,20,False,False
+easy_home,resident-v3-pilot-easy_home,1,True,True,4.1502917544999995,4.1137481099999995,85.15234375,,1.0407002572329642,1,20,False,False
+fixed_home,resident-v3-pilot-fixed_home,1,True,True,4.0960758235,4.05171697,66.240234375,,1.0544750347930174,1,20,False,False
+fixed_home,resident-v3-confirm-fixed_home-r2,2,True,True,4.095234473,4.055783594999999,66.3349609375,,,1,20,False,False

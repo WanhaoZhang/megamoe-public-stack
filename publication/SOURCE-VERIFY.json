@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "branch": "research/temporal-replica",
+  "input_commit": "44b4e0d2cb46933c22fad1922ff24d603fd5d2ac",
+  "original_source_repository": "D:\\megamoe_train\\planner-executor-ep8-lab\\temporal-replica-study\\stack",
+  "original_project": "D:\\megamoe_train\\planner-executor-ep8-lab\\temporal-replica-study",
+  "source_files_exact": 7398,
+  "full_source_files": 7398,
+  "all_tracked_files": 7862,
+  "syntax_checked": 1985,
+  "syntax_warnings": 266,
+  "gitlinks": 0,
+  "raw_artifacts_published": false,
+  "new_device_runs": false,
+  "original_research_source_unchanged": true,
+  "manifest_sha256": "80f198a5fca22b20df6a21755f9fe291861f865d4f5faac1ee88cab2c56b8a8d",
+  "preserved_whitespace_warnings": true
+}

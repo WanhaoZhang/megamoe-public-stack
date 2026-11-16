@@ -1,0 +1,2 @@
+repeat,native_seconds,easy_seconds,fixed_home_seconds,easy_vs_native_time_reduction,fixed_vs_native_time_reduction,easy_vs_fixed_time_reduction,easy_vs_fixed_speedup,easy_peak_gib,fixed_peak_gib
+1,4.3192096965,4.1502917544999995,4.0960758235,0.03910853000188441,0.05166081035167447,-0.01323606625857665,0.9869368386111131,85.15234375,66.240234375

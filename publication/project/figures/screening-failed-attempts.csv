@@ -1,0 +1,2 @@
+tag,classification,phase,updates,execution_exit,source_unchanged,exclusive_devices,root_cause_not_established
+screen-v1-vio10-alternating-fixed_native-r1,device_initialization_timeout,torch.accelerator.set_device; before first training update,0,1,True,True,True

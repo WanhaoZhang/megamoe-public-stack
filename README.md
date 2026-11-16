@@ -1,44 +1,45 @@
-# MegaMoE Public Stack
+# 跨microbatch任务组合与EasyBalance适配
 
-新公开训练栈的独立源码仓库。Native、FSDPTurbo、MindSpeed-LLM均为直接入库的完整源码快照，不通过gitlink依赖旧Wuhan框架仓库。
+本分支是独立研究源码交付，包含普通MegaMoE算子、FSDPTurbo和MindSpeed-LLM完整源码。研究保持暂停；发布源码不恢复设备队列，也不表示未完成的数值、性能或训练质量资格通过。
 
-[GitHub](https://github.com/WanhaoZhang/megamoe-public-stack) · [GitCode](https://gitcode.com/zhangwanhao/megamoe-public-stack)
+- 分支：research/temporal-replica
+- 本次打包前的研究提交：44b4e0d2cb46933c22fad1922ff24d603fd5d2ac
+- 模型条件：L4/EP8/E256/Top8/H4096/F1024/S16384/GA4/W2，V4 attention/mHC、框架shared专家。
+- 精度与训练：FP32持久参数/梯度/Adam状态，BF16专家，固定owner，无CPU offload。
+- 结论边界：保留作者选择规则、固定分组和Native控制；首轮筛查未证明动态选择胜过固定分组。
 
-```bash
-git clone https://github.com/WanhaoZhang/megamoe-public-stack.git
-# 或：git clone https://gitcode.com/zhangwanhao/megamoe-public-stack.git
-```
+## 源码入口
 
-三个主体组件已包含本次实验适配，使用本仓库源码时不要重复应用`patches/`中的历史补丁。导出源码没有保留嵌套Git仓库，组件原始提交、文件内容及执行权限均可通过清单校对。
+|目录|职责|
+|---|---|
+|[source/native-balanced](source/native-balanced)|算子、Planner、Host、AscendC流水及构建脚本|
+|[source/FSDPTurbo](source/FSDPTurbo)|专家并行、参数分片与dispatcher接入|
+|[source/MindSpeed-LLM](source/MindSpeed-LLM)|模型与FSDP2训练引擎|
+|[tools](tools)|该分支实际训练、资格和控制脚本|
+|[configs](configs)|模型、运行时与资源配置|
+|[publication/project](publication/project)|研究项目说明和外层复现/构建辅助脚本|
+|[SOURCE-MANIFEST.json](SOURCE-MANIFEST.json)|当前导出的完整source文件SHA256与执行位|
+|[publication/SOURCE-VERIFY.json](publication/SOURCE-VERIFY.json)|源码一致性与发布范围核验|
 
-## 代码布局
+## 使用与验证边界
 
-|路径|内容|固定版本|
+三个主体源码直接入库，主源码树没有gitlink或嵌套Git仓库。Native所需CATLASS、CatCCOS、SHMEM源码沿用冻结公开栈；可选第三方开发依赖的固定提交见COMPONENTS.json，许可证按各组件保留。
+
+以本分支为PROJECT/stack，外层脚本可从publication/project复制到PROJECT；算子和框架仍使用stack/source布局。原脚本中固定的Linux目录、SSH别名、CANN和SHMEM路径必须在新的隔离环境中显式映射或调整。单microbatch工具使用PROJECT本身作为源码根，按其README和PLAN检查路径。
+
+源码包含已验证控制与尚未通过NPU资格的探针，应按对应报告和配置逐项选择，不因代码存在而默认开启。重建Host、Planner和worker时必须匹配槽位、ABI、编译配方和实际SO能力。本次仅检查源码/语法/既有CPU控制；没有重建NPU产物或补跑实验。
+
+原始日志、路由张量、梯度PT、SDK、SO和本地环境留原项目及其专用远端；本仓库只保存源码、配置、必要说明和小型派生图表。原main的REPRODUCE/STATUS/SOURCE-MANIFEST作为历史信息保存于publication/baseline。
+
+## 独立分支索引
+
+|方向与控制|分支|链接|
 |---|---|---|
-|`source/native-balanced`|普通MegaMoE执行器、64槽、统一Planner|`3ec836a8`|
-|`source/FSDPTurbo`|公开FSDPTurbo完整源码及已测适配|`08d5caf7`，公开基线`9c443c6`|
-|`source/MindSpeed-LLM`|公开MindSpeed-LLM完整源码及已测适配|`fbc1ed7d`，公开基线`dd5ee032`|
-|`source/native-balanced/3rdparty`|固定版本的CATLASS、CatCCOS、SHMEM源码|见`COMPONENTS.json`|
-|`tools`|整网训练、路由生成、在线Planner、校准及校验脚本|冻结实验入口|
-|`configs`|模型与四份冻结成本模型|主形状L2/EP8/E256/Top8/H7168/F2048/S16384|
-|`reports`、`figures`、`analysis`|实验说明、派生结果、PNG/SVG/PDF/CSV|仅实际完成数据|
-
-所有导出的组件文件及SHA见`SOURCE-MANIFEST.json`。编译器/驱动/CANN、安装好的运行时库和私有镜像不入Git。
-上游组件中可选的googletest、TLA/AscendNPU-IR以及CatCCOS独立开发用的子依赖未递归展开，其固定提交保留在`COMPONENTS.json`；它们与本仓库三个主体训练组件的完整源码分开说明。
-
-## 入口与运行环境
-
-主要入口为`tools/train.py`、`tools/launch.sh`及`configs/`，训练使用普通MegaMoE，模型shared expert仍由框架正常计算。
-实际测量使用CANN9.2、Python3.12.13、记录的torch/torch_npu和SHMEM运行时。Host、planner、worker必须按相同64槽能力重建，提交源码不能替代匹配二进制。
-冻结脚本保留Linux路径`/home/z00956592/megaflux/planner-executor-ep8-lab`及已记录的依赖布局；可将本仓库目录映射到该路径，准备匹配环境后按`REPRODUCE.md`操作。
-源码中有历史三后端资格辅助入口；本轮正式Planner对照统一采用`--backend balanced`，不把MoonEP规划策略冒称完整MoonEP通信后端。
-
-## 已知实验结论
-
-实验已按用户要求收尾：完成108次主矩阵和12次第四轮。step_time主矩阵900次规划全部精确回退Native，完整步时比Native高0.34%–0.85%，没有证明新增搜索收益。
-第四轮MaxVio5在第22步的全局梯度范数轨迹差异2.415%仍未解释，同权重25步诊断未完成；后续独立银行与消融已取消。
-`ACCEPTANCE.json`保留`complete=false`，`CLOSEOUT-AUDIT.json`仅核对已保留数据及收尾。工程保留停队标记，不自动恢复设备实验。
-
-原始日志、路由二进制、Timer缓冲、SO、SDK和环境镜像保存在原项目`D:/megamoe_train/planner-executor-ep8-lab`。本仓库不发布这些大体积运行产物。
-
-[复现说明](REPRODUCE.md) · [收尾报告](CLOSEOUT.md) · [实验结果](reports/REPORT.md) · [架构](reports/ARCHITECTURE.md) · [许可证](LICENSES.md)
+|单microbatch前反向与owner服务探索|research/single-mb-fbw-planner|[GitHub](https://github.com/WanhaoZhang/megamoe-public-stack/tree/research/single-mb-fbw-planner) · [GitCode](https://gitcode.com/zhangwanhao/megamoe-public-stack/tree/research/single-mb-fbw-planner)|
+|跨microbatch任务组合与EasyBalance适配|research/temporal-replica|[GitHub](https://github.com/WanhaoZhang/megamoe-public-stack/tree/research/temporal-replica) · [GitCode](https://gitcode.com/zhangwanhao/megamoe-public-stack/tree/research/temporal-replica)|
+|专家副本与梯度交付生命周期|research/step-lifetime|[GitHub](https://github.com/WanhaoZhang/megamoe-public-stack/tree/research/step-lifetime) · [GitCode](https://gitcode.com/zhangwanhao/megamoe-public-stack/tree/research/step-lifetime)|
+|生命周期路径因果诊断|research/step-lifetime-causal|[GitHub](https://github.com/WanhaoZhang/megamoe-public-stack/tree/research/step-lifetime-causal) · [GitCode](https://gitcode.com/zhangwanhao/megamoe-public-stack/tree/research/step-lifetime-causal)|
+|原始梯度交付路径控制|research/step-lifetime-raw-control|[GitHub](https://github.com/WanhaoZhang/megamoe-public-stack/tree/research/step-lifetime-raw-control) · [GitCode](https://gitcode.com/zhangwanhao/megamoe-public-stack/tree/research/step-lifetime-raw-control)|
+|梯度排序键缓存及共同底座复查|research/step-lifetime-priority-cache|[GitHub](https://github.com/WanhaoZhang/megamoe-public-stack/tree/research/step-lifetime-priority-cache) · [GitCode](https://gitcode.com/zhangwanhao/megamoe-public-stack/tree/research/step-lifetime-priority-cache)|
+|主机入口与返回边界诊断|research/step-lifetime-host-boundary|[GitHub](https://github.com/WanhaoZhang/megamoe-public-stack/tree/research/step-lifetime-host-boundary) · [GitCode](https://gitcode.com/zhangwanhao/megamoe-public-stack/tree/research/step-lifetime-host-boundary)|
+|梯度bank最后写入就绪依赖控制|research/step-lifetime-grad-ready|[GitHub](https://github.com/WanhaoZhang/megamoe-public-stack/tree/research/step-lifetime-grad-ready) · [GitCode](https://gitcode.com/zhangwanhao/megamoe-public-stack/tree/research/step-lifetime-grad-ready)|

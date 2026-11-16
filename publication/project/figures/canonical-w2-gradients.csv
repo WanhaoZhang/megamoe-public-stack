@@ -1,0 +1,9 @@
+policy,max_category_percent,max_parameter_percent,passed,evidence
+Fixed: original order,0.7808797731461102,1.47868529602331,True,ordered-shared-fixed_native-w2-comparison.json
+Easy: original order,0.7750430565163483,1.4038297913623907,True,ordered-shared-easy_home-w2-comparison.json
+Fixed: early shared,0.8023852906717333,2.081957195075142,False,canonical-w2-adam3-fixed_native-comparison.json
+Easy home,0.8089132294392496,2.237716735671815,False,canonical-w2-adam3-easy_home-comparison.json
+Ready FIFO,0.7936070286784008,2.0582522204724443,False,canonical-w2-adam3-fifo_native-comparison.json
+Easy independent,0.7952037010171128,1.8716345049743566,True,canonical-w2-adam3-easy_independent-comparison.json
+Native repeat,0.28341339909035285,0.5562833235393709,True,canonical-w2-adam3-legacy-comparison.json
+Fixed repeat,0.27461553036490516,1.3134536153619354,True,canonical-fixed-self-repeat-comparison.json

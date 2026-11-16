@@ -1,0 +1,10 @@
+label,tag,pattern,repeat,hold_fsdp_forward,prefix_reuse,mean_wall_seconds,median_wall_seconds,peak_sampled_gib,speedup_vs_fresh_original,speedup_vs_common_resident,independent_repeats,measured_updates,formal,new_planner
+native_resident,upstream-maxutil-screen-same-native_resident-r1,same,1,True,False,4.332912559,4.2969613550000005,75.3271484375,,1.0,1,20,False,False
+fixed_home,upstream-maxutil-screen-same-fixed_home-r1,same,1,True,True,4.1861405744999995,4.132039125,66.2177734375,,1.0350614084472143,1,20,False,False
+upstream_home,upstream-maxutil-screen-same-upstream_home-r1,same,1,True,True,4.2120252990000004,4.166351345000001,72.9619140625,,1.0287005066253283,1,20,False,False
+fixed_home,upstream-maxutil-screen-alternating-fixed_home-r1,alternating,1,True,True,4.058046417,4.016907785000001,66.5107421875,,1.0687915811732815,1,20,False,False
+upstream_home,upstream-maxutil-screen-alternating-upstream_home-r1,alternating,1,True,True,4.071657275,4.0250812400000004,66.4775390625,,1.065218792635242,1,20,False,False
+native_resident,upstream-maxutil-screen-alternating-native_resident-r1,alternating,1,True,False,4.3372058465,4.30443553,75.326171875,,1.0,1,20,False,False
+upstream_home,upstream-maxutil-screen-random-upstream_home-r1,random,1,True,True,4.158028189,4.11152768,71.92578125,,1.0429581699259616,1,20,False,False
+native_resident,upstream-maxutil-screen-random-native_resident-r1,random,1,True,False,4.3366494705,4.296295675,75.328125,,1.0,1,20,False,False
+fixed_home,upstream-maxutil-screen-random-fixed_home-r1,random,1,True,True,4.095419879,4.05419045,66.22265625,,1.0589022856330186,1,20,False,False

@@ -1,0 +1,8 @@
+label,tag,pattern,repeat,hold_fsdp_forward,prefix_reuse,mean_wall_seconds,median_wall_seconds,peak_sampled_gib,speedup_vs_fresh_original,speedup_vs_common_resident,independent_repeats,measured_updates,formal,new_planner
+native_original,resident-v3-pilot-native_original,random,1,False,False,4.3443875400000005,4.316999085000001,75.052734375,1.0,0.9942045125421751,1,20,False,False
+native_resident,resident-v3-pilot-native_resident,random,1,True,False,4.3192096965,4.279931715,75.3310546875,1.0058292709243553,1.0,1,20,False,False
+fixed_native,resident-v3-pilot-fixed_native,random,1,True,True,4.391005101,4.350160965000001,66.37109375,0.9893833963004545,0.983649437236215,1,20,False,False
+fifo,resident-v3-pilot-fifo,random,1,True,True,4.46162542,4.421923075,66.7060546875,0.973723056293686,0.9680798565335411,1,20,False,False
+easy_home,resident-v3-pilot-easy_home,random,1,True,True,4.1502917544999995,4.1137481099999995,85.15234375,1.0467667809834214,1.0407002572329642,1,20,False,False
+easy_independent,resident-v3-pilot-easy_independent,random,1,True,True,4.4513796385,4.41121291,70.1484375,0.9759642836179093,0.9703080948529167,1,20,False,False
+fixed_home,resident-v3-pilot-fixed_home,random,1,True,True,4.0960758235,4.05171697,66.240234375,1.060621855453795,1.0544750347930174,1,20,False,False
